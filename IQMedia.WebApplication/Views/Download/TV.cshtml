@@ -1,0 +1,230 @@
+﻿@using IQMedia.Web.Logic;
+@using IQMedia.Web.Logic.Base;
+@model List<IQMedia.Model.ClipDownload>
+@{
+    ViewBag.Title = "iQ media Download Clip";
+    Layout = "~/Views/Download/_DownloadMaster.cshtml";
+}
+
+    <div>
+        <span style="color: rgb(255, 0, 0);" id="spanTV" class="help-inline">@ViewBag.ErrorMessage</span>
+        @{
+            var DownloadStatus_1 = Model.Where(clip => clip.ClipDownloadStatus == 1).ToList();
+            var DownloadStatus_2 = Model.Where(clip => clip.ClipDownloadStatus == 2).ToList();
+            var DownloadStatus_3 = Model.Where(clip => clip.ClipDownloadStatus == 3).ToList();
+            var clipFormats = ViewBag.ClipFormats as SelectList;
+
+            IQMedia.Model.ActiveUser activeUser = IQMedia.WebApplication.Utility.ActiveUserMgr.GetActiveUser();
+            
+            var clientLgc = (ClientLogic)LogicFactory.GetLogic(LogicType.Client);
+            var clipCCExportSettings = clientLgc.GetClipCCExportSettings(activeUser.ClientGUID);
+            
+            Dictionary<Guid, string> clipCCLocation = new Dictionary<Guid,string>();
+
+            if (clipCCExportSettings && DownloadStatus_3.Count() > 0)
+            {
+                var clipLogic = (ClipLogic)LogicFactory.GetLogic(LogicType.Clip);                
+
+                clipCCLocation = clipLogic.GetClipCCLocation(activeUser.ClientGUID, DownloadStatus_3.Select(cd => Guid.Parse(cd.ClipGUID)));
+
+                TempData["DownloadTV"] = clipCCLocation;
+                TempData.Keep();
+            }
+        }
+        @using (Html.BeginForm("TV", "Download"))
+        {
+            <div>
+                <div style="font-weight: bold; border-bottom: 1px solid #dadada; padding-bottom: 10px;">
+                    Step 1: Select Download Format</div>
+                <br />
+                @if (DownloadStatus_1.Count > 0)
+                {
+                    <table cellpadding="0" cellspacing="0" class="grid" width="100%">
+                        <tr>
+                            <th style="text-align: left; width: 10%;">
+                            </th>
+                            <th style="text-align: left; width: 50%;">
+                                Clip Title
+                            </th>
+                            <th style="text-align: left; width: 20%;">
+                                Download Format
+                            </th>
+                            <th style="text-align: left; width: 20%;">
+                               Requested Date
+                            </th>
+                        </tr>
+                        @{ 
+                    int Count = 0;
+
+                    foreach (IQMedia.Model.ClipDownload item in DownloadStatus_1)
+                    {
+                            <tr>
+                                <td align="center" style="padding-top:6px;">
+                                    <a href="/Download/ClipDelete?ClipDownloadKey=@item.ID" onclick="return confirm('Are you sure to delete a clip?');"><img alt="Delete" src="../../images/trash.png" title="Delete" height="15" width="15" /></a>
+                                </td>
+                                <td>@item.ClipTitle
+                                    <input type="hidden" id="ClipCollection[@Count].ID" name="ClipCollection[@Count].ID" value="@item.ID" />
+                                </td>
+                                <td>
+                                    @Html.DropDownList("ClipCollection[" + Count + "].ClipFormat", clipFormats)
+                                </td>
+                                <td>
+                                    @item.ClipDLRequestDateTime
+                                </td>
+                            </tr>
+                        Count = Count + 1;
+                    }
+                        }
+                    </table>
+                    <br />
+                    <div>
+                        <input type="submit" value="Apply" />
+                    </div>
+                }
+                else
+                {
+                    <div>
+                        No pending request available</div>
+                }
+            </div>
+        }
+        <br />
+        <br />
+        <div>
+            <div style="font-weight: bold; padding-bottom: 5px;">
+                Step 2: Pending Clip Download Requests
+            </div>
+            <div style="font-weight: normal; border-bottom: 1px solid #dadada; padding-bottom: 10px;">
+                Note:  Some clips take longer to generate the download file
+            </div>
+            <br />
+            @if (DownloadStatus_2.Count > 0)
+            {
+                <table cellpadding="0" cellspacing="0" class="grid" width="100%">
+                    <tr>
+                        <th style="width: 10%; text-align: left">
+                        </th>
+                        <th style="width: 70%; text-align: left">
+                            Clip Title
+                        </th>
+                        <th style="width: 20%; text-align: left">
+                            Requested Date
+                        </th>
+                    </tr>
+                    @foreach (IQMedia.Model.ClipDownload item in DownloadStatus_2)
+                    {
+                        <tr>
+                            <td align="center" style="padding-top:6px;">
+                                <a href="/Download/ClipDelete?ClipDownloadKey=@item.ID" onclick="return confirm('Are you sure to delete a clip?');"><img alt="Delete" src="../../images/trash.png" title="Delete" height="15" width="15" /></a>
+                            </td>
+                            <td>@item.ClipTitle
+                            </td>
+                            <td>
+                                @item.ClipDLRequestDateTime
+                            </td>
+                        </tr>
+                    }
+                </table>
+                
+            }
+            else
+            {
+                <div>
+                    No pending download available</div>
+            }
+        </div>
+        <br />
+        <br />
+        <div>
+            @if (clipCCExportSettings)
+            {
+            <div style="font-weight: bold; padding-bottom: 5px;">
+                Step 3: Clip Ready for Download
+            </div>
+            <div style="font-weight: normal; border-bottom: 1px solid #dadada; padding-bottom: 10px;">
+                Note: Clip will be removed from list when video download is selected
+            </div>
+            }
+            else
+            {
+            <div style="font-weight: bold; border-bottom: 1px solid #dadada; padding-bottom: 10px;">
+                Step 3: Clip Ready for Download
+            </div>
+            }
+            <br />
+            @if (DownloadStatus_3.Count > 0)
+            {
+                <table cellpadding="0" cellspacing="0" class="grid" width="100%">
+                    <tr>
+                        <th style="text-align:left"></th>
+                        <th style="text-align:left">
+                            Clip Title
+                        </th>
+                     <th style="text-align:right">
+                        File Size
+                     </th>
+                     @if (clipCCExportSettings)
+                     {
+                        <th style="text-align:center">
+                            Closed Captions
+                        </th>
+                        <th style="text-align:left"></th>
+                     }
+                    </tr>
+                    @foreach (IQMedia.Model.ClipDownload item in DownloadStatus_3)
+                    {
+                        <tr>
+                            <td align="center" style="padding-top:6px;">
+                                <a href="/Download/DownloadClip/?ClipDownloadKey=@item.ID" target="_blank"><img alt="Download" src="../../images/save.png" title="Download Clip" height="15" width="15" /></a>
+                            </td>
+                            <td>
+                                @item.ClipTitle
+                            </td>
+                            <td style="text-align:right">
+                            @{ 
+                            var path = item.ClipFileLocation + item.ClipGUID + "." + item.ClipFormat;
+                            FileInfo file = new System.IO.FileInfo(path);
+                            var fileSize = "0";
+                            
+                            if (file.Exists)
+                            {
+                                fileSize = file.Length.ToString();
+                            }
+                            }
+                            @(string.Format("{0:n0}", Math.Round((Double.Parse(fileSize) / 1024), 0))+ " KB")
+                            </td>
+                            @if (clipCCExportSettings)
+                            {
+                            <td align="center" style="padding-top:6px;">
+                                @if (clipCCLocation.Keys.Contains(Guid.Parse(item.ClipGUID)) && !string.IsNullOrEmpty(clipCCLocation[Guid.Parse(item.ClipGUID)]))
+                                {
+                                    <a href="/Download/DownloadClipCC/?ClipDownloadKey=@item.ID&ID=@item.ClipGUID" target="_blank"><img alt="Download" src="../../images/save.png" title="Download CC" height="15" width="15" /></a>
+                                }
+                                else
+                                { 
+                                    <span style="float:center;">NA</span>
+                                }
+                            </td>
+                            <td align="center" style="padding-top:6px;">
+                                <a href="/Download/ClipDelete?ClipDownloadKey=@item.ID" onclick="return confirm('Are you sure to delete a clip?');"><img alt="Delete" src="../../images/trash.png" title="Delete" height="15" width="15" /></a>
+                            </td>
+                            }
+                        </tr>
+                    }
+                </table>
+                
+            }
+            else
+            {
+                <div>
+                    No clip is ready to download</div>
+            }
+        </div>
+        <br />
+        <br />
+        @using (Html.BeginForm("TV", "Download", FormMethod.Get))
+        {
+            <input type="submit" value="Refresh" />
+        }
+    </div>
+

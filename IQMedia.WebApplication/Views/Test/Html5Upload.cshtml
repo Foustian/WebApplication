@@ -1,0 +1,227 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Html5Upload</title>
+    <script src="../../Scripts/jquery-1.9.1.min.js?v=1.0" type="text/javascript"></script>
+    <script src="../../Scripts/jquery.form.js?v=1.0" type="text/javascript"></script>
+    <style type="text/css">
+        #Wrapper
+        {
+            width: 70%;
+            margin-right: auto;
+            margin-left: auto;
+            margin-top: 50px;
+            background: #EEEEEE;
+            padding: 20px;
+            border: 1px solid #E6E6E6;
+        }
+        body { padding: 30px }
+form { display: block; margin: 20px auto; background: #eee; border-radius: 10px; padding: 15px }
+
+.progress { position:relative; width:400px; border: 1px solid #ddd; padding: 1px; border-radius: 3px; }
+.bar { background-color: #B4F5B4; width:0%; height:20px; border-radius: 3px; }
+.percent { position:absolute; display:inline-block; top:3px; left:48%; }
+    </style>
+    <script language="javascript" type="text/javascript">
+
+        $(function () {
+
+
+            $("#btnUploadFile").click(function () {
+                if (!IsBrowserIE()) {
+
+                    var file = document.getElementById('file1').files[0];
+                    var xhr = new XMLHttpRequest();
+
+                    var formdata = new FormData();
+
+                    formdata.append(file.name, file);
+                    formdata.append("txtName", document.getElementById("txtName").value);
+                    formdata.append("ddlItems", document.getElementById("ddlItems").options[1].value);
+                    formdata.append("TestGroup", document.getElementsByTagName("TestGroup").item);
+                    formdata.append("chk1", document.getElementById("chk1").value);
+
+                    //xhr.file = file; // not necessary if you create scopes like this
+
+                    xhr.addEventListener('progress', function (e) {
+                        var done = e.position || e.loaded, total = e.totalSize || e.total;
+                        console.log('xhr progress: ' + (Math.floor(done / total * 1000) / 10) + '%');
+                    }, false);
+
+                    if (xhr.upload) {
+                        xhr.upload.onprogress = function (e) {
+                            var done = e.position || e.loaded, total = e.totalSize || e.total;
+                            console.log('xhr.upload progress: ' + done + ' / ' + total + ' = ' + (Math.floor(done / total * 1000) / 10) + '%');
+                            $("#divProgress").html('xhr.upload progress: ' + done + ' / ' + total + ' = ' + (Math.floor(done / total * 1000) / 10) + '%');
+                            progressBar1.value = (Math.floor(done / total * 1000) / 10);
+                        };
+                    }
+
+                    xhr.addEventListener('load', function (e) {
+                        $("#divProgress").html('xhr.upload file upload completed')
+                    }, false);
+
+                    xhr.onreadystatechange = function (e) {
+                        if (4 == this.readyState) {
+                            console.log(['xhr upload complete', e]);
+                        }
+                    };
+                    xhr.open('post', '/Test/Html5Upload/?fileName=' + file.name, true);
+                    xhr.send(formdata);
+
+                }
+                else {
+
+                }
+            });
+
+
+            //            $('#UploadForm').on('submit', function (e) {
+            //                e.preventDefault();
+            //                $('#SubmitButton').attr('disabled', ''); // disable upload button
+            //                //show uploading message
+            //                $("#output").html('<div style="padding:10px"><img src="../../Images/Loading_1.gif" alt="Please Wait"/> <span>Uploading...</span></div>');
+            //                $(this).ajaxSubmit({
+            //                    target: '#output',
+            //                    success: afterSuccess //call function after success
+            //                });
+            //            });
+
+            $('#UploadForm').on('submit', function (e) {
+                e.preventDefault();
+                $('#SubmitButton').attr('disabled', ''); // disable upload button
+                alert("form uploading....");
+
+                var bar = $('.bar');
+                var percent = $('.percent');
+                var status = $('#status');
+
+                $(this).ajaxSubmit({
+                    beforeSend: function () {
+                        status.empty();
+                        var percentVal = '0%';
+                        bar.width(percentVal)
+                        percent.html(percentVal);
+                    },
+                    uploadProgress: function (event, position, total, percentComplete) {
+                        var percentVal = percentComplete + '%';
+                        bar.width(percentVal)
+                        percent.html(percentVal);
+                    },
+                    success: function () {
+                        var percentVal = '100%';
+                        bar.width(percentVal)
+                        percent.html(percentVal);
+                    },
+                    complete: function (xhr) {
+                        status.html(xhr.responseText);
+                    },
+                    error: function () {
+                        alert("hit error...");
+                    }
+                });
+
+            });
+
+
+
+
+            /*document.getElementById('file1').addEventListener('change', function (e) {
+            var file = this.files[0];
+            var xhr = new XMLHttpRequest();
+            xhr.file = file; // not necessary if you create scopes like this
+            xhr.addEventListener('progress', function (e) {
+            var done = e.position || e.loaded, total = e.totalSize || e.total;
+            console.log('xhr progress: ' + (Math.floor(done / total * 1000) / 10) + '%');
+            }, false);
+            if (xhr.upload) {
+            xhr.upload.onprogress = function (e) {
+            var done = e.position || e.loaded, total = e.totalSize || e.total;
+            console.log('xhr.upload progress: ' + done + ' / ' + total + ' = ' + (Math.floor(done / total * 1000) / 10) + '%');
+            $("#divProgress").html('xhr.upload progress: ' + done + ' / ' + total + ' = ' + (Math.floor(done / total * 1000) / 10) + '%')
+            };
+            }
+
+            xhr.addEventListener('load', function (e) {
+            $("#divProgress").html('xhr.upload file upload completed')
+            }, false);
+
+            xhr.onreadystatechange = function (e) {
+            if (4 == this.readyState) {
+            console.log(['xhr upload complete', e]);
+            }
+            };
+            xhr.open('post', '/Test/Html5Upload/?fileName=' + file.name, true);
+            xhr.send(file);
+            }, false);
+            */
+        });
+        function IsBrowserIE() {
+            return navigator.userAgent.toLowerCase().indexOf("msie") > -1;
+        }
+
+        $(document).ajaxError(function (event, request, settings) {
+            alert('error...');
+        })
+
+
+        function afterSuccess() {
+            alert('success...');
+            $('#UploadForm').resetForm();  // reset form
+            $('#SubmitButton').removeAttr('disabled'); //enable submit button
+        }
+    </script>
+</head>
+<body>
+    <div>
+        <form id="UploadForm" enctype="multipart/form-data" method="post" action="/Test/Html5UploadIE/">
+        <div>
+            <input type="file" name="files" id="file1" />
+            <br />
+            <br />
+            <input type="text" id="txtName" name="txtName" />
+            <br />
+            <br />
+            <select id="ddlItems" name="ddlItems">
+                <option value="1">Item1</option>
+                <option value="2">Item 2</option>
+                <option value="3">Item 3</option>
+                <option value="4">Item 4</option>
+                <option value="5">Item 5</option>
+            </select>
+            <br />
+            <br />
+            Option 1:
+            <input type="radio" id="option1" name="TestGroup" value="option1" />
+            Option 2:
+            <input type="radio" id="option2" name="TestGroup" value="option2" />
+            <br />
+            <br />
+            <input type="checkbox" id="chk1" name="chk1" value="CheckBox1" />
+            <br />
+            <br />
+            <input type="button" id="btnUploadFile" value="Upload File" />
+            <input type="submit" id="SubmitButton" value="Upload File IE" />
+        </div>
+        <br />
+        <div class="progress">
+            <div class="bar">
+            </div>
+            <div class="percent">
+                0%</div>
+        </div>
+        <progress max="100" value="0" id="progressBar1"></progress>
+        <div id="output">
+        </div>
+        <div id="divProgress" style="font-size: 20px; font-weight: bold; color: #FF0000;
+            display: none;">
+            <img id="loading" src="../../Images/Loading_1.gif" alt="Loading..." style="display: none;" />
+        </div>
+        </form>
+    </div>
+</body>
+</html>

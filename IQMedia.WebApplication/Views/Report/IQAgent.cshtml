@@ -1,0 +1,840 @@
+﻿@using IQMedia.Model;
+@using IQMedia.Shared.Utility;
+@model IQAgentReport_WithoutAuthentication
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>iQ media IQAgent Report</title>
+    @*<link href="../../Css/jquery-ui.css" rel="stylesheet" type="text/css" />*@
+    <link href="../../Css/Fonts.css" rel="stylesheet" type="text/css" />
+    <link href="../../Css/bootstrap.css" rel="stylesheet" type="text/css" />
+    <link href="../../Css/bootstrap-responsive.css" rel="stylesheet" type="text/css" />
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js?v=1.0"></script>
+    <![endif]-->
+    <script src="~/Scripts/jquery-1.9.1.min.js?v=1.0" type="text/javascript"></script>
+    <script src="~/Scripts/ConstantScript.js?v=1.32" type="text/javascript"></script>
+    <script src="~/Scripts/IQMediaCommon.js?v=2.6" type="text/javascript"></script>
+    <script src="~/Scripts/PlayerScript.js?v=1.1" type="text/javascript"></script>
+    <link href="~/Css/jquery.mCustomScrollbar.css?v=1.0" rel="stylesheet" type="text/css" />
+    <!-- Customizable CSS -->
+    <link href="~/css/feed.css?v=3.2" rel="stylesheet" type="text/css" />
+    @*<link href="~/css/MasterInner.css" rel="stylesheet" type="text/css" />*@
+    <script src="~/Scripts/jquery.mCustomScrollbar.concat.min.js?v=1.1" type="text/javascript"></script>
+    <style type="text/css">
+        body
+        {
+            padding-top: 40px;
+            font-family: 'Open Sans';
+        }
+        .mediatitlediv
+        {
+            line-height: 25px;
+            background-color: #EAEAEA;
+            font-weight: bold;
+            font-size: 15px;
+            border: 1px solid #A0A0A0;
+            vertical-align: middle;
+            padding-left: 10px;
+        }
+        .loadingdiv
+        {
+            top: 71px !important;
+        }
+    </style>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            if (screen.height >= 768) {
+                $('#divResults').css({ 'height': documentHeight - 250 });
+            }
+        });
+
+
+        $(window).resize(function () {
+            if (screen.height >= 768) {
+                $('#divResults').css({ 'height': documentHeight - 250 });
+            }
+        });
+        
+    </script>
+</head>
+<body id="mainBody">
+    @{
+        ActiveUser sessionInformation = IQMedia.WebApplication.Utility.ActiveUserMgr.GetActiveUser();
+    }
+    <div class="navbar navbar-inverse navbar-fixed-top" style="background-color: #fff;">
+        <!-- from desinger-->
+        <div class="container">
+        </div>
+        <!-- from desinger-->
+        <div class="navbar-inner navbar-custome">
+            <div class="container">
+                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span
+                    class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+                </a><a class="brand iqmedia-logo" href="#">
+                    <img src="~/images/iq-media.png?v=1.3" width="155" height="45" alt="IQ Media" /></a>
+                <div class="nav-collapse collapse">
+                </div>
+                <!--/.nav-collapse -->
+            </div>
+        </div>
+    </div>
+    <div class="container container_custom">
+        <div class="row-fluid" id="divRowFluid">
+            <div style="min-height: 500px; padding: 10px 25px 25px 25px;">
+                @if (Model != null && Model.MediaResults != null)
+                {
+                    try
+                    {
+                
+                    <div style="padding-bottom: 5px; border-bottom: solid 1px #dadada; font-size: 18px;">
+                        <div style="float: left; height: 100%; vertical-align: middle; margin-top: 25px;">@Model.ReportTitle</div>
+                        <div style="text-align: right; padding-top: 10px;">
+                            <br />
+                            <br />
+                            @*<input type="button" id="btnDownloadPDF" class="button" value="Download PDF" onclick="DownloadPDFIQAgentReport('@Model.ReportID');" />
+                            <input type="button" id="btnDownloadCSV" class="button" value="Download CSV" onclick="DownloadCSVIQAgentReport('@Model.ReportID');" />*@
+                        </div>
+                    </div>
+                    <div style="padding-top: 10px; text-align: center;">
+                        @if (string.IsNullOrEmpty(Model.CustomHeader))
+                        {
+                            <img src="~/Images/EmailNotificationBanner.png" alt="email notification banner" />
+                        }
+                        else
+                        {
+                            <img src="@System.Configuration.ConfigurationManager.AppSettings["UrlReportHeader"]@Model.ClientGuid/@Model.CustomHeader" alt="Client Banner" />
+                        }
+                    </div>
+                    <div id="divResults" style="padding: 25px; height: 475px; overflow: auto;">
+                        <div style="padding-right: 20px;">
+                            @{ var subMediaTypes = Model.MediaResults.Select(c => c.CategoryType).Distinct(); }
+                            @foreach (string type in subMediaTypes)
+                            {
+                                CommonFunctions.CategoryType categoryType = (CommonFunctions.CategoryType)Enum.Parse(typeof(CommonFunctions.CategoryType), type);
+
+                                <div id="divMedia_@categoryType" class="mediatitlediv">@IQMedia.Shared.Utility.CommonFunctions.GetEnumDescription(categoryType)</div>
+                            
+                                foreach (IQAgent_MediaResultsModel item in Model.MediaResults.Where(r => r.CategoryType == type))
+                                {
+
+                                    string Month = item.MediaDateTime != null ? item.MediaDateTime.ToString("MMM", System.Globalization.CultureInfo.InvariantCulture) : string.Empty;
+                                    string Day = item.MediaDateTime != null ? item.MediaDateTime.Day.ToString() : string.Empty;
+                                    string Time = item.MediaDateTime != null ? item.MediaDateTime.ToString("hh:mm tt") : string.Empty;
+
+                                    switch (categoryType)
+                                    {
+                                        case IQMedia.Shared.Utility.CommonFunctions.CategoryType.TV:
+
+                                            IQAgent_TVResultsModel TVModel = item.MediaData as IQAgent_TVResultsModel;
+                                            string RawMediaPlayerUrl = System.Configuration.ConfigurationManager.AppSettings["IQAgentReportRawMediaPlayerUrl"];
+                                            RawMediaPlayerUrl = string.Format(RawMediaPlayerUrl, TVModel.IQAgentResultUrl);
+                
+                                <div id="divMedia_@item.ID" class="media">
+                                    <div class="pull-left">
+                                        <div>
+                                            <div class="post-date">
+                                                <span class="month">@Month</span><div>
+                                                    <span class="today">@Day</span></div>
+                                                <span class="timeWithTimeZone">@Time @TVModel.TimeZone</span></div>
+                                            <div align="center" class="network">
+                                                <img src="~/images/MediaIcon/network-icon.png" alt="TV" /></div>
+                                        </div>
+                                    </div>
+                                    <div class="pull-left">
+                                        <div style="float: left">
+                                            <div class="minHeight32">
+                                                <img alt="" src="@TVModel.StationLogo" /></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="pull-left media-body maxWidth69p">
+                                            <span class="media-heading">@TVModel.Title120</span>
+                                            <div class="clearfix">
+                                            </div>
+                                            @if (!string.IsNullOrWhiteSpace(TVModel.Market))
+                                            {
+                                                <span style="color: #73797F;">@TVModel.Market - </span>}
+                                            @Html.Raw(TVModel.higlightedCC)
+                                        </div>
+                                        <div class="pull-right">
+                                            <div class="pull-left video-thumb width130">
+                                                <div class="positionRelative">
+                                                    @if (sessionInformation.IsLogIn && sessionInformation.ClientGUID != Guid.Empty)
+                                                    {
+                                                        <a class="cursorPointer" onclick="LoadPlayer('@item.ID');">
+                                                            @if (!string.IsNullOrWhiteSpace(TVModel.RawMediaThumbUrl))
+                                                            {
+                                                                <img src="@TVModel.RawMediaThumbUrl" class="maxwidth130" alt="play video" />
+                                                            }
+                                                            else
+                                                            {
+                                                                <img src="~/images/video.png" class="maxwidth130" alt="play video" />
+                                                            }
+                                                        </a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <a class="cursorPointer" href="@RawMediaPlayerUrl" target="_blank">
+                                                            @if (!string.IsNullOrWhiteSpace(TVModel.RawMediaThumbUrl))
+                                                            {
+                                                                <img src="@TVModel.RawMediaThumbUrl" class="maxwidth130" alt="play video" />
+                                                            }
+                                                            else
+                                                            {
+                                                                <img src="~/images/video.png" class="maxwidth130" alt="play video" />
+                                                            }
+                                                        </a>    
+                                                    }
+                                                </div>
+                                            </div>
+                                            <div class="pull-right">
+                                            </div>
+                                        </div>
+                                        <div class="clear borderdiv">
+                                            <div class="actionBarLeftDiv float-left marginleft62">
+                                                @if (TVModel.Nielsen_Audience > 0 && TVModel.IQAdShareValue > 0)
+                                                {
+                                                    <div class="TVvideo-tags margintop0 marginright35 marginleft62 actionBarsection">
+                                                        <div class="view" title="Audience">
+                                                            @( TVModel.Nielsen_Audience.HasValue ? string.Format("{0:n0}", TVModel.Nielsen_Audience) : string.Empty)
+                                                        </div>
+                                                    </div>
+                                                    <div class="TVvideo-tags margintop0  marginright35 marginleft62 actionBarsection">
+                                                        <div class="price">
+                                                            @(string.Format("{0:N2}", TVModel.IQAdShareValue))
+                                                            @( (TVModel.IQAdShareValue.HasValue ? (!string.IsNullOrWhiteSpace(TVModel.Nielsen_Result) ? "(" + TVModel.Nielsen_Result.ToUpper() + ")" : string.Empty) : string.Empty))
+                                                        </div>
+                                                    </div>
+                                                }
+                                                <div id="divSentimentTV_@item.ID" class="margintop2 lineHeight15 pull-left actionBarsection">
+                                                    <div class="float-right sentimentLeftFloat actionBarsection" title="Sentiment">
+                                                        <div class="float-left">
+                                                            <img src="/Images/thumbs-up.png" style="width: 13px; margin-top: -4px;" /><img src="/Images/thumbs-down.png"
+                                                                style="width: 13px; margin-top: 3px;" />&nbsp;</div>
+                                                        <div class="divSentimentMain sentimentFont">
+                                                            <div class="divSentimentMain">
+                                                                <div class="divSentimentNeg">
+                                                                    <div style='width:@((item.NegativeSentiment * 6) > 25 ? 25 : (item.NegativeSentiment * 6))px;'>
+                                                                        @item.NegativeSentiment
+                                                                    </div>
+                                                                </div>
+                                                                <div class="divSentimentPos">
+                                                                    <div style='width:@((item.PositiveSentiment * 6) > 25 ? 25 : (item.PositiveSentiment * 6))px;'>
+                                                                        @item.PositiveSentiment
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                                                   break;
+
+                                        case IQMedia.Shared.Utility.CommonFunctions.CategoryType.TW:
+
+                                                                   IQAgent_TwitterResultsModel twitterModel = item.MediaData as IQAgent_TwitterResultsModel;
+                        
+                                <div id="divMedia_@item.ID" class="media">
+                                    <div class="pull-left">
+                                        <div class="post-date">
+                                            <span class="month">@Month</span><div>
+                                                <span class="today">@Day</span></div>
+                                            <span class="timeWithTimeZone">@Time @(sessionInformation.IsLogIn ? sessionInformation.TimeZone : string.Empty)</span></div>
+                                        <div align="center" class="network">
+                                            <img src="~/images/MediaIcon/twitter.png" alt="twitter" />
+                                        </div>
+                                    </div>
+                                    <div class="pull-left TweetBodyDivIQP borderBoxSizing">
+                                        <div class="pull-left TweetActorDisplayName">
+                                            <a id="aActorLink_" target="_blank"><span id="lblDisplayName_@item.ID">@twitterModel.Actor_DisplayName</span>
+                                            </a>&nbsp;<span class="TweetSubdivFont">@@</span><span id="lblPrefferedUserName_@item.ID" class="TweetSubdivFont">@twitterModel.Actor_PreferredName</span><br />
+                                        </div>
+                                        <div class="clear PaddingTopBottom1p TweetBodyText">
+                                            <div class="">
+                                                <span id="lblTweetBody_@item.ID">@Html.Raw(twitterModel.Summary)</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="pull-right">
+                                        <div class="pull-left">
+                                            @if (IQMedia.Shared.Utility.CommonFunctions.Validate_url(twitterModel.Actor_Image))
+                                            {
+                                                <img id="imgActor_@item.ID" src="@twitterModel.Actor_Image" alt="actor image" class="borderWidth0 maxWidth48" /><br />
+                                            }
+                                        </div>
+                                    </div>
+                                    <div class="clear borderdiv">
+                                        <div class="actionBarLeftDiv float-left marginleft62">
+                                            <div class="pull-left marginright35 actionBarsection">
+                                                <div class="klout" title="Klout Score">@( string.Format("{0:n0}", twitterModel.KlOutScore))</div>
+                                            </div>
+                                            <div class="pull-left marginright35 actionBarsection">
+                                                <div class="followers" title="Followers">@( string.Format("{0:n0}", twitterModel.Actor_FollowersCount))</div>
+                                            </div>
+                                            <div class="pull-left actionBarsection">
+                                                <div class="following" title="Following">@( string.Format("{0:n0}", twitterModel.Actor_FriendsCount))</div>
+                                            </div>
+                                            <div id="divSentimentTW_@item.ID" class="margintop2 lineHeight15 pull-left actionBarsection">
+                                                <div class="float-right sentimentLeftFloat actionBarsection" title="Sentiment">
+                                                    <div class="float-left">
+                                                        <img src="/Images/thumbs-up.png" style="width: 13px; margin-top: -4px;" /><img src="/Images/thumbs-down.png"
+                                                            style="width: 13px; margin-top: 3px;" />&nbsp;</div>
+                                                    <div class="divSentimentMain sentimentFont">
+                                                        <div class="divSentimentMain">
+                                                            <div class="divSentimentNeg">
+                                                                <div style='width:@((item.NegativeSentiment * 6) > 25 ? 25 : (item.NegativeSentiment * 6))px;'>
+                                                                    @item.NegativeSentiment
+                                                                </div>
+                                                            </div>
+                                                            <div class="divSentimentPos">
+                                                                <div style='width:@((item.PositiveSentiment * 6) > 25 ? 25 : (item.PositiveSentiment * 6))px;'>
+                                                                    @item.PositiveSentiment
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="pull-right marginright35 margintop-3">
+                                        </div>
+                                    </div>
+                                </div>
+                                                               break;
+
+
+                                        case IQMedia.Shared.Utility.CommonFunctions.CategoryType.NM:
+
+                                                               IQAgent_NewsResultsModel newsMediaModel = item.MediaData as IQAgent_NewsResultsModel;
+                        
+                                <div id="divMedia_@item.ID" class="media">
+                                    <div class="pull-left">
+                                        <div class="post-date">
+                                            <span class="month">@Month</span><div>
+                                                <span class="today">@Day</span></div>
+                                            <span class="timeWithTimeZone">@Time @(sessionInformation.IsLogIn ? sessionInformation.TimeZone : string.Empty)</span></div>
+                                        <div align="center" class="network">
+                                            <img src="~/images/MediaIcon/News.png" alt="news" /></div>
+                                    </div>
+                                    <div class="pull-left maxWidth85">
+                                        <div>
+                                            <span class="media-heading"><a href="@(newsMediaModel.IQLicense > 0 ? Url.Action("Index", "Article", new { au = IQMedia.Shared.Utility.CommonFunctions.EncryptLicenseStringAES(sessionInformation.CustomerKey + "¶IQAgent Report¶" + newsMediaModel.Url + "&u1=cliq40&u2=" + sessionInformation.ClientID + "¶" + newsMediaModel.IQLicense) }) : newsMediaModel.Url)"
+                                                target="_blank">@newsMediaModel.Title</a></span>
+                                        </div>
+                                        <div class="newsMediadiv">
+                                            @if (!string.IsNullOrWhiteSpace(newsMediaModel.Publication))
+                                            {
+                                                <span style="color: #73797F;">@newsMediaModel.Publication - </span>
+                                            }@Html.Raw(newsMediaModel.HighlightingText)
+                                        </div>
+                                    </div>
+                                    <div class="pull-right">
+                                    </div>
+                                    <div class="clear borderdiv">
+                                        <div class="actionBarLeftDiv float-left marginleft62">
+                                            @if (Decimal.Compare(Convert.ToDecimal(newsMediaModel.IQAdShareValue), -1M) != 0 && newsMediaModel.Compete_Audience != -1)
+                                            {
+                                                <div class="video-tags margintop0 marginright35 actionBarsection">
+                                                    <div class="view" title="Audience">
+                                                        @if (newsMediaModel.Compete_Audience.HasValue)
+                                                        {
+                                                            @(string.Format("{0:n0}", newsMediaModel.Compete_Audience))
+                                                       
+                                                        }
+                                                        else
+                                                        {
+                                                            @("NA")
+                                                        }
+                                                        @if (!string.IsNullOrWhiteSpace(newsMediaModel.Compete_Result) && newsMediaModel.Compete_Result.ToUpper() == "A")
+                                                        {
+                                                            <img title="Powered by Compete" style="width: 14px" src="~/Images/compete.png" alt="Compete Image" />
+                                                        }
+                                                    </div>
+                                                </div>
+                                            
+                                                <div class="video-tags margintop0 marginright35 actionBarsection">
+                                                    <div class="price">
+                                                        @if (newsMediaModel.IQAdShareValue.HasValue)
+                                                        {
+                                                            @(string.Format("{0:N2}", newsMediaModel.IQAdShareValue))
+                                                        }
+                                                        else
+                                                        {
+                                                            @("NA")
+                                                        }
+                                                    </div>
+                                                </div>
+                        
+                        
+                                            }
+                                            <div id="divSentimentNM_@item.ID" class="margintop2 lineHeight15 pull-left actionBarsection">
+                                                <div class="float-right sentimentLeftFloat actionBarsection" title="Sentiment">
+                                                    <div class="float-left">
+                                                        <img src="/Images/thumbs-up.png" style="width: 13px; margin-top: -4px;" /><img src="/Images/thumbs-down.png"
+                                                            style="width: 13px; margin-top: 3px;" />&nbsp;</div>
+                                                    <div class="divSentimentMain sentimentFont">
+                                                        <div class="divSentimentMain">
+                                                            <div class="divSentimentNeg">
+                                                                <div style='width:@((item.NegativeSentiment * 6) > 25 ? 25 : (item.NegativeSentiment * 6))px;'>
+                                                                    @item.NegativeSentiment
+                                                                </div>
+                                                            </div>
+                                                            <div class="divSentimentPos">
+                                                                <div style='width:@((item.PositiveSentiment * 6) > 25 ? 25 : (item.PositiveSentiment * 6))px;'>
+                                                                    @item.PositiveSentiment
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="marginright35 pull-right minWidth52IE8">
+                                            <div class="margintop-3">
+                                                <a id="lnkSaveNM_@item.ID" target="_blank" href="@(newsMediaModel.IQLicense > 0 ? Url.Action("Index", "Article", new { au = IQMedia.Shared.Utility.CommonFunctions.EncryptLicenseStringAES(sessionInformation.CustomerKey + "¶IQAgent Report¶" + newsMediaModel.Url + "&u1=cliq40&u2=" + sessionInformation.ClientID + "¶" + newsMediaModel.IQLicense) }) : newsMediaModel.Url)" class="paddinLeft20 fleft">
+                                                    <img title="View Article" alt="View" src="~/images/viewArticle.png" />
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+            
+                                                                                             break;
+
+
+                                        case IQMedia.Shared.Utility.CommonFunctions.CategoryType.SocialMedia:
+
+                                                                                             IQAgent_SMResultsModel socialMediaModel = item.MediaData as IQAgent_SMResultsModel;
+                        
+                                <div id="divMedia_@item.ID" class="media">
+                                    <div class="pull-left">
+                                        <div class="post-date">
+                                            <span class="month">@Month</span><div>
+                                                <span class="today">@Day</span></div>
+                                            <span class="timeWithTimeZone">@Time @(sessionInformation.IsLogIn ? sessionInformation.TimeZone : string.Empty)</span></div>
+                                        <div align="center" class="network">
+                                            <img src="~/images/MediaIcon/social-media.png" alt="social media" /></div>
+                                    </div>
+                                    <div class="pull-left maxWidth85">
+                                        <div>
+                                            <span class="media-heading"><a href="@socialMediaModel.Link"
+                                                target="_blank">@socialMediaModel.Description</a></span>
+                                        </div>
+                                        <div class="newsMediadiv">
+                                            @if (!string.IsNullOrWhiteSpace(socialMediaModel.HomeLink))
+                                            {
+                                                <span style="color: #73797F;">@socialMediaModel.HomeLink - </span>
+                                            }@Html.Raw(socialMediaModel.HighlightingText)
+                                        </div>
+                                    </div>
+                                    <div class="pull-right">
+                                    </div>
+                                    <div class="clear borderdiv">
+                                        <div class="actionBarLeftDiv float-left marginleft62">
+                                            <div id="divSentimentTV_@item.ID" class="margintop2 lineHeight15 pull-left marginright35 actionBarsection">
+                                                <div class="float-right sentimentLeftFloat actionBarsection" title="Sentiment">
+                                                    <div class="float-left">
+                                                        <img src="/Images/thumbs-up.png" style="width: 13px; margin-top: -4px;" /><img src="/Images/thumbs-down.png"
+                                                            style="width: 13px; margin-top: 3px;" />&nbsp;</div>
+                                                    <div class="divSentimentMain sentimentFont">
+                                                        <div class="divSentimentMain">
+                                                            <div class="divSentimentNeg">
+                                                                <div style='width:@((item.NegativeSentiment * 6) > 25 ? 25 : (item.NegativeSentiment * 6))px;'>
+                                                                    @item.NegativeSentiment
+                                                                </div>
+                                                            </div>
+                                                            <div class="divSentimentPos">
+                                                                <div style='width:@((item.PositiveSentiment * 6) > 25 ? 25 : (item.PositiveSentiment * 6))px;'>
+                                                                    @item.PositiveSentiment
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="marginright35 pull-right minWidth52IE8">
+                                            <div class="margintop-3">
+                                                <a id="lnkSaveSM_@item.ID" target="_blank" href="@socialMediaModel.Link" class="paddinLeft20 fleft">
+                                                    <img title="View Article" alt="View" src="~/images/viewArticle.png" />
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                                                                            break;
+                                        case IQMedia.Shared.Utility.CommonFunctions.CategoryType.Forum:
+
+                                                                                            IQAgent_SMResultsModel forumModel = item.MediaData as IQAgent_SMResultsModel;
+                        
+                                <div id="divMedia_@item.ID" class="media">
+                                    <div class="pull-left">
+                                        <div class="post-date">
+                                            <span class="month">@Month</span><div>
+                                                <span class="today">@Day</span></div>
+                                            <span class="timeWithTimeZone">@Time @(sessionInformation.IsLogIn ? sessionInformation.TimeZone : string.Empty)</span></div>
+                                        <div align="center" class="network">
+                                            <img src="~/images/MediaIcon/forum.png" alt="forum" /></div>
+                                    </div>
+                                    <div class="pull-left maxWidth85">
+                                        <div>
+                                            <span class="media-heading"><a href="@forumModel.Link"
+                                                target="_blank">@forumModel.Description</a></span>
+                                        </div>
+                                        <div class="newsMediadiv">
+                                            @if (!string.IsNullOrWhiteSpace(forumModel.HomeLink))
+                                            {
+                                                <span style="color: #73797F;">@forumModel.HomeLink - </span>
+                                            }@Html.Raw(forumModel.HighlightingText)
+                                        </div>
+                                    </div>
+                                    <div class="pull-right">
+                                    </div>
+                                    <div class="clear borderdiv">
+                                        <div class="actionBarLeftDiv float-left marginleft62">
+                                            <div id="divSentimentTV_@item.ID" class="margintop2 lineHeight15 pull-left marginright35 actionBarsection">
+                                                <div class="float-right sentimentLeftFloat actionBarsection" title="Sentiment">
+                                                    <div class="float-left">
+                                                        <img src="/Images/thumbs-up.png" style="width: 13px; margin-top: -4px;" /><img src="/Images/thumbs-down.png"
+                                                            style="width: 13px; margin-top: 3px;" />&nbsp;</div>
+                                                    <div class="divSentimentMain sentimentFont">
+                                                        <div class="divSentimentMain">
+                                                            <div class="divSentimentNeg">
+                                                                <div style='width:@((item.NegativeSentiment * 6) > 25 ? 25 : (item.NegativeSentiment * 6))px;'>
+                                                                    @item.NegativeSentiment
+                                                                </div>
+                                                            </div>
+                                                            <div class="divSentimentPos">
+                                                                <div style='width:@((item.PositiveSentiment * 6) > 25 ? 25 : (item.PositiveSentiment * 6))px;'>
+                                                                    @item.PositiveSentiment
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="marginright35 pull-right minWidth52IE8">
+                                            <div class="margintop-3">
+                                                <a id="lnkSaveForum_@item.ID" target="_blank" href="@forumModel.Link" class="paddinLeft20 fleft">
+                                                    <img title="View Article" alt="View" src="~/images/viewArticle.png" />
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                                                                               break;
+
+                                        case IQMedia.Shared.Utility.CommonFunctions.CategoryType.Blog:
+
+                                                                                               IQAgent_SMResultsModel blogModel = item.MediaData as IQAgent_SMResultsModel;
+                        
+                                <div id="divMedia_@item.ID" class="media">
+                                    <div class="pull-left">
+                                        <div class="post-date">
+                                            <span class="month">@Month</span><div>
+                                                <span class="today">@Day</span></div>
+                                            <span class="timeWithTimeZone">@Time @(sessionInformation.IsLogIn ? sessionInformation.TimeZone : string.Empty)</span></div>
+                                        <div align="center" class="network">
+                                            <img src="~/images/MediaIcon/blog.png" alt="blog" /></div>
+                                    </div>
+                                    <div class="pull-left maxWidth85">
+                                        <div>
+                                            <span class="media-heading"><a href="@blogModel.Link"
+                                                target="_blank">@blogModel.Description</a></span>
+                                        </div>
+                                        <div class="newsMediadiv">
+                                            @if (!string.IsNullOrWhiteSpace(blogModel.HomeLink))
+                                            {
+                                                <span style="color: #73797F;">@blogModel.HomeLink - </span>
+                                            }@Html.Raw(blogModel.HighlightingText)
+                                        </div>
+                                    </div>
+                                    <div class="pull-right">
+                                    </div>
+                                    <div class="clear borderdiv">
+                                        <div class="actionBarLeftDiv float-left marginleft62">
+                                            @if (Decimal.Compare(Convert.ToDecimal(blogModel.IQAdShareValue), -1M) != 0 && blogModel.Compete_Audience != -1)
+                                            {
+                                                <div class="video-tags margintop0 marginright35 actionBarsection">
+                                                    <div class="view" title="Audience">
+                                                        @if (blogModel.Compete_Audience.HasValue)
+                                                        {
+                                                            @(string.Format("{0:n0}", blogModel.Compete_Audience))
+                                                        }
+                                                        else
+                                                        {
+                                                            @("NA")
+                                                        }
+                                                        @if (!string.IsNullOrWhiteSpace(blogModel.Compete_Result) && blogModel.Compete_Result.ToUpper() == "A")
+                                                        {
+                                                            <img title="Powered by Compete" style="width: 14px" src="~/Images/compete.png" alt="Compete Image" />
+                                                        }
+                                                    </div>
+                                                </div>
+                                                <div class="video-tags margintop0 marginright35 actionBarsection">
+                                                    <div class="price">
+                                                        @if (blogModel.IQAdShareValue.HasValue)
+                                                        {
+                                                            @(string.Format("{0:N2}", blogModel.IQAdShareValue))
+                                                        }
+                                                        else
+                                                        {
+                                                            @("NA")
+                                                        }
+                                                    </div>
+                                                </div>
+                                            }
+                                            <div id="divSentimentTV_@item.ID" class="margintop2 lineHeight15 pull-left actionBarsection">
+                                                <div class="float-right sentimentLeftFloat actionBarsection" title="Sentiment">
+                                                    <div class="float-left">
+                                                        <img src="/Images/thumbs-up.png" style="width: 13px; margin-top: -4px;" /><img src="/Images/thumbs-down.png"
+                                                            style="width: 13px; margin-top: 3px;" />&nbsp;</div>
+                                                    <div class="divSentimentMain sentimentFont">
+                                                        <div class="divSentimentMain">
+                                                            <div class="divSentimentNeg">
+                                                                <div style='width:@((item.NegativeSentiment * 6) > 25 ? 25 : (item.NegativeSentiment * 6))px;'>
+                                                                    @item.NegativeSentiment
+                                                                </div>
+                                                            </div>
+                                                            <div class="divSentimentPos">
+                                                                <div style='width:@((item.PositiveSentiment * 6) > 25 ? 25 : (item.PositiveSentiment * 6))px;'>
+                                                                    @item.PositiveSentiment
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="marginright35 pull-right minWidth52IE8">
+                                            <div class="margintop-3">
+                                                <a id="lnkSaveBlog_@item.ID" target="_blank" href="@blogModel.Link" class="paddinLeft20 fleft">
+                                                    <img title="View Article" alt="View" src="~/images/viewArticle.png" />
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                                                                              break;
+                                        case IQMedia.Shared.Utility.CommonFunctions.CategoryType.Radio:
+
+                                                                                              IQAgent_TVEyesResultsModel tvEyesModel = item.MediaData as IQAgent_TVEyesResultsModel;
+                                <div id="divMedia_@item.ID" class="media">
+                                    <div class="pull-left">
+                                        <div class="post-date">
+                                            <span class="month">@Month</span><div>
+                                                <span class="today">@Day</span></div>
+                                            <span class="timeWithTimeZone">@Time @(sessionInformation.IsLogIn ? sessionInformation.TimeZone : string.Empty)</span></div>
+                                        <div align="center" class="network">
+                                            <img src="~/images/MediaIcon/radio.png" alt="radio" /></div>
+                                    </div>
+                                    <div class="pull-left maxWidth85">
+                                        <div>
+                                            <span class="media-heading">@tvEyesModel.Title</span>
+                                        </div>
+                                        <div class="newsMediadiv">
+                                            @if (!string.IsNullOrWhiteSpace(tvEyesModel.Market))
+                                            {
+                                                <span style="color: #73797F;">@tvEyesModel.Market - </span>}@Html.Raw(tvEyesModel.HighlightingText)
+                                        </div>
+                                    </div>
+                                    <div class="clear borderdiv">
+                                        <div class="actionBarLeftDiv float-left marginleft62">
+                                            <div id="divSentimentTM_@item.ID" class="margintop2 marginright35 lineHeight15 pull-left actionBarsection">
+                                                <div class="float-right sentimentLeftFloat actionBarsection" title="Sentiment">
+                                                    <div class="float-left">
+                                                        <img src="/Images/thumbs-up.png" style="width: 13px; margin-top: -4px;" /><img src="/Images/thumbs-down.png"
+                                                            style="width: 13px; margin-top: 3px;" />&nbsp;</div>
+                                                    <div class="divSentimentMain sentimentFont">
+                                                        <div class="divSentimentMain">
+                                                            <div class="divSentimentNeg">
+                                                                <div style='width:@((item.NegativeSentiment * 6) > 25 ? 25 : (item.NegativeSentiment * 6))px;'>
+                                                                    @item.NegativeSentiment
+                                                                </div>
+                                                            </div>
+                                                            <div class="divSentimentPos">
+                                                                <div style='width:@((item.PositiveSentiment * 6) > 25 ? 25 : (item.PositiveSentiment * 6))px;'>
+                                                                    @item.PositiveSentiment
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            @if (!string.IsNullOrEmpty(tvEyesModel.DMARank))
+                                            {
+                                                <div class="TVvideo-tags margintop0 marginright35 actionBarsection">
+                                                    Market Rank:&nbsp;<span>@tvEyesModel.DMARank</span>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                            break;
+                                        case IQMedia.Shared.Utility.CommonFunctions.CategoryType.PM:
+                                            IQAgent_BLPMResultsModel iQAgent_BLPMResultsModel = (IQAgent_BLPMResultsModel)item.MediaData;
+                                            string PMBasePath = Convert.ToString(System.Configuration.ConfigurationManager.AppSettings["IQArchieve_PMBaseUrl"]);
+                                <div class="media" id="divMedia_@item.ID">
+                                    <div class="pull-left">
+                                        <div class="post-date">
+                                            <span class="month">@item.MediaDateTime.ToString("MMM", System.Globalization.CultureInfo.InvariantCulture)</span>
+                                            <div>
+                                                <span class="today">@item.MediaDateTime.Day</span>
+                                            </div>
+                                            <span class="timeWithTimeZone">@item.MediaDateTime.ToString("hh:mm tt") @(sessionInformation.IsLogIn ? sessionInformation.TimeZone : string.Empty)</span>
+                                        </div>
+                                        <div class="network" align="center">
+                                            <img src="/images/MediaIcon/print-media.png" /></div>
+                                    </div>
+                                    <div class="pull-left maxWidth83">
+                                        <div>
+                                            <span class="media-heading"><a target="_blank" href="@(PMBasePath + iQAgent_BLPMResultsModel.FileLocation.Replace(@"\", @"/"))">@Html.Raw(iQAgent_BLPMResultsModel.Title)</a>
+                                            </span>
+                                        </div>
+                                        <div class="newsMediadiv">
+                                            @if (!string.IsNullOrWhiteSpace(iQAgent_BLPMResultsModel.Pub_Name))
+                                            {
+                                                <span style="color: #73797F;">@iQAgent_BLPMResultsModel.Pub_Name
+                                                    - </span>
+                                            }
+                                            @Html.Raw(iQAgent_BLPMResultsModel.HighlightingText.Length > 300 ? iQAgent_BLPMResultsModel.HighlightingText.Substring(0, 300) : iQAgent_BLPMResultsModel.HighlightingText)
+                                        </div>
+                                    </div>
+                                    <div class="clear borderdiv">
+                                        <div class="pull-left marginleft62 ">
+                                            &nbsp;</div>
+                                        <div class="pull-left">
+                                            Circulation:&nbsp;<span>@(string.Format("{0:n0}", iQAgent_BLPMResultsModel.Circulation))</span>
+                                        </div>
+                                        <div class="marginRight10 pull-right minWidth52IE8">
+                                            <div class="margintop-3">
+                                                
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                                                                               break;
+                                    }
+                                }
+                                <br />
+                            }
+                        </div>
+                    </div>
+
+                    }
+                    catch (Exception exception)
+                    {
+                        IQMedia.WebApplication.Utility.CommonFunctions.WriteException(exception);
+                    <div style="color: #ff0000; padding: 25px;">
+                        An error occurred, please try again
+                    </div>
+                    }
+                }
+                else
+                {
+                    <div style="color: #ff0000; padding: 25px;">
+                        @if (ViewBag.IsInvalidID)
+                        {
+                            <text> Invalid/Missing ID </text>
+                        }
+                        @if (ViewBag.IsError)
+                        {
+                            <text> An error occurred, please try again </text>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    @Html.Partial("~/Views/Shared/_Footer.cshtml")
+</body>
+<!-- Le javascript
+    ================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="~/Scripts/Bootstrap/bootstrap-modal.js?v=1.0" type="text/javascript"></script>
+<script language="javascript" type="text/javascript">
+
+    function ShowLoading() {
+        var loadingHTML = '<div id="divLoading" class="loadingdiv"><span>Loading<img src=\'../images/1.gif\' /></span></div>';
+        $(document.body).append(loadingHTML);
+        $("#divLoading").fadeIn(500);
+    }
+    function HideLoading() {
+        $("#divLoading").remove();
+    }
+    function EnableDisableButton(status) {
+        if (status) {
+            $("#btnDownloadPDF").removeAttr("disabled");
+            $("#btnDownloadCSV").removeAttr("disabled");
+        }
+        else {
+            $("#btnDownloadPDF").prop("disabled", "disabled");
+            $("#btnDownloadCSV").prop("disabled", "disabled");
+        }
+    }
+
+
+    function DownloadPDFIQAgentReport(reportguid) {
+
+        var jsonPostData = { p_ReportGuid: reportguid }
+
+        EnableDisableButton(false);
+        $.ajax({
+            url: "/Report/GenerateReportPDF/",
+            contentType: "application/json; charset=utf-8",
+            type: "post",
+            dataType: "json",
+            data: JSON.stringify(jsonPostData),
+            success: function (result) {
+                if (result.isSuccess) {
+                    window.location = "/Report/DownloadPDFFile/";
+                }
+                else {
+                    ShowNotification("Some error occurred while downloading file. Try again later");
+                }
+                EnableDisableButton(true);
+            },
+            error: function (a, b, c) {
+                EnableDisableButton(true);
+                ShowNotification("Some error occurred while processing request...");
+            }
+        });
+    }
+
+    function DownloadCSVIQAgentReport(reportguid) {
+
+        var jsonPostData = { p_ReportGuid: reportguid }
+        EnableDisableButton(false);
+        $.ajax({
+            url: "/Report/GenerateReportCSV/",
+            contentType: "application/json; charset=utf-8",
+            type: "post",
+            dataType: "json",
+            data: JSON.stringify(jsonPostData),
+            success: function (result) {
+                EnableDisableButton(true);
+                if (result.isSuccess) {
+                    window.location = "/Report/DownloadCSVFile/";
+                }
+                else {
+                    ShowNotification("Some error occurred while downloading file. Try again later");
+                }
+            },
+            error: function (a, b, c) {
+                EnableDisableButton(true);
+                ShowNotification("Some error occurred while processing request...");
+            }
+        });
+    }
+</script>
+</html>

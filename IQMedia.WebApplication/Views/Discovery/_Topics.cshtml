@@ -1,0 +1,26 @@
+﻿@using IQMedia.Model;
+@model Dictionary<string, object>
+@if (Model != null)
+{
+    string index = Convert.ToString(Model["Index"]);
+
+    Dictionary<string, string> mediaTypes = (Dictionary<string, string>)Model["MediaTypes"];
+    if (mediaTypes.Count > 0)
+    {                        
+        <div style="font-size:13px; margin-top:10px; margin-bottom:-7px; text-align:center;">         
+            <label for="ddlTopicsMedium_@index" style="font-weight:bold;">
+                Medium
+                <select id="ddlTopicsMedium_@index" onchange="GetTopics(this, @index, false)" style="padding:0px 6px; height:25px;">                
+                    @foreach (KeyValuePair<string, string> mediaType in mediaTypes)
+                    {
+                        <option value="@mediaType.Key">@mediaType.Value</option>
+                    }
+                </select>
+                <!-- Displays the selected medium on export -->
+                <span id="spnTopicsMedium_@index" class="displayNone"></span>
+            </label>
+        </div>  
+    }
+    
+    <div id="divTopicsChart_@index"></div>
+}

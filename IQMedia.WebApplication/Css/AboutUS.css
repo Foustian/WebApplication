@@ -1,0 +1,113 @@
+﻿.hiring
+{
+    background: url(../Images/home_new/aboutus/hiring.png) no-repeat;
+    background-size: 100% auto;
+    padding-top: 80px;
+    padding-bottom: 60px;
+}
+
+.hiring h1
+{
+    font-size: 50px;
+    text-align: center;
+    margin: 0px;
+}
+
+.hiring h1 a
+{
+    color: inherit;
+    outline: none;
+}
+
+.a-arrow
+{
+    border-width:11px;
+    border-bottom-color: rgba(0, 0, 0, 0.25) !important;
+    border-top-width: 0;    
+    margin-left: -11px;
+    top: -11px;
+}
+
+.a-arrow, .a-arrow::after
+{
+    border-color: transparent;
+    border-style: solid;
+    display: block;
+    height: 0;
+    position: absolute;
+    width: 0;
+}
+
+.a-arrow::after
+{
+    border-width: 10px;
+    border-bottom-color: #fff;
+    border-top-width: 0;
+    content: " ";
+    margin-left: -10px;
+    top: 1px;
+}
+
+.a-story
+{
+    color: #ffffff;
+    left: 0;
+    margin: 0px 15px;
+    padding: 15px 15px;
+    position: absolute;
+    text-align: justify;
+    top: 0;    
+    background:rgba(77,77,77,0.7);
+    font-size:13px;
+    height:100%;
+    display:none;
+    z-index:10;
+    cursor:pointer;
+}
+
+.a-story h3
+{
+    font-size:16px;
+    margin:0;    
+}
+
+#divDetail
+{
+    padding: 15px;
+    text-align: left;
+}
+
+#divDetailHover
+{
+    padding: 15px;
+    text-align: left;
+}
+
+.a-content h2
+{
+    margin-left: 20px;
+    color:#598ea2;
+    font-size:25px !important;
+}
+
+.a-content h3
+{
+    margin-left: 40px;
+    margin-top: 0px;
+    color: #D6D6D6;
+    font-size:20px;
+}
+
+.a-content p
+{
+    margin-left:40px;
+    margin-right:40px;
+    font-size:15px;
+}
+
+.a-story-main img
+{
+    cursor:pointer;    
+}
+
+.team img{cursor:pointer;}

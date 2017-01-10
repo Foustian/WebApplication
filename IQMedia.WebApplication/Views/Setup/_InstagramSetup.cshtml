@@ -1,0 +1,30 @@
+﻿<script>
+    var authWindow;
+    var redirectUrl;
+
+    function GetAuthCode() {
+        var instagramClientID = '@(Model["ClientID"])';
+        var clientGuid = '@(IQMedia.WebApplication.Utility.ActiveUserMgr.GetActiveUser().ClientGUID)';
+        redirectUrl = '@(System.Configuration.ConfigurationManager.AppSettings["InstagramAuthenticationRedirect"])';
+
+        // Redirect uri must exactly match the one used to obtain the access token, including query string parameters and case
+        authWindow = window.open('https://instagram.com/oauth/authorize/?client_id=' + instagramClientID + '&response_type=code&scope=basic+public_content+follower_list+likes+comments&redirect_uri=' + redirectUrl + clientGuid.toLowerCase());
+
+        $("#divNoAccess").hide();
+        $("#divCheckBack").show();
+    }
+</script>
+
+<div style="text-align:center; padding-top:150px;">
+    <div id="divNoAccess" style="@(Model["HasAccess"] ? "display:none" : "")">
+        <input type="button" class="button" value="Authenticate with Instagram" onclick="GetAuthCode();" />
+        <div style="font-weight:bold; font-size:11pt;">Click here to grant iQ Media access to your Instagram data</div>
+    </div>
+    <div id="divCheckBack" style="display:none; font-weight:bold;">
+        <div style="font-size:12pt;">Authentication is in progress. Please check back in a few minutes.</div>
+        <div style="font-size:10pt;">May need to refresh the page.</div>
+    </div>
+    <div id="divHasAccess" style="@(!Model["HasAccess"] ? "display:none;" : "")">
+        <span style="font-weight:bold; font-size:12pt;">Instagram access has been granted.</span>
+    </div>
+</div>

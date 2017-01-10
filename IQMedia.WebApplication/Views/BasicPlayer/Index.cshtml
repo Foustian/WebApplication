@@ -1,0 +1,831 @@
+﻿@model IQMedia.Model.IQAgentReport_RawMediaPlayer
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>iQ media Basic RawMedia Player</title>@*<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" />*@
+    <link href="../../Css/jquery-ui.css" rel="stylesheet" type="text/css" />
+    <link href="../../Css/bootstrap.css" rel="stylesheet" type="text/css" />
+    <link href="../../Css/bootstrap-responsive.css" rel="stylesheet" type="text/css" />
+    <link href="../../Css/feed.css?v=3.2" rel="stylesheet" type="text/css" />
+    <link href="../../Css/Fonts.css" rel="stylesheet" type="text/css" />
+    @*<link href="../../Css/bootstrap-responsive.css" rel="stylesheet" type="text/css" />*@
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js?v=1.0"></script>
+    <![endif]-->
+    <script src="@Url.Content("~/Scripts/jquery-1.9.1.min.js?v=1.0")" type="text/javascript"></script>
+   
+    <link href="~/css/jquery.mCustomScrollbar.css?v=1.0" rel="stylesheet" type="text/css" />
+    <!-- Customizable CSS -->
+    <link href="~/css/feed.css?v=3.2" rel="stylesheet" type="text/css" />
+    <link href="~/css/MasterInner.css" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+        body
+        {
+            font-family: 'Open Sans';
+            padding-top: 40px;
+        }
+        
+        
+        #divPlayer_CaptionContent
+        {
+            cursor: pointer;
+            font-family: 'Open Sans';
+            font-size: 13px;
+            margin-bottom: 5px;
+            width: 100%;
+        }
+        
+        .currentTime
+        {
+            float: left;
+            width: 40px;
+            text-align: left;
+        }
+        
+        .totalTime
+        {
+            float: right;
+            width: 40px;
+            text-align: right;
+        }
+        
+        .timerMain
+        {
+            float: left;
+            background-color: gray;
+            width: 465px;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        #divTimer
+        {
+            float: left;
+            background-color: red;
+            overflow: hidden;
+        }
+        
+        .handle
+        {
+            width: 1px;
+            height: 25px;
+            position: absolute;
+            background-color: #0000FF;
+            cursor: pointer;
+            top: -5px;
+        }
+        
+        #slider
+        {
+            border-width: 1px;
+            border-style: solid;
+            border-color: #333 #333 #777 #333;
+            border-radius: 25px;
+            width: 100px;
+            height: 13px;
+            background-color: #8e8d8d;
+            box-shadow: inset 0 1px 5px 0px rgba(0, 0, 0, .5), 0 1px 0 0px rgba(250, 250, 250, .5);
+            left: 20px;
+            float: left;
+        }
+        
+        .tooltipSlider
+        {
+            position: absolute;
+            display: block;
+            top: -20px;
+            width: 35px;
+            height: 20px;
+            color: #fff;
+            text-align: center;
+            font: 10pt Tahoma, Arial, sans-serif;
+            border-radius: 3px;
+            border: 1px solid #333;
+            box-shadow: 1px 1px 2px 0px rgba(0, 0, 0, .3);
+            box-sizing: border-box;
+            background: #444;
+        }
+        
+        .volume
+        {
+            display: inline-block;
+            width: 25px;
+            height: 25px;
+            rightright: -5px;
+            background: url('../images/volume.png') no-repeat 0 -50px;
+            position: absolute;
+            margin-top: -5px;
+            float: left;
+            margin-left: 25px;
+        }
+        
+        .divSlider
+        {
+            width: 150px;
+            position: relative;
+            float: left;
+            height: 25px;
+            padding-top: 14px;
+        }
+        
+        .clpTime
+        {
+            background-image: url('../images/move.png');
+            background-repeat: no-repeat;
+            -moz-user-select: none;
+            -khtml-user-select: none;
+            -webkit-user-select: none;
+            -o-user-select: none;
+        }
+    </style>
+    <script type="text/javascript">
+        var _PlayEvent = "Playing";
+        var innerPointX = 0;
+        var ForwardCounter = 0;
+        var RewindCounter = 0;
+        var _ClpLT=60;
+        var _ClpRT=300;
+
+        var liinterval=null;
+        var ldinterval=null;
+        var riinterval=null;
+        var rdinterval=null;
+
+        $(document).ready(function () {
+
+        // Clip Selection
+
+        $("#rm").mousedown(function(event) {
+
+        var offsetcb=$("#cb").offset().left+$("#cb").width();
+        
+
+         $("#mb").mousemove(function(e){
+                    
+                    console.log("pageX: "+e.pageX+" offsetcb: "+ offsetcb + "position: "+ $("#cb").offset().right);
+                    
+
+                    var pos=0;
+                    var width=0;
+
+                    
+
+                    if(e.pageX<offsetcb && (((offsetcb-e.pageX)<=25) || ($("#cb").position().left+$("#cb").width)>375))
+                    {
+                    
+                        if (riinterval) {
+                        clearInterval(riinterval);    
+                        }
+
+                        if (!rdinterval) {
+                        rdinterval=setInterval(RD,100);
+                        }
+                        else
+                        {
+                            clearInterval(rdinterval);
+                            rdinterval= setInterval(RD,100);
+                        }
+                           
+                        pos=(400-(offsetcb-e.pageX));
+                        width=300-(offsetcb-e.pageX);
+
+                        if (pos<375) {
+                            pos=375;
+                            width=275;
+                        }
+                        
+                        $("#cb").animate({
+                        
+                        width:width
+                    },100,function(){});          
+                    }
+                    else if(e.pageX>offsetcb && (((e.pageX-offsetcb)<=25) || ($("#cb").position().left+$("#cb").width)<425))
+                    {
+
+                        if (rdinterval) {
+                        clearInterval(rdinterval);    
+                        }
+
+                        if (!riinterval) {
+                        console.log("not li");
+                        riinterval=setInterval(RI,100);
+                        }
+                        else {
+   clearInterval(riinterval);
+   riinterval=setInterval(RI,100);
+}
+
+                        pos=(400+(e.pageX-offsetcb));
+                        width=300+(e.pageX-offsetcb);
+
+                        if (pos>425) {
+                            pos=125;
+                            width=325;
+                        }
+
+                        $("#cb").animate({
+                        
+                        width:width
+                    },100,function(){});  
+                    }
+                           
+            });
+        });
+
+        $("#lm").mousedown(function(event) {
+
+        var offsetcb=$("#cb").offset().left;
+        
+
+         $("#mb").mousemove(function(e){
+                    
+                    //console.log("pageX: "+ev.pageX+" lm: " +$("#lm").offset().left);
+                    
+
+                    var pos=0;
+                    var width=0;
+
+                    
+
+                    if(e.pageX<offsetcb && (((offsetcb-e.pageX)<=25) || $("#cb").position().left>75))
+                    {
+                    
+                        if (liinterval) {
+                        clearInterval(liinterval);    
+                        }
+
+                        if (!ldinterval) {
+                        ldinterval=setInterval(LD,100);
+                        }
+                        else {
+    clearInterval(ldinterval);
+    ldinterval=setInterval(LD,100);
+}
+                           
+                        pos=(100-(offsetcb-e.pageX));
+                        width=300+(offsetcb-e.pageX);
+
+                        if (pos<75) {
+                            pos=75;
+                            width=325;
+                        }
+                        
+                        $("#cb").animate({
+                        left:pos,
+                        width:width
+                    },100,function(){});          
+                    }
+                    else if(e.pageX>offsetcb && (((e.pageX-offsetcb)<=25) || $("#cb").position().left<125))
+                    {
+
+                        if (ldinterval) {
+                        clearInterval(ldinterval);    
+                        }
+
+                        if (!liinterval) {
+                        console.log("not li");
+                        liinterval=setInterval(LI,100);
+                        }
+                        else {
+   clearInterval(liinterval);
+   liinterval=setInterval(LI,100);
+}
+
+                        pos=(100+(e.pageX-offsetcb));
+                        width=300-(e.pageX-offsetcb);
+
+                        if (pos>125) {
+                            pos=125;
+                            width=275;
+                        }
+
+                        $("#cb").animate({
+                        left:pos,
+                        width:width
+                    },100,function(){});  
+                    }
+                           
+            });
+
+        /*$("#lm").animate({
+                        left:15                        
+                    },400,function(){});
+                    
+                
+                */
+                    
+                });
+
+               
+
+             $(document).mouseup(function(event) {
+             
+                $("#mb").unbind("mousemove");
+
+                $("#cb").animate({
+                        left:100,
+                        width:300
+                    },200,function(){}); 
+
+                clearInterval(liinterval);
+                clearInterval(ldinterval);
+                clearInterval(riinterval);
+                clearInterval(rdinterval);
+
+                
+            });
+
+        // Clip Selection
+
+        // Full Screen
+             // can introduce flag if needed resize specific
+
+        $( window ).resize(function() {
+         if (!document.fullscreenElement &&   
+                    !document.mozFullScreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement ) {      
+
+		        $('#HUY').css('width',545);
+		        $('#HUY').css('height', 340);
+            }
+        });
+
+        /*
+            // not working in ie
+        $(document).on('webkitfullscreenchange mozfullscreenchange fullscreenchange',function(){
+            if (!document.fullscreenElement &&   
+                    !document.mozFullScreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement ) {      
+
+		        $('#HUY').css('width',545);
+		        $('#HUY').css('height', 340);
+            }
+        });*/
+
+        // Full Screen
+            
+            var slider = $('#slider'),  
+            tooltip = $('.tooltipSlider');  
+  
+            tooltip.hide();  
+  
+            slider.slider({  
+                range: "min",  
+                min: 1,  
+                value: 35,  
+  
+                start: function(event,ui) {  
+                  tooltip.fadeIn('fast');  
+                },  
+  
+                slide: function(event, ui) {  
+  
+                    var value = slider.slider('value'),  
+                        volume = $('.volume');  
+  
+                    tooltip.css('left', ui.value).text(ui.value);  
+  
+                    if(value <= 5) {   
+                        volume.css('background-position', '0 0');  
+                    }   
+                    else if (value <= 25) {  
+                        volume.css('background-position', '0 -25px');  
+                    }   
+                    else if (value <= 75) {  
+                        volume.css('background-position', '0 -50px');  
+                    }   
+                    else {  
+                        volume.css('background-position', '0 -75px');  
+                    };  
+                    var Flash = document.getElementById('HUY');
+                    if (Flash != null) {
+                        Flash.ExternalupdateVol(slider.slider('value') / 100);
+                    }
+ 
+                },  
+  
+                stop: function(event,ui) {  
+                  tooltip.fadeOut('fast');  
+                },  
+            });  
+
+            
+            $('.timerMain').mousemove(function (e) {
+                innerPointX=(e.pageX - $(this).position().left);
+                var SeekSecond = ((innerPointX * 3600) / 465);
+
+		        if(SeekSecond<0)
+		        {
+			        SeekSecond=0;
+		        }
+
+		        if(SeekSecond > 3599)
+		        {
+			        SeekSecond=3599;
+		        }		
+                		
+                $('#txtTime').html(SeekSecond.toHHMMSS());
+
+		        if(innerPointX>465)
+		        {
+			        innerPointX=465;
+		        }
+
+        		if(innerPointX<0)
+		        {
+			        innerPointX=0;
+		        }
+
+                $('.handle').css({ 'left': innerPointX });
+
+            })
+
+            $('.timerMain').click(function (e) {
+                var SeekSecond = (innerPointX * 3600) / 465;
+                var Flash = document.getElementById('HUY');
+                if (Flash != null) {
+                    Flash.setSeekPoint(SeekSecond);
+                }
+            });
+        });
+
+        // Cliping
+
+        function LD()
+        {
+            _ClpLT=_ClpLT-1;
+
+            if (_ClpLT<0) {
+                    _ClpLT=0;
+            }
+
+            $("#lt").html(_ClpLT.toHHMMSS());
+        }
+
+
+        function LI()
+        {
+            _ClpLT=_ClpLT+1;
+
+            console.log("LI: "+_ClpLT);
+
+            $("#lt").html(_ClpLT.toHHMMSS());
+        }
+
+        function RD()
+        {
+            _ClpRT=_ClpRT-1;
+
+            if (_ClpRT<0) {
+                    _ClpRT=0;
+            }
+
+            if (_ClpRT<_ClpLT) {
+    _ClpRT=_ClpLT+1;
+}
+
+            $("#rt").html(_ClpRT.toHHMMSS());
+        }
+
+
+        function RI()
+        {
+            _ClpRT=_ClpRT+1;            
+
+            $("#rt").html(_ClpRT.toHHMMSS());
+        }
+
+
+        // Cliping
+
+        function ChangeTab(tabindex) {
+            $('#divPlayerHeader div').each(function () {
+                $(this).removeAttr("class");
+            });
+
+            $('#divPlayer > div').each(function () {
+                $(this).hide();
+            });
+
+            $('#divPlayerHeader').children().eq(tabindex).attr("class", "pieChartActive");
+            $('#divPlayer').children().eq(tabindex).show();
+        }
+
+        function setSeekPoint(C, B) {
+            var Flash = document.getElementById('HUY');
+            if (Flash != null) {
+                Flash.setSeekPoint(C);
+            }
+            if (B) { $(B).addClass("selected"); $("#timeBar").children(":not(.selected)").fadeTo(400, 0.4); $(B).removeClass("selected"); $(B).fadeTo(400, 1); }
+        }
+
+        function PlayPause() {
+            var Flash = document.getElementById('HUY');
+            if (Flash != null) {
+                if (_PlayEvent == "Playing") {
+                    Flash.externalPlay("PAUSE");
+                    _PlayEvent = "Paused"
+                    $("#btnPlayPause").attr("src", "../images/play-btn.png");
+                    $("#btnPlayPause").attr("alt", "Play");
+                    $("#btnPlayPause").attr("title", "Play");
+                }
+                else {
+                    Flash.externalPlay("PLAY");
+                    _PlayEvent = "Playing"
+                    $("#btnPlayPause").attr("src", "../images/pause-btn.png");
+                    $("#btnPlayPause").attr("alt", "Pause");
+                    $("#btnPlayPause").attr("title", "Pause");
+                }
+            }
+        }
+
+        function StartForward() {
+            var Flash = document.getElementById('HUY');
+            if (Flash != null) {
+                if(ForwardCounter == 0){
+                    _PlayEvent = "Playing"
+                    PlayPause();
+                }
+
+                ForwardCounter = ForwardCounter + 1;
+                Flash.ExternalForward();
+                
+                if(ForwardCounter > 2){
+                     ForwardCounter = 0;
+                     _PlayEvent = "Paused"
+                     PlayPause();
+                }
+            }
+        }
+
+        function StartRewind() {
+            var Flash = document.getElementById('HUY');
+            if (Flash != null) {
+                if(RewindCounter == 0){
+                    _PlayEvent = "Playing"
+                    PlayPause();
+                }
+                
+                RewindCounter = RewindCounter + 1;
+                Flash.ExternalRewind();
+                
+                if(RewindCounter > 2){
+                    RewindCounter = 0;
+                    _PlayEvent = "Paused"
+                    PlayPause();
+                }
+            }
+        }
+
+        function ToggleFullScreen() {
+          
+            var elem = document.getElementById("HUY");
+            if (!document.fullscreenElement &&   
+                    !document.mozFullScreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement ) {
+      		
+
+		            if (elem.requestFullscreen) { 
+			            elem.requestFullscreen();
+		            } else if (elem.msRequestFullscreen) {
+				           elem.msRequestFullscreen();
+		            } else if (elem.mozRequestFullScreen) {
+			               elem.mozRequestFullScreen();
+		            } else if (elem.webkitRequestFullscreen) {
+			            elem.webkitRequestFullscreen();
+		            }
+		            $('#HUY').css('width',1366);
+		            $('#HUY').css('height', 768);
+                }
+            }
+
+        function SetStartTime(startTime, totalTime) {
+            $("#divCurrentTime").html(startTime.toHHMMSS());
+         //   $("#divTotalTime").html(totalTime.toHHMMSS());
+        }
+
+        function updateTime(_CurrentTime) {
+            if (_CurrentTime < 5) {
+                $('#btnForwrd').attr("disabled", true);
+                $('#btnRewind').attr("disabled", true);
+            }
+            else if ($("#btnForwrd").attr("disabled") == "disabled") {
+                $('#btnForwrd').removeAttr("disabled");
+                $('#btnRewind').removeAttr("disabled");
+            }
+
+
+            var width = (_CurrentTime * 465) / 3600;
+            $("#divCurrentTime").html(_CurrentTime.toHHMMSS());
+            $("#divTimer").css("width", width);
+        }
+
+        Number.prototype.toHHMMSS = function () {
+
+            var sec_num = parseInt(this, 10);
+            var hours = Math.floor(sec_num / 3600);
+            var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
+            var seconds = sec_num - (hours * 3600) - (minutes * 60);
+
+            if (hours > 0) {
+                if (hours < 10) { hours = "0" + hours; }
+            }
+            else {
+                hours = "";
+            }
+            if (minutes < 10) { minutes = "0" + minutes; }
+            if (seconds < 10) { seconds = "0" + seconds; }
+            if (hours != "") {
+                return hours + ':' + minutes + ':' + seconds;
+            }
+            else {
+                return minutes + ':' + seconds;
+            }
+
+
+        }
+    </script>
+</head>
+<body id="mainBody">
+    <div class="navbar navbar-inverse navbar-fixed-top" style="background-color: #fff;">
+        <!-- from desinger-->
+        <div class="container">
+        </div>
+        <!-- from desinger-->
+        <div class="navbar-inner navbar-custome">
+            <div class="container">
+                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span
+                    class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+                </a><a class="brand iqmedia-logo" href="#">
+                    <img src="~/images/iq-media.png?v=1.3" width="155" height="45" alt="IQ Media" /></a>
+                <div class="nav-collapse collapse">
+                </div>
+                <!--/.nav-collapse -->
+            </div>
+        </div>
+    </div>
+    <div class="container container_custom">
+        <div class="row-fluid" id="divRowFluid">
+            <div style="min-height: 500px; padding: 25px;">
+                <div style="padding-bottom: 5px; border-bottom: solid 1px #dadada; font-size: 18px;">
+                    iQ Raw Media Player
+                </div>
+                <br />
+                @if (ViewBag.IsErrorOccurred == false)
+                {
+                    if (ViewBag.IsVideoExpired != null && ViewBag.IsVideoExpired == false)
+                    {
+                        if (!string.IsNullOrEmpty(Model.RawMediaPlayerHTML))
+                        {
+                    <div>
+                        <div id="divClipPlayer" class="offset2 span6">
+                            @Html.Raw(Model.RawMediaPlayerHTML)
+                            @if (Model.IsMobileDevice)
+                            {
+                                <script type="text/javascript">
+                                    document.getElementById('myvideo').addEventListener('loadedmetadata', function () {
+                                        this.currentTime = @(Model.PlayOffset);
+                                    }, false);
+                                </script>
+                            }
+                            else
+                            {
+                                <div class="clear" style="width: 545px; overflow: visible;">
+                                    <div class="currentTime" id="divCurrentTime">
+                                        --:--</div>
+                                    <div class="timerMain">
+                                        <div id="divTimer" style="width: 0px;">
+                                            &nbsp;</div>
+                                        <div id="divTimeKnob" class="handle">
+                                            <div style="float: left; height: 1px; width: 5px; background-color: #0000FF;">
+                                                &nbsp;</div>
+                                            <div id="txtTime" style="margin-top: -10px; color: #0000FF; margin-left: 8px;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="totalTime" id="divTotalTime">
+                                        --:--</div>
+                                </div>
+                                <div class="clear" style="width: 545px; overflow: visible;">
+                                    <div class="float-left">
+                                        <img src="~/images/pause-btn.png" id="btnPlayPause" onclick="PlayPause()" style="cursor: pointer"
+                                            alt="Pause" title="Pause" />
+                                        <input type="image" id="btnForwrd" disabled="disabled" src="~/images/Fast-Forward.png"
+                                            onclick="StartForward()" alt="Fast Forward" title="Fast Forward" />
+                                        <input type="image" id="btnRewind" disabled="disabled" src="~/images/Fast-Rewind.png"
+                                            onclick="StartRewind()" alt="Fast Rewind" title="Fast Rewind" />
+                                    </div>
+                                    <div class="float-right">
+                                        <div class="divSlider">
+                                            <span class="tooltipSlider"></span>
+                                            <div id="slider">
+                                            </div>
+                                            <span class="volume"></span>
+                                        </div>
+                                        <input type="image" id="btnFullScreen" src="~/images/full_screen.png" onclick="ToggleFullScreen()"
+                                            alt="Full Screen" title="Full Screen" />
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                        <div id="divCC" style="margin-left: 0; color: #1F4D82;" class="span3">
+                            <div id="divPlayerHeader" class="margintop5 discoveryTabParent">
+                                <div align="center" id="divPlayerHighlightTab" style="float: left; padding: 5px;
+                                    cursor: pointer; min-width: 50px;" class="pieChartActive" onclick="ChangeTab(0)">
+                                    Highlights</div>
+                                <div align="center" id="divPlayerCaptionTab" style="float: left; padding: 5px; cursor: pointer;
+                                    min-width: 50px;" onclick="ChangeTab(1)">
+                                    Captions</div>
+                            </div>
+                            <div class="clear" id="divPlayerContent">
+                                <div id="divPlayer" class="clear">
+                                    <div id="divPlayer_HighlightContent" style="height: 300px; overflow: auto;">
+                                        @Html.Raw(Model.CC_Highlight)
+                                    </div>
+                                    <div style="display: none; height: 300px; overflow: auto;" id="divPlayer_CaptionContent"
+                                        class="padding5">
+                                        @Html.Raw(Model.ClosedCaption)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="clear: both; height: 50px;">
+                    </div>
+                    <div id="mb" style="position: relative; height: 20px; width: 500px; border: 1px solid #000000;">
+                        <div id="lt" style="margin-top: -20px; position: relative; left: 70px;">
+                            01:00
+                        </div>
+                        <div id="cb" style="position: absolute; left: 100px; height: 20px; width: 300px;
+                            background-color: #ff0000;">
+                            <div id="lm" class="clpTime" style="float: left; cursor: pointer; position: absolute;
+                                width: 20px;">
+                                &nbsp;
+                            </div>
+                            <div id="rm" class="clpTime" style="float: right; cursor: pointer; width: 20px;">
+                                &nbsp;
+                            </div>
+                        </div>
+                        <div id="rt" style="left: 400px; margin-top: -20px; position: relative;">
+                            05:00
+                        </div>
+                    </div>
+                        }
+                        else
+                        {
+                    <div style="color: #ff0000; padding: 10px 10px 10px 10px;">
+                        Some error occured while playing video.
+                    </div>
+                        }
+                    }
+                    else
+                    {
+                    <div style="color: #ff0000; padding: 10px 10px 10px 10px;">
+                        This video is expired.
+                    </div>
+                    }
+                }
+                else
+                {
+                    <div style="color: #ff0000; padding: 10px 10px 10px 10px;">
+                        Some error occured while playing video.
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    @Html.Partial("~/Views/Shared/_Footer.cshtml")
+</body>
+<!-- Le javascript
+    ================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+@*<script src="~/Scripts/jquery-ui-1.9.2.custom.min.js?v=1.0" type="text/javascript"></script>*@
+<script src="../../Scripts/jquery-ui.min.js?v=1.0" type="text/javascript"></script>
+<script src="~/Scripts/jquery.mCustomScrollbar.concat.min.js?v=1.1" type="text/javascript"></script>
+<script language="javascript" type="text/javascript">
+    $(function () {
+        $("#divPlayer_HighlightContent").mCustomScrollbar({
+            advanced: {
+                updateOnContentResize: true,
+                autoScrollOnFocus: false
+            }
+        });
+
+        $("#divPlayer_CaptionContent").mCustomScrollbar({
+            advanced: {
+                updateOnContentResize: true,
+                autoScrollOnFocus: false
+            }
+        });
+
+        if ($.trim($("#divPlayer_HighlightContent").html()) != "") {
+
+        }
+        else if ($.trim($("#divPlayer_CaptionContent").html()) != "") {
+            ChangeTab(1);
+        }
+    });
+</script>
+</html>

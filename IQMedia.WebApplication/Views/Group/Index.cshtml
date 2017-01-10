@@ -1,0 +1,82 @@
+﻿@{
+    ViewBag.Title = "iQ media Group";
+    Layout = "~/Views/Shared/_IQMediaMasterInner.cshtml";
+}
+@model List<IQMedia.Model.ClientModel>
+<script language="javascript" type="text/javascript" src="~/Scripts/GroupScript.js?v=1.1"></script>
+<script language="javascript" type="text/javascript" src="~/Scripts/enscroll.js?v=1.0"></script>
+<style type="text/css">
+    form
+    {
+        margin: 0px;
+    }
+</style>
+<script type="text/javascript">
+    $(document).ready(function () {
+        if (screen.height >= 768) {
+            $('#divResult').css({ 'height': documentHeight - 250 });
+        }
+    });
+
+
+    $(window).resize(function () {
+        if (screen.height >= 768) {
+            $('#divResult').css({ 'height': documentHeight - 250 });
+        }
+    });
+        
+</script>
+<span style="color: rgb(255, 0, 0);" id="spanTV" class="help-inline">@ViewBag.Message</span>
+<div class="container container_custom">
+    <div class="row-fluid" id="divRowFluid">
+        @if (ViewBag.IsSuccess)
+        {
+            <div class="span3 minheight500" id="divQuickFeedFinder">
+                <div class="well sidebar-nav">
+                    <h5>
+                        Group
+                    </h5>
+                    <div class="navbar minHeight120">
+                    </div>
+                </div>
+            </div>
+            <div class="span9 span9-custom">
+                <div class="row-fluid row-custom">
+                    <!--/span-->
+                    <div class="btn-group">
+                        <a class="btn dropdown-toggle no-background" data-toggle="dropdown" href="#" id="aSortDirection">
+                            Client Name Ascending&nbsp;&nbsp;<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li class="cursorPointer"><a onclick="SortClient(true);">Client Name Ascending</a></li>
+                            <li class="cursorPointer"><a onclick="SortClient(false);">Client Name Descending</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <br>
+                <div class="span10 float-left" style="padding-bottom: 10px;">
+                    <div class="span2 float-left" style="padding-top: 5px;">
+                        Search Client
+                    </div>
+                    <div class="span5 float-left">
+                        <input type="text" id="txtClientName" name="txtClientName" class="txtwidth90per"
+                            placeholder="Search Client" />
+                    </div>
+                    <div class="float-left" style="padding-bottom: 10px;">
+                        <input type="button" style="margin: 0px;" class="button" onclick="SearchClient();"
+                            value="Search" id="btnSearchClient" />
+                        <input type="button" style="margin: 0px;" class="button" onclick="ClearClient();"
+                            value="Clear Search" id="btnClearClient" /></div>
+                </div>
+                <div id="divResult" style="clear:both;">
+                    @{
+            Html.RenderPartial("_ClientList", Model);
+                    }
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="mainerrorDiv">@IQMedia.WebApplication.Config.ConfigSettings.Settings.PageLoadErrorMessage</div>
+        }
+    </div>
+</div>

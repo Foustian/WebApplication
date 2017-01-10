@@ -1,0 +1,912 @@
+﻿@using IQMedia.Model;
+@using IQMedia.Shared.Utility;
+@using IQCommon.Model;
+@model Dictionary<string, object>
+@if (Model != null && Model["Results"] != null)
+{
+    ActiveUser sessionInformation = IQMedia.WebApplication.Utility.ActiveUserMgr.GetActiveUser();
+    if (sessionInformation == null)
+    {
+        sessionInformation = new ActiveUser();
+        sessionInformation.IsLogIn = false;
+    }
+    
+    <div style="padding-right: 20px;">
+        @foreach (var groupTier1Result in (List<MCMediaReport_GroupTier1Model>)Model["Results"])
+        {
+            if (groupTier1Result.IsEnabled)
+            {
+                <div class="mediatitlediv">@groupTier1Result.GroupName</div>
+            }
+
+            foreach (var groupTier2Result in groupTier1Result.GroupTier2Results)
+            {
+                if (groupTier2Result.IsEnabled)
+                {
+                    <div class="mediacategorydiv">@groupTier2Result.GroupName</div>
+                }
+                foreach (var groupTier3Result in groupTier2Result.GroupTier3Results)
+                {
+                    foreach (IQArchive_MediaModel item in groupTier3Result.MediaResults)
+                    {
+                        IQ_MediaTypeModel objSubMediaType = ((List<IQ_MediaTypeModel>)Model["MediaTypes"]).First(w => w.SubMediaType == item.SubMediaType.ToString() && w.TypeLevel == 2);
+                        string mediaIconFormat = "../images/MediaIcon/{0}?v=1.3";
+                        string Month = item.MediaDate != null ? item.MediaDate.ToString("MMM", System.Globalization.CultureInfo.InvariantCulture) : string.Empty;
+                        string Day = item.MediaDate != null ? item.MediaDate.Day.ToString() : string.Empty;
+                        string Time = item.MediaDate != null ? item.MediaDate.ToString("hh:mm tt") : string.Empty;
+                        string fTitle = string.Empty;
+                        string sTitle = string.Empty;
+                        string displayText = string.Empty;
+                        string sPub = string.Empty;
+                        string fPub = string.Empty;
+
+                        if (!string.IsNullOrWhiteSpace(item.Title))
+                        {
+                            fTitle = item.Title.Trim();
+
+                            if (fTitle.Length > 65)
+                            {
+                                sTitle = fTitle.Substring(0, 62) + "...";
+                            }
+                            else
+                            {
+                                sTitle = fTitle;
+                            }
+                        }
+
+                        if (!string.IsNullOrWhiteSpace(item.DisplayText))
+                        {
+                            displayText = item.DisplayText.Trim();
+                        }
+
+                        switch (item.SubMediaType)
+                        {
+                            case CommonFunctions.CategoryType.TV:
+                                IQArchive_ArchiveClipModel TVModel = item.MediaData as IQArchive_ArchiveClipModel;
+                                string TVThumbUrl = Convert.ToString(System.Configuration.ConfigurationManager.AppSettings["IQArchieve_TVThumbUrl"]);
+                                TVThumbUrl += TVModel.ClipID;
+
+                                if (!string.IsNullOrWhiteSpace(TVModel.Market))
+                                {
+                                    fPub = TVModel.Market.Trim();
+
+                                    if (fPub.Length > 23)
+                                    {
+                                        sPub = fPub.Substring(0, 21) + "...";
+                                    }
+                                    else
+                                    {
+                                        sPub = fPub;
+                                    }
+                                }
+                                
+            <div id="divMedia_@item.ID" class="media">
+                <div class="MediaDate">
+                    <div class="post-date">
+                        <span class="month">@Month</span>
+                        <div>
+                            <span class="today">@Day</span>
+                        </div>
+                        <span class="timeWithTimeZone">@Time @TVModel.TimeZone</span>
+                    </div>
+                </div>
+                <div class="MediaTypeLogo">
+                    <img src="@TVModel.StationLogo" title="@objSubMediaType.DisplayName" />
+                </div>
+                <div class="float-right FeedsVideoSpacer">
+                    <div class="FeedsVideo positionRelative float-left">
+                        <a class="cursorPointer" href="../../ClipPlayer/?ClipID=@TVModel.ClipID" target="_blank">
+                            <img src="@TVThumbUrl" class="maxwidth130" alt="play video" />
+                        </a>
+                    </div>
+                </div>
+                <div class="MediaRoomContentVideo2">
+                    <div class="media-heading float-left" title="@Html.Raw(fTitle)">
+                        @Html.Raw(sTitle)
+                    </div>
+                    <div class="subheading float-left margintop1">
+                        @item.timeDifference
+                    </div>
+                    <div class="clear float-left media-body">
+                        @Html.Raw(displayText)
+                    </div>
+                </div>
+                <div class="clear post-divider"></div>
+                <div class="clear margintop2 marginbottom2">
+                    <div class="MediaRoomActionBar">
+                        <div class="viewmore" style="min-height:1px">
+                        </div>
+                        <div class="viewlocation">
+                            @if (!string.IsNullOrWhiteSpace(fPub))
+                            {
+                                <div class="location-tag" title="@fPub">
+                                    @sPub
+                                </div>
+                            }
+                            else
+                            { 
+                                <div class="margintop2"></div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+              
+                            break;
+                            case CommonFunctions.CategoryType.TW:
+                            IQArchive_ArchiveTweetsModel twitterModel = item.MediaData as IQArchive_ArchiveTweetsModel;
+
+                            if (!string.IsNullOrWhiteSpace(twitterModel.ActorDisplayname))
+                            {
+                                fTitle = twitterModel.ActorDisplayname.Trim();
+
+                                if (fTitle.Length > 65)
+                                {
+                                    sTitle = fTitle.Substring(0, 62) + "...";
+                                }
+                                else
+                                {
+                                    sTitle = fTitle;
+                                }
+                            }
+
+                            if (!string.IsNullOrWhiteSpace(twitterModel.PreferredUserName))
+                            {
+                                fPub = twitterModel.PreferredUserName.Trim();
+
+                                if (fPub.Length > 23)
+                                {
+                                    sPub = fPub.Substring(0, 21) + "...";
+                                }
+                                else
+                                {
+                                    sPub = fPub;
+                                }
+                            }
+
+            <div id="divMedia_@item.ID" class="media">
+                <div class="MediaDate">
+                    <div class="post-date">
+                        <span class="month">@Month</span>
+                        <div>
+                            <span class="today">@Day</span>
+                        </div>
+                        <span class="timeWithTimeZone">@Time @(sessionInformation.IsLogIn ? sessionInformation.TimeZone : string.Empty)</span>
+                    </div>
+                </div>
+                <div class="MediaTypeLogo">
+                    <img src="@objSubMediaType.MediaIconPath" title="@objSubMediaType.DisplayName" />
+                </div>
+                <div class="MediaRoomContent borderBoxSizing">
+                    <div class="media-heading float-left" title="@Html.Raw(fTitle)">
+                        <a id="aActorLink_" target="_blank" href="@twitterModel.ActorLink/status/@twitterModel.TweetID">
+                            @sTitle
+                        </a>
+                    </div>
+                    <div class="subheading float-left margintop1">
+                        @item.timeDifference
+                    </div>
+                    <div class="clear float-left media-body">
+                        @Html.Raw(displayText)
+                    </div>
+                </div>
+                <div class="clear post-divider"></div>
+                <div class="clear margintop2 marginbottom2">
+                    <div class="MediaRoomActionBar">
+                        <div class="viewmore" style="min-height:1px">
+                        </div>
+                        <div class="viewlocation">
+                            @if (!string.IsNullOrWhiteSpace(fPub))
+                            {
+                                <div class="location-tag" title="@fPub">
+                                    @sPub
+                                </div>
+                            }
+                            else
+                            { 
+                                <div class="margintop2"></div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+                            break;
+                            case CommonFunctions.CategoryType.NM:
+                            case CommonFunctions.CategoryType.LN:
+                            IQArchive_ArchiveNMModel newsMediaModel = item.MediaData as IQArchive_ArchiveNMModel;
+
+                            if (!string.IsNullOrWhiteSpace(newsMediaModel.Publication))
+                            {
+                                fPub = newsMediaModel.Publication.Trim();
+
+                                if (fPub.Length > 23)
+                                {
+                                    sPub = fPub.Substring(0, 21) + "...";
+                                }
+                                else
+                                {
+                                    sPub = fPub;
+                                }
+                            }
+                                
+            <div id="divMedia_@item.ID" class="media">
+                <div class="MediaDate">
+                    <div class="post-date">
+                        <span class="month">@Month</span>
+                        <div>
+                            <span class="today">@Day</span>
+                        </div>
+                        <span class="timeWithTimeZone">@Time @(sessionInformation.IsLogIn ? sessionInformation.TimeZone : string.Empty)</span>
+                    </div>
+                </div>
+                <div class="MediaTypeLogo">
+                    <img src="@objSubMediaType.MediaIconPath" title="@objSubMediaType.DisplayName" />
+                </div>
+                <div class="MediaRoomContent">
+                    <div class="media-heading float-left" title="@Html.Raw(fTitle)">
+                        @if (newsMediaModel.IQLicense == 3)
+                        {
+                                <img src="~/images/MediaIcon/LexisNexis_Small.png" title="LexisNexis(R)" alt="LexisNexis(R)" class="lexisNexisImg" />
+                        }
+                            <a href="@(newsMediaModel.IQLicense > 0 ? Url.Action("Index", "Article", new { au = CommonFunctions.EncryptLicenseStringAES(sessionInformation.CustomerKey + "¶IQAgent Report¶" + newsMediaModel.Url + "&u1=cliq40&u2=" + sessionInformation.ClientID + "¶" + newsMediaModel.IQLicense) }) : newsMediaModel.Url)" target="_blank">
+                                @Html.Raw(sTitle)
+                            </a>
+                    </div>
+                    <div class="subheading float-left margintop1">
+                        @item.timeDifference
+                    </div>
+                    <div class="clear float-left media-body">
+                        @Html.Raw(displayText)
+                    </div>
+                </div>
+                <div class="clear post-divider"></div>
+                <div class="clear margintop2 marginbottom2">
+                    <div class="MediaRoomActionBar">
+                        <div class="viewmore" style="min-height:1px">
+                        </div>
+                        <div class="viewlocation">
+                            @if (!string.IsNullOrWhiteSpace(fPub))
+                            {
+                                <div class="location-tag" title="@fPub">
+                                    @sPub
+                                </div>
+                            }
+                            else
+                            { 
+                                <div class="margintop2"></div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+                    
+                            break;
+                            case CommonFunctions.CategoryType.SocialMedia:
+                            IQArchive_ArchiveSMModel socialMediaModel = item.MediaData as IQArchive_ArchiveSMModel;
+
+                            if (!string.IsNullOrWhiteSpace(socialMediaModel.Publication))
+                            {
+                                fPub = socialMediaModel.Publication.Trim();
+
+                                if (fPub.Length > 23)
+                                {
+                                    sPub = fPub.Substring(0, 21) + "...";
+                                }
+                                else
+                                {
+                                    sPub = fPub;
+                                }
+                            }
+
+            <div id="divMedia_@item.ID" class="media">
+                <div class="MediaDate">
+                    <div class="post-date">
+                        <span class="month">@Month</span>
+                        <div>
+                            <span class="today">@Day</span>
+                        </div>
+                        <span class="timeWithTimeZone">@Time @(sessionInformation.IsLogIn ? sessionInformation.TimeZone : string.Empty)</span>
+                    </div>
+                </div>
+                <div class="MediaTypeLogo">
+                    <img src="@objSubMediaType.MediaIconPath" title="@objSubMediaType.DisplayName" />
+                </div>
+                <div class="MediaRoomContent">
+                    <div class="media-heading float-left" title="@Html.Raw(fTitle)">
+                        <a href="@socialMediaModel.Url" target="_blank">@Html.Raw(sTitle)</a>
+                    </div>
+                    <div class="subheading float-left margintop1">
+                        @item.timeDifference
+                    </div>
+                    <div class="clear float-left media-body">
+                        @Html.Raw(displayText)
+                    </div>
+                </div>
+                <div class="clear post-divider"></div>
+                <div class="clear margintop2 marginbottom2">
+                    <div class="MediaRoomActionBar">
+                        <div class="viewmore" style="min-height:1px">
+                        </div>
+                        <div class="viewlocation">
+                            @if (!string.IsNullOrWhiteSpace(fPub))
+                            {
+                                <div class="location-tag" title="@fPub">
+                                    @sPub
+                                </div>
+                            }
+                            else
+                            { 
+                                <div class="margintop2"></div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+                            break;
+                            case CommonFunctions.CategoryType.Forum:
+                            IQArchive_ArchiveSMModel forumModel = item.MediaData as IQArchive_ArchiveSMModel;
+
+                            if (!string.IsNullOrWhiteSpace(forumModel.Publication))
+                            {
+                                fPub = forumModel.Publication.Trim();
+
+                                if (fPub.Length > 23)
+                                {
+                                    sPub = fPub.Substring(0, 21) + "...";
+                                }
+                                else
+                                {
+                                    sPub = fPub;
+                                }
+                            }
+
+            <div id="divMedia_@item.ID" class="media">
+                <div class="MediaDate">
+                    <div class="post-date">
+                        <span class="month">@Month</span>
+                        <div>
+                            <span class="today">@Day</span>
+                        </div>
+                        <span class="timeWithTimeZone">@Time @(sessionInformation.IsLogIn ? sessionInformation.TimeZone : string.Empty)</span>
+                    </div>
+                </div>
+                <div class="MediaTypeLogo">
+                    <img src="@objSubMediaType.MediaIconPath" title="@objSubMediaType.DisplayName" />
+                </div>
+                <div class="MediaRoomContent">
+                    <div class="media-heading float-left" title="@Html.Raw(fTitle)">
+                        <a href="@forumModel.Url" target="_blank">@Html.Raw(sTitle)</a>
+                    </div>
+                    <div class="subheading float-left margintop1">
+                        @item.timeDifference
+                    </div>
+                    <div class="clear float-left media-body">
+                        @Html.Raw(displayText)
+                    </div>
+                </div>
+                <div class="clear post-divider"></div>
+                <div class="clear margintop2 marginbottom2">
+                    <div class="MediaRoomActionBar">
+                        <div class="viewmore" style="min-height:1px">
+                        </div>
+                        <div class="viewlocation">
+                            @if (!string.IsNullOrWhiteSpace(fPub))
+                            {
+                                <div class="location-tag" title="@fPub">
+                                    @sPub
+                                </div>
+                            }
+                            else
+                            { 
+                                <div class="margintop2"></div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+                            break;
+                            case CommonFunctions.CategoryType.Blog:
+                            IQArchive_ArchiveSMModel blogModel = item.MediaData as IQArchive_ArchiveSMModel;
+
+                            if (!string.IsNullOrWhiteSpace(blogModel.Publication))
+                            {
+                                fPub = blogModel.Publication.Trim();
+
+                                if (fPub.Length > 23)
+                                {
+                                    sPub = fPub.Substring(0, 21) + "...";
+                                }
+                                else
+                                {
+                                    sPub = fPub;
+                                }
+                            }
+
+            <div id="divMedia_@item.ID" class="media">
+                <div class="MediaDate">
+                    <div class="post-date">
+                        <span class="month">@Month</span>
+                        <div>
+                            <span class="today">@Day</span>
+                        </div>
+                        <span class="timeWithTimeZone">@Time @(sessionInformation.IsLogIn ? sessionInformation.TimeZone : string.Empty)</span>
+                    </div>
+                </div>
+                <div class="MediaTypeLogo">
+                    <img src="@objSubMediaType.MediaIconPath" title="@objSubMediaType.DisplayName" />
+                </div>
+                <div class="MediaRoomContent">
+                    <div class="media-heading float-left" title="@Html.Raw(fTitle)">
+                        <a href="@blogModel.Url" target="_blank">@Html.Raw(sTitle)</a>
+                    </div>
+                    <div class="subheading float-left margintop1">
+                        @item.timeDifference
+                    </div>
+                    <div class="clear float-left media-body">
+                        @Html.Raw(displayText)
+                    </div>
+                </div>
+                <div class="clear post-divider"></div>
+                <div class="clear margintop2 marginbottom2">
+                    <div class="MediaRoomActionBar">
+                        <div class="viewmore" style="min-height:1px">
+                        </div>
+                        <div class="viewlocation">
+                            @if (!string.IsNullOrWhiteSpace(fPub))
+                            {
+                                <div class="location-tag" title="@fPub">
+                                    @sPub
+                                </div>
+                            }
+                            else
+                            { 
+                                <div class="margintop2"></div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+                            break;
+                            case CommonFunctions.CategoryType.FB:
+                            case CommonFunctions.CategoryType.IG:
+                            IQArchive_ArchiveSMModel SMModel = item.MediaData as IQArchive_ArchiveSMModel;
+                            string contentClass = item.SubMediaType == CommonFunctions.CategoryType.IG ? "MediaRoomContentVideo2" : "MediaRoomContent";
+
+                            if (!string.IsNullOrWhiteSpace(SMModel.Publication))
+                            {
+                                fPub = SMModel.Publication.Trim();
+
+                                if (fPub.Length > 23)
+                                {
+                                    sPub = fPub.Substring(0, 21) + "...";
+                                }
+                                else
+                                {
+                                    sPub = fPub;
+                                }
+                            }
+                                
+            <div id="divMedia_@item.ID" class="media">
+                <div class="MediaDate">
+                    <div class="post-date">
+                        <span class="month">@Month</span>
+                        <div>
+                            <span class="today">@Day</span>
+                        </div>
+                        <span class="timeWithTimeZone">@Time @sessionInformation.TimeZone</span>
+                    </div>
+                </div>
+                <div class="MediaTypeLogo">
+                    <img src="@objSubMediaType.MediaIconPath" title="@objSubMediaType.DisplayName" />
+                </div>
+                @if (item.SubMediaType == CommonFunctions.CategoryType.IG)
+                { 
+                    <div class="float-right FeedsVideoSpacer">
+                        <div class="FeedsVideo positionRelative float-left">
+                            <img class="instagramIMG" src="@SMModel.ThumbUrl" />
+                        </div>
+                    </div>
+                }
+                <div class="@contentClass">
+                    <div class="media-heading float-left" title="@Html.Raw(fTitle)">
+                        <a href="@SMModel.Url" target="_blank">@Html.Raw(sTitle)</a>
+                    </div>
+                    <div class="subheading float-left margintop1">
+                        @item.timeDifference
+                    </div>
+                    <div class="clear float-left media-body">
+                        @Html.Raw(displayText)
+                    </div>
+                </div>
+                <div class="clear post-divider"></div>
+                <div class="clear margintop2 marginbottom2">
+                    <div class="MediaRoomActionBar">
+                        <div class="viewmore" style="min-height:1px">
+                        </div>
+                        <div class="viewlocation">
+                            @if (!string.IsNullOrWhiteSpace(fPub))
+                            {
+                                <div class="location-tag" title="@fPub">
+                                    @sPub
+                                </div>
+                            }
+                            else
+                            { 
+                                <div class="margintop2"></div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+                          
+                            break;
+                            case CommonFunctions.CategoryType.Radio:
+                            IQArchive_ArchiveTVEyesModel tvEyesModel = item.MediaData as IQArchive_ArchiveTVEyesModel;
+                            Month = tvEyesModel.LocalDateTime != null ? tvEyesModel.LocalDateTime.ToString("MMM", System.Globalization.CultureInfo.InvariantCulture) : string.Empty;
+                            Day = tvEyesModel.LocalDateTime != null ? tvEyesModel.LocalDateTime.Day.ToString() : string.Empty;
+                            Time = tvEyesModel.LocalDateTime != null ? tvEyesModel.LocalDateTime.ToString("hh:mm tt") : string.Empty;
+
+                            if (!string.IsNullOrWhiteSpace(tvEyesModel.Market))
+                            {
+                                fPub = tvEyesModel.Market.Trim();
+
+                                if (fPub.Length > 23)
+                                {
+                                    sPub = fPub.Substring(0, 21) + "...";
+                                }
+                                else
+                                {
+                                    sPub = fPub;
+                                }
+                            }
+                                
+            <div id="divMedia_@item.ID" class="media">
+                <div class="MediaDate">
+                    <div class="post-date">
+                        <span class="month">@Month</span>
+                        <div>
+                            <span class="today">@Day</span>
+                        </div>
+                        <span class="timeWithTimeZone">@Time @tvEyesModel.TimeZone</span>
+                    </div>
+                </div>
+                <div class="MediaTypeLogo">
+                    <img src="@objSubMediaType.MediaIconPath" title="@objSubMediaType.DisplayName" />
+                </div>
+                <div class="float-right FeedsVideoSpacer">
+                    <div class="float-left FeedsVideo positionRelative">
+                        <a class="cursorPointer"  target="_blank" href="@(System.Configuration.ConfigurationManager.AppSettings["RadioClipPlayerURL"] + Url.Encode(CommonFunctions.GenerateRandomString() + CommonFunctions.EncryptStringAES(item.ID.ToString(), CommonFunctions.AesKeyLibRadioPlayer, CommonFunctions.AesIVLibRadioPlayer)))">
+                            <img src="~/images/video.png" alt="play video" />
+                        </a>
+                    </div>
+                </div>
+                <div class="MediaRoomContentVideo2">
+                    <div class="media-heading float-left" title="@Html.Raw(fTitle)">
+                        @Html.Raw(sTitle)
+                    </div>
+                    <div class="subheading float-left margintop1">
+                        @item.timeDifference
+                    </div>
+                    <div class="clear float-left media-body tmStationDiv">
+                        <span style="color:#73897F">@tvEyesModel.StationID</span>
+                        @if (!string.IsNullOrEmpty(displayText))
+                        {
+                            <span> - @Html.Raw(displayText)</span>
+                        }
+                    </div>
+                </div>
+                <div class="clear post-divider"></div>
+                <div class="clear margintop2 marginbottom2">
+                    <div class="MediaRoomActionBar">
+                        <div class="viewmore" style="min-height:1px">
+                        </div>
+                        <div class="viewlocation">
+                            @if (!string.IsNullOrWhiteSpace(fPub))
+                            {
+                                <div class="location-tag" title="@fPub">
+                                    @sPub
+                                </div>
+                            }
+                            else
+                            { 
+                                <div class="margintop2"></div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+                                                            
+                            break;
+                            case CommonFunctions.CategoryType.PM:
+                            string PMBasePath = Convert.ToString(System.Configuration.ConfigurationManager.AppSettings["IQArchieve_PMBaseUrl"]);
+                            IQArchive_ArchiveBLPMModel PMModel = item.MediaData as IQArchive_ArchiveBLPMModel;
+
+                            if (!string.IsNullOrWhiteSpace(PMModel.Pub_Name))
+                            {
+                                fPub = PMModel.Pub_Name.Trim();
+
+                                if (fPub.Length > 23)
+                                {
+                                    sPub = fPub.Substring(0, 21) + "...";
+                                }
+                                else
+                                {
+                                    sPub = fPub;
+                                }
+                            }
+                                
+            <div id="divMedia_@item.ID" class="media">
+                <div class="MediaDate">
+                    <div class="post-date">
+                        <span class="month">@Month</span>
+                        <div>
+                            <span class="today">@Day</span>
+                        </div>
+                        <span class="timeWithTimeZone">@Time @(sessionInformation.IsLogIn ? sessionInformation.TimeZone : string.Empty)</span>
+                    </div>
+                </div>
+                <div class="MediaTypeLogo">
+                    <img src="@objSubMediaType.MediaIconPath" title="@objSubMediaType.DisplayName" />
+                </div>
+                <div class="MediaRoomContent">
+                    <div class="media-heading float-left" title="@Html.Raw(fTitle)">
+                        <a href="@(PMBasePath + PMModel.FileLocation.Replace(@"\", @"/"))" target="_blank">@Html.Raw(sTitle)</a>
+                    </div>
+                    <div class="subheading float-left margintop1">
+                        @item.timeDifference
+                    </div>
+                    <div class="clear float-left media-body">
+                        @Html.Raw(displayText)
+                    </div>
+                </div>
+                <div class="clear post-divider"></div>
+                <div class="clear margintop2 marginbottom2">
+                    <div class="MediaRoomActionBar">
+                        <div class="viewmore" style="min-height:1px">
+                        </div>
+                        <div class="viewlocation">
+                            @if (!string.IsNullOrWhiteSpace(fPub))
+                            {
+                                <div class="location-tag" title="@fPub">
+                                    @sPub
+                                </div>
+                            }
+                            else
+                            { 
+                                <div class="margintop2"></div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+  
+                            break;
+                            case CommonFunctions.CategoryType.MS:
+                            IQArchive_ArchiveMiscModel miscModel = item.MediaData as IQArchive_ArchiveMiscModel;
+                            Month = miscModel.CreateDT.ToString("MMM", System.Globalization.CultureInfo.InvariantCulture);
+                            Day = miscModel.CreateDT.Day.ToString();
+                            Time = miscModel.CreateDT.ToString("hh:mm tt");
+
+                            string catimg = string.Empty;
+                            string tooltip = string.Empty;
+                            switch (miscModel.FileType)
+                            {
+                                case CommonFunctions.IQUGCMediaTypes.Doc:
+                                    catimg = "word.png";
+                                    tooltip = "Document";
+                                    break;
+                                case CommonFunctions.IQUGCMediaTypes.Excel:
+                                    catimg = "excel.png";
+                                    tooltip = "Spreadsheet";
+                                    break;
+                                case CommonFunctions.IQUGCMediaTypes.Pdf:
+                                    catimg = "pdf.png";
+                                    tooltip = "PDF";
+                                    break;
+                                case CommonFunctions.IQUGCMediaTypes.Image:
+                                    catimg = "image.png";
+                                    tooltip = "Image";
+                                    break;
+                                default:
+                                    catimg = string.Empty;
+                                    break;
+                            }
+                                
+            <div id="divMedia_@item.ID" class="media">
+                <div class="MediaDate">
+                    <div class="post-date">
+                        <span class="month">@Month</span>
+                        <div>
+                            <span class="today">@Day</span>
+                        </div>
+                        <span class="timeWithTimeZone">@Time @miscModel.TimeZone</span>
+                    </div>
+                </div>
+                <div class="MediaTypeLogo">
+                    <img src="/images/MediaIcon/@catimg" title="@tooltip" />
+                </div>
+                <div class="MediaRoomContent">
+                    <div class="media-heading float-left" title="@Html.Raw(fTitle)">
+                        <a href="@miscModel.MediaUrl" target="_blank">@Html.Raw(sTitle)</a>
+                    </div>
+                    <div class="subheading float-left margintop1">
+                        @item.timeDifference
+                    </div>
+                    <div class="clear float-left media-body">
+                        @Html.Raw(displayText)
+                    </div>
+                </div>
+                <div class="clear post-divider"></div>
+                <div class="clear margintop2 marginbottom2">
+                    <div class="MediaRoomActionBar">
+                        <div class="viewmore" style="min-height:1px">
+                        </div>
+                    </div>
+                </div>
+            </div>
+  
+                   break;
+                            case CommonFunctions.CategoryType.PQ:
+                   IQArchive_ArchivePQModel pqModel = item.MediaData as IQArchive_ArchivePQModel;
+                   string authors = String.Empty;
+
+                   if (pqModel.Authors != null && pqModel.Authors.Count > 0)
+                   {
+                       if (pqModel.Authors.Count > 2)
+                       {
+                           authors = "(" + String.Join(", ", pqModel.Authors.Take(2)) + ", ...) ";
+                       }
+                       else
+                       {
+                           authors = "(" + String.Join(", ", pqModel.Authors) + ") ";
+                       }
+                   }
+
+                   if (!string.IsNullOrWhiteSpace(pqModel.Publication))
+                   {
+                       fPub = pqModel.Publication.Trim() + " " + authors;
+
+                       if (fPub.Length > 23)
+                       {
+                           sPub = fPub.Substring(0, 21) + "...";
+                       }
+                       else
+                       {
+                           sPub = fPub;
+                       }
+                   }
+                               
+            <div id="divMedia_@item.ID" class="media">
+                <div class="MediaDate">
+                    <div class="post-date">
+                        <span class="month">@Month</span>
+                        <div>
+                            <span class="today">@Day</span>
+                        </div>
+                        <span class="timeWithTimeZone">&nbsp;</span>
+                    </div>
+                </div>
+                <div class="MediaTypeLogo">
+                    <img src="@objSubMediaType.MediaIconPath" title="@objSubMediaType.DisplayName" />
+                </div>
+                <div class="MediaRoomContent">
+                    <div class="media-heading float-left" title="@Html.Raw(fTitle)">
+                        <a href="../../ProQuest/Index?source=library&id=@item.ID" target="_blank">@Html.Raw(sTitle)</a>
+                    </div>
+                    <div class="subheading float-left margintop1">
+                        @item.timeDifference
+                    </div>
+                    <div class="clear float-left media-body">
+                        @Html.Raw(displayText)
+                    </div>
+                </div>
+                <div class="clear post-divider"></div>
+                <div class="clear margintop2 marginbottom2">
+                    <div class="MediaRoomActionBar">
+                        <div class="viewmore" style="min-height:1px">
+                        </div>
+                        <div class="viewlocation">
+                            @if (!string.IsNullOrWhiteSpace(fPub))
+                            {
+                                <div class="location-tag" title="@fPub">
+                                    @sPub
+                                </div>
+                            }
+                            else
+                            { 
+                                <div class="margintop2"></div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+                                                                                       
+                            break;
+
+                            case CommonFunctions.CategoryType.IQRadio:
+                                IQArchive_ArchiveRadioModel RadioModel = item.MediaData as IQArchive_ArchiveRadioModel;
+
+                                if (!string.IsNullOrWhiteSpace(RadioModel.Market))
+                                {
+                                    fPub = RadioModel.Market.Trim();
+
+                                    if (fPub.Length > 23)
+                                    {
+                                        sPub = fPub.Substring(0, 21) + "...";
+                                    }
+                                    else
+                                    {
+                                        sPub = fPub;
+                                    }
+                                }
+                                
+            <div id="divMedia_@item.ID" class="media">
+                <div class="MediaDate">
+                    <div class="post-date">
+                        <span class="month">@Month</span>
+                        <div>
+                            <span class="today">@Day</span>
+                        </div>
+                        <span class="timeWithTimeZone">@Time @RadioModel.TimeZone</span>
+                    </div>
+                </div>
+                <div class="MediaTypeLogo">
+                    <img src="@RadioModel.StationLogo" title="@objSubMediaType.DisplayName" />
+                </div>
+                <div class="float-right FeedsVideoSpacer">
+                    <div class="FeedsVideo positionRelative float-left">
+                        <a class="cursorPointer" href="../../ClipPlayer/?ClipID=@RadioModel.ClipGuid" target="_blank">
+                            <img src="~/images/video.png" class="maxwidth130" alt="play video" />
+                        </a>
+                    </div>
+                </div>
+                <div class="MediaRoomContentVideo2">
+                    <div class="media-heading float-left" title="@Html.Raw(fTitle)">
+                        @Html.Raw(sTitle)
+                    </div>
+                    <div class="subheading float-left margintop1">
+                        @item.timeDifference
+                    </div>
+                    <div class="clear float-left media-body">
+                        <span style="color:#73897F">@RadioModel.StationID</span>
+                        @if (!string.IsNullOrWhiteSpace(displayText))
+                        {
+                            <span> - @Html.Raw(displayText)</span>
+                        }
+                    </div>
+                </div>
+                <div class="clear post-divider"></div>
+                <div class="clear margintop2 marginbottom2">
+                    <div class="MediaRoomActionBar">
+                        <div class="viewmore" style="min-height:1px">
+                        </div>
+                        <div class="viewlocation">
+                            @if (!string.IsNullOrWhiteSpace(fPub))
+                            {
+                                <div class="location-tag" title="@fPub">
+                                    @sPub
+                                </div>
+                            }
+                            else
+                            { 
+                                <div class="margintop2"></div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+              
+                            break;
+                        }
+                    }
+                }
+            }
+
+        }
+    </div>
+    
+}

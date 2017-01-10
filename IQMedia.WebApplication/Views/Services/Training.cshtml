@@ -1,0 +1,67 @@
+﻿@{
+    ViewBag.Title = "iQ media Training";
+    Layout = "~/Views/Shared/_IQMediaMasterStaticPages.cshtml";
+}
+@section HeaderImage
+{
+    <img src="~/Images/staticBanner/Services.jpg" alt="Training" />
+}
+@section Content
+{
+    <div class="span4">
+        @Html.Partial("~/Views/Services/_Left.cshtml")
+    </div>
+    <div class="span14 span14pad">
+        <p>
+            <span class="staticPageHeader">Expertise: the fastest path to success</span></p>
+        <p>
+            Training is your quickest route to success with iQ media. Customers who were trained
+            by iQ media report higher user adoption rates and increased productivity. Train
+            your users in classroom and virtual instructor-led classes as well as self-paced
+            online videos. We&#8217;ll even come and train your team in a private class.</p>
+        <p>
+            <span class="staticPageHeader">Training for All Roles and Scenarios</span></p>
+        <p>
+            <span class="staticPageSubHeader">Administrators</span>:</p>
+        <p>
+            Whether you&#8217;re a brand-new or experienced Administrator, get the core knowledge
+            you need to get up to speed, perform at your best, and get the most out of iQ media.</p>
+        <p>
+            <span class="staticPageSubHeader">End Users</span>:</p>
+        <p>
+            Get your whole team of iQ media users—including PR, communications, sales, marketing
+            managers, and executives—up to speed quickly.</p>
+        <p>
+            <span class="staticPageSubHeader">Daily News Generation</span>:</p>
+        <p>
+            It can be overwhelming to create a digest for the C-suite each morning. It may seem
+            like trying to take a sip of water from a firehose … we can help you learn how to
+            find relevant data with tools like faceted search and keyword searching.</p>
+        <p>
+            <span class="staticPageSubHeader">Special Projects</span>:</p>
+        <p>
+            Our consulting team can help you gain new insights with special or temporary projects.
+            We become an extension of your team and can help with projects specific to analysis
+            of campaigns.
+        </p>
+        <p>
+            <a href="~/Services/Consulting">
+                <img alt="Learn More" src="../../Images/Static/LearnMore.png" /></a></p>
+        <p>
+            <span class="staticPageHeader">Onsite training</span>:</p>
+        <p>
+            Our experts, your class. For many companies, the best iQ media training option is
+            to bring the entire team together for a private, instructor-led class. This unique
+            opportunity leads to quicker adoption, thanks to a focus on the content that&#8217;s
+            best suited for your team and the opportunity to discuss your specific iQ media
+            implementation during training. Speak with your sales representative to learn more
+            about onsite training.<br />
+        </p>
+    </div>
+    <script type="text/javascript" language="javascript">
+
+        $(document).ready(function () {
+            SetHighligtedLi('ulServiceNavigation', 'liTraining');
+        });    
+    </script>
+}

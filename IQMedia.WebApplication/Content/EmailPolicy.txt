@@ -1,0 +1,23 @@
+﻿<div>
+<font face="Microsoft Sans Serif" size="2">
+            <br />
+            <br />
+            www.iqmediacorp.com
+            <br />
+            <br />
+            FAIR USE NOTICE. This e-mail contains links to broadcast media content available
+            in the research database provided by iQ Media Group Inc. (“iQ media”) and clipped
+            by the sender of this e-mail. iQ media is a provider of monitoring and analytics
+            services and research tools only, does not sell, distribute or syndicate content,
+            and does not own the rights in the broadcast media content available in the iQ media
+            database. The recipient of this e-mail is required to comply with applicable copyright
+            and other laws and may not sell, copy, modify, re- broadcast, distribute, perform
+            or display broadcast media content in any infringing or illegal manner. This e-mail
+            is intended for the named recipient only. The recipient is responsible for ensuring
+            that all viewing, storage, sharing and other usage of the content accessible through
+            this e-mail constitutes “fair use” or is otherwise non-infringing under applicable
+            law. If the recipient intends to make any usage of the content that may not constitute
+            “fair use” or otherwise be non-infringing, iQ media strongly recommends that you
+            contact the relevant rights holder to obtain a suitable license in such content.
+</font>
+</div>

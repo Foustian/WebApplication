@@ -1,0 +1,193 @@
+﻿@using IQMedia.Model;
+@model IQNotifationSettingsPostModel
+@{
+    
+    IQMedia.Model.ActiveUser sessionInformation = IQMedia.WebApplication.Utility.ActiveUserMgr.GetActiveUser();
+    List<string> timeOfDay = System.Configuration.ConfigurationManager.AppSettings["TimeOfDay"].Split(new char[] { ',' }).ToList();
+    List<string> frequencies = System.Configuration.ConfigurationManager.AppSettings["IQNotificationFrequency"].Split(new char[] { ',' }).ToList();
+    Dictionary<string, short> daysOfWeek = System.Configuration.ConfigurationManager.AppSettings["DaysOfWeek"].Split(',').ToDictionary(a => a.Split('|')[0], b => Convert.ToInt16(b.Split('|')[1]));
+}
+<div style="clear: both;">
+</div>
+@using (Html.BeginForm("SubmitIQNotification", "IQNotification", FormMethod.Post, new { @class = "form-horizontal", @id = "frmIQNotification" }))
+{
+    <div style="padding-right: 15px;">
+        <div class="sidebar-nav" style="margin-top: 7px;">
+            <h5>
+                Add / Update IQ Notification</h5>
+        </div>
+        <div class="control-group">
+            <label for="IQNotifationSettings_Notification_Address" class="control-label">
+                Email Address</label>
+            <div class="controls">
+                <input type="text" class="txtwidth90per" id="IQNotifationSettings_Notification_Address" name="IQNotifationSettings.Notification_Address" placeholder="Email Address (separate multiple address with semicolon)" value ="@(Model.IQNotifationSettings.Notification_Address != null ? string.Join(";", Model.IQNotifationSettings.Notification_Address) : string.Empty)" />
+                <span style="color: #FF0000; display: none; vertical-align: top" id="spanIQNotifationSettings_Notification_Address"
+                    class="help-inline"></span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="IQNotifationSettings_SearchRequestList" class="control-label">
+                Select IQAgents
+            </label>
+            <div class="controls">
+                <input type="hidden" id="IQNotifationSettings_IQNotificationKey" name="IQNotifationSettings.IQNotificationKey" value="@Model.IQNotifationSettings.IQNotificationKey" />
+                <select id="IQNotifationSettings_SearchRequestList" name="IQNotifationSettings.SearchRequestList"
+                    multiple="multiple">
+                    @foreach (IQMedia.Model.IQAgent_SearchRequestModel item in Model.IQNotifationSettings_DropDown.SearchRequestList)
+                    {
+                        if (Model.IQNotifationSettings.SearchRequestList != null && Model.IQNotifationSettings.SearchRequestList.Contains(item.ID))
+                        {
+                        <option value="@item.ID" selected="selected">@item.QueryName</option>
+                        }
+                        else
+                        {
+                        <option value="@item.ID">@item.QueryName</option>
+                        }
+                    }
+                </select>
+                <span style="color: #FF0000; display: none; vertical-align: top" id="spanIQNotifationSettings_SearchRequestList"
+                    class="help-inline"></span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="IQNotifationSettings_ReportImageID" class="control-label">
+                Report Banner</label>
+            <div class="controls">
+                <select id="IQNotifationSettings_ReportImageID" name="IQNotifationSettings.ReportImageID">
+                    <option>Default</option>
+                    @foreach (IQMedia.Model.IQClient_CustomImageModel item in Model.IQNotifationSettings_DropDown.ReportImageList)
+                    {
+                        if (Model.IQNotifationSettings.ReportImageID == item.ID)
+                        {
+                        <option value="@item.ID" selected="selected" >@item.Location</option>
+                        }
+                        else
+                        {
+                        <option value="@item.ID">@item.Location</option>
+                        }
+                    }
+                </select>
+                <span style="color: #FF0000; display: none; vertical-align: top" id="spanIQNotifationSettings_ReportImageID"
+                    class="help-inline"></span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="IQNotifationSettings_Frequency" class="control-label">
+                Frequency</label>
+            <div class="controls">
+                <select id="IQNotifationSettings_Frequency" name="IQNotifationSettings.Frequency"
+                    class="input-medium" onchange="checkFrequency(this)">
+                    <option value="0">&lt;Frequency&gt;</option>
+                    @foreach (string strFrequency in frequencies)
+                    {
+                        if (strFrequency == Model.IQNotifationSettings.Frequency.ToString())
+                        {
+                        <option value="@strFrequency" selected="selected">@strFrequency</option>
+                        }
+                        else
+                        {
+                        <option value="@strFrequency">@strFrequency</option>
+                        }
+                    }
+                </select>
+                <span style="color: #FF0000; display: none; vertical-align: top" id="spanIQNotifationSettings_Frequency"
+                    class="help-inline"></span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="IQNotifationSettings_Notification_Day" class="control-label">
+                Day Of Week</label>
+            <div class="controls">
+                <select id="IQNotifationSettings_Notification_Day" name="IQNotifationSettings.Notification_Day" @(Model.IQNotifationSettings.Frequency == IQMedia.Shared.Utility.CommonFunctions.IQNotificationFrequency.OnceWeek ? string.Empty : "disabled=disabled") class="input-medium" >
+                    <option value="-1">&lt;Day&gt;</option>
+                    @foreach (var day in daysOfWeek)
+                    {
+                        if (Model.IQNotifationSettings.Frequency == IQMedia.Shared.Utility.CommonFunctions.IQNotificationFrequency.OnceWeek && day.Value == Model.IQNotifationSettings.Notification_Day)
+                        {
+                        <option value="@day.Value" selected="selected" >@day.Key</option>
+                        }
+                        else
+                        {
+                        <option value="@day.Value">@day.Key</option>
+                        }
+                    }
+                </select>
+                <span style="color: #FF0000; display: none; vertical-align: top" id="spanIQNotifationSettings_Notification_Day"
+                    class="help-inline"></span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="IQNotifationSettings_Notification_Time" class="control-label">
+                Time of Day</label>
+            <div class="controls">
+                <select id="IQNotifationSettings_Notification_Time" name="IQNotifationSettings.Notification_Time" @((Model.IQNotifationSettings.Frequency == IQMedia.Shared.Utility.CommonFunctions.IQNotificationFrequency.OnceWeek || Model.IQNotifationSettings.Frequency == IQMedia.Shared.Utility.CommonFunctions.IQNotificationFrequency.OnceDay) ? string.Empty : "disabled=disabled")
+                    class="input-medium">
+                    <option value="0">&lt;Time&gt;</option>
+                    @if (timeOfDay != null)
+                    {
+                        foreach (string time in timeOfDay)
+                        {
+                            if (Model.IQNotifationSettings.IQNotificationKey > 0 && Convert.ToDateTime(Model.IQNotifationSettings.Notification_Time).ToShortTimeString() == Convert.ToDateTime(time).ToShortTimeString() && (Model.IQNotifationSettings.Frequency == IQMedia.Shared.Utility.CommonFunctions.IQNotificationFrequency.OnceWeek || Model.IQNotifationSettings.Frequency == IQMedia.Shared.Utility.CommonFunctions.IQNotificationFrequency.OnceDay))
+                            {
+                                <option value="@time" selected="selected">@Convert.ToDateTime(time).ToShortTimeString()</option>    
+                            }
+                            else
+                            {
+                                <option value="@time">@Convert.ToDateTime(time).ToShortTimeString()</option>    
+                            }
+                        }
+                    }
+                </select>
+                <span style="color: #FF0000; display: none; vertical-align: top" id="spanIQNotifationSettings_Notification_Time"
+                    class="help-inline"></span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="IQNotifationSettings_Notification_Time" class="control-label">
+                Medium Types</label>
+            <div class="controls">
+                <select id="IQNotifationSettings_MediaTypeList" name="IQNotifationSettings.MediaTypeList"
+                    class="chosen-select input-large" multiple="multiple" data-placeholder="Medium Types">
+                    @if (Model.IQNotifationSettings.MediaTypeList == null || Model.IQNotifationSettings.MediaTypeList.Count == 0)
+                    {
+                        <option value="0" selected="selected">All</option>
+                    }
+                    else
+                    {
+                        <option value="0">All</option>
+                    }
+                    @foreach (var mt in IQCommon.CommonFunctions.GetAccessibleSubMediaType(sessionInformation.MediaTypes))
+                    {
+                        if (Model.IQNotifationSettings.MediaTypeList != null && Model.IQNotifationSettings.MediaTypeList.Contains(mt.SubMediaType))
+                        {
+                        <option value="@mt.SubMediaType" selected="selected">@mt.DisplayName</option>
+                        }
+                        else
+                        {
+                        <option value="@mt.SubMediaType">@mt.DisplayName</option>
+                        }
+                    }                    
+                </select>
+                <span style="color: #FF0000; display: none; vertical-align: top" id="spanIQNotifationSettings_MediaTypeList"
+                    class="help-inline"></span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="IQNotifationSettings_UseRollup" class="control-label">
+                Use Rollup</label>
+            <div class="controls">
+                <input type="checkbox" id="IQNotifationSettings_UseRollup" name="IQNotifationSettings.UseRollup" checked="@Model.IQNotifationSettings.UseRollup" value="true" />
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">
+                &nbsp;</label>
+            <div class="controls">
+                <input type="button" id="btnCancelIQNotifationSettings" name="btnCancelIQNotifationSettings"
+                    value="Cancel" onclick="CancelIQNotifationSettings();" class="button" style="margin: 0px;" />
+                <input type="button" onclick="SaveIQNotifationSettings()" id="btnSubmitIQNotifationSettings"
+                    name="btnSubmitIQNotifationSettings" value="Submit" class="button" style="margin: 0px;" />
+            </div>
+        </div>
+    </div>
+}

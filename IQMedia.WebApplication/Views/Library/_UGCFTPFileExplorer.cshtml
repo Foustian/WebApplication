@@ -1,0 +1,113 @@
+﻿@model List<IQMedia.Model.UGCFileModel>
+@if (Model != null && Model.Count > 0)
+{
+    <style type="text/css">
+        .table td, .table th
+        {
+            padding: 5px !important;
+            border: none !important;
+        }
+    </style>
+    <div id="divFTPBreadCrumb">
+        <ul class="breadcrumb">
+            @if (string.IsNullOrWhiteSpace(Convert.ToString(TempData["UGCCurrentPath"])))
+            {
+                <li class="active">Home</li>
+            }
+            else
+            {
+                <li><a href="javascript:void(0);" onclick="GetFolderContentByPath('');">Home</a> <span
+                    class="divider">/</span> </li>
+            }
+            @{
+            if (!string.IsNullOrWhiteSpace(Convert.ToString(TempData["UGCCurrentPath"])))
+            {
+
+                string[] strFTPBreadCrumb = Convert.ToString(TempData["UGCCurrentPath"]).Split(new char[] { '\\' });
+
+                int Count = 0;
+                foreach (string s in strFTPBreadCrumb)
+                {
+                    if (!string.IsNullOrWhiteSpace(s))
+                    {
+                        string href = string.Empty;
+                        int InnerCount = 0;
+                        foreach (string shref in strFTPBreadCrumb)
+                        {
+                            if (!string.IsNullOrWhiteSpace(shref))
+                            {
+                                if (InnerCount <= Count)
+                                {
+                                    if (string.IsNullOrWhiteSpace(href))
+                                    {
+                                        href = shref;
+                                    }
+                                    else
+                                    {
+                                        href += "\\\\" + shref;
+                                    }
+                                }
+                                else
+                                {
+                                    break;
+                                }
+                            }
+                            InnerCount = InnerCount + 1;
+                        }
+                        Count = Count + 1;
+                        if (Count < strFTPBreadCrumb.Length)
+                        {
+                <li><a href="javascript:void(0);" onclick="GetFolderContentByPath('@href.Replace("\'","\\\'")');">@s</a>
+                    <span class="divider">/</span></li> 
+                        }
+                        else
+                        {
+                <li class="active">@s</li> 
+                        }
+                    }
+                }
+            }
+            }
+        </ul>
+    </div>
+    <div id="divUGCFileExplorerScrollContent">
+        <div style="padding:10px;">
+            <table class="table">
+                <tr>
+                    <th>Name</th>
+                    <th>Date Modified</th>
+                </tr>
+                @foreach (IQMedia.Model.UGCFileModel item in Model)
+                {
+                    <tr>
+                        @{string path = item.Path.Replace("\\", "\\\\");
+                          if (item.IsDirectory)
+                          {
+                            <td>
+                                <div class="foldericon">
+                                    <a href="javascript:void(0);" onclick="GetFolderContentByPath('@path.Replace("\'","\\\'")');">@item.Name</a></div>
+                            </td>
+                          }
+                          else
+                          {
+                            <td>
+                                <div class="fileicon">
+                                    <a href="javascript:void(0);" onclick="SetFTPSelectedFile('@item.Name.Replace("\'", "\\\'")');">@item.Name</a></div>
+                            </td>
+                          }
+                            <td>
+                                @item.LastModifiedDate.ToString("MM/dd/yyyy hh:mm:ss tt")
+                            </td>   
+                        }
+                    </tr>
+                }
+            </table>
+        </div>
+    </div>
+}
+else
+{
+    <div>
+        No file or directories found
+    </div>
+}

@@ -1,0 +1,45 @@
+﻿.radiopg 
+{
+    border:1px solid #d8d8d8;
+}
+
+.radiopg tr th, .radiopg tr td 
+{
+    border-bottom:1px solid #d8d8d8;
+    padding:5px;
+} 
+
+.radiopg tr th 
+{
+    background:#f4f4f4;
+    padding:7px;
+}
+.tadspg 
+{
+    border:1px solid #d8d8d8;
+}
+
+.tadspg tr th, .tadspg tr td 
+{
+    border-bottom:1px solid #d8d8d8;
+    padding:5px;
+} 
+
+.tadspg tr th 
+{
+    background:#f4f4f4;
+    padding:7px;
+}
+.nextprevbtn
+{
+    display:none; 
+    float:left;
+    border-right:1px solid #d8d8d8;
+    border-left:1px solid #d8d8d8;
+}
+.nextprevdiv
+{
+    float:right;
+    padding-bottom:10px;
+    
+}        

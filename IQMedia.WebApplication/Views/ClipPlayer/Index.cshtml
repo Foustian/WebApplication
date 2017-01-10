@@ -1,0 +1,328 @@
+﻿@using System.Configuration;
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+@{
+    var tmpPS = 0;       
+ }
+@if (!string.IsNullOrWhiteSpace(Request.QueryString["PS"]) && int.TryParse(Request.QueryString["PS"],out tmpPS) && tmpPS > 0)
+{
+    <html xmlns:og="ogp.me/ns#" style="width: 100%; height: 100%;">
+    <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width" />
+        <title>iQ media Clip Player</title>@*<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" />*@
+        @*<link href="../../Css/jquery-ui.css" rel="stylesheet" type="text/css" />*@
+        <link href="~/Css/Fonts.css" rel="stylesheet" type="text/css" />
+        <link href="~/Css/jquery-ui.css" rel="stylesheet" type="text/css" />
+        <link href="~/css/Player/PlayerIfrmClip.css?v=1.2" rel="stylesheet" type="text/css" />
+        <style type="text/css">
+            body
+            {
+                font-family: 'Open Sans';
+                margin: 0;
+            }
+        </style>
+        <script type="text/javascript">
+            var _Player = "";
+            var _UserHostAddress = '@((Model != null && Model.ContainsKey("IsIOSAndroid")) ? Model["IsIOSAndroid"] : string.Empty)';
+            var _fid = '@(Request.QueryString["ClipID"] != null ? Request.QueryString["ClipID"] : string.Empty)';
+            var _clipTitle = '@((Model != null && Model.ContainsKey("ClipTitle")) ? Model["ClipTitle"] : string.Empty)';
+            var _urlIOSAndroidClipPlayer = '@System.Configuration.ConfigurationManager.AppSettings["IOSAndroidClipPlayerURL"]';
+            _urlIOSAndroidClipPlayer = _urlIOSAndroidClipPlayer.replace('{0}', _fid).replace('{1}', document.URL).replace("&amp;", "&");
+            var IsShowTimeSync = false;
+            var _urlSendEmail = '@System.Configuration.ConfigurationManager.AppSettings["UrlSendEmail"]';
+            var _IQArchieveTVThumbUrl = '@System.Configuration.ConfigurationManager.AppSettings["SVCGetClipThumbUrl"]';
+            var _GetNielSenDataUrl = '@System.Configuration.ConfigurationManager.AppSettings["UrlGetNielSenData"]';
+            var _urlClipPlayer = '@System.Configuration.ConfigurationManager.AppSettings["ClipPlayerURL"]';
+            var _urlVideoMetaData = '@System.Configuration.ConfigurationManager.AppSettings["UrlGetVideoMetaData"]';
+        </script>
+        <script src="~/Scripts/jquery-1.9.1.min.js?v=1.0" type="text/javascript"></script>
+        <script src="~/Scripts/jquery-ui.min.js?v=1.0" type="text/javascript"></script>
+        <script src="~/Scripts/jquery.placeholder.js?v=1.0" type="text/javascript"></script>
+        <script type="text/javascript" src="~/Scripts/IQMediaCommon.js"></script>
+        <script src="~/Scripts/ConstantScript.js?v=1.32" type="text/javascript"></script>        
+        <script type="text/javascript" src="~/Scripts/Player/PlayerIfrmClip.js?v=1.3"></script>
+        <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+        <!--[if lt IE 9]>
+      <script src="/Scripts/html5.js?v=1.0"></script>
+      <script src="/Scripts/respond.min.js?v=1.0"></script>
+    <![endif]-->
+        <script type="text/javascript">
+            if (document.documentMode != undefined && document.documentMode < 9) {
+                $.getScript("/Scripts/json3.min.js")
+            }
+        </script>
+        <meta property="og:site_name" content="iQMedia" />
+        <meta property="og:url" content="@Request.Url.AbsoluteUri" />
+        <meta property="og:title" content="@((Model != null && Model.ContainsKey("ClipTitle")) ? Model["ClipTitle"] : string.Empty)" />
+        <meta property="og:type" content="video" />
+        <meta property="og:image" content="@(ConfigurationManager.AppSettings["SVCGetClipThumbUrl"] + Request.QueryString["ClipID"])" />
+        <meta property="og:video" content="@("https:" + ConfigurationManager.AppSettings["PlayerLocation"])?IsRawMedia=false&amp;PageName=@Request.QueryString["PN"]&amp;embedId=@Request.QueryString["ClipID"]&amp;ServicesBaseURL=@ConfigurationManager.AppSettings["ServicesBaseURL"]&amp;PlayerFromLocal=@ConfigurationSettings.AppSettings["PlayerFromLocal"]&amp;EB=false&amp;autoPlayback=true&amp;sd=@ConfigurationSettings.AppSettings["SubDomainSWF"]&amp;isec=@ConfigurationSettings.AppSettings["IsSecuredServiceSWF"]" />
+        <meta property="og:video:secure_url" content="@("https:" + ConfigurationManager.AppSettings["PlayerLocation"])?IsRawMedia=false&amp;PageName=@Request.QueryString["PN"]&amp;embedId=@Request.QueryString["ClipID"]&amp;ServicesBaseURL=@ConfigurationManager.AppSettings["ServicesBaseURL"]&amp;PlayerFromLocal=@ConfigurationSettings.AppSettings["PlayerFromLocal"]&amp;EB=false&amp;autoPlayback=true&amp;sd=@ConfigurationSettings.AppSettings["SubDomainSWF"]&amp;isec=@ConfigurationSettings.AppSettings["IsSecuredServiceSWF"]" />
+        <meta property="og:video:type" content="application/x-shockwave-flash" />
+        <meta property="og:video:width" content="409" />
+        <meta property="og:video:height" content="255" />
+    </head>
+    <body style="width: 100%; height: 100%;">
+        <div style="width: 100%; height: 100%; background: #000000;">
+            <div id="divDim" style="width: 100%; height: 100%; margin: auto;">
+                @if (Model.ContainsKey("IsIOSAndroid") && Model["IsIOSAndroid"] == "True" && Model.ContainsKey("ClipPlayer"))
+                {
+                    <div id="divClipPlayer" style="width: 100%; height: 100%; position: relative;">
+                        @Html.Raw(Model["ClipPlayer"]);
+                    </div>
+                }
+                else
+                {
+                    
+                    Dictionary<string, string> playerModel = new Dictionary<string, string>();
+                    
+                    var fscr = "";
+
+                    fscr = Request.QueryString["fs"] ?? Request.QueryString["fscr"];
+
+                    if (string.IsNullOrEmpty(fscr))
+                    {
+                        fscr = "1";
+                    }
+
+                    playerModel["FSCR"] = fscr;
+                    
+                    
+                    @Html.Partial("~/Views/ClipPlayer/_PlayerWOPage.cshtml",playerModel)
+                }
+            </div>
+        </div>
+        <script src="~/Scripts/ClipPlayer.js?v=1.0" type="text/javascript"></script>
+        <script language="javascript" type="text/javascript">
+
+            function SeekPoint(second) {
+                var _flash = document.getElementById('HUY');
+                _flash.setSeekPoint(second);
+            }
+
+            _fscr = '@(!string.IsNullOrEmpty(Request.QueryString["fs"]) ? Request.QueryString["fs"] : "1")';
+
+        </script>
+        @if (Model == null || (!Model.ContainsKey("IsIOSAndroid") || !(Model["IsIOSAndroid"] == "True")))
+        {
+            <script type="text/javascript">
+    var _PlayerObj = "";
+    var ps='@(Request.QueryString["PS"] ?? "0")';
+    var hcc = '@(Request.QueryString["HCC"] ?? "0")';
+    var ap = '@(Request.QueryString["ap"] ?? "1")';
+
+    var RenderVideo = function()
+    {
+        LoadClipPlayer(_fid,ps,hcc,false,true,ap);        
+    }
+
+    if (document.documentMode != undefined && document.documentMode < 9) {
+        $(window).load(function () {
+
+            $.when($.getScript("../Scripts/Player/PlayerIfrmClip.js?v=1.3")).then(function () {
+            
+                    RenderVideo();
+            });
+
+        });
+
+    }
+    else {
+        
+        RenderVideo();
+    }
+       
+            </script>
+        }
+        else
+        { 
+            <script type="text/javascript">
+                SetClipMetadata();
+            </script>
+        }
+    </body>
+    </html>
+}
+else
+{
+    <html xmlns:og="ogp.me/ns#">
+    <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width" />
+        <title>iQ media Clip Player</title>@*<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" />*@
+        @*<link href="../../Css/jquery-ui.css" rel="stylesheet" type="text/css" />*@
+        <link href="~/Css/Fonts.css" rel="stylesheet" type="text/css" />
+        <link href="~/Css/jquery-ui.css" rel="stylesheet" type="text/css" />
+        <link href="~/css/Player/PlayerIfrmClip.css?v=1.1" rel="stylesheet" type="text/css" />
+        <style type="text/css">
+            body
+            {
+                font-family: 'Open Sans';
+                margin: 0;
+            }
+        </style>
+        <script type="text/javascript">
+            var _Player = "";
+            var _UserHostAddress = '@((Model != null && Model.ContainsKey("IsIOSAndroid")) ? Model["IsIOSAndroid"] : string.Empty)';
+            var _fid = '@(Request.QueryString["ClipID"] != null ? Request.QueryString["ClipID"] : string.Empty)';
+            var _clipTitle = '@((Model != null && Model.ContainsKey("ClipTitle")) ? Model["ClipTitle"] : string.Empty)';
+            var _urlIOSAndroidClipPlayer = '@System.Configuration.ConfigurationManager.AppSettings["IOSAndroidClipPlayerURL"]';
+            _urlIOSAndroidClipPlayer = _urlIOSAndroidClipPlayer.replace('{0}', _fid).replace('{1}', document.URL).replace("&amp;", "&");
+            var IsShowTimeSync = false;
+            var _urlSendEmail = '@System.Configuration.ConfigurationManager.AppSettings["UrlSendEmail"]';
+            var _IQArchieveTVThumbUrl = '@System.Configuration.ConfigurationManager.AppSettings["SVCGetClipThumbUrl"]';
+            var _GetNielSenDataUrl = '@System.Configuration.ConfigurationManager.AppSettings["UrlGetNielSenData"]';
+            var _urlClipPlayer = '@System.Configuration.ConfigurationManager.AppSettings["ClipPlayerURL"]';
+            var _urlVideoMetaData = '@System.Configuration.ConfigurationManager.AppSettings["UrlGetVideoMetaData"]';
+        </script>
+        <script src="~/Scripts/jquery-1.9.1.min.js?v=1.0" type="text/javascript"></script>
+        <script src="~/Scripts/jquery-ui.min.js?v=1.0" type="text/javascript"></script>
+        <script src="~/Scripts/jquery.placeholder.js?v=1.0" type="text/javascript"></script>
+        <script type="text/javascript" src="~/Scripts/IQMediaCommon.js"></script>
+        <script src="~/Scripts/ConstantScript.js?v=1.32" type="text/javascript"></script>        
+        <script type="text/javascript" src="~/Scripts/Player/PlayerIfrmClip.js?v=1.3"></script>
+        <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+        <!--[if lt IE 9]>
+      <script src="/Scripts/html5.js?v=1.0"></script>
+      <script src="/Scripts/respond.min.js?v=1.0"></script>
+    <![endif]-->
+        <script type="text/javascript">
+            if (document.documentMode != undefined && document.documentMode < 9) {
+                $.getScript("/Scripts/json3.min.js")
+            }
+        </script>
+        <meta property="og:site_name" content="iQMedia" />
+        <meta property="og:url" content="@Request.Url.AbsoluteUri" />
+        <meta property="og:title" content="@((Model != null && Model.ContainsKey("ClipTitle")) ? Model["ClipTitle"] : string.Empty)" />
+        <meta property="og:type" content="video" />
+        <meta property="og:image" content="@(ConfigurationManager.AppSettings["SVCGetClipThumbUrl"] + Request.QueryString["ClipID"])" />
+        <meta property="og:video" content="@("https:" + ConfigurationManager.AppSettings["PlayerLocation"])?IsRawMedia=false&amp;PageName=@Request.QueryString["PN"]&amp;embedId=@Request.QueryString["ClipID"]&amp;ServicesBaseURL=@ConfigurationManager.AppSettings["ServicesBaseURL"]&amp;PlayerFromLocal=@ConfigurationSettings.AppSettings["PlayerFromLocal"]&amp;EB=false&amp;autoPlayback=true&amp;sd=@ConfigurationSettings.AppSettings["SubDomainSWF"]&amp;isec=@ConfigurationSettings.AppSettings["IsSecuredServiceSWF"]" />
+        <meta property="og:video:secure_url" content="@("https:" + ConfigurationManager.AppSettings["PlayerLocation"])?IsRawMedia=false&amp;PageName=@Request.QueryString["PN"]&amp;embedId=@Request.QueryString["ClipID"]&amp;ServicesBaseURL=@ConfigurationManager.AppSettings["ServicesBaseURL"]&amp;PlayerFromLocal=@ConfigurationSettings.AppSettings["PlayerFromLocal"]&amp;EB=false&amp;autoPlayback=true&amp;sd=@ConfigurationSettings.AppSettings["SubDomainSWF"]&amp;isec=@ConfigurationSettings.AppSettings["IsSecuredServiceSWF"]" />
+        <meta property="og:video:type" content="application/x-shockwave-flash" />
+        <meta property="og:video:width" content="409" />
+        <meta property="og:video:height" content="255" />
+    </head>
+    <body>
+        <div>
+            <div style="background: #636F72; position: fixed; top: 0; left: 0; width: 100%;">
+                <a href="http://www.iq.media" style="padding: 10px 0px 10px 15px; display: block;height:42px;" target="_blank">
+                    <img src="~/images/iq-media.png" style="height:42px;" alt="iQ media" /></a></div>
+            <div style="margin-top: 62px;">
+                <div style="width: 100%; background: #000000;">
+                    <div id="divDim" style="padding: 20px 0px; max-width: 704px; margin: auto;">
+                        @if (Model.ContainsKey("IsIOSAndroid") && Model["IsIOSAndroid"] == "True" && Model.ContainsKey("ClipPlayer"))
+                        {
+                            <div id="divClipPlayer" style="width: 100%; padding-top: 56.25%; position: relative;">
+                                @Html.Raw(Model["ClipPlayer"]);
+                            </div>
+                        }
+                        else
+                        {
+                            Dictionary<string, string> playerModel = new Dictionary<string, string>();
+
+                            var fscr = "";
+
+                            fscr = Request.QueryString["fs"] ?? Request.QueryString["fscr"];
+
+                            if (string.IsNullOrEmpty(fscr))
+                            {
+                                fscr = "1";
+                            }
+
+                            playerModel["FSCR"] = fscr;                            
+                            
+                            @Html.Partial("~/Views/ClipPlayer/_Player.cshtml", playerModel)
+                        }
+                    </div>
+                </div>
+                <div style="width: 100%; background: #ffffff; border-bottom: 1px solid #afafaf; overflow: auto;">
+                    <div class="vid-clp-info">
+                        <div class="vid-clp-info-ssp">
+                            <div style="width: 40px; float: left;">
+                                <img id="imgVidSrc" /></div>
+                            <div class="vid-clp-info-program">
+                                <h3 class="vid-clp-info-title">
+                                </h3>
+                                <h3 class="vid-clp-info-station">
+                                </h3>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="vid-clp-info-aired">
+                            </div>
+                            <div class="vid-clp-info-nlsn">
+                                <div>
+                                    <img src="~/images/video-player/views.png" /><span id="spnViews">...</span></div>
+                                <div>
+                                    <img src="~/images/video-player/value.png" /><span id="spnValue">...</span></div>
+                                <div>
+                                    <img src="~/images/video-player/rank.png" /><span id="spnRank">...</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="text-align:center;font-size:14px;color:#6d6d6d;">
+                @Html.Partial("~/Views/Shared/_Footer.cshtml")
+            </div>
+        </div>
+        <script src="~/Scripts/ClipPlayer.js?v=1.0" type="text/javascript"></script>
+        <script language="javascript" type="text/javascript">
+
+            function SeekPoint(second) {
+                var _flash = document.getElementById('HUY');
+                _flash.setSeekPoint(second);
+            }
+
+            _fscr = '@(!string.IsNullOrEmpty(Request.QueryString["fs"]) ? Request.QueryString["fs"] : "1")';
+
+        </script>
+        @if (Model == null || (!Model.ContainsKey("IsIOSAndroid") || !(Model["IsIOSAndroid"] == "True")))
+        {
+            <script type="text/javascript">
+    var _PlayerObj = "";
+    var ps='@(Request.QueryString["PS"] ?? "0")';
+    var hcc = '@(Request.QueryString["HCC"] ?? "0")';
+    var ap = '@(Request.QueryString["ap"] ?? "1")';
+
+    var RenderVideo = function()
+    {
+        LoadClipPlayer(_fid,ps,hcc,true,true,ap);        
+    }
+
+    if (document.documentMode != undefined && document.documentMode < 9) {
+        $(window).load(function () {
+
+            $.when($.getScript("../Scripts/Player/PlayerIfrmClip.js?v=1.3")).then(function () {
+            
+                    RenderVideo();
+            });
+
+        });
+
+    }
+    else {
+        
+        RenderVideo();
+    }
+       
+            </script>
+        }
+        else
+        { 
+            <script type="text/javascript">
+                SetClipMetadata(_fid);
+            </script>
+        }
+        <script type="text/javascript">
+            if (document.documentMode < 9) {
+                function noError() { return true; }
+                window.onerror = noError;
+            }
+        </script>
+    </body>
+    </html>
+}

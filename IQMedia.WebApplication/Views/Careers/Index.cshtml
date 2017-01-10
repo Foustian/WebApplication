@@ -1,0 +1,160 @@
+﻿@{
+    
+    ViewBag.Title = "iQ media: We're Hiring!";
+    Layout = "~/Views/Shared/_IQMediaMasterStaticPages_New.cshtml";   
+}
+@section HeadSection
+{
+    <meta name="description" content="iQ media is looking for smart people (like you!) to join our offices in Philadelphia, New York and Washington, D.C." />
+
+    <!-- Schema.org markup for Google+ -->
+    <meta itemprop="name" content="iQ media: We're Hiring!">
+    <meta itemprop="description" content="iQ media is looking for smart people (like you!) to join our offices in Philadelphia, New York and Washington, D.C.">
+    <meta itemprop="image" content="https://iqmediacorp.com/images/home_new/Careers/careers_header.png">
+    <!-- Twitter Card data -->
+    <meta name="twitter:card" content="https://iqmediacorp.com/images/home_new/Careers/careers_header.png">
+    <meta name="twitter:site" content="&#64;iqmediacorp">
+    <meta name="twitter:title" content="iQ media: We're Hiring!">
+    <meta name="twitter:description" content="iQ media is looking for smart people (like you!) to join our offices in Philadelphia, New York and Washington, D.C.">
+    <!-- Open Graph data -->
+    <meta property="og:title" content="iQ media: We're Hiring!" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://iqmediacorp.com/careers/" />
+    <meta property="og:image" content="https://iqmediacorp.com/images/home_new/Careers/careers_header.png" />
+    <meta property="og:description" content="iQ media is looking for smart people (like you!) to join our offices in Philadelphia, New York and Washington, D.C." />
+    <meta property="og:site_name" content="iQ media" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="fb:admins" content="394445033944927" />
+
+    <link rel="Stylesheet" type="text/css" href="~/Css/career.css?v=1.1" />
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#liCareers').siblings().removeClass('active')
+            $('#liCareers').addClass('active');
+        });
+        $(window).load(function () {
+
+            SetImageHeight();
+
+            $(window).resize(function () {
+
+                SetImageHeight();
+            });
+        });
+
+        var SetImageHeight = function () {
+            var windowScreen = $(window).width();
+            if (windowScreen > 640) {
+                var firstHeight = $(".imgFirstPart").height();
+                var secondHeight = $(".imgSecondPart").height();
+                var thirdHeight = $(".imgThirdPart").height();
+                var height = Math.min(firstHeight, secondHeight, thirdHeight);
+                $(".bottom-img-main").css({ 'height': height, 'overflow': 'hidden' });
+            }
+        }
+
+    </script>
+}
+<div class="jumbotron img-Header">
+    <img src="~/images/home_new/Careers/careers_header.png" class="img100" alt="we're hiring! challenge an industry" />
+</div>
+<div class="jumbotron">
+    <div class="container">
+        <div class="row">
+            <h1 class="blue-txt">who works here?</h1>
+            <p>
+               Our clients represent an emerging class of smart, forward-thinking marketing & pr professionals. That's why we work hard to keep our team tight-knit and top-notch. We care about our product and our customers. We push. We motivate. We challenge each other every day.</p>
+            <p>
+               <a href="https://www.linkedin.com/vsearch/j?page_num=1&keywords=iQ+media+Corp&locationType=Y&f_C=1442342&trk=careers_promo_module" target="_blank" class="orange-txt" style="font-family:'lato-bold';">We want to challenge you.</a> We're always looking to take on new dedicated and passionate talent. iQ media has an office in New York City with headquarters in Conshohocken, PA. We offer employees an energetic work environment, competitive compensation, excellent benefits, and fun company events. </p>
+        </div>
+    </div>
+</div>
+<div class="jumbotron c-team" style="padding-top: 0px;">
+    <div class="container">
+        <div class="row">
+            <h2 class="green-txt font47" style="margin-bottom: 25px; margin-top: 0px;">
+                sound like your kind of deal? get to know a few of us.</h2>
+        </div>
+        <div class="row">
+            <ul>
+                <li>
+                    <img src="~/images/home_new/careers/jack.png" style="display: inline-block" alt="jack" />
+                    <h3 class="c-name">
+                        jack wyrick</h3>
+                    <h3 class="c-desg">
+                        enterprise sales executive</h3>
+                    <h3 class="c-que">
+                        What’s your favorite thing about your job?</h3>
+                    <p>
+                        The clients that proactively schedule meetings with us.  They are some of the coolest and innovative companies in their industry and being able to show them a product or an approach they’ve never seen before is exciting.  We get to participate in extremely smart conversations and it only makes you hungry for the next meeting.</p>
+                    <h3 class="c-que">
+                        Describe iQ media in 3 words.</h3>
+                    <p>
+                        Innovation. Disruptive. Exciting.</p>
+                </li><li>
+                    <img src="~/images/home_new/careers/kristin.png" style="display: inline-block;" alt="kristin" />
+                    <h3 class="c-name">
+                        kristin maguire</h3>
+                    <h3 class="c-desg">
+                        sales development</h3>
+                    <h3 class="c-que">
+                        Why should someone want to work here?</h3>
+                    <p>
+                        It’s easy to focus on the fun aspect of iQ media but what really makes someone want to work here is the drive and ambition of each individual. Everyone from the CEO down has immense pride and passion for our products, clients, and company. We joke, laugh and occasionally BBQ but what really draws talent to iQ media is the dedication to success everyone has.</p>
+                    <h3 class="c-que">
+                        Describe iQ media in 3 words.</h3>
+                    <p>
+                        Contemporary. Dedication. Excitement.</p>
+                </li><li>
+                    <img src="~/images/home_new/careers/nick.png" style="display: inline-block;" alt="nick" />
+                    <h3 class="c-name">
+                        nick krug</h3>
+                    <h3 class="c-desg">
+                        application support engineer</h3>
+                    <h3 class="c-que">
+                        What’s your favorite thing about your job?</h3>
+                    <p>
+                        I love solving problems for our clients. The needs of our diverse client base keep me interested and informed.</p>
+                    <h3 class="c-que">
+                        Describe iQ media in 3 words.</h3>
+                    <p>
+                        Empowering. Validating. Responsive.</p>
+                </li><li>
+                    <img src="~/images/home_new/careers/amarra.png" style="display: inline-block;" alt="amarra" />
+                    <h3 class="c-name">
+                        amarra boone</h3>
+                    <h3 class="c-desg">
+                        sales development associate</h3>
+                    <h3 class="c-que">
+                        What’s your favorite thing about your job?</h3>
+                    <p>
+                        It’s rewarding having conversations with companies’ thought leaders that understand the need for innovative change in media and marketing technologies. Introducing them to our platform and ultimately solving their problems.</p>
+                    <h3 class="c-que">
+                        Describe iQ media in 3 words.</h3>
+                    <p>
+                        Cutting-Edge. Competitive. Engaging.</p>
+                </li><li>
+                    <img src="~/images/home_new/careers/derek.png" style="display: inline-block;" alt="derek" />
+                    <h3 class="c-name">
+                        derek herman</h3>
+                    <h3 class="c-desg">
+                        sales development</h3>
+                    <h3 class="c-que">
+                        Why should someone want to work here?</h3>
+                    <p>
+                        If you're looking for a challenge with focused, like minded people where motivation and inspiration are part of your daily routine, iQ is the place to be. We have fun and buckle down to better ourselves and iQ every day.</p>
+                    <h3 class="c-que">
+                        Describe iQ media in 3 words.</h3>
+                    <p>
+                        Unique. Fun. Advanced.</p>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="jumbotron" style="text-align: center; padding-top: 10px;">
+    <a href="https://www.linkedin.com/vsearch/j?page_num=1&keywords=iQ+media+Corp&locationType=Y&f_C=1442342&trk=careers_promo_module"
+        target="_blank" class="reqdemo-orange">current openings</a>
+</div>
+<div class="bottom-img-main">
+    <div class="imgFirstPart"><img alt="" src="~/Images/home_new/Careers/GIRLS_ac.png" /><img alt="" src="~/Images/home_new/Careers/nyc.jpg" alt="iq media new york" /><img alt="" src="~/Images/home_new/Careers/philabundance.png" /></div><div class="imgSecondPart"><img src="~/Images/home_new/Careers/meeting.jpeg" alt="" /><div class="one"><img src="~/Images/home_new/Careers/toysfortots.png" alt="" /><img src="~/Images/home_new/Careers/dc.jpg" alt="iq media dc" /></div><div class="two"><img src="~/Images/home_new/Careers/erica.jpg" /></div></div><div class="imgThirdPart"><img src="~/Images/home_new/Careers/fooze.jpg"><img src="~/Images/home_new/Careers/LEADGEN.jpg"></div></div>

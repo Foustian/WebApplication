@@ -1,0 +1,91 @@
+﻿@{
+    ViewBag.Title = "iQ media Create";
+    Layout = "~/Views/Shared/_IQMediaMasterStaticPages.cshtml";
+}
+@section HeaderImage
+{
+    <img src="~/Images/StaticBanner/Software.jpg" alt="Software banner" />
+}
+@section Content
+{
+    <div class="span4">
+        @Html.Partial("~/Views/Software/_Left.cshtml")
+    </div>
+    <div class="span14 span14pad">
+        <h2>
+            Create &amp; Make Your Own Media Magic</h2>
+        <div class="small-text">
+            <p>
+                Our customers do a lot more than just count clips and deliver daily digests. They
+                gain insights that translate into competitive business intelligence, and they use
+                those insights to create high quality video assets that fuel their content marketing
+                programs.</p>
+            <p>
+                Great content has been monitored and understood in new ways. Ideas have been generated.
+                cliQ makes it easy to turn those ideas into content marketing assets that get results.</p>
+        </div>
+        <div class="small-text clearfix">
+            <div class="span10">
+                <h3>
+                    Inline Media Workspace</h3>
+                <p>
+                    <img alt="Create" src="../images/static/point-icon.png" />
+                    Rapid find, pinpoint, clip, and share</p>
+                <p>
+                    <img alt="Create" src="../images/static/point-icon.png" />
+                    Curate high quality video retained in our cloud indefinitely</p>
+                <p>
+                    <img alt="Create" src="../images/static/point-icon.png" />
+                    Stunning visual analysis of successes with your PR and Marketing campaigns</p>
+            </div>
+            <div class="span8">
+                <img src="../images/Inline_Media_Workspace.png" alt="Inline Media Workspace"></div>
+        </div>
+        <div class="small-text clearfix">
+            <div class="span8">
+                <img src="../images/Data_Driven_Insights.png" alt="Data-Driven Insights"></div>
+            <div class="span10">
+                <h3>
+                    Data-Driven Insights</h3>
+                <p>
+                    <img alt="Create" src="../images/static/point-icon.png" />
+                    Nielsen audience by quarter hour segments</p>
+                <p>
+                    <img alt="Create" src="../images/static/point-icon.png" />
+                    iQ media values</p>
+                <p>
+                    <img alt="Create" src="../images/static/point-icon.png" />
+                    Sentiment sensor</p>
+            </div>
+        </div>
+        <div class="small-text clearfix">
+            <div class="span10">
+                <h3>
+                    Content Marketing Arsenal</h3>
+                <p>
+                    <img alt="Create" src="../images/static/point-icon.png" />
+                    Your own cloud-based media library
+                </p>
+                <p>
+                    <img alt="Create" src="../images/static/point-icon.png" />
+                    Save your high value clips and other assets</p>
+                <p>
+                    <img alt="Create" src="../images/static/point-icon.png" />
+                    Organizational sharing &amp; management</p>
+                <p>
+                    <img alt="Create" src="../images/static/point-icon.png" />
+                    No download charges</p>
+            </div>
+            <div class="span8">
+                <img src="../images/Content_Marketing_Arsenal.png" alt="Content Marketing Arsenal"></div>
+        </div>
+    </div>
+    <script type="text/javascript" language="javascript">
+
+        $(document).ready(function () {
+            SetHighligtedLi('ulSoftwareNavigation', 'liCreate');
+        });
+    
+    
+    </script>
+}

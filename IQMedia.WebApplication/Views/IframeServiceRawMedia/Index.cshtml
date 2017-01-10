@@ -1,0 +1,851 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+@if (!string.IsNullOrWhiteSpace(Request.QueryString["xdomplayer"]) && Convert.ToInt32(Request.QueryString["xdomplayer"]) == 1)
+{
+    <head>
+        <link href="~/Css/Player/PlayerIfrmSvc.css?v=1.1" rel="stylesheet" type="text/css" />
+        <link href="~/Css/jquery-ui.css" rel="stylesheet" type="text/css" />
+
+        @if (ViewBag.ClientCSS != null)
+        { 
+            <link href="@ViewBag.ClientCSS" rel="Stylesheet" type="text/css" />
+        }
+        <script src="~/Scripts/jquery-1.9.1.min.js?v=1.0" type="text/javascript"></script>
+        <script src="~/Scripts/jquery-ui.min.js?v=1.0" type="text/javascript"></script>
+        <script type="text/javascript">
+            $(function () {
+                videotype = 'rawmedia';
+            });
+        </script>
+        <script src="~/Scripts/Player/PlayerIfrmSvc.js?v=1.2" type="text/javascript"></script>
+        <style type="text/css">
+            .hide
+            {
+                display: none;
+            }
+        </style>
+    </head>
+    <body style="padding: 0px; margin: 0px;">
+        <div style="width: 545px; background-color: #000000">
+            <div style="position: relative;">
+                @Html.Raw(Model.VideoHtml)
+                <div class="video-buffering" style="display: none;">
+                    <img src="../../images/video-player/buffering.gif"></div>
+            </div>
+            <div class="clearfix">
+            </div>
+            <div>
+                <div class="video-player-controls">
+                    <div class="video-seek">
+                        <span class="video-active" onclick="Seek(0,this);">00:00</span> <span onclick="Seek(10,this);">
+                            10:00</span> <span onclick="Seek(20,this);">20:00</span> <span onclick="Seek(30,this);">
+                                30:00</span> <span onclick="Seek(40,this);">40:00</span> <span onclick="Seek(50,this);">
+                                    50:00</span>
+                        <div class="video-clear">
+                        </div>
+                    </div>
+                    <div class="video-progress-bar">
+                        <div class="video-current-time">
+                        </div>
+                        <div class="video-duration">
+                        </div>
+                        <div style="width: 0%;" class="video-play-bar">
+                        </div>
+                        <div class="video-slider-knob">
+                        </div>
+                        <div class="video-slider-time">
+                        </div>
+                    </div>
+                    <div class="video-control-holder">
+                        <ul class="video-controls video-control-holder">
+                            <li class="video-fast-backward"></li>
+                            <li class="video-backward"></li>
+                            <li class="video-play" id="play" onclick="PlayPause();"></li>
+                            <li class="video-forward"></li>
+                            <li class="video-fast-forward"></li>
+                        </ul>
+                        <div class="video-volume video-control-holder">
+                            <div class="video-vol-mute">
+                                &nbsp;</div>
+                            <div id="video-vol-slider">
+                            </div>
+                            <div class="video-vol-marker">
+                                &nbsp;</div>
+                        </div>
+                        <div class="video-control-holder video-fleft">
+                            <span class="video-fullscreen"></span>
+                        </div>
+                    </div>
+                    <div class="video-player-controls-overlay">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+}
+else if (!string.IsNullOrWhiteSpace(Request.QueryString["PS"]) && Convert.ToInt32(Request.QueryString["PS"]) == 1)
+{
+    <head>
+        <meta name="viewport" content="width=device-width" />
+        <title>iQ media RawMedia</title>@*<link href="../../Css/jquery-ui.css" rel="stylesheet" type="text/css" />*@
+        <link href="../../Css/Fonts.css" rel="stylesheet" type="text/css" />
+        <link href="../../Css/bootstrap.css" rel="stylesheet" type="text/css" />
+        <link href="../../Css/bootstrap-responsive.css" rel="stylesheet" type="text/css" />
+        <link href="~/Css/Player/PlayerIfrmSvc.css?v=1.1" rel="stylesheet" type="text/css" />
+        <link href="~/Css/jquery.mCustomScrollbar.css?v=1.0" rel="stylesheet" type="text/css" />
+        <link href="~/Css/jquery.mCustomScrollbar.custom.css?v=1.0" rel="stylesheet" type="text/css" />
+        <link href="~/Css/jquery-ui.css" rel="stylesheet" type="text/css" />
+
+        @if (ViewBag.ClientCSS != null)
+        { 
+            <link href="@ViewBag.ClientCSS" rel="Stylesheet" type="text/css" />
+        }
+
+        <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+        <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js?v=1.0"></script>
+    <![endif]-->
+        <script src="@Url.Content("~/Scripts/jquery-1.9.1.min.js?v=1.0")" type="text/javascript"></script>
+        <script type="text/javascript">
+            $(function () {
+                videotype = 'rawmedia';
+            });
+        </script>        
+        <!-- Customizable CSS -->
+        <link href="~/css/feed.css?v=3.2" rel="stylesheet" type="text/css" />
+        @*<link href="~/css/MasterInner.css" rel="stylesheet" type="text/css" />*@
+        <style type="text/css">
+            body
+            {
+                padding-top: 40px; /*padding-bottom: 40px;*/
+                font-family: 'Open Sans';
+            }
+            #divPlayer_CaptionContent
+            {
+                cursor: pointer;
+                font-family: 'Open Sans';
+                font-size: 13px;
+                margin-bottom: 5px;
+                width: 100%;
+            }
+        </style>
+        <script type="text/javascript">
+            _firstCall = true;
+            _KeyValues = '@Html.Raw(Model.KeyValues)'.length > 0 ? '@Html.Raw(Json.Encode(Model.KeyValues))' : "";        
+        </script>
+    </head>
+    <body style="padding-top: 0px;">
+        <div class="video-container-narrow" style="margin: 0px;">
+            <div class="video-player-row-one">
+                <div class="video-caption-info video-fleft">
+                    <div class="video-caption">
+                        <div id="divCaptionHeader" class="video-caption-tab">
+                            <div align="center" id="divHighlightTab" style="cursor: pointer; min-width: 50px;"
+                                onclick="ChangeTabPlayer(0)">
+                                Highlights</div>
+                            <div id="divDescriptionTab" style="width: auto; display: none;" class="select-text">
+                            </div>
+                            <div align="center" id="divCaptionTab" style="cursor: pointer; min-width: 50px;"
+                                onclick="ChangeTabPlayer(2)" class="active">
+                                Captions</div>
+                        </div>
+                        <div id="divCapContent" class="video-caption-content">
+                            <div id="divCapHighlightContent" style="width: auto; display: none;" class="select-text">
+                                @Html.Raw(Model.HighlightHtml)
+                            </div>
+                            <div id="divCapAllContent" style="width: auto;" class="select-text">
+                                @Html.Raw(Model.CCHtml)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="video-info">
+                        <img class="video-fleft" id="video-source" />
+                        <div class="video-stats video-fright">
+                            <span class="video-views">...</span> <span class="video-value">...</span> <span class="video-rank">
+                                ...</span>
+                        </div>
+                        <div class="video-video-info">
+                            <div id="video-ptitle">
+                            </div>
+                            <span class="video-program">Market</span> <span class="video-aired">
+                                <label>
+                                    Aired:</label>... </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="video-player video-fleft">
+                    <div class="video-video">
+                        @Html.Raw(Model.VideoHtml)
+                        <div class="video-abt-main">
+                            <div class="video-abt-box">
+                                <div class="video-abt-version">
+                                    Video Player<br />
+                                    <span>Version: 1.34.44</span>
+                                </div>
+                                <div class="video-abt-logo" align="center">
+                                    <img alt="iQ media" src="../../images/logo.png" />
+                                </div>
+                                <div class="video-abt-copyright">
+                                    &copy; 2014 • iQ media <a target="_blank" href="http://www.iqmediacorp.com">http://www.iqmediacorp.com</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="video-buffering">
+                            <img src="../../images/video-player/buffering.gif" />
+                        </div>
+                    </div>
+                    <div class="video-player-controls">
+                        <div class="video-seek">
+                            <span class="video-active" onclick="Seek(0,this);">00:00</span> <span onclick="Seek(10,this);">
+                                10:00</span> <span onclick="Seek(20,this);">20:00</span> <span onclick="Seek(30,this);">
+                                    30:00</span> <span onclick="Seek(40,this);">40:00</span> <span onclick="Seek(50,this);">
+                                        50:00</span>
+                            <div class="video-clear">
+                            </div>
+                        </div>
+                        <div class="video-progress-bar">
+                            <div class="video-current-time">
+                            </div>
+                            <div class="video-duration">
+                            </div>
+                            <div style="width: 0%;" class="video-play-bar">
+                            </div>
+                            <div class="video-slider-knob">
+                            </div>
+                            <div class="video-slider-time">
+                            </div>
+                        </div>
+                        <div class="video-control-holder">
+                            <ul class="video-controls video-control-holder">
+                                <li class="video-fast-backward"></li>
+                                <li class="video-backward"></li>
+                                <li class="video-play" id="play" onclick="PlayPause();"></li>
+                                <li class="video-forward"></li>
+                                <li class="video-fast-forward"></li>
+                            </ul>
+                            <div class="video-volume video-control-holder">
+                                <div class="video-vol-mute">
+                                    &nbsp;</div>
+                                <div id="video-vol-slider">
+                                </div>
+                                <div class="video-vol-marker">
+                                    &nbsp;</div>
+                            </div>
+                            @if (Convert.ToInt16(Request.QueryString["fscr"]) == 1)
+                            {
+                                <div class="video-control-holder video-fleft">
+                                    <span class="video-fullscreen"></span>
+                                </div>
+                            }
+                        </div>
+                        <div class="video-player-controls-overlay">
+                        </div>
+                    </div>
+                </div>
+                <div class="video-about-clip video-fleft">
+                    <ul class="video-action">
+                        @if (Convert.ToInt16(Request.QueryString["abt"]) == 1)
+                        {
+                            <li><a class="video-about" href="#">About</a> </li>
+                        }
+                        @if (Convert.ToInt16(Request.QueryString["clp"]) == 1)
+                        {
+                            <li><a class="video-make-a-clip" href="#">Make a clip</a> </li>
+                        }
+                        <li style="display: none;"><a class="video-chart" href="#">Time Sync</a> </li>
+                    </ul>
+                </div>
+                <div class="video-clear">
+                </div>
+            </div>
+            <div class="video-chart-row" style="display: none;">
+                <div class="margintop10">
+                    <div class="clear">
+                        <div class="chart-tabs">
+                        </div>
+                    </div>
+                    <div class="clear chart-tab-content">
+                    </div>
+                </div>
+            </div>
+            <div id="divMkClip" class="video-clip-row" style="display: none;">
+                <div class="video-form video-fleft">
+                    <input type="text" placeholder="Clip Title" class="video-clip-title" />
+                    <input type="text" placeholder="Keywords" class="video-keywords" />
+                    <select class="video-category">
+                    </select>
+                    <textarea placeholder="Description" class="video-textarea"></textarea>
+                </div>
+                <div class="video-clip-controls video-fleft">
+                    <div class="video-clip-controls-overlay" style="display: none;">
+                    </div>
+                    <div id="divMinTimeDragger" style="height: 56px; padding-top: 32px;">
+                        <div class="video-clip-holder">
+                            <div style="position: absolute; top: 18px;" id="divClipStart">
+                                <input type="text" id="txtClipStart" style="width: 32px; color: green; font-weight: bold;
+                                    font-size: 12px;" value="10:00" />
+                            </div>
+                            <div style="position: absolute; left: 20%;" class="video-dragger">
+                                <div style="left: -10px; height: 14px; float: left; position: absolute; cursor: pointer;"
+                                    id="divStartDe" />
+                                <img src="../images/Video-Player/drag-left.png" alt="Drag Left" class="video-left" />
+                            </div>
+                            <div style="left: 7px; height: 14px; position: absolute; cursor: pointer;" id="divStartIn">
+                                <img src="../images/Video-Player/drag-right.png" alt="Drag Right" class="video-right" />
+                            </div>
+                            <div style="position: absolute; height: 14px; right: 7px; cursor: pointer;" id="divEndDe">
+                                <img src="../images/Video-Player/drag-left-white.png" alt="Drag Left" class="video-left" />
+                            </div>
+                            <div style="position: absolute; height: 14px; right: -10px; cursor: pointer;" id="divEndIn">
+                                <img src="../images/Video-Player/drag-right-black.png" alt="Drag Right" class="video-right" />
+                            </div>
+                            <div style="position: absolute; top: -32px; left: -16px;" id="divPreview">
+                                <div class="video-preview video-fleft">
+                                </div>
+                                <div align="center" style="border: 1px solid rgb(0, 0, 0); width: 1px; -moz-box-sizing: border-box;
+                                    clear: both; margin: 0px auto; height: 12px;">
+                                    &nbsp;
+                                </div>
+                                <div class="video-preview-time">
+                                    10:00</div>
+                            </div>
+                            <div style="position: absolute; top: 15px; left: -16px;" id="divThumb">
+                                <div style="width: 1px; clear: both; height: 12px; border: 1px solid rgb(0, 0, 0);
+                                    -moz-box-sizing: border-box; margin: 0px auto;">
+                                    &nbsp;
+                                </div>
+                                <div class="video-thumb video-fleft">
+                                    <div style="left: -10px; float: left; position: absolute; cursor: pointer;" id="divThumbDe">
+                                        <img src="../images/Video-Player/drag-left.png" alt="Drag Left" style="margin: 0 0;" />
+                                    </div>
+                                    <div style="position: absolute; right: -10px; cursor: pointer;" id="divThumbIn">
+                                        <img src="../images/Video-Player/drag-right-black.png" alt="Drag Right" style="margin: 0 0;" />
+                                    </div>
+                                </div>
+                                <div id="thumbOffset" style="font-size: smaller;">
+                                    10:01
+                                </div>
+                            </div>
+                        </div>
+                        <div style="position: absolute; top: 18px; right: 0px;" id="divClipEnd">
+                            <input type="text" id="txtClipEnd" style="width: 32px; color: red; font-weight: bold;
+                                font-size: 12px;" value="20:00" />
+                        </div>
+                    </div>
+                </div>
+                <div class="video-dragger-l">
+                    <div class="video-dragger-l-st">
+                    </div>
+                    <div class="video-dragger-l-lk">
+                    </div>
+                    <div class="video-dragger-l-rk">
+                    </div>
+                    <div class="video-dragger-l-et">
+                    </div>
+                </div>
+            </div>
+            <div class="video-button-thumb video-fleft">
+                <div class="video-action-buttons" align="right">
+                    <a id="ancClipCancel" href="javascript:void(0);">
+                        <img src="../../images/video-player/close.png" alt="cancel" />
+                    </a><a id="ancClipSave" href="javascript:void(0);">
+                        <img src="../../images/video-player/save.png" alt="save" />
+                    </a>
+                </div>
+                <div class="video-thumbContainer">
+                    <div class="captureThumbOffset">
+                        <img alt="Capture" src="../../Images/video-player/camera.png" />
+                    </div>
+                    <div style="clear: both; text-align: center; word-wrap: break-word; width: 169px;">
+                        Click to capture Thumbnail</div>
+                </div>
+            </div>
+        </div>
+        <audio id="audioCapture" src="/Audio/camera_flick.mp3" style="display: none;"></audio>
+    </body>
+    
+}
+else
+{ 
+    <head>
+        <meta name="viewport" content="width=device-width" />
+        <title>iQ media RawMedia</title>@*<link href="../../Css/jquery-ui.css" rel="stylesheet" type="text/css" />*@
+        <link href="../../Css/Fonts.css" rel="stylesheet" type="text/css" />
+        <link href="../../Css/bootstrap.css" rel="stylesheet" type="text/css" />
+        <link href="../../Css/bootstrap-responsive.css" rel="stylesheet" type="text/css" />
+        <link href="~/Css/Player/PlayerIfrmSvc.css?v=1.1" rel="stylesheet" type="text/css" />
+        <link href="~/Css/jquery.mCustomScrollbar.css?v=1.0" rel="stylesheet" type="text/css" />
+        <link href="~/Css/jquery.mCustomScrollbar.custom.css?v=1.0" rel="stylesheet" type="text/css" />
+        <link href="~/Css/jquery-ui.css" rel="stylesheet" type="text/css" />
+        <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+        <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js?v=1.0"></script>
+    <![endif]-->
+        <script src="@Url.Content("~/Scripts/jquery-1.9.1.min.js?v=1.0")" type="text/javascript"></script>
+        <script type="text/javascript">
+            $(function () {
+                videotype = 'rawmedia';
+            });
+        </script>        
+        <!-- Customizable CSS -->
+        <link href="~/css/feed.css?v=3.2" rel="stylesheet" type="text/css" />
+        @*<link href="~/css/MasterInner.css" rel="stylesheet" type="text/css" />*@
+        <style type="text/css">
+            body
+            {
+                padding-top: 40px; /*padding-bottom: 40px;*/
+                font-family: 'Open Sans';
+            }
+            #divPlayer_CaptionContent
+            {
+                cursor: pointer;
+                font-family: 'Open Sans';
+                font-size: 13px;
+                margin-bottom: 5px;
+                width: 100%;
+            }
+        </style>
+        <script type="text/javascript">
+        _firstCall = true;
+        var _urlVideoCategory = '@System.Configuration.ConfigurationManager.AppSettings["UrlGetVideoCategoryData"]';
+        var _urlVideoCreateClip = '@System.Configuration.ConfigurationManager.AppSettings["UrlCreateMediaClip"]';
+        _KeyValues = '@Html.Raw(Model.KeyValues)'.length>0 ? '@Html.Raw(Json.Encode(Model.KeyValues))' : "";        
+        var _urlVideoThumb = '@System.Configuration.ConfigurationManager.AppSettings["UrlGenerateVideoRawMediaThumb"]';        
+    
+        </script>
+    </head>
+    <body id="mainBody">
+        <div class="navbar navbar-inverse navbar-fixed-top" style="background-color: #fff;">
+            <!-- from desinger-->
+            <div class="container">
+            </div>
+            <!-- from desinger-->
+            <div class="navbar-inner navbar-custome">
+                <div class="container">
+                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span
+                        class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+                    </a><a class="brand iqmedia-logo" href="#">
+                        <img src="~/images/iq-media.png?v=1.3" width="155" height="45" alt="IQ Media" /></a>
+                    <div class="nav-collapse collapse">
+                    </div>
+                    <!--/.nav-collapse -->
+                </div>
+            </div>
+        </div>
+        <div class="container container_custom">
+            <div class="row-fluid" id="divRowFluid">
+                <div style="min-height: 500px; padding: 25px;">
+                    <div style="padding-bottom: 5px; border-bottom: solid 1px #dadada; font-size: 18px;">
+                        iQ Player
+                    </div>
+                    <br />
+                    @if (Model != null)
+                    {
+                        <div class="container-narrow modalPlayer resizable select-none" id="divPlayer">
+                            <div class="video-container-narrow">
+                                <div class="video-player-row-one">
+                                    <div class="video-caption-info video-fleft">
+                                        <div class="video-caption">
+                                            <div id="divCaptionHeader" class="video-caption-tab">
+                                                <div align="center" id="divHighlightTab" style="cursor: pointer; min-width: 50px;"
+                                                    onclick="ChangeTabPlayer(0)">
+                                                    Highlights</div>
+                                                <div id="divDescriptionTab" style="width: auto; display: none;" class="select-text">
+                                                </div>
+                                                <div align="center" id="divCaptionTab" style="cursor: pointer; min-width: 50px;"
+                                                    onclick="ChangeTabPlayer(2)" class="active">
+                                                    Captions</div>
+                                            </div>
+                                            <div id="divCapContent" class="video-caption-content">
+                                                <div id="divCapHighlightContent" style="width: auto; display: none;" class="select-text">
+                                                    @Html.Raw(Model.HighlightHtml)
+                                                </div>
+                                                <div id="divCapAllContent" style="width: auto;" class="select-text">
+                                                    @Html.Raw(Model.CCHtml)
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="video-info">
+                                            <img class="video-fleft" id="video-source" />
+                                            <div class="video-stats video-fright">
+                                                <span class="video-views">...</span> <span class="video-value">...</span> <span class="video-rank">
+                                                    ...</span>
+                                            </div>
+                                            <div class="video-video-info">
+                                                <div id="video-ptitle">
+                                                </div>
+                                                <span class="video-program">Market</span> <span class="video-aired">
+                                                    <label>
+                                                        Aired:</label>... </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="video-player video-fleft">
+                                        <div class="video-video">
+                                            @Html.Raw(Model.VideoHtml)
+                                            <div class="video-abt-main">
+                                                <div class="video-abt-box">
+                                                    <div class="video-abt-version">
+                                                        Video Player<br />
+                                                        <span>Version: 1.34.44</span>
+                                                    </div>
+                                                    <div class="video-abt-logo" align="center">
+                                                        <img alt="iQ media" src="../../images/logo.png" />
+                                                    </div>
+                                                    <div class="video-abt-copyright">
+                                                        &copy; 2014 • iQ media <a target="_blank" href="http://www.iqmediacorp.com">http://www.iqmediacorp.com</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="video-buffering">
+                                                <img src="../../images/video-player/buffering.gif" />
+                                            </div>
+                                        </div>
+                                        <div class="video-player-controls">
+                                            <div class="video-seek">
+                                                <span class="video-active" onclick="Seek(0,this);">00:00</span> <span onclick="Seek(10,this);">
+                                                    10:00</span> <span onclick="Seek(20,this);">20:00</span> <span onclick="Seek(30,this);">
+                                                        30:00</span> <span onclick="Seek(40,this);">40:00</span> <span onclick="Seek(50,this);">
+                                                            50:00</span>
+                                                <div class="video-clear">
+                                                </div>
+                                            </div>
+                                            <div class="video-progress-bar">
+                                                <div class="video-current-time">
+                                                </div>
+                                                <div class="video-duration">
+                                                </div>
+                                                <div style="width: 0%;" class="video-play-bar">
+                                                </div>
+                                                <div class="video-slider-knob">
+                                                </div>
+                                                <div class="video-slider-time">
+                                                </div>
+                                            </div>
+                                            <div class="video-control-holder">
+                                                <ul class="video-controls video-control-holder">
+                                                    <li class="video-fast-backward"></li>
+                                                    <li class="video-backward"></li>
+                                                    <li class="video-play" id="play" onclick="PlayPause();"></li>
+                                                    <li class="video-forward"></li>
+                                                    <li class="video-fast-forward"></li>
+                                                </ul>
+                                                <div class="video-volume video-control-holder">
+                                                    <div class="video-vol-mute">
+                                                        &nbsp;</div>
+                                                    <div id="video-vol-slider">
+                                                    </div>
+                                                    <div class="video-vol-marker">
+                                                        &nbsp;</div>
+                                                </div>
+                                                <div class="video-control-holder video-fleft">
+                                                    <span class="video-fullscreen"></span>
+                                                </div>
+                                            </div>
+                                            <div class="video-player-controls-overlay">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="video-about-clip video-fleft">
+                                        <ul class="video-action">
+                                            <li><a class="video-about" href="#">About</a> </li>
+                                            <li><a class="video-make-a-clip" href="#">Make a clip</a> </li>
+                                            <li style="display: none;"><a class="video-chart" href="#">Time Sync</a> </li>
+                                        </ul>
+                                    </div>
+                                    <div class="video-clear">
+                                    </div>
+                                </div>
+                                <div class="video-chart-row" style="display: none;">
+                                    <div class="margintop10">
+                                        <div class="clear">
+                                            <div class="chart-tabs">
+                                            </div>
+                                        </div>
+                                        <div class="clear chart-tab-content">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="divMkClip" class="video-clip-row" style="display: none;">
+                                    <div class="video-form video-fleft">
+                                        <input type="text" placeholder="Clip Title" class="video-clip-title" />
+                                        <input type="text" placeholder="Keywords" class="video-keywords" />
+                                        <select class="video-category">
+                                        </select>
+                                        <textarea placeholder="Description" class="video-textarea"></textarea>
+                                    </div>
+                                    <div class="video-clip-controls video-fleft">
+                                        <div class="video-clip-controls-overlay" style="display: none;">
+                                        </div>
+                                        <div id="divMinTimeDragger" style="height: 56px; padding-top: 32px;">
+                                            <div class="video-clip-holder">
+                                                <div style="position: absolute; top: 18px;" id="divClipStart">
+                                                    <input type="text" id="txtClipStart" style="width: 32px; color: green; font-weight: bold;
+                                                        font-size: 12px;" value="10:00" />
+                                                </div>
+                                                <div style="position: absolute; left: 20%;" class="video-dragger">
+                                                    <div style="left: -10px; height: 14px; float: left; position: absolute; cursor: pointer;"
+                                                        id="divStartDe" />
+                                                    <img src="../images/Video-Player/drag-left.png" alt="Drag Left" class="video-left" />
+                                                </div>
+                                                <div style="left: 7px; height: 14px; position: absolute; cursor: pointer;" id="divStartIn">
+                                                    <img src="../images/Video-Player/drag-right.png" alt="Drag Right" class="video-right" />
+                                                </div>
+                                                <div style="position: absolute; height: 14px; right: 7px; cursor: pointer;" id="divEndDe">
+                                                    <img src="../images/Video-Player/drag-left-white.png" alt="Drag Left" class="video-left" />
+                                                </div>
+                                                <div style="position: absolute; height: 14px; right: -10px; cursor: pointer;" id="divEndIn">
+                                                    <img src="../images/Video-Player/drag-right-black.png" alt="Drag Right" class="video-right" />
+                                                </div>
+                                                <div style="position: absolute; top: -32px; left: -16px;" id="divPreview">
+                                                    <div class="video-preview video-fleft">
+                                                    </div>
+                                                    <div align="center" style="border: 1px solid rgb(0, 0, 0); width: 1px; -moz-box-sizing: border-box;
+                                                        clear: both; margin: 0px auto; height: 12px;">
+                                                        &nbsp;
+                                                    </div>
+                                                    <div class="video-preview-time">
+                                                        10:00</div>
+                                                </div>
+                                                <div style="position: absolute; top: 15px; left: -16px;" id="divThumb">
+                                                    <div style="width: 1px; clear: both; height: 12px; border: 1px solid rgb(0, 0, 0);
+                                                        -moz-box-sizing: border-box; margin: 0px auto;">
+                                                        &nbsp;
+                                                    </div>
+                                                    <div class="video-thumb video-fleft">
+                                                        <div style="left: -10px; float: left; position: absolute; cursor: pointer;" id="divThumbDe">
+                                                            <img src="../images/Video-Player/drag-left.png" alt="Drag Left" style="margin: 0 0;" />
+                                                        </div>
+                                                        <div style="position: absolute; right: -10px; cursor: pointer;" id="divThumbIn">
+                                                            <img src="../images/Video-Player/drag-right-black.png" alt="Drag Right" style="margin: 0 0;" />
+                                                        </div>
+                                                    </div>
+                                                    <div id="thumbOffset" style="font-size: smaller;">
+                                                        10:01
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div style="position: absolute; top: 18px; right: 0px;" id="divClipEnd">
+                                                <input type="text" id="txtClipEnd" style="width: 32px; color: red; font-weight: bold;
+                                                    font-size: 12px;" value="20:00" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="video-dragger-l">
+                                        <div class="video-dragger-l-st">
+                                        </div>
+                                        <div class="video-dragger-l-lk">
+                                        </div>
+                                        <div class="video-dragger-l-rk">
+                                        </div>
+                                        <div class="video-dragger-l-et">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="video-button-thumb video-fleft">
+                                    <div class="video-action-buttons" align="right">
+                                        <a id="ancClipCancel" href="javascript:void(0);">
+                                            <img src="../../images/video-player/close.png" alt="cancel" />
+                                        </a><a id="ancClipSave" href="javascript:void(0);">
+                                            <img src="../../images/video-player/save.png" alt="save" />
+                                        </a>
+                                    </div>
+                                    <div class="video-thumbContainer">
+                                        <div class="captureThumbOffset">
+                                            <img alt="Capture" src="../../Images/video-player/camera.png" />
+                                        </div>
+                                        <div style="clear: both; text-align: center; word-wrap: break-word; width: 169px;">
+                                            Click to capture Thumbnail</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <audio id="audioCapture" src="/Audio/camera_flick.mp3" style="display: none;"></audio>
+                    }
+                    else
+                    {
+                        <div style="color: #ff0000; padding: 10px 10px 10px 10px;">
+                            @IQMedia.WebApplication.Config.ConfigSettings.Settings.MicrositeError
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        @Html.Partial("~/Views/Shared/_Footer.cshtml")
+    </body>
+}
+<script src="~/Scripts/PlayerScript.js?v=1.1" type="text/javascript"></script>
+<script src="~/Scripts/Player/PlayerIfrmSvc.js?v=1.2" type="text/javascript"></script>
+<script src="~/Scripts/highcharts.js?v=1.1" type="text/javascript"></script>
+<script src="~/Scripts/enscroll.js?v=1.0" type="text/javascript"></script>
+<script src="~/Scripts/jquery.mCustomScrollbar.concat.min.js?v=1.1" type="text/javascript"></script>
+<script src="~/Scripts/jquery-ui.min.js?v=1.0" type="text/javascript"></script>
+<script src="~/Scripts/IQMediaCommon.js?v=2.6" type="text/javascript"></script>
+<script src="~/Scripts/jquery.placeholder.js?v=1.0" type="text/javascript"></script>
+<script src="~/Scripts/ConstantScript.js?v=1.32" type="text/javascript"></script>
+<script type="text/javascript">
+    var _clipLimit = @ViewBag.ManualClipDuration;
+    var _urlVideoMetaData = '@System.Configuration.ConfigurationManager.AppSettings["UrlGetVideoMetaData"]';
+    var _urlVideoNielsenData = '@System.Configuration.ConfigurationManager.AppSettings["UrlGetVideoNielSenData"]';
+    var _urlClipThumbgen = '@System.Configuration.ConfigurationManager.AppSettings["UrlGenerateMediaClipThumbnail"]';
+    var _urlClipExport = '@System.Configuration.ConfigurationManager.AppSettings["UrlExportMediaClip"]';
+      var _urlClipIOSExport = '@System.Configuration.ConfigurationManager.AppSettings["UrlExportIOSMediaClip"]';
+        var _urlClipTimeSync = '@System.Configuration.ConfigurationManager.AppSettings["UrlClipTimeSync"]';
+        var _MaxEmailAdressAllowed = @System.Configuration.ConfigurationManager.AppSettings["MaxDefaultEmailAddress"];
+        var _urlVideoCategory = '@System.Configuration.ConfigurationManager.AppSettings["UrlGetVideoCategoryData"]';
+        var _urlVideoCreateClip = '@System.Configuration.ConfigurationManager.AppSettings["UrlCreateMediaClip"]';
+        var _urlVideoThumb = '@System.Configuration.ConfigurationManager.AppSettings["UrlGenerateVideoRawMediaThumb"]';         
+        var _urlClipDetail='@System.Configuration.ConfigurationManager.AppSettings["UrlISVCGetClipDetail"]';
+        _ID = @Html.Raw(Json.Encode(Model.RawMediaGUID));       
+                _fscr = '@Convert.ToInt16(Request.QueryString["fs"])' == 1 ? 1 : 0;
+                _IsCheckSettings=false;
+    _GetClipDetail='@Convert.ToInt16(Request.QueryString["cd"])' == 1 ? 1 : 0;
+
+    $(function () {
+
+       if (window.self !== window.top) {
+
+        var EvtCallback = function (evt, param) {
+
+            console.log("evt: " + evt + " params: " + param);
+
+            switch (evt) {
+
+                case "ClipSlider":
+                    parent.postMessage('{"Method":"ExpandClipSlider","Params":["' + param + '"]}', '*');
+                    break;
+                case "SaveClip":
+                    parent.postMessage('{"Method":"DoUserAction","Params":["SaveClip"]}', '*');
+                    break;
+                case "CreateClip":
+                    parent.postMessage('{"Method":"CreateClip","Params":['+param+']}', '*');
+                    break;
+                case "JumpToSec":
+                    parent.postMessage('{"Method":"JumpToSec","Params":[' + param + ']}', '*');
+                    break;
+                case "SetPlayerState":
+                    parent.postMessage('{"Method":"SetPlayerState","Params":["' + param + '"]}', '*');
+                    break;
+                case "PlayTime":
+                    parent.postMessage('{"Method":"PlayTime","Params":[' + param + ']}', '*');
+                    break;
+            }           
+        }
+
+        _EvtCallback = EvtCallback;
+    }
+
+        _PlayState = 1;
+        _firstCall = true;
+
+        $("#video-vol-slider").slider({
+            orientation: "horizontal",
+            range: "min",
+            min: 0,
+            max: 100,
+            value: 75,
+            slide: UpdateVolume,
+            change: UpdateVolume
+        });
+        $(".video-vol-marker").css("background-position", "-149px -168px");
+
+        $.when($.ajax({
+
+            type: 'GET',
+            dataType: 'jsonp',
+            url: _urlVideoMetaData + _ID + "&Type=rawmedia",
+            contentType: 'application/json; charset=utf-8',
+            success: OnParseMetaData,
+            error: OnFailMetaData
+        })
+        ).then(function () {
+            SetPlayerMetaData();
+        });
+
+        if (_categoryData == null) {
+            $.ajax({
+
+                type: 'GET',
+                dataType: 'json',
+                url: _urlVideoCategory,
+                xhrFields: {
+                    withCredentials: true
+                },
+                success: OnParseCategoryData,
+                error: OnFailCategoryData
+
+            });
+        }
+
+        $("#divCapHighlightContent").enscroll({
+            verticalTrackClass: 'track4',
+            verticalHandleClass: 'handle4',
+            pollChanges: true
+        });
+
+        $('#divCapAllContent').enscroll({
+            verticalTrackClass: 'track4',
+            verticalHandleClass: 'handle4',
+            pollChanges: true
+        });
+
+        if ($("#divCapHighlightContent").text().trim().length > 0) {
+            ChangeTabPlayer(0);
+        }
+
+    });    
+    
+    window.addEventListener("message", RecMsg, false);
+    function RecMsg(event) {
+        var data = jQuery.parseJSON(event.data);
+        console.log("rec. msg"+event.data);
+
+        switch (data.Method) {
+            case "SeekSecond":
+                if (data.Params.length == 1 && parseInt(data.Params[0]) > 0) {
+                    if (_PlayState == 0) {
+                        ISeek(data.Params[0]);
+                    }
+                    else if(_firstCall) {
+                        _PlayState = 0;
+                        var _flash = document.getElementById('HUY');
+                        _flash.externalPlay(_PlayState, data.Params[0]);
+                    }
+                    else {
+                        ISeek(data.Params[0]);
+}
+                }
+                else {
+                    parent.postMessage('{"Status":-1,"Message":"Invalid method"}', '*');
+                }
+                break;
+            case "SetPlayerState":
+                if (data.Params.length == 1) {
+                    if (data.Params[0]===VidStateEnum.Pause) {
+    CallPlayPause(1);
+}
+else if (data.Params[0]===VidStateEnum.Play) {
+    CallPlayPause(0);
+}
+else {
+                    parent.postMessage('{"Status":-2,"Message":"Invalid method params."}', '*');
+}
+                }
+                else {
+                    parent.postMessage('{"Status":-1,"Message":"Invalid method"}', '*');
+                }
+                break;
+            default:
+                parent.postMessage('{"Status":-1,"Message":"Invalid method"}', '*');
+        }
+    }
+    function ISeek(second) {
+        var _flash = document.getElementById('HUY');
+        _flash.setSeekPoint(second);
+        parent.postMessage('{"Status":0,"Method":"SeekSecond","Message":"success"}', '*');
+    }            
+</script>
+</html>

@@ -1,0 +1,21 @@
+﻿@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  src: url(fonts/OpenSans-Normal.woff) format('woff');
+}
+
+@font-face {
+  font-family: 'OpenSans-Bold';
+  font-style: normal;
+  font-weight: 400;
+  src: url(fonts/OpenSans-Bold.woff) format('woff');
+}
+
+
+@font-face {
+  font-family: 'Merriweather';
+  font-style: normal;
+  font-weight: 400;
+  src: url(fonts/Merriweather-Normal.woff) format('woff');
+}

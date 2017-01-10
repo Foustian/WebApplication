@@ -1,0 +1,78 @@
+﻿@using IQMedia.Model;
+@using IQMedia.Shared.Utility;
+@model IEnumerable<ActiveUser>
+<div id="divResult_ScrollContent">
+    @if (Model != null)
+    {
+        <table>
+            <tr>
+                <td>
+                    <button type="button" value="ResetAll" onclick="RemoveAllUsers();" class="globalAdminReset">
+                            Reset All
+                        </button>                
+                </td>
+            </tr>
+        </table>
+        <table width="100%" class="topResult">
+            <tr>
+                <tr>
+                    <th style="text-align: left; width: 8%;">
+                    </th>
+                    <th style="text-align: left; width: 17%;">
+                        First Name
+                    </th>
+                    <th style="text-align: left; width: 20%;">
+                        Last Name
+                    </th>
+                    <th style="text-align: left; width: 20%;">
+                        Email
+                    </th>
+                    <th style="text-align:left;width:12%;">
+                        Server
+                    </th>
+                    <th style="text-align: left; width: 23%;">
+                        Last Access Time
+                    </th>
+                </tr>
+            </tr>
+            @foreach (var item in Model)
+            { 
+                <tr>
+                    <td>
+                        <button type="button" value="Reset" onclick="RemoveUser('','@item.SessionID');" class="globalAdminReset">
+                            Reset
+                        </button>
+                    </td>
+                    <td style="text-align: left;">
+                        @item.FirstName
+                    </td>
+                    <td style="text-align: left;">
+                        @item.LastName
+                    </td>
+                    <td style="text-align: left;">
+                        @item.LoginID
+                    </td>
+                    <td style="text-align: left;">
+                        @item.Server
+                    </td>
+                    <td style="text-align: left;">
+                        @item.LastAccessTime
+                    </td>
+                </tr>
+            }
+        </table>
+
+    }
+    else
+    {
+        <table width="100%" style="text-align: center;">
+            <tr>
+                <td>
+                    <span style="background: none repeat scroll 0 0 #F2F2F2; border: 1px solid #DCDCDC;
+                        margin-bottom: 10px; margin-right: 10px; padding: 3px 10px 3px 6px; position: relative;
+                        width: 300px !important;">No Results found</span>
+                </td>
+            </tr>
+        </table>
+    }
+</div>

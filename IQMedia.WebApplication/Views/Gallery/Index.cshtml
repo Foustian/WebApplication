@@ -1,0 +1,117 @@
+﻿@model IQMedia.Model.IQGalleryModel
+    @*<div class="container container_custom">
+        <div id="divRowFluid" class="row-fluid">*@
+            <div id="divGallaryArea" class="mainContent">
+                <table style="width:100%;">
+                <tr>
+                    <td style="width:100%; text-align:left; padding-top:20px; padding-bottom:20px;">
+                        @Html.Raw(Model.Title)
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width:75%;">
+                        <div class="gridster">
+                            <ul>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+                </table>
+            </div>
+         @*</div>
+    </div>*@
+    <script src="~/Scripts/jquery-1.9.1.min.js?v=1.0" type="text/javascript"></script>
+    <script language="javascript" type="text/javascript" src="~/Scripts/jquery.gridster-responsive.js"></script>
+    <script language="javascript" type="text/javascript" src="../../Scripts/ConstantScript.js?v=1.32"></script>
+    <link href="../../Css/bootstrap.css" rel="stylesheet" type="text/css" />
+    <link href="../../Css/bootstrap-responsive.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="~/Css/jquery.gridster.css">
+    <link href="../../Css/Gallary.css" rel="stylesheet" type="text/css" />
+    <link href="../../Css/Feed.css?v=3.2" rel="stylesheet" type="text/css" />
+    <script>
+        var gallery = @Html.Raw(Json.Encode(@ViewBag.gallery));
+        var gridster = null;
+        var base_size = 25;
+        var cols;
+        var offset;
+        var widgetclipid = 0;
+        var isDragging = false;
+        var isStoppedDrag = true;
+        var isResizeRegister = false;
+        var _WgtHBID = 0;
+        var _WgtVBID = 0;
+
+        offset = 10;
+
+        gridster = $(".gridster > ul").gridster({
+            widget_margins: [5, 5],
+            widget_base_dimensions: [base_size * 4, base_size * 3],
+            max_cols: cols,
+            //extra_cols: 1,
+            draggable:
+		    {
+		        //handle : '.div-player',
+		        start: function (event, ui) {
+		            isDragging = true;
+		            isStoppedDrag = false;
+		        },
+		        stop: function (event, ui) {
+		            isStoppedDrag = true;
+		            setTimeout(function () {
+		                if (isStoppedDrag) {
+		                    isDragging = false;
+		                }
+		            }, 500);
+		        }
+		    }
+		}).data('gridster');
+
+		$.each(gallery, function (i, gallery) {
+		    if (gallery.Type == 'TVBlock') {
+		        gridster.add_widget('<li id=' + gallery.ID + '><div class="content" id="clipimg_' + i + '" ><div class="div-player"></div></div></li>', gallery.size_x, gallery.size_y, gallery.Col, gallery.Row);
+		        widgetclipid = widgetclipid + 1;
+		        $("#clipimg_" + i).css({ 'background-image': 'url("' + gallery.TVThumbUrl + '")', 'background-size': '100%' });
+		        $("#clipimg_" + i).closest('.content').attr('onclick', 'RenderClipObject("' + gallery.ClipID + '",this);');
+		    }
+		    else if (gallery.Type == 'HorizontalTextBlock') {
+		        gridster.add_widget('<li name="' + gallery.Type + '"><div class="contol-content" style="margin-left: 10px; text-align: left; margin-top:20px"><label style="height:100%;width:90%;word-break:break-all;" name="HorizontalTextBlock" id="hb_' + _WgtHBID + '">' + gallery.MetaData + '</label></div></li>', gallery.size_x, gallery.size_y,gallery.Col, gallery.Row);
+		        _WgtHBID = _WgtHBID + 1;
+		    }
+		    else {
+		        gridster.add_widget('<li name="' + gallery.Type + '"><div class="contol-content" style="margin-left: 10px; text-align: left; margin-top:20px"><label style="height:100%;width:90%;word-break:break-all;" id="vb_' + _WgtVBID + '" name="VerticalTextBlock">' + gallery.MetaData + '</label></div></li>', gallery.size_x, gallery.size_y,gallery.Col, gallery.Row);
+		        _WgtVBID = _WgtVBID + 1;
+		    }
+
+		});
+
+        function RenderClipObject(clipID,container){
+    
+    if(!isDragging){
+
+        var jsonPostData = { ClipID: clipID }
+
+        if($(container).find('object').length <= 0){
+            $.ajax({
+
+                type: "post",
+                dataType: "json",
+                url: _urlGalleryRenderClipObject,
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(jsonPostData),
+                success: function(result){
+                    if(result.isSuccess){
+                        $(container).find('.div-player').html(result.clipHTML)
+                        $(container).find('img').hide();
+                    }else{
+                        ShowNotification(_msgSomeErrorProcessing);
+                    }
+                },
+                error: function(a,b,c){
+                    ShowNotification(_msgSomeErrorProcessing);
+                }
+            });
+        }
+    }
+}
+
+    </script>

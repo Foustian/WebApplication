@@ -1,0 +1,45 @@
+﻿@{
+    ViewBag.Title = "iQ media Download Terms And Condition";
+    Layout = "~/Views/Download/_DownloadMaster.cshtml";
+}
+<script language="javascript" type="text/javascript">
+    function ValidateTerms() {
+        var chk = document.getElementById("chkTerms").checked;
+        if (!chk) {
+            alert("Please accept terms and conditions");
+            return false;
+        }
+        return true;
+    }
+</script>
+<h3>
+    Terms and Conditions</h3>
+@using (Html.BeginForm("TermsAndCondition", "Download"))
+{
+    <div id="divMain" style="width: 97%; margin: 10px 10px 10px 10px;">
+        <div id="divContent" style="height: 425px; overflow: auto;">
+            @if (ViewBag.Content != null)
+            {
+                @Html.Raw(ViewBag.Content)
+            }
+        </div>
+        <br />
+        <br />
+        <div>
+            <table cellpadding="0" cellspacing="0">
+                <tr>
+                    <td>
+                        <input type="checkbox" id="chkTerms" name="chkTerms" />
+                    </td>
+                    <td style="padding-left: 25px;">
+                        please check box to accept the above terms and conditions
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div style="padding-top: 10px;">
+            <input type="submit" class="button" value="Continue" onclick="return ValidateTerms();" />
+            <input type="button" class="button" id="btnCancel" value="Cancel" onclick="javascript:window.close();" />
+        </div>
+    </div>
+}

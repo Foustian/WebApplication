@@ -1,0 +1,32 @@
+﻿@using IQMedia.Shared.Utility;
+@model List<IQMedia.Model.IQNews_Model>
+@{
+    ViewBag.Title = "iQ media News";
+    Layout = "~/Views/Shared/_IQMediaMasterStaticPages.cshtml";
+}
+@section HeaderImage
+{
+    <img src="~/Images/StaticBanner/About.jpg" alt="Management banner" />
+}
+@section Content
+{
+    <div class="span4">
+        @Html.Partial("~/Views/AboutUs_Old/_Left.cshtml")
+    </div>
+    <div class="span14 span14pad">
+        @{ 
+            if (Model != null)
+            {
+                Html.RenderPartial("_IQNewsResults", Model);
+            }
+        }
+    </div>
+    <script type="text/javascript" language="javascript">
+
+        $(document).ready(function () {
+            SetHighligtedLi('ulAboutUsNavigation', 'liInTheNews');
+        });
+    
+    
+    </script>
+}

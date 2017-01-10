@@ -1,0 +1,78 @@
+﻿@{
+    
+    ViewBag.Title = "iQ media: Media intelligence for Broadcast Television, Online News & Social Media";
+    Layout = "~/Views/Shared/_IQMediaMasterStaticPages_New.cshtml";   
+}
+@section HeadSection
+{
+    <title>iQ media: Media intelligence for Broadcast Television, Online News & Social Media
+    </title>
+     <link rel="canonical" href="https://www.iqmediacorp.com" />
+    <link href="~/Css/home.css?v=1.1" rel="Stylesheet" type="text/css" />
+}
+<div class="jumbotron" id="divMain" style="position: relative; color: #ffffff; text-align: center;
+    padding: 0; width: 100%; height: 100%;">
+    <div class="f-signin">
+        <div class="container" style="width: 100%; height: 100%;">
+            <div class="row" style="width: 100%; height: 100%; position: relative;">
+                <div style="width: 100%; height: 100%; position: absolute; top: 10%;">
+                    <img alt="" src="~/images/home_new/logo_new_white.png" style="display: block; margin:auto; margin-bottom:20px; height:80px" />
+                    <span class="f-spn-wlcm">WELCOME BACK</span>
+                    @Html.Partial("~/Views/SignIn/_SignIn.cshtml")
+                    <div style="display:block; margin:auto;">
+                    <a href="https://www.iq.media/resources" target="_blank"><img style="margin:50px 20px 0 0;" src="~/images/home_new/Resources.png"/></a>
+                    <a href="http://www.iq.media" target="_blank"><img style="margin:50px 0 0 20px;"src="~/images/home_new/visitpage_btn.png"/></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var ResizeElements = function () {
+
+        if ($(window).width() >= 768) {
+            if ($(window).height() >= 657 && $(window).width() >= 1200) {
+                var height = $(window).height() - $(".footer-bg").outerHeight();
+                $("#divMain").css("height", height + "px");
+                console.log($(".footer-bg").outerHeight())
+            }
+            else {
+                $("#divMain").css("height", $(window).height() + "px");
+            }
+        }
+        else {
+            $("#divMain").css("height", "");
+        }
+    }
+
+    $(function () {
+        ResizeElements();
+        $("#spnRes").hover(function () {
+            $("#hs-cta-wrapper-b568e1e4-641f-4e30-94a9-df1740587e3c").hide();
+            $("#hs-cta-wrapper-0287248a-6c84-44ab-90a2-ced3d0751b0e").show();
+        }, function () {
+            $("#hs-cta-wrapper-0287248a-6c84-44ab-90a2-ced3d0751b0e").hide();
+            $("#hs-cta-wrapper-b568e1e4-641f-4e30-94a9-df1740587e3c").show();
+        });
+
+        $("#spnOS").hover(function () {
+            $("#hs-cta-wrapper-495f7ef7-da87-44d7-a806-14500e9ff303").hide();
+            $("#hs-cta-wrapper-6b36ff2c-b8cf-4052-a0f0-7b292cf89aa4").show();
+        }, function () {
+            $("#hs-cta-wrapper-6b36ff2c-b8cf-4052-a0f0-7b292cf89aa4").hide();
+            $("#hs-cta-wrapper-495f7ef7-da87-44d7-a806-14500e9ff303").show();
+        });
+
+        $("#spnSS").hover(function () {
+            $("#hs-cta-wrapper-b3719544-1ae9-43cb-9b3a-5389579ca081").hide();
+            $("#hs-cta-wrapper-5cd3340b-0dc8-4d41-b577-767a67ef6f12").show();
+        }, function () {
+            $("#hs-cta-wrapper-5cd3340b-0dc8-4d41-b577-767a67ef6f12").hide();
+            $("#hs-cta-wrapper-b3719544-1ae9-43cb-9b3a-5389579ca081").show();
+        });
+    });
+
+    $(window).resize(function () { ResizeElements(); });
+
+</script>

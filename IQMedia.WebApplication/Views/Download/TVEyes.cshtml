@@ -1,0 +1,93 @@
+﻿@model List<IQMedia.Model.ArticleTVEyesDownload>
+@{
+    ViewBag.Title = "iQ media Download TVEyes Audio";
+    Layout = "~/Views/Download/_DownloadMaster.cshtml";
+}
+@using (Html.BeginForm("TVEyes", "Download"))
+{
+    var PendingDownload = Model.Where(article => article.DownloadStatus == 1).ToList();
+    var CompletedDownload = Model.Where(article => article.DownloadStatus == 2).ToList();
+    <div>
+        <div style="font-weight: bold; border-bottom: 1px solid #dadada; padding-bottom: 10px;">
+            Pending TVEyes Download Requests</div>
+        <br />
+        @if (PendingDownload.Count > 0)
+        {
+            <table cellpadding="3" cellspacing="0" class="grid">
+                <tr>
+                    <th>
+                        TVEyes Title
+                    </th>
+                    <th>
+                        Requested Date
+                    </th>
+                </tr>
+                @foreach (IQMedia.Model.ArticleTVEyesDownload item in PendingDownload)
+                {
+                    <tr>
+                        <td>@item.ArticleTitle
+                        </td>
+                        <td>@item.DLRequestDateTime
+                        </td>
+                    </tr>
+                }
+            </table>
+        }
+        else
+        {
+            <div>
+                No pending download available</div>
+        }
+    </div>
+    <br />
+    <br />
+    <div>
+        <div style="font-weight: bold; border-bottom: 1px solid #dadada; padding-bottom: 10px;">
+            TVEyes Ready for Download</div>
+        <br />
+        @if (CompletedDownload.Count > 0)
+        {
+            <table cellpadding="3" cellspacing="3" class="grid">
+                <tr>
+                    <th style="width: 400px;">
+                        Article Title
+                    </th>
+                    <th style="width: 200px;">
+                        Requested Date
+                    </th>
+                </tr>
+                @foreach (IQMedia.Model.ArticleTVEyesDownload item in CompletedDownload)
+                {
+                    <tr>
+                        <td>
+                            <a href="/Download/DownloadTVEyesFile?TVEyesDownloadID=@item.ID">
+                                @item.ArticleTitle
+                            </a>
+                        </td>
+                        <td>@item.DLRequestDateTime
+                        </td>
+                    </tr>
+                }
+            </table>
+        }
+        else
+        {
+            <div>
+                No files available</div>
+        }
+    </div>
+    <br />
+    <br />
+    <div>
+        <table>
+            <tr>
+                <td>
+                    <input type="submit" value="Refresh" />
+                </td>
+                <td>
+                    <input type="button" id="btnCancel" name="btnCancel" value="Cancel" onclick="javascript:window.close();" />
+                </td>
+            </tr>
+        </table>
+    </div>
+}

@@ -1,0 +1,97 @@
+﻿@{
+    ViewBag.Title = "iQ media Discover";
+    Layout = "~/Views/Shared/_IQMediaMasterStaticPages.cshtml";
+}
+@section HeaderImage
+{
+    <img src="~/Images/StaticBanner/Software.jpg" alt="Software banner" />
+}
+@section Content
+{
+    <div class="span4">
+        @Html.Partial("~/Views/Software/_Left.cshtml")
+    </div>
+    <div class="span14 span14pad">
+        <h3>
+            Discover Using Your Own Idea Lab</h3>
+        <p>
+            Every day massive amounts of US TV content, online news, and social media are broadcast.
+            &#8220;Big data&#8221; is the key to unlocking the content marketing potential of
+            that media. We developed cliQ with the notion that the more data we can ingest,
+            organize, and make available, the more our customers can do with it.</p>
+        <p>
+            Ultimately, content marketing success depends on the number and quality of your
+            ideas. Big ideas spring from big data – if you have the right tools to search, sift,
+            and understand. cliQ gives you those tools, with intelligent media – lots of it
+            – that is optimized for you in the cloud.</p>
+        <div class="small-text clearfix">
+            <div class="span10">
+                <h3>
+                    Big Data</h3>
+                <p>
+                    <img alt="Discover" src="../images/static/point-icon.png" />
+                    Nearly 6 million hours of US broadcast TV content</p>
+                <p>
+                    <img alt="Discover" src="../images/static/point-icon.png" />
+                    14 hours of new coverage digitized every minute</p>
+                <p>
+                    <img alt="Discover" src="../images/static/point-icon.png" />
+                    50,000 online news sources</p>
+                <p>
+                    <img alt="Discover" src="../images/static/point-icon.png" />
+                    Thousands of blogs, online forums, and review sites</p>
+                <p>
+                    <img alt="Discover" src="../images/static/point-icon.png" />
+                    225 million social media posts</p>
+                <p>
+                    <img alt="Discover" src="../images/static/point-icon.png" />
+                    30 million Tweets per month</p>
+            </div>
+            <div class="span8">
+                <img src="../images/Big_Data.png" alt="Big Data"></div>
+        </div>
+        <div class="small-text clearfix">
+            <div class="span8">
+                <img src="../images/Responsively_Organized.png" alt="Responsively Organized"></div>
+            <div class="span10">
+                <h3>
+                    Responsively Organized</h3>
+                <p>
+                    <img alt="Discover" src="../images/static/point-icon.png" />
+                    Scale massive media databases in less than one second</p>
+                <p>
+                    <img alt="Discover" src="../images/static/point-icon.png" />
+                    Federated and faceted searches</p>
+                <p>
+                    <img alt="Discover" src="../images/static/point-icon.png" />
+                    Entire hour of broadcast TV returned for full review</p>
+            </div>
+        </div>
+        <div class="small-text clearfix">
+            <div class="span10">
+                <h3>
+                    Unrestricted Access to Data and Analysis</h3>
+                <p>
+                    <img alt="Discover" src="../images/static/point-icon.png" />
+                    Complete flexibility in ad hoc searches back in time across all mediums</p>
+                <p>
+                    <img alt="Discover" src="../images/static/point-icon.png" />
+                    Comparative analysis on companies, people, issues and terms</p>
+                <p>
+                    <img alt="Discover" src="../images/static/point-icon.png" />
+                    Full hour and half hour programming access that does not require text search on closed captioning
+                </p>
+            </div>
+            <div class="span8">
+                <img src="../images/Web_Centric_Delivery.png" alt="Web Centric Delivery"></div>
+        </div>
+    </div>
+    <script type="text/javascript" language="javascript">
+
+        $(document).ready(function () {
+            SetHighligtedLi('ulSoftwareNavigation', 'liDiscover');
+        });
+    
+    
+    </script>
+}

@@ -1,0 +1,1920 @@
+﻿@using IQMedia.Model;
+@using IQCommon.Model;
+@model IQMedia.Model.IQArchive_DisplayLibraryReport
+@{ 
+    string BaseUrl = Request.Url.Scheme + "://" + Request.Url.Host + "/";
+    string ImageBaseUrl = Request.Url.Scheme + "://" + Request.Url.Host + "/images/";
+    string baseSize = "650px";
+}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+    <title>iQ media Report</title>
+    <style type="text/css">
+		body
+		{
+			font-family:sans-serif;
+		}
+		.highlight
+        { 
+            background-color: #808081; 
+            color: #FFFFFF;
+        }
+    </style>
+</head>
+<body>
+    <div style="font-family: 'Microsoft Sans Serif'; padding-top: 10px; padding-bottom: 10px;">
+        ##UserMessage##
+    </div>
+    <br />
+    @if (Model != null && Model.ReportDetails != null && Model.ArchiveResults != null)
+    {
+        ActiveUser sessionInformation = IQMedia.WebApplication.Utility.ActiveUserMgr.GetActiveUser();
+        List<string> lstNielsenAudienceTypes = sessionInformation.MediaTypes.Where(w => w.RequireNielsenAccess && w.UseAudience && w.TypeLevel == 2).Select(s => s.SubMediaType).ToList();
+        List<string> lstNielsenMediaValueTypes = sessionInformation.MediaTypes.Where(w => w.RequireNielsenAccess && w.UseMediaValue && w.TypeLevel == 2).Select(s => s.SubMediaType).ToList();
+        List<string> lstCompeteAudienceTypes = sessionInformation.MediaTypes.Where(w => w.RequireCompeteAccess && w.UseAudience && w.TypeLevel == 2).Select(s => s.SubMediaType).ToList();
+        List<string> lstCompeteMediaValueTypes = sessionInformation.MediaTypes.Where(w => w.RequireCompeteAccess && w.UseMediaValue && w.TypeLevel == 2).Select(s => s.SubMediaType).ToList();
+        List<string> lstOtherAudienceTypes = sessionInformation.MediaTypes.Where(w => !w.RequireCompeteAccess && !w.RequireNielsenAccess && w.UseAudience && w.TypeLevel == 2).Select(s => s.SubMediaType).ToList();
+        List<string> lstOtherMediaValueTypes = sessionInformation.MediaTypes.Where(w => !w.RequireCompeteAccess && !w.RequireNielsenAccess && w.UseMediaValue && w.TypeLevel == 2).Select(s => s.SubMediaType).ToList();
+
+        string Logo = System.Configuration.ConfigurationManager.AppSettings["UrlReportHeader"];
+        Logo += sessionInformation.ClientGUID + "/" + Model.ReportDetails._ReportImage;
+
+        Int64 totalAudience = 0;
+        decimal totalMediaValue = 0;
+        Int64 totalNationalAudience = 0;
+        decimal totalNationalMediaValue = 0;
+        List<IQArchive_MediaModel> lstMediaResults;
+
+        if (sessionInformation.IsNielsenData)
+        {
+            lstMediaResults = Model.ArchiveResults.Where(w => lstNielsenAudienceTypes.Contains(w.SubMediaType.ToString())).ToList();
+            if (lstMediaResults.Count > 0)
+            {
+                totalAudience += lstMediaResults.Sum(s => s.Audience < 0 ? 0 : s.Audience);
+                totalNationalAudience += lstMediaResults.Sum(s => s.National_Nielsen_Audience.HasValue && s.National_Nielsen_Audience > 0 ? s.National_Nielsen_Audience.Value : 0);
+            }
+
+            lstMediaResults = Model.ArchiveResults.Where(w => lstNielsenMediaValueTypes.Contains(w.SubMediaType.ToString())).ToList();
+            if (lstMediaResults.Count > 0)
+            {
+                totalMediaValue += lstMediaResults.Sum(s => !s.MediaValue.HasValue || s.MediaValue.Value < 0 ? 0 : s.MediaValue.Value);
+                totalNationalMediaValue += lstMediaResults.Sum(s => s.National_IQAdShareValue.HasValue && s.National_IQAdShareValue > 0 ? s.National_IQAdShareValue.Value : 0);
+            }
+        }
+        if (sessionInformation.IsCompeteData)
+        {
+            lstMediaResults = Model.ArchiveResults.Where(w => lstCompeteAudienceTypes.Contains(w.SubMediaType.ToString())).ToList();
+            if (lstMediaResults.Count > 0)
+            {
+                totalAudience += lstMediaResults.Sum(s => s.Audience < 0 ? 0 : s.Audience);
+            }
+
+            lstMediaResults = Model.ArchiveResults.Where(w => lstCompeteMediaValueTypes.Contains(w.SubMediaType.ToString())).ToList();
+            if (lstMediaResults.Count > 0)
+            {
+                totalMediaValue += lstMediaResults.Sum(s => !s.MediaValue.HasValue || s.MediaValue.Value < 0 ? 0 : s.MediaValue.Value);
+            }
+        }
+
+        lstMediaResults = Model.ArchiveResults.Where(w => lstOtherAudienceTypes.Contains(w.SubMediaType.ToString())).ToList();
+        if (lstMediaResults.Count > 0)
+        {
+            totalAudience += lstMediaResults.Sum(s => s.Audience < 0 ? 0 : s.Audience);
+        }
+
+        lstMediaResults = Model.ArchiveResults.Where(w => lstOtherMediaValueTypes.Contains(w.SubMediaType.ToString())).ToList();
+        if (lstMediaResults.Count > 0)
+        {
+            totalMediaValue += lstMediaResults.Sum(s => !s.MediaValue.HasValue || s.MediaValue.Value < 0 ? 0 : s.MediaValue.Value);
+        }
+                
+        <table id="mainTable" style="background-color: #FFFFFF;  width: 650px;  border: solid 1px #A0A0A0;  padding: 3px 3px 3px 3px;" width="650px" align="center">
+            <tr>
+                <td>
+                    <table style="width: 100%;">
+                        <tr>
+                            <td id="divLogo" colspan="2">
+                                @if (!string.IsNullOrEmpty(Model.ReportDetails._ReportImage))
+                                {
+                                    <img src="@Logo" alt="logo" />
+                                }
+                                else
+                                {
+                                    <img src="@(ImageBaseUrl + "logo_N.png")" alt="iq logo" />
+                                }
+                            </td>
+                        </tr>
+                        <tr>
+                            <td id="topRightSection" style="font-size: 14px; text-align: right; width:100%; color: #333333;">
+                                @if (Model.ReportDetails.Settings.ShowTotalNationalAudience)
+                                {
+                                    <text>Total National Audience :
+                                    @string.Format("{0:N0}", totalNationalAudience)
+                                    <br />
+                                    </text>
+                                }
+                                @if (Model.ReportDetails.Settings.ShowTotalNationalMediaValue)
+                                {
+                                    <text> National Media Value : $ 
+                                    @string.Format("{0:N2}", totalNationalMediaValue)
+                                    <br />
+                                    </text>
+                                }
+                                @if (Model.ReportDetails.Settings.ShowTotalAudience)
+                                {
+                                    <text>Total Audience :
+                                    @string.Format("{0:N0}", totalAudience)
+                                    <br />
+                                    </text>
+                                }
+                                @if (Model.ReportDetails.Settings.ShowTotalMediaValue)
+                                {
+                                    <text> Media Value : $
+                                    @string.Format("{0:N2}", totalMediaValue)
+                                    </text>
+                                }
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td id="headerMain" style="font-size: 14px !important; font-weight: bold; background-color: #E2E2E2; border: solid 1px #A0A0A0; height: 27px;">
+                    @Model.ReportDetails.Title
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    ##DashboardCharts##
+                </td>
+            </tr>
+            @if (Model.ReportDetails.Settings.ShowCoverageSources)
+            {
+                
+            <tr>
+		        <td class="">
+			        <table style="width:100%">
+                    <!-- Primary group summary -->
+                        @foreach (KeyValuePair<string, int> kvp in Model.GroupTier1Counts)
+                        {
+                            if (kvp.Value > 0)
+                            {
+                                <tr>
+                                    <td style="font-family: 'Microsoft Sans Serif';" id="topLeftSection" style="font-size: 14px; text-align: left;  color: #333333;">
+                                        @kvp.Key - @kvp.Value
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </table>
+                </td>
+            </tr>
+            }
+            <tr>
+                <td>
+                    <table style="width: 100%">
+                        <!-- Generate media items for primary and secondary groups -->
+                        @foreach (IQArchive_GroupTier1Model groupTier1 in Model.GroupTier1Results)
+                        {
+                            if (Model.GroupTier1Counts[groupTier1.GroupName] > 0)
+                            {
+                            <tr>
+                                <td>
+                                    <table style="width: 100%;">
+                                        <tr>
+                                            <td style="font-family: 'Microsoft Sans Serif';" id="headerSub" style="font-size: 14px !important; font-weight: bold; background-color: #E2E2E2; border: solid 1px #A0A0A0; height: 27px;">
+                                                @groupTier1.GroupName
+                                            </td>
+                                        </tr>
+                                        @{                                 
+                                            <tr>
+                                                <td style="width:100%" >
+                                                    <table style="width:100%" id="topRightSection" style="font-size: 14px; text-align: right; width:100%; color: #333333;">
+                                                        @if (Model.ReportDetails.Settings.ShowAudience)
+                                                        {
+                                                            <tr>
+                                                                <td align="right" style="width:100%" >
+                                                                    Audience: @groupTier1.TotalAudience.ToString("N0")
+                                                                </td>
+                                                            </tr>
+                                                        }
+                                                        @if (Model.ReportDetails.Settings.ShowMediaValue)
+                                                        {
+                                                            <tr>
+                                                                <td align="right" style="width:100%" >
+                                                                    Media Value: $ @groupTier1.TotalMediaValue.ToString("N2")
+                                                                </td>
+                                                            </tr>
+                                                            
+                                                        }
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        }
+
+                                    @if (groupTier1.GroupTier2Counts != null && groupTier1.GroupTier2Counts.Count > 0)
+                                    { 
+                                        <tr>
+                                            <td style="padding-top: 10px; padding-bottom: 5px;">
+                                                <table id="topLeftSection" style="font-size: 14px; text-align: left;  color: #333333;">
+                                        @foreach (KeyValuePair<string, int> kvp in groupTier1.GroupTier2Counts)
+                                        {
+                                            if (kvp.Value > 0)
+                                            {
+                                                        <tr>
+                                                            <td style="font-family: 'Microsoft Sans Serif';">
+                                                                @kvp.Key - @kvp.Value
+                                                            </td>
+                                                        </tr>
+                                            }
+                                        }
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    }
+                                        <tr>
+                                            <td style="padding-top: 5px; padding-bottom: 10px;">
+                                                @foreach (IQArchive_GroupTier2Model groupTier2 in groupTier1.GroupTier2Results)
+                                                {
+                                                    if (groupTier2.ArchiveResults.Count > 0)
+                                                    {
+                                                    <br />        
+
+                                       <table style="width: 100%;">
+                                                        @if (groupTier2.IsEnabled)
+                                                        {
+                                                     <tr style="padding-bottom:10px; ">
+                                                        <td id="headerSub2" style="width:100%; font-size: 14px !important; background-color: #E2E2E2; border: solid 1px #E2E2E2; color: #333333; font-weight: bold; height: 18px; font-family: 'Microsoft Sans Serif';">@groupTier2.GroupName</td>
+                                                     </tr>
+                                                        }
+                                                        @foreach (IQMedia.Model.IQArchive_MediaModel item in groupTier2.ArchiveResults)
+                                                        {
+                                                            IQ_MediaTypeModel objSubMediaType = sessionInformation.MediaTypes.First(w => w.SubMediaType == item.SubMediaType.ToString() && w.TypeLevel == 2);
+                                                            string mediaIconPath = BaseUrl + objSubMediaType.EmailMediaIconPath;
+
+                                            <tr>
+                                                <td style="border-top:1pt solid black; padding-bottom:10px;">
+                                                            @{string Month = item.MediaDate != null ? item.MediaDate.ToString("MMM", System.Globalization.CultureInfo.InvariantCulture) : string.Empty;
+                                                              string Day = item.MediaDate != null ? item.MediaDate.Day.ToString() : string.Empty;
+                                                              string Time = item.MediaDate != null ? item.MediaDate.ToString("hh:mm tt") : string.Empty;
+
+                                                              switch (item.SubMediaType)
+                                                              {
+                                                                  case IQMedia.Shared.Utility.CommonFunctions.CategoryType.TV:
+
+                                                                      IQArchive_ArchiveClipModel TVModel = item.MediaData as IQArchive_ArchiveClipModel;
+
+                                                                      string TVThumbUrl = Convert.ToString(System.Configuration.ConfigurationManager.AppSettings["IQArchieve_TVThumbUrl"]);
+                                                                      TVThumbUrl += TVModel.ClipID;
+
+                                                                      Month = TVModel.LocalDateTime != null ? TVModel.LocalDateTime.ToString("MMM", System.Globalization.CultureInfo.InvariantCulture) : string.Empty;
+                                                                      Day = TVModel.LocalDateTime != null ? TVModel.LocalDateTime.Day.ToString() : string.Empty;
+                                                                      Time = TVModel.LocalDateTime != null ? TVModel.LocalDateTime.ToString("hh:mm tt") : string.Empty;
+
+                                        <table style="width: 100%;">
+                                            <tr>
+					                            <td id="mediaEntry" style="padding-top: 5px;  padding-bottom: 10px;" >
+                                                    <table style="width: 100%;">
+                                                        <tr>
+								                            <td id="mediaDate" style="width: 65px; text-align: left; vertical-align: top;">
+									                            <table style="width: 100%; border-collapse: collapse; border-spacing: 0;">
+										                            <tr>
+											                            <td id="post-date" style="width: 65px; height: auto; padding-bottom: 6px;">
+												                            <table style="width: 100%">
+													                            <tr>
+														                            <td id="month" style="font-size: 18px; text-transform: uppercase; display: block; font-weight: normal; padding: 0px; color: #cc2900; text-align: center;">@Month</td>
+													                            </tr>
+													                            <tr>
+														                            <td id="day" style="font-size: 30px; font-weight: normal; display: block; color: #666666; text-align: center; padding: 0px;">@Day</td>
+													                            </tr>
+													                            <tr>
+														                            <td id="time" style="font-size: 11px; font-weight: normal; display: block; color: #666666; text-align: center; padding: 0px;">@Time @TVModel.TimeZone</td>
+                                                                                </tr>
+                                                                            </table>
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                            <td id="mediaTypeLogo" style="width: 40px; min-height: 32px; float: center; vertical-align: top;" align="center">
+                                                                <img alt="@objSubMediaType.DisplayName" src="@TVModel.StationLogo" style="width: 25px;" />
+                                                            </td>
+                                                            <td id="mediaTVBody" style="text-align: left; vertical-align: top; width: 445px;">
+									                            <table style="width: 100%;">
+										                            <tr>
+											                            <td id="mediaTitle" style="text-align: left; height: 20px; font-size: 17px;">
+												                            <span style="color: #598ea2; font-weight: bold; text-decoration: none;" class="fnt16px">@item.Title</span>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td id="mediaContent" style="text-align: left; height: auto; font-size: 13px; font-weight: normal;">
+                                                                            <span>@Html.Raw(item.DisplayText)</span>
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                            <td id="mediaVideo" style="align: right; vertical-align: middle; width: 100px;">
+                                                                <a href="@(BaseUrl + "ClipPlayer/?ClipID=" + TVModel.ClipID)">
+                                                                    <img width="100" height="65" src="@TVThumbUrl" alt="clip"/>
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                            <tr id="actionBar" style="font-size: 10px !important;">
+                                                <td style="padding: 0px; font-size: 10px !important;  line-height: 0px;">
+                                                    <table  cellspacing="0" cellpadding="0" style="height: 15px; width:100%;">
+                                                        <tr>
+                                                            <td id="filler" style="width: 35px; min-width: 35px;">
+                                                                &nbsp;
+                                                            </td>
+								                            <td id="location" style="width: 150px; min-width: 150px;">
+                                                                 <table cellspacing="2"><tr>
+									                        @if (!string.IsNullOrWhiteSpace(TVModel.Market))
+                                 {
+                                                                 <td>
+										                            <img src="@(ImageBaseUrl + "abarLocation.png")" width="15" />
+                                                                 </td>                           
+                                                                 <td style="text-align: center;">
+                                                                    @TVModel.Market
+                                                                </td>
+                                 }	
+                                                                </tr></table>
+                                                            </td>
+                                                            <td id="sentiment" style="width: 100px; min-width: 100px;">
+                                                            @if (Model.ReportDetails.Settings.ShowSentiment)
+                                                            {
+                                                                <table cellspacing="2" cellpadding="0" style="height: 15px; text-align: center;">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td>
+                                                                                <img src="@(ImageBaseUrl + "abarSentiment.png")" width="15" style="height:15px; width:15px !important; overflow:hidden; float: left;" />
+                                                                            </td>
+                                                                            <td id="sentimentMain" style="background-color: #DEDEDE;  color: #FFFFFF;  float: right;  height: 15px;  width: 52px; text-align: center;  padding: 0px !important;  margin-left: 3px;  margin-top: 0px;">
+                                                                                <table cellspacing="0" cellpadding="0" style="height: 15px; text-align: center;">
+                                                                                    <tbody>
+                                                                                        <tr>
+                                                                                            <td align="right" id="sentimentNegTD" style="width: 26px; padding: 0px !important; -moz-box-sizing: border-box; box-sizing: border-box; border-right: 1px solid #ffffff; background-color: #DEDEDE; color: White; overflow: hidden;">
+                                                                                                <span id="sentimentNegSpan" style='width:@((TVModel.NegativeSentiment * 6) > 25 ? 25 : (TVModel.NegativeSentiment * 6))px;background-color: #d8635d; color: #FFFFFF; float: right !important;line-height: 15px; overflow: hidden; padding: 0 !important;'>
+                                                                                                    @(TVModel.NegativeSentiment > 0 ? TVModel.NegativeSentiment.ToString() : string.Empty)
+                                                                                                </span>
+                                                                                            </td>
+                                                                                            <td align="left" id="sentimentPosTD" style="width: 26px; padding:0px !important; float:right !important;">
+                                                                                                <span id="sentimentPosSpan"  style='width:@((TVModel.PositiveSentiment * 6) > 25 ? 25 : (TVModel.PositiveSentiment * 6))px;color: #FFFFFF; line-height: 15px; background-color: #c7d36a;overflow: hidden; padding: 0px ! important; float: left ! important;'>
+                                                                                                    @(TVModel.PositiveSentiment > 0 ? TVModel.PositiveSentiment.ToString() : string.Empty)
+                                                                                                </span>
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                    </tbody>
+                                                                                </table>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            }
+                                                            </td>
+                                                            <td id="detail" style="width: 180px; min-width: 180px;">
+                                                            @if (TVModel.Nielsen_Audience > 0 && TVModel.IQAdShareValue > 0 && sessionInformation.IsNielsenData)
+                                                            {
+                                                                <table cellspacing="0" cellpadding="0" style="height: 15px; text-align: center;">
+                                                                    <tr>
+                                                                @if (Model.ReportDetails.Settings.ShowAudience)
+                                                                {
+                                                                        <td>
+                                                                            <img src="@(ImageBaseUrl + "view.png")" width="15" alt="view" style="height:15px; width:15px !important; overflow:hidden; float: left;" />
+                                                                        </td>
+                                                                        <td style="padding-left: 10px; padding-right: 15px; font-family: 'Microsoft Sans Serif'; text-align: center; white-space: nowrap;">
+                                                                            @( TVModel.Nielsen_Audience.HasValue ? string.Format("{0:n0}", TVModel.Nielsen_Audience) : string.Empty)
+                                                                        </td>
+                                                                }
+                                                                @if (Model.ReportDetails.Settings.ShowMediaValue)
+                                                                {
+                                                                        <td>
+                                                                            <img src="@(ImageBaseUrl + "dollar.png")" alt="dollar" style="height:15px; width:15px !important; overflow:hidden; float: left;" width="15" />
+                                                                        </td>
+                                                                        <td style="padding-left: 10px; padding-right: 15px; font-family: 'Microsoft Sans Serif'; text-align: center;">
+                                                                    @if (TVModel.IQAdShareValue.HasValue)
+                                                                    {
+                                                                            <table cellspacing="0" cellpadding="0" style="height: 15px;">
+                                                                                <tr>
+                                                                                    <td style="font-family: 'Microsoft Sans Serif'; white-space: nowrap;">
+                                                                                         @(string.Format("{0:n2}", TVModel.IQAdShareValue))
+                                                                                    </td>
+                                                                        @if (!string.IsNullOrWhiteSpace(TVModel.Nielsen_Result))
+                                                                        {
+                                                                                    <td style="font-family: 'Microsoft Sans Serif'; text-align: center; white-space: nowrap;">
+                                                                                        &nbsp;@("(" + TVModel.Nielsen_Result.ToUpper() + ")")
+                                                                                    </td>
+                                                                        }
+                                                                                </tr>
+                                                                            </table>
+                                                                    }
+                                                                        </td>
+                                                                }
+                                                                    </tr>
+                                                                </table>
+                                                            }
+                                                            </td>
+                                                            <td id="detail" style="width: 180px; min-width: 180px;">
+                                                            @if (Model.ReportDetails.Settings.ShowNationalValues && sessionInformation.IsNielsenData)
+                                                            {
+                                                                <table cellspacing="0" cellpadding="0" style="height: 15px; text-align: center;">
+                                                                    <tr>
+                                                                        @if (TVModel.National_Nielsen_Audience.HasValue)
+                                                                        {
+                                                                            <td>
+                                                                                <img src="@(ImageBaseUrl + "us-map.png")" width="15" alt="view" style="height:15px; width:15px !important; overflow:hidden; float: left;" />
+                                                                            </td>
+                                                                            <td style="padding-left: 10px; padding-right: 15px; font-family: 'Microsoft Sans Serif'; text-align: center; white-space: nowrap;">
+                                                                                @( TVModel.National_Nielsen_Audience.HasValue ? string.Format("{0:n0}", TVModel.National_Nielsen_Audience) : string.Empty)
+                                                                            </td>
+                                                                        }
+                                                                        @if (TVModel.National_IQAdShareValue.HasValue)
+                                                                        {
+                                                                            <td>
+                                                                                <img src="@(ImageBaseUrl + "us-dollar.png")" width="15" alt="dollar" style="height:15px; width:15px !important; overflow:hidden; float: left;" />
+                                                                            </td>
+                                                                            <td style="padding-left: 10px; padding-right: 15px; font-family: 'Microsoft Sans Serif'; text-align: center;">
+                                                                                @if (TVModel.National_IQAdShareValue.HasValue)
+                                                                                {
+                                                                                    <table cellpadding="0" cellspacing="0">
+                                                                                        <tr>
+                                                                                            <td style="font-family: 'Microsoft Sans Serif'; text-align: center; white-space: nowrap;">
+                                                                                                @(string.Format("{0:n2}", TVModel.National_IQAdShareValue))
+                                                                                            </td>
+                                                                                            @if (!string.IsNullOrWhiteSpace(TVModel.National_Nielsen_Result))
+                                                                                            {
+                                                                                                <td style="font-family: 'Microsoft Sans Serif'; text-align: center; white-space: nowrap;">
+                                                                                                    &nbsp;@("(" + TVModel.National_Nielsen_Result.ToUpper() + ")")
+                                                                                                </td>
+                                                                                            }
+                                                                                        </tr>
+                                                                                    </table>
+                                                                                }
+                                                                            </td>
+                                                                        }
+                                                                    </tr>
+                                                                </table>
+                                                            }
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table> 
+
+                                                            break;
+
+                                                                  case IQMedia.Shared.Utility.CommonFunctions.CategoryType.TW:
+
+                                                            IQArchive_ArchiveTweetsModel twitterModel = item.MediaData as IQArchive_ArchiveTweetsModel;
+
+			                            <table style="width: 100%;">
+				                            <tr>
+					                            <td id="mediaEntry" style="padding-top: 5px;  padding-bottom: 10px;">
+						                            <table style="width: 100%;">
+							                            <tr>
+								                            <td id="mediaDate" style="width: 65px; text-align: left; vertical-align: top;">
+									                            <table style="width: 100%;">
+										                            <tr>
+											                            <td id="post-date" style="width: 65px; height: auto; padding-bottom: 6px;">
+												                            <table style="width: 100%">
+													                            <tr>
+														                            <td id="month" style="font-size: 18px; text-transform: uppercase; display: block; font-weight: normal; padding: 0px; color: #cc2900; text-align: center;">@Month</td>
+													                            </tr>
+													                            <tr>
+														                            <td id="day" style="font-size: 30px; font-weight: normal; display: block; color: #666666; text-align: center; padding: 0px;">@Day</td>
+													                            </tr>
+													                            <tr>
+														                            <td id="time" style="font-size: 11px; font-weight: normal; display: block; color: #666666; text-align: center; padding: 0px;">@Time @sessionInformation.TimeZone</td>
+                                                                                </tr>
+                                                                            </table>
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                            <td id="mediaTypeLogo" style="width: 40px; min-height: 32px; float: center; vertical-align: top;" align="center">
+                                                                <img src="@mediaIconPath" alt="@objSubMediaType.DisplayName" />
+                                                            </td>
+                                                            <td id="mediaBody" style="text-align: left; vertical-align: top; width: 545px;">
+                                                                @{
+                                                                                          string actorlink = string.Empty;
+                                                                                          if (IQMedia.Shared.Utility.CommonFunctions.Validate_url(twitterModel.ActorLink + "/status/" + twitterModel.TweetID))
+                                                                                          {
+                                                                                              actorlink = twitterModel.ActorLink + "/status/" + twitterModel.TweetID;
+                                                                                          }
+                                                                }
+									                            <table style="width: 100%;">
+										                            <tr>
+											                            <td id="mediaTitle" style="text-align: left; height: 20px; font-size: 17px;">
+												                            <a href="@actorlink" style="color: #598ea2; font-weight: bold; text-decoration: none;"  class="fnt16px">@twitterModel.ActorDisplayname</a>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td id="mediaContent" style="text-align: left; height: auto; font-size: 13px; font-weight: normal;">
+                                                                            <span>@Html.Raw(item.DisplayText)</span>
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                            <tr id="actionBar" style="font-size: 10px !important;">
+                                                <td style="padding: 0px; font-size: 10px !important;  line-height: 0px;">
+                                                    <table cellspacing="0" cellpadding="0" style="height: 15px; width:100%;">
+                                                        <tr>
+                                                            <td id="filler" style="width: 35px; min-width: 35px;">
+                                                                &nbsp;
+                                                            </td>
+								                            <td id="location" style="width: 150px; min-width: 150px;">
+                                                                 <table cellspacing="2"><tr>
+									                        @if (!string.IsNullOrWhiteSpace(twitterModel.PreferredUserName))
+                                 {
+                                                                 <td>
+										                            <img src="@(ImageBaseUrl + "abarLocation.png")" width="15" />
+                                                                 </td>                           
+                                                                 <td style="text-align: center;">
+                                                                    @twitterModel.PreferredUserName
+                                                                </td>
+                                 }	
+                                                                </tr></table>
+                                                            </td>
+                                                            <td id="sentiment" style="width: 100px; min-width: 100px;">
+                                                                @if (Model.ReportDetails.Settings.ShowSentiment)
+                                                                {
+                                                                <table cellspacing="2" cellpadding="0" style="height: 15px; text-align: center;">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td>
+                                                                                <img src="@(ImageBaseUrl + "abarSentiment.png")" width="15" style="height:15px; width:15px !important; overflow:hidden; float: left;" />
+                                                                            </td>
+                                                                            <td id="sentimentMain" style="background-color: #DEDEDE;  color: #FFFFFF;  float: right;  height: 15px;  width: 52px; text-align: center;  padding: 0px !important;  margin-left: 3px;  margin-top: 0px;">
+                                                                                <table cellspacing="0" cellpadding="0" style="height: 15px; text-align: center;">
+                                                                                    <tbody>
+                                                                                        <tr>
+                                                                                            <td align="right" id="sentimentNegTD" style="width: 26px; padding: 0px !important; -moz-box-sizing: border-box; box-sizing: border-box; border-right: 1px solid #ffffff; background-color: #DEDEDE; color: White; overflow: hidden;">
+                                                                                                <span id="sentimentNegSpan" style='width:@((twitterModel.NegativeSentiment * 6) > 25 ? 25 : (twitterModel.NegativeSentiment * 6))px;background-color: #d8635d; color: #FFFFFF; float: right !important;line-height: 15px; overflow: hidden; padding: 0 !important;'>
+                                                                                                    @(twitterModel.NegativeSentiment > 0 ? twitterModel.NegativeSentiment.ToString() : string.Empty)
+                                                                                                </span>
+                                                                                            </td>
+                                                                                            <td align="left" id="sentimentPosTD" style="width: 26px; padding:0px !important; float:right !important;">
+                                                                                                <span id="sentimentPosSpan"  style='width:@((twitterModel.PositiveSentiment * 6) > 25 ? 25 : (twitterModel.PositiveSentiment * 6))px;color: #FFFFFF; line-height: 15px; background-color: #c7d36a;overflow: hidden; padding: 0px ! important; float: left ! important;'>
+                                                                                                    @(twitterModel.PositiveSentiment > 0 ? twitterModel.PositiveSentiment.ToString() : string.Empty)
+                                                                                                </span>
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                    </tbody>
+                                                                                </table>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                                }                                                                               
+                                                            </td>
+                                                            <td id="detail" style="width: 180px; min-width: 180px;">
+                                                                <table cellspacing="0" cellpadding="0" style="height: 15px; text-align: center;">
+                                                                    <tr>
+                                                                        <td style="font-family: 'Microsoft Sans Serif'; text-align: center;">
+                                                                            <img src="@(ImageBaseUrl + "Klout.png")" alt="Klout Score" width="15" />
+                                                                        </td>
+                                                                        <td style="font-family: 'Microsoft Sans Serif'; padding-left: 10px; padding-right: 15px; text-align: center; white-space: nowrap;">
+                                                                           @(string.Format("{0:n0}", twitterModel.KloutScore))
+                                                                        </td>
+                                                                        <td style="font-family: 'Microsoft Sans Serif'; text-align: center;">
+                                                                           <img src="@(ImageBaseUrl + "followers.png")" alt="Followers" width="15" />
+                                                                        </td>
+                                                                        <td style="font-family: 'Microsoft Sans Serif'; padding-left: 10px; padding-right: 15px; text-align: center; white-space: nowrap;">
+                                                                          @(string.Format("{0:n0}", twitterModel.FollowersCount))
+                                                                        </td>
+                                                                        <td style="font-family: 'Microsoft Sans Serif'; text-align: center;">
+                                                                           <img src="@(ImageBaseUrl + "following.png")" alt="Following" width="15" />
+                                                                        </td>
+                                                                        <td style="font-family: 'Microsoft Sans Serif'; padding-left: 10px; padding-right: 15px; text-align: center; white-space: nowrap;">
+                                                                           @(string.Format("{0:n0}", twitterModel.FreiendsCount))
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                            <td id="detail" style="width: 180px; min-width: 180px;">
+                                                                &nbsp;
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>    
+
+                                                                       break;
+
+
+                                                                  case IQMedia.Shared.Utility.CommonFunctions.CategoryType.NM:
+                                                                  case IQMedia.Shared.Utility.CommonFunctions.CategoryType.LN:
+
+                                                                       IQArchive_ArchiveNMModel newsMediaModel = item.MediaData as IQArchive_ArchiveNMModel;
+                
+                                        <table style="width: 100%;">
+                                            <tr>
+                                                <td id="mediaEntry" style="padding-top: 5px;  padding-bottom: 10px;">
+                                                    <table style="width: 100%;">
+                                                        <tr>
+                                                            <td id="mediaDate" style="width: 65px; text-align: left; vertical-align: top;">
+                                                                <table style="width: 100%;">
+                                                                    <tr>
+                                                                        <td id="post-date" style="width: 65px; height: auto; padding-bottom: 6px;">
+												                            <table style="width: 100%">
+													                            <tr>
+														                            <td id="month" style="font-size: 18px; text-transform: uppercase; display: block; font-weight: normal; padding: 0px; color: #cc2900; text-align: center;">@Month</td>
+													                            </tr>
+													                            <tr>
+														                            <td id="day" style="font-size: 30px; font-weight: normal; display: block; color: #666666; text-align: center; padding: 0px;">@Day</td>
+													                            </tr>
+													                            <tr>
+														                            <td id="time" style="font-size: 11px; font-weight: normal; display: block; color: #666666; text-align: center; padding: 0px;">@Time @sessionInformation.TimeZone</td>
+                                                                                </tr>
+                                                                            </table>
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                            <td id="mediaTypeLogo" style="width: 40px; min-height: 32px; float: center; vertical-align: top;" align="center">
+                                                                <img src="@mediaIconPath" alt="@objSubMediaType.DisplayName" />
+                                                            </td>
+                                                            <td id="mediaBody" style="text-align: left; vertical-align: top; width: 545px;">
+									                            <table style="width: 100%;">
+										                            <tr>
+											                            <td id="mediaTitle" style="text-align: left; height: 20px; font-size: 17px;">
+                                                                            @if (newsMediaModel.IQLicense == 3)
+                                                                            {
+                                                                                <img src="@(ImageBaseUrl + "MediaIcon/LexisNexis_Small.png")" title="LexisNexis(R)" alt="LexisNexis(R)" width="20" />
+                                                                            }
+												                            <a style="color: #598ea2; font-weight: bold; text-decoration: none;"  href="@(newsMediaModel.IQLicense > 0 ? "http://" + Request.ServerVariables["HTTP_HOST"] + Url.Action("Index", "Article", new { au = IQMedia.Shared.Utility.CommonFunctions.EncryptLicenseStringAES(sessionInformation.CustomerKey + "¶Library Email¶" + newsMediaModel.Url + "&u1=cliq40&u2=" + sessionInformation.ClientID + "¶" + newsMediaModel.IQLicense) }) : newsMediaModel.Url)" class="fnt16px">
+                                                                                @Html.Raw(item.Title)
+                                                                            </a>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td id="mediaContent" style="text-align: left; height: auto; font-size: 13px; font-weight: normal;">
+                                                                            <span>@Html.Raw(item.DisplayText)</span>
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                            <tr id="actionBar" style="font-size: 10px !important;">
+                                                <td style="padding: 0px; font-size: 10px !important;  line-height: 0px;">
+                                                    <table cellspacing="0" cellpadding="0" style="height: 15px; width:100%;">
+                                                        <tr>
+                                                            <td id="filler" style="width: 35px; min-width: 35px;">
+                                                                &nbsp;
+                                                            </td>
+								                            <td id="location" style="width: 150px; min-width: 150px;">
+                                                                 <table cellspacing="2"><tr>
+									                        @if (!string.IsNullOrWhiteSpace(newsMediaModel.Publication))
+                                 {
+                                                                 <td>
+										                            <img src="@(ImageBaseUrl + "abarLocation.png")" width="15" />
+                                                                 </td>                           
+                                                                 <td style="text-align: center;">
+                                                                    @newsMediaModel.Publication
+                                                                </td>
+                                 }	
+                                                                </tr></table>
+                                                            </td>
+                                                            <td id="sentiment" style="width: 100px; min-width: 100px;">
+                                                            @if (Model.ReportDetails.Settings.ShowSentiment)
+                                                            {
+                                                                <table cellspacing="2" cellpadding="0" style="height: 15px; text-align: center;">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td><img src="@(ImageBaseUrl + "abarSentiment.png")" width="15" style="height:15px; width:15px !important; overflow:hidden; float: left;" /></td>
+                                                                            <td id="sentimentMain" style="background-color: #DEDEDE;  color: #FFFFFF;  float: right;  height: 15px;  width: 52px; text-align: center;  padding: 0px !important;  margin-left: 3px;  margin-top: 0px;">
+                                                                                <table cellspacing="0" cellpadding="0" style="height: 15px; text-align: center;">
+                                                                                    <tbody>
+                                                                                        <tr>
+                                                                                            <td align="right" id="sentimentNegTD" style="width: 26px; padding: 0px !important; -moz-box-sizing: border-box; box-sizing: border-box; border-right: 1px solid #ffffff; background-color: #DEDEDE; color: White; overflow: hidden;">
+                                                                                                <span id="sentimentNegSpan" style='width:@((newsMediaModel.NegativeSentiment * 6) > 25 ? 25 : (newsMediaModel.NegativeSentiment * 6))px;background-color: #d8635d; color: #FFFFFF; float: right !important;line-height: 15px; overflow: hidden; padding: 0 !important;'>
+                                                                                                    @(newsMediaModel.NegativeSentiment > 0 ? newsMediaModel.NegativeSentiment.ToString() : string.Empty)
+                                                                                                </span>
+                                                                                            </td>
+                                                                                            <td align="left" id="sentimentPosTD" style="width: 26px; padding:0px !important; float:right !important;">
+                                                                                                <span id="sentimentPosSpan"  style='width:@((newsMediaModel.PositiveSentiment * 6) > 25 ? 25 : (newsMediaModel.PositiveSentiment * 6))px;color: #FFFFFF; line-height: 15px; background-color: #c7d36a;overflow: hidden; padding: 0px ! important; float: left ! important;'>
+                                                                                                    @(newsMediaModel.PositiveSentiment > 0 ? newsMediaModel.PositiveSentiment.ToString() : string.Empty)
+                                                                                                </span>
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                    </tbody>
+                                                                                </table>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            }
+                                                            </td>
+                                                            <td id="detail" style="width: 180px; min-width: 180px;">
+                                                            @if (Decimal.Compare(Convert.ToDecimal(newsMediaModel.IQAdShareValue), -1M) != 0 && newsMediaModel.Compete_Audience != -1 && sessionInformation.IsCompeteData)
+                                                            {
+                                                                    <table cellspacing="0" cellpadding="0" style="height: 15px; text-align: center;">
+                                                                    <tr>
+                                                                @if (Model.ReportDetails.Settings.ShowAudience)
+                                                                {
+                                                                        <td>
+                                                                            <img src="@(ImageBaseUrl + "view.png")" alt="view" style="height:15px; width:15px !important; overflow:hidden; float: left;" width="15" />
+                                                                        </td>
+                                                                        <td style="padding-left: 10px; padding-right: 15px; font-family: 'Microsoft Sans Serif'; text-align: center;">
+                                                                            <table><tr><td style="text-align:center; white-space: nowrap;">
+                                                                    @if (newsMediaModel.Compete_Audience.HasValue)
+                                                                    {
+                                                                                @(string.Format("{0:n0}", newsMediaModel.Compete_Audience))
+                                                       
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                                @("NA")
+                                                                    }
+                                                                            </td>
+                                                                            <td style="text-align:center;">
+                                                                    @if (!string.IsNullOrWhiteSpace(newsMediaModel.Compete_Result) && newsMediaModel.Compete_Result.ToUpper() == "A")
+                                                                    {
+                                                                            <img title="Powered by Compete" width="15" height="auto" style="float: left; width: 15px; height: auto;" src="@(ImageBaseUrl + "compete.png")" alt="Compete Image" />
+                                                                    }
+                                                                            </td></tr></table>
+                                                                        </td>
+                                                                }
+                                                                @if (Model.ReportDetails.Settings.ShowMediaValue)
+                                                                {
+                                                                        <td>
+                                                                            <img src="@(ImageBaseUrl + "dollar.png")" width="15" alt="dollar" style="height:15px; width:15px !important; overflow:hidden; float: left;" />
+                                                                        </td>
+                                                                        <td style="padding-left: 10px; padding-right: 15px; font-family: 'Microsoft Sans Serif'; text-align: center; white-space: nowrap;">
+                                                                    @if (newsMediaModel.IQAdShareValue.HasValue)
+                                                                    {
+                                                                                @(string.Format("{0:n2}", newsMediaModel.IQAdShareValue))
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                                @("NA")
+                                                                    }
+                                                                        </td>
+                                                                }
+                                                                    </tr>
+                                                                </table>
+                                                            }
+                                                            </td>
+                                                            <td id="detail" style="width: 180px; min-width: 180px;">
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>                                                                                                           
+
+                                                            break;
+
+
+                                                                  case IQMedia.Shared.Utility.CommonFunctions.CategoryType.PM:
+
+                                                            string PMBasePath = Convert.ToString(System.Configuration.ConfigurationManager.AppSettings["IQArchieve_PMBaseUrl"]);
+                                                            IQArchive_ArchiveBLPMModel PMModel = item.MediaData as IQArchive_ArchiveBLPMModel;
+
+			                            <table style="width: 100%;">
+				                            <tr>
+					                            <td id="mediaEntry" style="padding-top: 5px;  padding-bottom: 10px;">
+						                            <table style="width: 100%;">
+							                            <tr>
+								                            <td id="mediaDate" style="width: 65px; text-align: left; vertical-align: top;">
+									                            <table style="width: 100%;">
+										                            <tr>
+											                            <td id="post-date" style="width: 65px; height: auto; padding-bottom: 6px;">
+												                            <table style="width: 100%">
+													                            <tr>
+														                            <td id="month" style="font-size: 18px; text-transform: uppercase; display: block; font-weight: normal; padding: 0px; color: #cc2900; text-align: center;">@Month</td>
+													                            </tr>
+													                            <tr>
+														                            <td id="day" style="font-size: 30px; font-weight: normal; display: block; color: #666666; text-align: center; padding: 0px;">@Day</td>
+													                            </tr>
+													                            <tr>
+														                            <td id="time" style="font-size: 11px; font-weight: normal; display: block; color: #666666; text-align: center; padding: 0px;">@Time @sessionInformation.TimeZone</td>
+                                                                                </tr>
+                                                                            </table>
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                            <td id="mediaTypeLogo" style="width: 40px; min-height: 32px; float: center; vertical-align: top;" align="center">
+                                                                <img src="@mediaIconPath" alt="@objSubMediaType.DisplayName" />
+                                                            </td>
+                                                            <td id="mediaBody" style="text-align: left; vertical-align: top; width: 545px;">
+									                            <table style="width: 100%;">
+										                            <tr>
+											                            <td id="mediaTitle" style="text-align: left; height: 20px; font-size: 17px;">
+												                            <a style="color: #598ea2; font-weight: bold; text-decoration: none;"  class="fnt16px" href="@(PMBasePath + PMModel.FileLocation.Replace(@"\", @"/"))">
+                                                                                @Html.Raw(item.Title)
+                                                                            </a>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td id="mediaContent" style="text-align: left; height: auto; font-size: 13px; font-weight: normal;">
+                                                                            <span>@Html.Raw(item.DisplayText)</span>
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                            <tr id="actionBar" style="font-size: 10px !important;">
+                                                <td style="padding: 0px; font-size: 10px !important;  line-height: 0px;">
+                                                    <table cellspacing="0" cellpadding="0" style="height: 15px; width:100%;">
+                                                        <tr>
+                                                            <td id="filler" style="width: 35px; min-width: 35px;">
+                                                                &nbsp;
+                                                            </td>
+								                            <td id="location" style="width: 150px; min-width: 150px;">
+                                                                 <table cellspacing="2"><tr>
+									                        @if (!string.IsNullOrWhiteSpace(PMModel.Pub_Name))
+                                 {
+                                                                 <td>
+										                            <img src="@(ImageBaseUrl + "abarLocation.png")" width="15" />
+                                                                 </td>                           
+                                                                 <td style="text-align: center;">
+                                                                    @PMModel.Pub_Name
+                                                                </td>
+                                 }	
+                                                                </tr></table>
+                                                            </td>
+                                                            <td id="sentiment" style="width: 100px; min-width: 100px;">
+                                                            @if (Model.ReportDetails.Settings.ShowSentiment)
+                                                            {
+                                                                <table cellspacing="2" cellpadding="0" style="height: 15px; text-align: center;">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td><img src="@(ImageBaseUrl + "abarSentiment.png")" width="15" style="height:15px; width:15px !important; overflow:hidden; float: left;" /></td>
+                                                                            <td id="sentimentMain" style="background-color: #DEDEDE;  color: #FFFFFF;  float: right;  height: 15px;  width: 52px; text-align: center;  padding: 0px !important;  margin-left: 3px;  margin-top: 0px;">
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            }
+                                                            </td>
+                                                            <td id="detail" style="width: 180px; min-width: 180px;">
+                                                            @if (Model.ReportDetails.Settings.ShowAudience)
+                                                            {
+                                                                <table cellspacing="0" cellpadding="0" style="height: 15px; text-align: center;">
+                                                                    <tr>
+                                                                        <td>
+                                                                            <img src="@(ImageBaseUrl + "abarCirculation.png")" width="15" />
+                                                                        </td>
+                                                                        <td style="padding-left: 10px; padding-right: 15px; font-family: 'Microsoft Sans Serif'; text-align: center; white-space: nowrap;">
+                                                                            @(string.Format("{0:n0}", PMModel.Circulation))
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            }
+                                                            </td>
+                                                            <td id="detail" style="width: 180px; min-width: 180px;">
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>    
+
+                                                            break;
+
+                                                                  case IQMedia.Shared.Utility.CommonFunctions.CategoryType.SocialMedia:
+
+                                                            IQArchive_ArchiveSMModel socialMediaModel = item.MediaData as IQArchive_ArchiveSMModel;
+                                              
+			                            <table style="width: 100%;">
+				                            <tr>
+					                            <td id="mediaEntry" style="padding-top: 5px;  padding-bottom: 10px;">
+						                            <table style="width: 100%;">
+							                            <tr>
+								                            <td id="mediaDate" style="width: 65px; text-align: left; vertical-align: top;">
+									                            <table style="width: 100%;">
+										                            <tr>
+											                            <td id="post-date" style="width: 65px; height: auto; padding-bottom: 6px;">
+												                            <table style="width: 100%">
+													                            <tr>
+														                            <td id="month" style="font-size: 18px; text-transform: uppercase; display: block; font-weight: normal; padding: 0px; color: #cc2900; text-align: center;">@Month</td>
+													                            </tr>
+													                            <tr>
+														                            <td id="day" style="font-size: 30px; font-weight: normal; display: block; color: #666666; text-align: center; padding: 0px;">@Day</td>
+													                            </tr>
+													                            <tr>
+														                            <td id="time" style="font-size: 11px; font-weight: normal; display: block; color: #666666; text-align: center; padding: 0px;">@Time @sessionInformation.TimeZone</td>
+                                                                                </tr>
+                                                                            </table>
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                            <td id="mediaTypeLogo" style="width: 40px; min-height: 32px; float: center; vertical-align: top;" align="center">
+                                                                <img src="@mediaIconPath" alt="@objSubMediaType.DisplayName" />
+                                                            </td>
+                                                            <td id="mediaBody" style="text-align: left; vertical-align: top; width: 545px;">
+									                            <table style="width: 100%;">
+										                            <tr>
+											                            <td id="mediaTitle" style="text-align: left; height: 20px; font-size: 17px;">
+												                            <a style="color: #598ea2; font-weight: bold; text-decoration: none;"  href="@socialMediaModel.Url" class="fnt16px">@Html.Raw(item.Title)</a>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td id="mediaContent" style="text-align: left; height: auto; font-size: 13px; font-weight: normal;">
+                                                                            <span>@Html.Raw(item.DisplayText)</span>
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                            <tr id="actionBar" style="font-size: 10px !important;">
+                                                <td style="padding: 0px; font-size: 10px !important;  line-height: 0px;">
+                                                    <table cellspacing="0" cellpadding="0" style="height: 15px; width:100%;">
+                                                        <tr>
+                                                            <td id="filler" style="width: 35px; min-width: 35px;">
+                                                                &nbsp;
+                                                            </td>
+								                            <td id="location" style="width: 150px; min-width: 150px;">
+                                                                 <table cellspacing="2"><tr>
+									                        @if (!string.IsNullOrWhiteSpace(socialMediaModel.Publication))
+                                 {
+                                                                 <td>
+										                            <img src="@(ImageBaseUrl + "abarLocation.png")" width="15" />
+                                                                 </td>                           
+                                                                 <td style="text-align: center;">
+                                                                    @socialMediaModel.Publication
+                                                                </td>
+                                 }	
+                                                                </tr></table>
+                                                            </td>
+                                                            <td id="sentiment" style="width: 100px; min-width: 100px;">
+                                                            @if (Model.ReportDetails.Settings.ShowSentiment)
+                                                            {
+                                                                <table cellspacing="2" cellpadding="0" style="height: 15px; text-align: center;">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td><img src="@(ImageBaseUrl + "abarSentiment.png")" width="15" style="height:15px; width:15px !important; overflow:hidden; float: left;" /></td>
+                                                                            <td id="sentimentMain" style="background-color: #DEDEDE;  color: #FFFFFF;  float: right;  height: 15px;  width: 52px; text-align: center;  padding: 0px !important;  margin-left: 3px;  margin-top: 0px;">
+                                                                                <table cellspacing="0" cellpadding="0" style="height: 15px; text-align: center;">
+                                                                                    <tbody>
+                                                                                        <tr>
+                                                                                            <td align="right" id="sentimentNegTD" style="width: 26px; padding: 0px !important; -moz-box-sizing: border-box; box-sizing: border-box; border-right: 1px solid #ffffff; background-color: #DEDEDE; color: White; overflow: hidden;">
+                                                                                                <span id="sentimentNegSpan" style='width:@((socialMediaModel.NegativeSentiment * 6) > 25 ? 25 : (socialMediaModel.NegativeSentiment * 6))px;background-color: #d8635d; color: #FFFFFF; float: right !important;line-height: 15px; overflow: hidden; padding: 0 !important;'>
+                                                                                                    @(socialMediaModel.NegativeSentiment > 0 ? socialMediaModel.NegativeSentiment.ToString() : string.Empty)
+                                                                                                </span>
+                                                                                            </td>
+                                                                                            <td align="left" id="sentimentPosTD" style="width: 26px; padding:0px !important; float:right !important;">
+                                                                                                <span id="sentimentPosSpan"  style='width:@((socialMediaModel.PositiveSentiment * 6) > 25 ? 25 : (socialMediaModel.PositiveSentiment * 6))px;color: #FFFFFF; line-height: 15px; background-color: #c7d36a;overflow: hidden; padding: 0px ! important; float: left ! important;'>
+                                                                                                    @(socialMediaModel.PositiveSentiment > 0 ? socialMediaModel.PositiveSentiment.ToString() : string.Empty)
+                                                                                                </span>
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                    </tbody>
+                                                                                </table>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            }
+                                                            </td>
+                                                            <td id="detail" style="width: 180px; min-width: 180px;">
+                                                            </td>
+                                                            <td id="detail" style="width: 180px; min-width: 180px;">
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>        
+
+                                                            break;
+                                                                  case IQMedia.Shared.Utility.CommonFunctions.CategoryType.Forum:
+
+                                                            IQArchive_ArchiveSMModel forumModel = item.MediaData as IQArchive_ArchiveSMModel;
+                    
+			                            <table style="width: 100%;">
+				                            <tr>
+					                            <td id="mediaEntry" style="padding-top: 5px;  padding-bottom: 10px;">
+						                            <table style="width: 100%;">
+							                            <tr>
+								                            <td id="mediaDate" style="width: 65px; text-align: left; vertical-align: top;">
+									                            <table style="width: 100%;">
+										                            <tr>
+											                            <td id="post-date" style="width: 65px; height: auto; padding-bottom: 6px;">
+												                            <table style="width: 100%">
+													                            <tr>
+														                            <td id="month" style="font-size: 18px; text-transform: uppercase; display: block; font-weight: normal; padding: 0px; color: #cc2900; text-align: center;">@Month</td>
+													                            </tr>
+													                            <tr>
+														                            <td id="day" style="font-size: 30px; font-weight: normal; display: block; color: #666666; text-align: center; padding: 0px;">@Day</td>
+													                            </tr>
+													                            <tr>
+														                            <td id="time" style="font-size: 11px; font-weight: normal; display: block; color: #666666; text-align: center; padding: 0px;">@Time @sessionInformation.TimeZone</td>
+                                                                                </tr>
+                                                                            </table>
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                            <td id="mediaTypeLogo" style="width: 40px; min-height: 32px; float: center; vertical-align: top;" align="center">
+                                                                <img src="@mediaIconPath" alt="@objSubMediaType.DisplayName" />
+                                                            </td>
+                                                            <td id="mediaBody" style="text-align: left; vertical-align: top; width: 545px;">
+									                            <table style="width: 100%;">
+										                            <tr>
+											                            <td id="mediaTitle" style="text-align: left; height: 20px; font-size: 17px;">
+												                            <a style="color: #598ea2; font-weight: bold; text-decoration: none;"  href="@forumModel.Url" class="fnt16px">@Html.Raw(item.Title)</a>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td id="mediaContent" style="text-align: left; height: auto; font-size: 13px; font-weight: normal;">
+                                                                            <span>@Html.Raw(item.DisplayText)</span>
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                            <tr id="actionBar" style="font-size: 10px !important;">
+                                                <td style="padding: 0px; font-size: 10px !important;  line-height: 0px;">
+                                                    <table cellspacing="0" cellpadding="0" style="height: 15px; width:100%;">
+                                                        <tr>
+                                                            <td id="filler" style="width: 35px; min-width: 35px;">
+                                                                &nbsp;
+                                                            </td>
+								                            <td id="location" style="width: 150px; min-width: 150px;">
+                                                                 <table cellspacing="2"><tr>
+									                        @if (!string.IsNullOrWhiteSpace(forumModel.Publication))
+                                 {
+                                                                 <td>
+										                            <img src="@(ImageBaseUrl + "abarLocation.png")" width="15" />
+                                                                 </td>                           
+                                                                 <td style="text-align: center;">
+                                                                    @forumModel.Publication
+                                                                </td>
+                                 }	
+                                                                </tr></table>
+                                                            </td>
+                                                            <td id="sentiment" style="width: 100px; min-width: 100px;">
+                                                            @if (Model.ReportDetails.Settings.ShowSentiment)
+                                                            {
+                                                                <table cellspacing="2" cellpadding="0" style="height: 15px; text-align: center;">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td><img src="@(ImageBaseUrl + "abarSentiment.png")" width="15" style="height:15px; width:15px !important; overflow:hidden; float: left;" /></td>
+                                                                            <td id="sentimentMain" style="background-color: #DEDEDE;  color: #FFFFFF;  float: right;  height: 15px;  width: 52px; text-align: center;  padding: 0px !important;  margin-left: 3px;  margin-top: 0px;">
+                                                                                <table cellspacing="0" cellpadding="0" style="height: 15px; text-align: center;">
+                                                                                    <tbody>
+                                                                                        <tr>
+                                                                                            <td align="right" id="sentimentNegTD" style="width: 26px; padding: 0px !important; -moz-box-sizing: border-box; box-sizing: border-box; border-right: 1px solid #ffffff; background-color: #DEDEDE; color: White; overflow: hidden;">
+                                                                                                <span id="sentimentNegSpan" style='width:@((forumModel.NegativeSentiment * 6) > 25 ? 25 : (forumModel.NegativeSentiment * 6))px;background-color: #d8635d; color: #FFFFFF; float: right !important;line-height: 15px; overflow: hidden; padding: 0 !important;'>
+                                                                                                    @(forumModel.NegativeSentiment > 0 ? forumModel.NegativeSentiment.ToString() : string.Empty)
+                                                                                                </span>
+                                                                                            </td>
+                                                                                            <td align="left" id="sentimentPosTD" style="width: 26px; padding:0px !important; float:right !important;">
+                                                                                                <span id="sentimentPosSpan"  style='width:@((forumModel.PositiveSentiment * 6) > 25 ? 25 : (forumModel.PositiveSentiment * 6))px;color: #FFFFFF; line-height: 15px; background-color: #c7d36a;overflow: hidden; padding: 0px ! important; float: left ! important;'>
+                                                                                                    @(forumModel.PositiveSentiment > 0 ? forumModel.PositiveSentiment.ToString() : string.Empty)
+                                                                                                </span>
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                    </tbody>
+                                                                                </table>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            }
+                                                            </td>
+                                                            <td id="detail" style="width: 180px; min-width: 180px;">
+                                                            </td>
+                                                            <td id="detail" style="width: 180px; min-width: 180px;">
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table> 
+
+                                                            break;
+
+                                                                  case IQMedia.Shared.Utility.CommonFunctions.CategoryType.Blog:
+
+                                                            IQArchive_ArchiveSMModel blogModel = item.MediaData as IQArchive_ArchiveSMModel;
+
+			                            <table style="width: 100%;">
+				                            <tr>
+					                            <td id="mediaEntry" style="padding-top: 5px;  padding-bottom: 10px;">
+						                            <table style="width: 100%;">
+							                            <tr>
+								                            <td id="mediaDate" style="width: 65px; text-align: left; vertical-align: top;">
+									                            <table style="width: 100%;">
+										                            <tr>
+											                            <td id="post-date" style="width: 65px; height: auto; padding-bottom: 6px;">
+												                            <table style="width: 100%">
+													                            <tr>
+														                            <td id="month" style="font-size: 18px; text-transform: uppercase; display: block; font-weight: normal; padding: 0px; color: #cc2900; text-align: center;">@Month</td>
+													                            </tr>
+													                            <tr>
+														                            <td id="day" style="font-size: 30px; font-weight: normal; display: block; color: #666666; text-align: center; padding: 0px;">@Day</td>
+													                            </tr>
+													                            <tr>
+														                            <td id="time" style="font-size: 11px; font-weight: normal; display: block; color: #666666; text-align: center; padding: 0px;">@Time @sessionInformation.TimeZone</td>
+                                                                                </tr>
+                                                                            </table>
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                            <td id="mediaTypeLogo" style="width: 40px; min-height: 32px; float: center; vertical-align: top;" align="center">
+                                                                <img src="@mediaIconPath" alt="@objSubMediaType.DisplayName" />
+                                                            </td>
+                                                            <td id="mediaBody" style="text-align: left; vertical-align: top; width: 545px;">
+									                            <table style="width: 100%;">
+										                            <tr>
+											                            <td id="mediaTitle" style="text-align: left; height: 20px; font-size: 17px;">
+												                            <a style="color: #598ea2; font-weight: bold; text-decoration: none;"  href="@blogModel.Url" class="fnt16px">@Html.Raw(item.Title)</a>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td id="mediaContent" style="text-align: left; height: auto; font-size: 13px; font-weight: normal;">
+                                                                            <span>@Html.Raw(item.DisplayText)</span>
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                            <tr id="actionBar" style="font-size: 10px !important;">
+                                                <td style="padding: 0px; font-size: 10px !important;  line-height: 0px;">
+                                                    <table cellspacing="0" cellpadding="0" style="height: 15px; width:100%;">
+                                                        <tr>
+                                                            <td id="filler" style="width: 35px; min-width: 35px;">
+                                                                &nbsp;
+                                                            </td>
+								                            <td id="location" style="width: 150px; min-width: 150px;">
+                                                                 <table cellspacing="2"><tr>
+									                        @if (!string.IsNullOrWhiteSpace(blogModel.Publication))
+                                 {
+                                                                 <td>
+										                            <img src="@(ImageBaseUrl + "abarLocation.png")" width="15" />
+                                                                 </td>                           
+                                                                 <td style="text-align: center;">
+                                                                    @blogModel.Publication
+                                                                </td>
+                                 }	
+                                                                </tr></table>
+                                                            </td>
+                                                            <td id="sentiment" style="width: 100px; min-width: 100px;">
+                                                            @if (Model.ReportDetails.Settings.ShowSentiment)
+                                                            {
+                                                                <table cellspacing="2" cellpadding="0" style="height: 15px; text-align: center;">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td><img src="@(ImageBaseUrl + "abarSentiment.png")" width="15" style="height:15px; width:15px !important; overflow:hidden; float: left;" /></td>
+                                                                            <td id="sentimentMain" style="background-color: #DEDEDE;  color: #FFFFFF;  float: right;  height: 15px;  width: 52px; text-align: center;  padding: 0px !important;  margin-left: 3px;  margin-top: 0px;">
+                                                                                <table cellspacing="0" cellpadding="0" style="height: 15px; text-align: center;">
+                                                                                    <tbody>
+                                                                                        <tr>
+                                                                                            <td align="right" id="sentimentNegTD" style="width: 26px; padding: 0px !important; -moz-box-sizing: border-box; box-sizing: border-box; border-right: 1px solid #ffffff; background-color: #DEDEDE; color: White; overflow: hidden;">
+                                                                                                <span id="sentimentNegSpan" style='width:@((blogModel.NegativeSentiment * 6) > 25 ? 25 : (blogModel.NegativeSentiment * 6))px;background-color: #d8635d; color: #FFFFFF; float: right !important;line-height: 15px; overflow: hidden; padding: 0 !important;'>
+                                                                                                    @(blogModel.NegativeSentiment > 0 ? blogModel.NegativeSentiment.ToString() : string.Empty)
+                                                                                                </span>
+                                                                                            </td>
+                                                                                            <td align="left" id="sentimentPosTD" style="width: 26px; padding:0px !important; float:right !important;">
+                                                                                                <span id="sentimentPosSpan"  style='width:@((blogModel.PositiveSentiment * 6) > 25 ? 25 : (blogModel.PositiveSentiment * 6))px;color: #FFFFFF; line-height: 15px; background-color: #c7d36a;overflow: hidden; padding: 0px ! important; float: left ! important;'>
+                                                                                                    @(blogModel.PositiveSentiment > 0 ? blogModel.PositiveSentiment.ToString() : string.Empty)
+                                                                                                </span>
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                    </tbody>
+                                                                                </table>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            }
+                                                            </td>
+                                                            <td id="detail" style="width: 180px; min-width: 180px;">
+                                                            @if (Decimal.Compare(Convert.ToDecimal(blogModel.IQAdShareValue), -1M) != 0 && blogModel.Compete_Audience != -1 && sessionInformation.IsCompeteData)
+                                                            {
+                                                                <table cellspacing="0" cellpadding="0" style="height: 15px; text-align: center;">
+                                                                    <tr>
+                                                                @if (Model.ReportDetails.Settings.ShowAudience)
+                                                                {
+                                                                        <td>
+                                                                            <img src="@(ImageBaseUrl + "view.png")" width="15" alt="view" style="height:15px; width:15px !important; overflow:hidden; float: left;" />
+                                                                        </td>
+                                                                        <td style="padding-left: 10px; padding-right: 15px; font-family: 'Microsoft Sans Serif'; text-align: center; ">
+                                                                        <table><tr><td style="text-align:center; white-space: nowrap;">
+                                                                    @if (blogModel.Compete_Audience.HasValue)
+                                                                    {
+                                                                        @(string.Format("{0:n0}", blogModel.Compete_Audience))
+                                                       
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        @("NA")
+                                                                    }
+                                                                            </td>
+                                                                            <td style="text-align:center;">
+                                                                    @if (!string.IsNullOrWhiteSpace(blogModel.Compete_Result) && blogModel.Compete_Result.ToUpper() == "A")
+                                                                    {
+                                                                            <img title="Powered by Compete" width="15" height="auto" style="width: 15px; float:left; height: auto;" src="@(ImageBaseUrl + "compete.png")" alt="Compete Image" />
+                                                                    }
+                                                                            </td></tr></table>
+                                                                        </td>
+                                                                }
+                                                                @if (Model.ReportDetails.Settings.ShowMediaValue)
+                                                                {
+                                                                        <td>
+                                                                            <img src="@(ImageBaseUrl + "dollar.png")" width="15" alt="dollar" style="height:15px; width:15px !important; overflow:hidden; float: left;" />
+                                                                        </td>
+                                                                        <td style="padding-left: 10px; padding-right: 15px; font-family: 'Microsoft Sans Serif'; text-align: center; white-space: nowrap;">
+                                                                    @if (blogModel.IQAdShareValue.HasValue)
+                                                                    {
+                                                                        @(string.Format("{0:n2}", blogModel.IQAdShareValue))
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        @("NA")
+                                                                    }
+                                                                        </td>
+                                                                }
+                                                                    </tr>
+                                                                </table>
+                                                            }
+                                                            else
+                                                            {                       
+                                                                <div style="height: 15px">&nbsp;</div>                      
+                                                            }
+                                                            </td>
+                                                            <td id="detail" style="width: 180px; min-width: 180px;">
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>  
+
+                                                            break;
+
+                                                                  case IQMedia.Shared.Utility.CommonFunctions.CategoryType.FB:
+                                                                  case IQMedia.Shared.Utility.CommonFunctions.CategoryType.IG:
+
+                                                            IQArchive_ArchiveSMModel fbModel = item.MediaData as IQArchive_ArchiveSMModel;
+
+ 			                            <table style="width: 100%;">
+				                            <tr>
+					                            <td id="mediaEntry" style="padding-top: 5px;  padding-bottom: 10px;">
+						                            <table style="width: 100%;">
+							                            <tr>
+								                            <td id="mediaDate" style="width: 65px; text-align: left; vertical-align: top;">
+									                            <table style="width: 100%;">
+										                            <tr>
+											                            <td id="post-date" style="width: 65px; height: auto; padding-bottom: 6px;">
+												                            <table style="width: 100%">
+													                            <tr>
+														                            <td id="month" style="font-size: 18px; text-transform: uppercase; display: block; font-weight: normal; padding: 0px; color: #cc2900; text-align: center;">@Month</td>
+													                            </tr>
+													                            <tr>
+														                            <td id="day" style="font-size: 30px; font-weight: normal; display: block; color: #666666; text-align: center; padding: 0px;">@Day</td>
+													                            </tr>
+													                            <tr>
+														                            <td id="time" style="font-size: 11px; font-weight: normal; display: block; color: #666666; text-align: center; padding: 0px;">@Time @sessionInformation.TimeZone</td>
+                                                                                </tr>
+                                                                            </table>
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                            <td id="mediaTypeLogo" style="width: 40px; min-height: 32px; float: center; vertical-align: top;" align="center">
+                                                                <img src="@mediaIconPath" alt="@objSubMediaType.DisplayName" />
+                                                            </td>
+                                                            <td id="mediaTVBody" style="text-align: left; vertical-align: top; width: 445px;">
+									                            <table style="width: 100%;">
+										                            <tr>
+											                            <td id="mediaTitle" style="text-align: left; height: 20px; font-size: 17px;">
+												                            <a style="color: #598ea2; font-weight: bold; text-decoration: none;"  class="fnt16px" href="@fbModel.Url">
+                                                                                @item.Title
+                                                                            </a>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td id="mediaContent" style="text-align: left; height: auto; font-size: 13px; font-weight: normal;">
+                                                                            <span>@Html.Raw(item.DisplayText)</span>
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                            @if (item.SubMediaType == IQMedia.Shared.Utility.CommonFunctions.CategoryType.IG)
+                                                            {
+                                                                <td id="mediaVideo" style="align: right; vertical-align: middle; width: 100px;">
+                                                                    <img src="@fbModel.ThumbUrl" width="100" height="65" alt="post image" />
+                                                                </td>
+                                                            }
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                            <tr id="actionBar" style="font-size: 10px !important;">
+                                                <td style="padding: 0px; font-size: 10px !important;  line-height: 0px;">
+                                                    <table cellspacing="0" cellpadding="0" style="height: 15px; width:100%;">
+                                                        <tr>
+                                                            <td id="filler" style="width: 35px; min-width: 35px;">
+                                                                &nbsp;
+                                                            </td>
+								                            <td id="location" style="width: 150px; min-width: 150px;">
+                                                                 <table cellspacing="2"><tr>
+									                        @if (!string.IsNullOrWhiteSpace(fbModel.Publication))
+                                 {
+                                                                 <td>
+										                            <img src="@(ImageBaseUrl + "abarLocation.png")" width="15" />
+                                                                 </td>                           
+                                                                 <td style="text-align: center;">
+                                                                    @fbModel.Publication
+                                                                </td>
+                                 }	
+                                                                </tr></table>
+                                                            </td>
+                                                            <td id="sentiment" style="width: 100px; min-width: 100px;">
+                                                            @if (Model.ReportDetails.Settings.ShowSentiment)
+                                                            {
+                                                                <table cellspacing="2" cellpadding="0" style="height: 15px; text-align: center;">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td><img src="@(ImageBaseUrl + "abarSentiment.png")" width="15" style="height:15px; width:15px !important; overflow:hidden; float: left;" /></td>
+                                                                            <td id="sentimentMain" style="background-color: #DEDEDE;  color: #FFFFFF;  float: right;  height: 15px;  width: 52px; text-align: center;  padding: 0px !important;  margin-left: 3px;  margin-top: 0px;">
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            }
+                                                            </td>
+                                                            <td id="detail" style="width: 180px; min-width: 180px;">
+                                                            @if (fbModel.ArticleStats != null)
+                                                            {
+                                                                <table cellspacing="0" cellpadding="0" style="font-family: 'Microsoft Sans Serif'; height: 20px; text-align: center;">
+                                                                    <tr>
+                                                                        <td style="font-family: 'Microsoft Sans Serif';">
+                                                                            <img src="@(ImageBaseUrl + "fb-like.png")" alt="Likes" width="15" />
+                                                                        </td>
+                                                                        <td style="font-family: 'Microsoft Sans Serif'; padding-left: 10px; padding-right: 15px; text-align: center; white-space: nowrap;">
+                                                                            @(string.Format("{0:n0}", fbModel.ArticleStats.Likes))
+                                                                        </td>
+                                                                        <td style="font-family: 'Microsoft Sans Serif';">
+                                                                            <img src="@(ImageBaseUrl + "fb-comment.png")" alt="Comments" width="15" />
+                                                                        </td>
+                                                                        <td style="font-family: 'Microsoft Sans Serif'; padding-left: 10px; padding-right: 15px; text-align: center; white-space: nowrap;">
+                                                                            @(string.Format("{0:n0}", fbModel.ArticleStats.Comments))
+                                                                        </td>
+                                                                        @if (item.SubMediaType == IQMedia.Shared.Utility.CommonFunctions.CategoryType.FB)
+                                                                        {
+                                                                        <td style="font-family: 'Microsoft Sans Serif';">
+                                                                            <img src="@(ImageBaseUrl + "fb-share.png")" alt="Shares" width="15" />
+                                                                        </td>
+                                                                        <td style="font-family: 'Microsoft Sans Serif'; padding-left: 10px; padding-right: 15px; text-align: center; white-space: nowrap;">
+                                                                            @(string.Format("{0:n0}", fbModel.ArticleStats.Shares))
+                                                                        </td>
+                                                                        }
+                                                                    </tr>
+                                                                </table>
+                                                            }
+                                                            </td>
+                                                            <td id="detail" style="width: 180px; min-width: 180px;">
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>                     
+
+                                                            break;
+
+                                                                  case IQMedia.Shared.Utility.CommonFunctions.CategoryType.Radio:
+                                                            IQArchive_ArchiveTVEyesModel TVEyesModel = item.MediaData as IQArchive_ArchiveTVEyesModel;
+                                                            Month = TVEyesModel.LocalDateTime != null ? TVEyesModel.LocalDateTime.ToString("MMM", System.Globalization.CultureInfo.InvariantCulture) : string.Empty;
+                                                            Day = TVEyesModel.LocalDateTime != null ? TVEyesModel.LocalDateTime.Day.ToString() : string.Empty;
+                                                            Time = TVEyesModel.LocalDateTime != null ? TVEyesModel.LocalDateTime.ToString("hh:mm tt") : string.Empty;
+                                                    
+			                            <table style="width: 100%;">
+				                            <tr>
+					                            <td id="mediaEntry" style="padding-top: 5px;  padding-bottom: 10px;">
+						                            <table style="width: 100%;">
+							                            <tr>
+								                            <td id="mediaDate" style="width: 65px; text-align: left; vertical-align: top;">
+									                            <table style="width: 100%;">
+										                            <tr>
+											                            <td id="post-date" style="width: 65px; height: auto; padding-bottom: 6px;">
+												                            <table style="width: 100%">
+													                            <tr>
+														                            <td id="month" style="font-size: 18px; text-transform: uppercase; display: block; font-weight: normal; padding: 0px; color: #cc2900; text-align: center;">@Month</td>
+													                            </tr>
+													                            <tr>
+														                            <td id="day" style="font-size: 30px; font-weight: normal; display: block; color: #666666; text-align: center; padding: 0px;">@Day</td>
+													                            </tr>
+													                            <tr>
+														                            <td id="time" style="font-size: 11px; font-weight: normal; display: block; color: #666666; text-align: center; padding: 0px;">@Time @TVEyesModel.TimeZone</td>
+                                                                                </tr>
+                                                                            </table>
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                            <td id="mediaTypeLogo" style="width: 40px; min-height: 32px; float: center; vertical-align: top;" align="center">
+                                                                <img src="@mediaIconPath" alt="@objSubMediaType.DisplayName" />
+                                                            </td>
+                                                            <td id="mediaBody" style="text-align: left; vertical-align: top; width: 545px;">
+									                            <table style="width: 100%;">
+										                            <tr>
+											                            <td id="mediaTitle" style="text-align: left; height: 20px; font-size: 17px;">
+												                            <a style="color: #598ea2; font-weight: bold; text-decoration: none;"  class="fnt16px" href="@(System.Configuration.ConfigurationManager.AppSettings["RadioClipPlayerURL"] + Url.Encode(IQMedia.Shared.Utility.CommonFunctions.GenerateRandomString() + IQMedia.Shared.Utility.CommonFunctions.EncryptStringAES(item.ID.ToString(), IQMedia.Shared.Utility.CommonFunctions.AesKeyLibRadioPlayer, IQMedia.Shared.Utility.CommonFunctions.AesIVLibRadioPlayer)))">
+                                                                                @item.Title
+                                                                            </a>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td id="mediaContent" style="text-align: left; height: auto; font-size: 13px; font-weight: normal;">
+                                                                            <span>@TVEyesModel.StationID - @Html.Raw(item.DisplayText)</span>
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                            <tr id="actionBar" style="font-size: 10px !important;">
+                                                <td style="padding: 0px; font-size: 10px !important;  line-height: 0px;">
+                                                    <table cellspacing="0" cellpadding="0" style="height: 15px; width:100%;">
+                                                        <tr>
+                                                            <td id="filler" style="width: 35px; min-width: 35px;">
+                                                                &nbsp;
+                                                            </td>
+								                            <td id="location" style="width: 150px; min-width: 150px;">
+                                                                 <table cellspacing="2"><tr>
+									                        @if (!string.IsNullOrWhiteSpace(TVEyesModel.Market))
+                                 {
+                                                                 <td>
+										                            <img src="@(ImageBaseUrl + "abarLocation.png")" width="15" />
+                                                                 </td>                           
+                                                                 <td style="text-align: center;">
+                                                                    @TVEyesModel.Market
+                                                                </td>
+                                 }	
+                                                                </tr></table>
+                                                            </td>
+                                                            <td id="sentiment" style="width: 100px; min-width: 100px;">
+                                                            @if (Model.ReportDetails.Settings.ShowSentiment)
+                                                            {
+                                                                <table cellspacing="2" cellpadding="0" style="height: 15px; text-align: center;">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td><img src="@(ImageBaseUrl + "abarSentiment.png")" width="15" style="height:15px; width:15px !important; overflow:hidden; float: left;" /></td>
+                                                                            <td id="sentimentMain" style="background-color: #DEDEDE;  color: #FFFFFF;  float: right;  height: 15px;  width: 52px; text-align: center;  padding: 0px !important;  margin-left: 3px;  margin-top: 0px;">
+                                                                                <table cellspacing="0" cellpadding="0" style="height: 15px; text-align: center;">
+                                                                                    <tbody>
+                                                                                        <tr>
+                                                                                            <td align="right" id="sentimentNegTD" style="width: 26px; padding: 0px !important; -moz-box-sizing: border-box; box-sizing: border-box; border-right: 1px solid #ffffff; background-color: #DEDEDE; color: White; overflow: hidden;">
+                                                                                                <span id="sentimentNegSpan" style='width:@((TVEyesModel.NegativeSentiment * 6) > 25 ? 25 : (TVEyesModel.NegativeSentiment * 6))px;background-color: #d8635d; color: #FFFFFF; float: right !important;line-height: 15px; overflow: hidden; padding: 0 !important;'>
+                                                                                                    @(TVEyesModel.NegativeSentiment > 0 ? TVEyesModel.NegativeSentiment.ToString() : string.Empty)
+                                                                                                </span>
+                                                                                            </td>
+                                                                                            <td align="left" id="sentimentPosTD" style="width: 26px; padding:0px !important; float:right !important;">
+                                                                                                <span id="sentimentPosSpan"  style='width:@((TVEyesModel.PositiveSentiment * 6) > 25 ? 25 : (TVEyesModel.PositiveSentiment * 6))px;color: #FFFFFF; line-height: 15px; background-color: #c7d36a;overflow: hidden; padding: 0px ! important; float: left ! important;'>
+                                                                                                    @(TVEyesModel.PositiveSentiment > 0 ? TVEyesModel.PositiveSentiment.ToString() : string.Empty)
+                                                                                                </span>
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                    </tbody>
+                                                                                </table>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            }
+                                                            </td>
+                                                            <td id="detail" style="width: 180px; min-width: 180px;">
+                                                            @if (!string.IsNullOrEmpty(TVEyesModel.DMARank))
+                                                            {
+                                                                <table cellspacing="0" cellpadding="0" style="height: 15px; text-align: center;">
+                                                                    <tr>
+                                                                        <td>
+                                                                            <img src="@(ImageBaseUrl + "abarMarketRank.png")" width="15" />
+                                                                        </td>
+                                                                        <td style="padding-left: 10px; padding-right: 15px; font-family: 'Microsoft Sans Serif'; text-align: center; white-space: nowrap;">
+                                                                            @(string.Format("{0:n0}", TVEyesModel.DMARank))
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            }
+                                                            </td>
+                                                            <td id="detail" style="width: 180px; min-width: 180px;">
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+
+                                                            break;
+
+                                                                  case IQMedia.Shared.Utility.CommonFunctions.CategoryType.MS:
+
+                                                            IQArchive_ArchiveMiscModel miscModel = item.MediaData as IQArchive_ArchiveMiscModel;
+
+                                                            Month = miscModel.CreateDT.ToString("MMM", System.Globalization.CultureInfo.InvariantCulture);
+                                                            Day = miscModel.CreateDT.Day.ToString();
+                                                            Time = miscModel.CreateDT.ToString("hh:mm tt");
+
+                                                            string catimg = string.Empty;
+                                                            switch (miscModel.FileType)
+                                                            {
+                                                                case IQMedia.Shared.Utility.CommonFunctions.IQUGCMediaTypes.Doc:
+                                                                    catimg = "word.png";
+                                                                    break;
+                                                                case IQMedia.Shared.Utility.CommonFunctions.IQUGCMediaTypes.Excel:
+                                                                    catimg = "excel.png";
+                                                                    break;
+                                                                case IQMedia.Shared.Utility.CommonFunctions.IQUGCMediaTypes.Pdf:
+                                                                    catimg = "pdf.png";
+                                                                    break;
+                                                                case IQMedia.Shared.Utility.CommonFunctions.IQUGCMediaTypes.Image:
+                                                                    catimg = "image.png";
+                                                                    break;
+                                                                default:
+                                                                    catimg = string.Empty;
+                                                                    break;
+                                                            }
+
+                                         <table style="width: 100%;">
+				                            <tr>
+					                            <td id="mediaEntry" style="padding-top: 5px;  padding-bottom: 10px;">
+						                            <table style="width: 100%;">
+							                            <tr>
+								                            <td id="mediaDate" style="width: 65px; text-align: left; vertical-align: top;">
+									                            <table style="width: 100%;">
+										                            <tr>
+											                            <td id="post-date" style="width: 65px; height: auto; padding-bottom: 6px;">
+												                            <table style="width: 100%">
+													                            <tr>
+														                            <td id="month" style="font-size: 18px; text-transform: uppercase; display: block; font-weight: normal; padding: 0px; color: #cc2900; text-align: center;">@Month</td>
+													                            </tr>
+													                            <tr>
+														                            <td id="day" style="font-size: 30px; font-weight: normal; display: block; color: #666666; text-align: center; padding: 0px;">@Day</td>
+													                            </tr>
+													                            <tr>
+														                            <td id="time" style="font-size: 11px; font-weight: normal; display: block; color: #666666; text-align: center; padding: 0px;">@Time @miscModel.TimeZone</td>
+                                                                                </tr>
+                                                                            </table>
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                            <td id="mediaTypeLogo" style="width: 40px; min-height: 32px; float: center; vertical-align: top;" align="center">
+                                                                <img src="@(ImageBaseUrl + "MediaIcon/" + catimg)"  alt="misc" />
+                                                            </td>
+                                                            <td id="mediaBody" style="text-align: left; vertical-align: top; width: 545px;">
+									                            <table style="width: 100%;">
+										                            <tr>
+											                            <td id="mediaTitle" style="text-align: left; height: 20px; font-size: 17px;">
+												                            <a style="color: #598ea2; font-weight: bold; text-decoration: none;"  href="@miscModel.MediaUrl" class="fnt16px">@item.Title</a>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td id="mediaContent" style="text-align: left; height: auto; font-size: 13px; font-weight: normal;">
+                                                                            <span>@Html.Raw(item.DisplayText)</span>
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                            <tr id="actionBar" style="font-size: 10px !important;">
+                                                <td style="padding: 0px; font-size: 10px !important;  line-height: 0px;">
+                                                    <table cellspacing="0" cellpadding="0" style="height: 15px; width:100%;">
+                                                        <tr>                                                            
+                                                            <td id="filler" style="width: 35px; min-width: 35px;">
+                                                                &nbsp;
+                                                            </td>
+								                            <td id="location" style="width: 150px; min-width: 150px;">
+                                                                &nbsp;
+                                                            </td>
+                                                            <td id="sentiment" style="width: 100px; min-width: 100px;">
+                                                            @if (Model.ReportDetails.Settings.ShowSentiment)
+                                                            {
+                                                                <table cellspacing="2" cellpadding="0" style="height: 15px; text-align: center;">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td><img src="@(ImageBaseUrl + "abarSentiment.png")" width="15" style="height:15px; width:15px !important; overflow:hidden; float: left;" /></td>
+                                                                            <td id="sentimentMain" style="background-color: #DEDEDE;  color: #FFFFFF;  float: right;  height: 15px;  width: 52px; text-align: center;  padding: 0px !important;  margin-left: 3px;  margin-top: 0px;">
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            }
+                                                            </td>
+                                                            <td id="detail" style="width: 180px; min-width: 180px;"> 
+                                                            </td>
+                                                            <td id="detail" style="width: 180px; min-width: 180px;">
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+
+                                                            break;
+
+                                                                  case IQMedia.Shared.Utility.CommonFunctions.CategoryType.PQ:
+
+                                                            IQArchive_ArchivePQModel PQModel = item.MediaData as IQArchive_ArchivePQModel;
+                                                            string authors = String.Empty;
+                                                            if (PQModel.Authors != null && PQModel.Authors.Count > 0)
+                                                            {
+                                                                if (PQModel.Authors.Count > 2)
+                                                                {
+                                                                    authors = "(" + String.Join(", ", PQModel.Authors.Take(2)) + ", ...) ";
+                                                                }
+                                                                else
+                                                                {
+                                                                    authors = "(" + String.Join(", ", PQModel.Authors) + ") ";
+                                                                }
+                                                            }
+                    
+                                        <table style="width: 100%;">
+				                            <tr>
+					                            <td id="mediaEntry" style="padding-top: 5px;  padding-bottom: 10px;">
+						                            <table style="width: 100%;">
+							                            <tr>
+								                            <td id="mediaDate" style="width: 65px; text-align: left; vertical-align: top;">
+									                            <table style="width: 100%;">
+										                            <tr>
+											                            <td id="post-date" style="width: 65px; height: auto; padding-bottom: 6px;">
+												                            <table style="width: 100%">
+													                            <tr>
+														                            <td id="month" style="font-size: 18px; text-transform: uppercase; display: block; font-weight: normal; padding: 0px; color: #cc2900; text-align: center;">@Month</td>
+													                            </tr>
+													                            <tr>
+														                            <td id="day" style="font-size: 30px; font-weight: normal; display: block; color: #666666; text-align: center; padding: 0px;">@Day</td>
+													                            </tr>
+													                            <tr>
+														                            <td id="time" style="font-size: 11px; font-weight: normal; display: block; color: #666666; text-align: center; padding: 0px;">&nbsp;</td>
+                                                                                </tr>
+                                                                            </table>
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                            <td id="mediaTypeLogo" style="width: 40px; min-height: 32px; float: center; vertical-align: top;" align="center">
+                                                                <img src="@mediaIconPath" alt="@objSubMediaType.DisplayName" />
+                                                            </td>
+                                                            <td id="mediaBody" style="text-align: left; vertical-align: top; width: 545px;">
+									                            <table style="width: 100%;">
+										                            <tr>
+											                            <td id="mediaTitle" style="text-align: left; height: 20px; font-size: 17px;">
+												                            <a style="color: #598ea2; font-weight: bold; text-decoration: none;"  class="fnt16px" href="@(BaseUrl + "/ProQuest/Index?source=library&id=" + item.ID)">
+                                                                                @Html.Raw(item.Title)
+                                                                            </a>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td id="mediaContent" style="text-align: left; height: auto; font-size: 13px; font-weight: normal;">
+                                                                            <span>@Html.Raw(item.DisplayText)</span>
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                            <tr id="actionBar" style="font-size: 10px !important;">
+                                                <td style="padding: 0px; font-size: 10px !important;  line-height: 0px;">
+                                                    <table cellspacing="0" cellpadding="0" style="height: 15px; width:100%;">
+                                                        <tr>
+                                                            <td id="filler" style="width: 35px; min-width: 35px;">
+                                                                &nbsp;
+                                                            </td>
+								                            <td id="location" style="width: 150px; min-width: 150px;">
+                                                                 <table cellspacing="2"><tr>
+									                        @if (!string.IsNullOrWhiteSpace(@PQModel.Publication) || !string.IsNullOrWhiteSpace(@authors))
+                                 {
+                                                                 <td>
+										                            <img src="@(ImageBaseUrl + "abarLocation.png")" width="15" />
+                                                                 </td>                           
+                                                                 <td style="text-align: center;">
+                                                                    @PQModel.Publication @authors
+                                                                </td>
+                                 }	
+                                                                </tr></table>
+                                                            </td>
+                                                            <td id="sentiment" style="width: 100px; min-width: 100px;">
+                                                            @if (Model.ReportDetails.Settings.ShowSentiment)
+                                                            {
+                                                                <table cellspacing="2" cellpadding="0" style="height: 15px; text-align: center;">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td><img src="@(ImageBaseUrl + "abarSentiment.png")" width="15" style="height:15px; width:15px !important; overflow:hidden; float: left;" /></td>
+                                                                            <td id="sentimentMain" style="background-color: #DEDEDE;  color: #FFFFFF;  float: right;  height: 15px;  width: 52px; text-align: center;  padding: 0px !important;  margin-left: 3px;  margin-top: 0px;">
+                                                                                <table cellspacing="0" cellpadding="0" style="height: 15px; text-align: center;">
+                                                                                    <tbody>
+                                                                                        <tr>
+                                                                                            <td align="right" id="sentimentNegTD" style="width: 26px; padding: 0px !important; -moz-box-sizing: border-box; box-sizing: border-box; border-right: 1px solid #ffffff; background-color: #DEDEDE; color: White; overflow: hidden;">
+                                                                                                <span id="sentimentNegSpan" style='width:@((PQModel.NegativeSentiment * 6) > 25 ? 25 : (PQModel.NegativeSentiment * 6))px;background-color: #d8635d; color: #FFFFFF; float: right !important;line-height: 15px; overflow: hidden; padding: 0 !important;'>
+                                                                                                    @(PQModel.NegativeSentiment > 0 ? PQModel.NegativeSentiment.ToString() : string.Empty)
+                                                                                                </span>
+                                                                                            </td>
+                                                                                            <td align="left" id="sentimentPosTD" style="width: 26px; padding:0px !important; float:right !important;">
+                                                                                                <span id="sentimentPosSpan"  style='width:@((PQModel.PositiveSentiment * 6) > 25 ? 25 : (PQModel.PositiveSentiment * 6))px;color: #FFFFFF; line-height: 15px; background-color: #c7d36a;overflow: hidden; padding: 0px ! important; float: left ! important;'>
+                                                                                                    @(PQModel.PositiveSentiment > 0 ? PQModel.PositiveSentiment.ToString() : string.Empty)
+                                                                                                </span>
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                    </tbody>
+                                                                                </table>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            }
+                                                            </td>
+                                                            <td id="detail" style="width: 180px; min-width: 180px;">
+                                                            </td>
+                                                            <td id="detail" style="width: 180px; min-width: 180px;">
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table> 
+
+                                                            break;
+
+                                                                case IQMedia.Shared.Utility.CommonFunctions.CategoryType.IQRadio:
+                                                            IQArchive_ArchiveRadioModel RadioModel = item.MediaData as IQArchive_ArchiveRadioModel;
+                                                            Month = RadioModel.LocalDateTime != null ? RadioModel.LocalDateTime.ToString("MMM", System.Globalization.CultureInfo.InvariantCulture) : string.Empty;
+                                                            Day = RadioModel.LocalDateTime != null ? RadioModel.LocalDateTime.Day.ToString() : string.Empty;
+                                                            Time = RadioModel.LocalDateTime != null ? RadioModel.LocalDateTime.ToString("hh:mm tt") : string.Empty;
+
+                                        <table style="width: 100%;">
+                                            <tr>
+                                                <td style="padding-top: 5px;  padding-bottom: 10px;">
+                                                    <table style="width: 100%;">
+                                                        <tr>
+                                                            <td style="width: 65px; text-align: left; vertical-align: top;">
+                                                                <table style="width: 100%; border-collapse: collapse; border-spacing: 0;">
+                                                                    <tr>
+                                                                        <td style="	width: 65px; height: auto; padding-bottom: 6px;">
+                                                                            <table style="width: 100%">
+                                                                                <tr>
+                                                                                    <td style="font-size: 18px; text-transform: uppercase; display: block; font-weight: normal; padding: 0px; color: #cc2900; text-align: center;">@Month</td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td style="font-size: 30px; font-weight: normal; display: block; color: #666666; text-align: center; padding: 0px;">@Day</td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td style="font-size: 11px; font-weight: normal; display: block; color: #666666; text-align: center; padding: 0px;">@Time @RadioModel.TimeZone</td>
+                                                                                </tr>
+                                                                            </table>
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                            <td style="width: 40px; min-height: 32px; float: center; vertical-align: top;" align="center">
+                                                                <img alt="@objSubMediaType.DisplayName" src="@RadioModel.StationLogo" style="width: 25px;" />
+                                                            </td>
+                                                            <td id="mediaTVBody" style="text-align: left; vertical-align: top; width: 445px;">
+                                                                <table style="width: 100%;">
+                                                                    <tr>
+                                                                        <td id="mediaTitle" style="text-align: left; height: 20px; font-size: 17px;">
+                                                                            <span style="color: #598ea2; font-weight: bold; text-decoration: none;" class="fnt16px">@item.Title</span>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td id="mediaContent" style="text-align: left; height: auto; font-size: 13px; font-weight: normal;">
+                                                                            <span style="color:#73897F">@RadioModel.StationID</span>
+                                                                            @if (!string.IsNullOrWhiteSpace(item.DisplayText))
+                                                                            {
+                                                                                <span> - @Html.Raw(item.DisplayText)</span>
+                                                                            }
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                            <td id="mediaVideo" style="align: right; vertical-align: middle; width: 100px;">
+                                                                <a href="@(BaseUrl + "ClipPlayer/?ClipID=" + RadioModel.ClipGuid)">
+                                                                    <img width="100" height="65" src="@(ImageBaseUrl + "video.png")" alt="clip"/>
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                            <tr id="actionBar" style="font-size: 10px !important;">
+                                                <td style="padding: 0px; font-size: 10px !important;  line-height: 0px;">
+                                                    <table cellspacing="0" cellpadding="0" style="width:100%;">
+                                                        <tr>
+                                                            <td id="filler" style="width: 35px; min-width: 35px;">
+                                                                &nbsp;
+                                                            </td>
+                                                            <td id="location" style="width: 150px; min-width: 150px;">
+                                                                 <table cellspacing="2"><tr>
+                                                            @if (!string.IsNullOrWhiteSpace(RadioModel.Market))
+                                                            {
+                                                                 <td>
+                                                                    <img src="@(ImageBaseUrl + "abarLocation.png")" width="15" />
+                                                                 </td>
+                                                                 <td style="text-align: center; white-space: nowrap;">
+                                                                    @RadioModel.Market
+                                                                </td>
+                                                            }	
+                                                                </tr></table>
+                                                            </td>
+                                                            <td id="sentiment" style="width: 100px; min-width: 100px;">
+                                                                <table cellspacing="2" cellpadding="0" style="height: 15px; text-align: center;">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td>
+                                                                                    <img src="@(ImageBaseUrl + "abarSentiment.png")" width="15" style="height:15px; width:15px !important; overflow:hidden; float: left;" />
+                                                                            </td>
+                                                                            <td id="sentimentMain" style="background-color: #DEDEDE;  color: #FFFFFF;  float: right;  height: 15px;  width: 52px; text-align: center;  padding: 0px !important;  margin-left: 3px;  margin-top: 0px;">
+                                                                                <table cellspacing="0" cellpadding="0" style="height: 15px; text-align: center;">
+                                                                                    <tbody>
+                                                                                        <tr>
+                                                                                            <td align="right" id="sentimentNegTD" style="width: 26px; padding: 0px !important; -moz-box-sizing: border-box; box-sizing: border-box; border-right: 1px solid #ffffff; background-color: #DEDEDE; color: White; overflow: hidden;" >
+                                                                                                <span id="sentimentNegSpan" style="width:@((RadioModel.NegativeSentiment * 6) > 25 ? 25 : (RadioModel.NegativeSentiment * 6))px;background-color: #d8635d; color: #FFFFFF; float: right !important;line-height: 15px; overflow: hidden; padding: 0 !important;">
+                                                                                                    @(RadioModel.NegativeSentiment > 0 ? RadioModel.NegativeSentiment.ToString() : string.Empty)
+                                                                                                </span>
+                                                                                            </td>
+                                                                                            <td align="left" id="sentimentPosTD" style="width: 26px; padding:0px !important; float:right !important;">
+                                                                                                <span id="sentimentPosSpan" style="width:@((RadioModel.PositiveSentiment * 6) > 25 ? 25 : (RadioModel.PositiveSentiment * 6))px;color: #FFFFFF; line-height: 15px; background-color: #c7d36a;overflow: hidden; padding: 0px ! important; float: left ! important;">
+                                                                                                    @(RadioModel.PositiveSentiment > 0 ? RadioModel.PositiveSentiment.ToString() : string.Empty)
+                                                                                                </span>
+                                                                                            </td>
+                                                                                        </tr>
+                                                                                    </tbody>
+                                                                                </table>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </td>
+                                                            <td id="detail" style="width: 180px; min-width: 180px;">
+                                                                <table cellspacing="0" cellpadding="0" style="height: 15px; text-align: center;">
+                                                                    <tr>
+                                                                        <td>
+                                                                            <img src="@(ImageBaseUrl + "abarMarketRank.png")" width="15" alt="view" style="height:15px; width:15px !important; overflow:hidden; float: left;" />
+                                                                        </td>
+                                                                        <td style="padding-left: 10px; padding-right: 15px; font-family: 'Microsoft Sans Serif'; white-space: nowrap;">
+                                                                            @(RadioModel.DMARank)
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                            <td id="detail" style="width: 180px; min-width: 180px;">
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+
+                                                                        break;
+                                                              }
+                                                            }
+                                                </td>
+                                            </tr>
+                                                        }
+                                        </table>
+                                                    }
+                                                }
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            }
+                        }
+                    </table>
+                </td>
+            </tr>
+        </table>
+    }
+</body>
+</html>

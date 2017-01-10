@@ -1,0 +1,260 @@
+﻿@using IQMedia.Model;
+@model ISVCModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <style type="text/css">
+        body
+        {
+            font-family:Sans-Serif,Calibri,Verdana,Arial;
+            font-size:13px;
+            
+        }
+        
+        .textarea-input
+        {
+            font-size:15px;
+            font-weight:bold;
+            color:#464646;
+            width:100%;
+        }
+        
+        .url-input
+        {
+            width:700px;
+        }
+        
+        input,select
+        {
+            height:40px;
+            padding-left:10px;
+            padding-right:10px;
+            font-size:17px;
+        }
+        
+        .label-header
+        {
+            font-size:14px;
+            font-weight:bold;
+        }
+        
+        .label-column
+        {
+            font-size:17px;
+        }
+        
+        .submit
+        {
+            float:right;
+            height:35px;
+            width:100px
+        }
+        
+        .word-break-all
+        {
+            word-wrap:break-word;
+            word-break:break-all;
+            
+        }
+    </style>
+    <script src="~/Scripts/jquery-1.9.1.min.js?v=1.0" type="text/javascript"></script>
+    <title>Index</title>
+    @{
+        var json = Newtonsoft.Json.JsonConvert.SerializeObject(Model);
+    }
+    <script type="text/javascript">
+        var jsonServiceObj = @Html.Raw(json);
+        $(document).ready(function () {
+            $("#Name").change(function(e){
+                var serviceName = $(this).val();
+                var format = $("#Format").val();
+                LoadRequest(serviceName,format); 
+            });
+
+            $("#Format").change(function(e){
+                var serviceName = $("#Name").val();
+                var format = $(this).val();
+                LoadRequest(serviceName,format); 
+            });
+        });
+
+
+        function LoadRequest(serviceName,format){
+            $("#Url").val('');
+            $("#spanNote").html('');
+            $("#Request").val('');
+            if(serviceName != "0")
+            {
+                $.each(jsonServiceObj.ISVCServices, function (eventID, eventData) {
+                    if(eventData.Name == serviceName){
+                        $("#Url").val(eventData.Url + "?Format=" + format);
+                        $("#spanNote").html(eventData.Note);
+                        if(format == "json"){
+                            var jsonObj = JSON.parse(eventData.JsonRequest);
+                            $("#Request").val(JSON.stringify(jsonObj, null, 4));
+                        }
+                        else{
+                            $("#Request").val(eventData.XmlRequest);
+                        }
+                    }
+                });
+            }
+        }
+
+        function GetResponse(){
+            if($("#Name").val() != "0"){
+
+                $("#processing").show();
+                var format = $("#Format").val();
+                var jsonPostData = 
+                { 
+                    p_Url: $("#Url").val(),
+                    p_Input : $("#Request").val(),
+                    p_Format : format
+                }
+
+                $.ajax({
+
+                    type: "post",
+                    dataType: "json",
+                    url: "/ISVC/GetResponse/",
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify(jsonPostData),
+                    success: function(result){
+                        $("#processing").hide();
+                        if (result.isSuccess) {
+                            if(format == "xml")
+                            {
+                                $("#Response").val(result.response)
+                            }
+                            else
+                            {
+                                var jsonObj = JSON.parse(result.response);
+                                $("#Response").val(JSON.stringify(jsonObj, null, 4).replace(/\\r\\n/g, '\r\n'));
+                            }
+                        }
+                        else 
+                        {
+                            alert(result.errorMsg);
+                        }
+                    },
+                    error: function(a,b,c){
+                        $("#processing").hide();
+                        alert("Some error occured, Please try again.");
+                    }
+                });
+            }else{
+                alert('Please Select Service');
+            }
+        }
+    </script>
+</head>
+<body>
+    <div>
+        <table cellpadding="0" cellspacing="0" border="0" width="100%" class="main">
+            <tr>
+                <td>
+                    <table>
+                        <tr>
+                            <td>
+                                <span class="label-column">Service :</span>
+                            </td>
+                            <td>
+                                <select id="Name" name="Name">
+                                    <option value="0">--Select--</option>
+                                    @foreach (ISVCServiceModel item in Model.ISVCServices)
+                                    {
+                                        <option value="@item.Name">@item.Name</option>
+                                    }
+                                </select>
+                            </td>
+                            <td>
+                                &nbsp;
+                            </td>
+                            <td>
+                                <span class="label-column">Format :</span>
+                            </td>
+                            <td>
+                                <select id="Format" name="Format">
+                                    <option value="json">Json</option>
+                                    <option value="xml">XML</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    &nbsp;
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <table>
+                        <tr>
+                            <td>
+                                <span class="label-column">URL :</span>
+                            </td>
+                            <td>
+                                <input type="text" readonly="readonly" id="Url" name="Url" class="url-input" />
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    &nbsp;
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    &nbsp;
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="word-break-all" id="spanNote"></div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="button" value="Submit" onclick="GetResponse();" class="submit" />
+                    <span id="processing" style="display:none;">
+                        <img src="~/Images/Loading_1.gif"  alt="" /> Please Wait....
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <table width="100%">
+                        <tr>
+                            <td>
+                               <span class="label-header">Request:</span>
+                            </td>
+                            <td style="width:40px;"></td>
+                            <td>
+                                <span class="label-header">Response:</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <textarea id="Request" name="Request" rows="30" style="background-color:#f3f9fe;" class="textarea-input"></textarea>
+                            </td>
+                            <td style="width:40px;"></td>
+                            <td>
+                                <textarea id="Response" name="Response" rows="30" style="background-color:#f6fefa;" class="textarea-input"></textarea>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

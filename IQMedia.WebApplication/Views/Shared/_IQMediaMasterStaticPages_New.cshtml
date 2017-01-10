@@ -1,0 +1,107 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2" />
+    <title>@ViewBag.Title</title>
+    <link rel="canonical" href="http://www.iq.media" />
+    <!-- Bootstrap core CSS -->
+    <link href="~/Css/bootstrap3/fonts/fonts.css?v=1.2" rel="stylesheet" />
+    <link href="~/Css/bootstrap3/bootstrap.css?v=1.4" rel="stylesheet" />
+    <link href="~/Css/bootstrap3/bootstrap-theme.css" rel="stylesheet" />
+    <!--Custom Css-->
+    <link href="~/Css/bootstrap3/style.css?v=1.6" rel="stylesheet" />
+    <link href="~/Css/footer.css?v=1.2" rel="stylesheet" />
+    <!-- /container -->
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="~/Scripts/jquery-1.9.1.min.js"></script>
+    <script src="~/Scripts/bootstrap3/bootstrap.js"></script>
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="~/Scripts/html5shiv.js"></script>
+      <script src="~/Scripts/respond.min.js"></script>
+<![endif]-->
+    @RenderSection("HeadSection", required: false)
+    
+    <!-- Google Analytics -->
+    <script>
+        (function (i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date(); a = s.createElement(o),
+      m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+        ga('create', 'UA-21028943-1', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+    <!-- End Google Analytics -->
+</head>
+<body>
+    @RenderSection("TopSection", required: false)
+    @RenderBody()
+    @Html.Partial("~/Views/Shared/_FooterStatic_New.cshtml")
+
+    <!-- Start pdf link in google analytics -->
+    <script type="text/javascript">
+        $("a[href$='pdf']").each(function (index) {
+            pdfLabel = $(this).attr('href');
+            pdfOnClick = "ga('send', 'PDF', 'Download','" + pdfLabel + "');";
+            $(this).attr("onClick", pdfOnClick);
+        });
+    </script>
+    <!-- End pdf link in google analytics -->
+    <!-- Google Code for Remarketing tag -->
+    <!-- Remarketing tags may not be associated with personally identifiable information or placed on pages related to sensitive categories. For instructions on adding this tag and more information on the above requirements, read the setup guide: google.com/ads/remarketingsetup -->
+    <script type="text/javascript">
+
+// <![CDATA[
+        var google_conversion_id = 985937458;
+
+        var google_conversion_label = "7KwVCKba0AcQsuyQ1gM";
+
+        var google_custom_params = window.google_tag_params;
+
+        var google_remarketing_only = true;
+
+// ]]> 
+
+    </script>
+    <div style="display: none;">
+        <script type="text/javascript" src="https://www.googleadservices.com/pagead/conversion.js?v=1.0"></script>
+    </div>        
+        <noscript>
+            <div style="display: inline;">
+                <img height="1" width="1" style="border-style: none;" alt="" src="https://googleads.g.doubleclick.net/pagead/viewthroughconversion/985937458/?value=0&amp;label=7KwVCKba0AcQsuyQ1gM&amp;guid=ON&amp;script=0" />
+            </div>
+        </noscript>             
+
+<!-- Start of Async HubSpot Analytics Code -->
+
+  <script type="text/javascript">
+
+      (function (d, s, i, r) {
+
+          if (d.getElementById(i)) { return; }
+
+          var n = d.createElement(s), e = d.getElementsByTagName(s)[0];
+
+          n.id = i; n.src = '//js.hs-analytics.net/analytics/' + (Math.ceil(new Date() / r) * r) + '/543382.js';
+
+          e.parentNode.insertBefore(n, e);
+
+      })(document, "script", "hs-analytics", 300000);
+
+  </script>
+
+<!-- End of Async HubSpot Analytics Code -->
+</body>
+</html>

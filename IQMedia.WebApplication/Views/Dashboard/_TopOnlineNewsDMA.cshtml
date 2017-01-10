@@ -1,0 +1,247 @@
+﻿@using IQMedia.Model;
+@using IQMedia.Shared.Utility;
+@using IQCommon.Model;
+@model Dictionary<string, object>
+@if (Model != null && Model.ContainsKey("Medium") && Model.ContainsKey("Results"))
+{
+    IQ_MediaTypeModel _Medium = (IQ_MediaTypeModel)(Model["Medium"]);
+    bool _CompeteAccess = (bool)(Model["CompeteAccess"]);
+    bool _NielsenAccess = (bool)(Model["NielsenAccess"]);
+    bool _AudienceCheck = CommonFunctions.CheckNielsenCompeteAccess(_Medium.UseAudience, _Medium.RequireNielsenAccess, _NielsenAccess, _Medium.RequireCompeteAccess, _CompeteAccess);
+    bool _MediaValueCheck = CommonFunctions.CheckNielsenCompeteAccess(_Medium.UseMediaValue, _Medium.RequireNielsenAccess, _NielsenAccess, _Medium.RequireCompeteAccess, _CompeteAccess);
+    bool _AMFCheck = (_AudienceCheck || _MediaValueCheck);
+    List<DashboardTopResultsModel> _TopResults = (List<DashboardTopResultsModel>)Model["Results"];
+    string titleGrid = Model["TitleGrid"].ToString();
+
+    var _OnClickEnable = true;
+
+    if (Model.ContainsKey("OnClickEnable"))
+    {
+        _OnClickEnable = Convert.ToBoolean(Model["OnClickEnable"]);
+    }
+    
+    <div>
+        <br />
+        <br />
+        <b>@titleGrid </b>
+    </div>
+    
+    if (_TopResults.Count > 0)
+    {
+    <table class="topResult" width="100%">
+        <tr>
+            <th style="text-align: left; width: 23%;">
+                Market (Rank)
+            </th>
+            <th style="text-align: right; width: 18%;">
+                # of Mentions
+            </th>
+            @if (_AudienceCheck)
+            {
+                <th style="text-align: right; width: 18%;">
+                    Total Audience
+                </th>
+            }
+            @if (_MediaValueCheck)
+            {
+                <th style="text-align: right; width: 18%;">
+                    Media Value
+                </th>
+            }
+            <th style="text-align: right; width: 23%;">
+                Sentiment
+            </th>
+        </tr>
+        @foreach (DashboardTopResultsModel item in _TopResults)
+        {
+            <tr>
+                <td style="text-align: left;">
+                    @if (IQMedia.WebApplication.Utility.CommonFunctions.DMAWithOutRank.GLOBAL.ToString().ToLower() == item.DMA_Name.ToLower())
+                    {
+                        <text>
+                        @{IQMedia.WebApplication.Utility.CommonFunctions.DMAWithOutRank dmaName;}
+                        @item.DMA_Name @(Enum.TryParse<IQMedia.WebApplication.Utility.CommonFunctions.DMAWithOutRank>(item.DMA_Name, true, out dmaName) ? string.Empty : "(" + item.DMA_Num + ")")
+                        </text>
+                    }
+                    else
+                    {
+                        IQMedia.WebApplication.Utility.CommonFunctions.DMAWithOutRank dmaName;
+                        
+                        if (_OnClickEnable)
+                        {
+                            <a href="javascript:void(0)" onclick="OpenFeedOutletDma('dmaid','@item._IQDmaIDs','@item.SubMediaType','@item.DMA_Name')">
+                            @item.DMA_Name @(Enum.TryParse<IQMedia.WebApplication.Utility.CommonFunctions.DMAWithOutRank>(item.DMA_Name, true, out dmaName) ? string.Empty : "(" + item.DMA_Num + ")")
+                            </a>
+                        }
+                        else
+                        {
+                            @item.DMA_Name @(Enum.TryParse<IQMedia.WebApplication.Utility.CommonFunctions.DMAWithOutRank>(item.DMA_Name, true, out dmaName) ? string.Empty : "(" + item.DMA_Num + ")")
+                        }
+                    }
+                </td>
+                <td style="text-align: right;">
+                    @(string.Format("{0:N0}", item.Mentions))
+                </td>
+                @if (_AudienceCheck)
+                {
+                    <td style="text-align: right;">
+                        @(string.Format("{0:N0}", item.Audience))
+                    </td>
+                }
+                @if (_MediaValueCheck)
+                {
+                    <td style="text-align: right;">
+                        $@(string.Format("{0:N0}", item.MediaValue))
+                    </td>
+                }
+                <td style="text-align: right;">
+                    @{
+                int posSentiWidth = ((item.PositiveSentiment * 6) > 25 ? ((item.PositiveSentiment.ToString().Length > 3) ? (item.PositiveSentiment.ToString().Length * 7) : 25) : (item.PositiveSentiment * 6));
+                int negSentiWidth = ((item.NegativeSentiment * 6) > 25 ? ((item.NegativeSentiment.ToString().Length > 3) ? (item.NegativeSentiment.ToString().Length * 7) : 25) : (item.NegativeSentiment * 6));
+                    }
+                    <div class="divSentimentMain sentimentFont"  style="width:@((negSentiWidth > 25 ? negSentiWidth : 25) + (posSentiWidth > 25 ? posSentiWidth : 25) + 1)px;">
+                        <div class="divSentimentNeg" @(negSentiWidth > 25 ? "style=width:" + negSentiWidth + "px" : string.Empty)>
+                            <div style="width: @(negSentiWidth)px;">
+                                @if (item.NegativeSentiment > 0)
+                                {
+                                    <text>@string.Format("{0:N0}", item.NegativeSentiment)</text>
+                                }
+                                else
+                                {
+                                    <text>&nbsp;</text>
+                                }
+                            </div>
+                        </div>
+                        <div class="divSentimentPos" @(posSentiWidth > 25 ? "style=width:" + posSentiWidth + "px" : string.Empty)>
+                            <div style="width: @(posSentiWidth)px;" >
+                                @if (item.PositiveSentiment > 0)
+                                {
+                                    <text>@string.Format("{0:N0}", item.PositiveSentiment)</text>
+                                }
+                                else
+                                {
+                                    <text>&nbsp;</text>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        }
+    </table>
+    }
+    else
+    {
+    <table width="100%" style="text-align: center;">
+        <tr>
+            <td>
+                <span style="background: none repeat scroll 0 0 #F2F2F2; border: 1px solid #DCDCDC;
+                    margin-bottom: 10px; margin-right: 10px; padding: 3px 10px 3px 6px; position: relative;
+                    width: 300px !important;">No Results found</span>
+            </td>
+        </tr>
+    </table>
+    }
+}
+@*@if (Model != null)
+{
+    <b>Top Online News Markets</b>
+    if (Model.Count > 0)
+    {
+    <table class="topResult" width="100%">
+        <tr>
+            <th style="text-align: left; width: 23%;">
+                Market (Rank)
+            </th>
+            <th style="text-align: right; width: 18%;">
+                # of Mentions
+            </th>
+            <th style="text-align: right; width: 18%;">
+                Total Audience
+            </th>
+            <th style="text-align: right; width: 18%;">
+                Media Value
+            </th>
+            <th style="text-align: right; width: 23%;">
+                Sentiment
+            </th>
+        </tr>
+        @foreach (DashboardTopResultsModel item in Model)
+        {
+            <tr>
+                <td style="text-align: left;">
+                    @if (IQMedia.WebApplication.Utility.CommonFunctions.DMAWithOutRank.GLOBAL.ToString().ToLower() == item.DMA_Name.ToLower())
+                    {
+                        <text>
+                            @{IQMedia.WebApplication.Utility.CommonFunctions.DMAWithOutRank dmaName;}
+                            @item.DMA_Name @(Enum.TryParse<IQMedia.WebApplication.Utility.CommonFunctions.DMAWithOutRank>(item.DMA_Name, true, out dmaName) ? string.Empty : "(" + item.DMA_Num + ")")
+                        </text>
+                    }
+                    else
+                    {
+                        <a href="javascript:void(0)" onclick="OpenFeedOutletDma('dmaid','@item._IQDmaIDs','@IQMedia.Shared.Utility.CommonFunctions.GetEnumDescription(IQMedia.Shared.Utility.CommonFunctions.CategoryType.NM)','@item.DMA_Name')">
+                            <text>
+                                @{IQMedia.WebApplication.Utility.CommonFunctions.DMAWithOutRank dmaName;}
+                                @item.DMA_Name @(Enum.TryParse<IQMedia.WebApplication.Utility.CommonFunctions.DMAWithOutRank>(item.DMA_Name, true, out dmaName) ? string.Empty : "(" + item.DMA_Num + ")")
+                            </text>
+                        </a>
+                    }
+                </td>
+                <td style="text-align: right;">
+                    @(string.Format("{0:N0}", item.Mentions))
+                </td>
+                <td style="text-align: right;">
+                    @(string.Format("{0:N0}", item.Audience))
+                </td>
+                <td style="text-align: right;">
+                    $@(string.Format("{0:N0}", item.MediaValue))
+                </td>
+                <td style="text-align: right;">
+                    @{
+                    int posSentiWidth = ((item.PositiveSentiment * 6) > 25 ? ((item.PositiveSentiment.ToString().Length > 3) ? (item.PositiveSentiment.ToString().Length * 7) : 25) : (item.PositiveSentiment * 6));
+                    int negSentiWidth = ((item.NegativeSentiment * 6) > 25 ? ((item.NegativeSentiment.ToString().Length > 3) ? (item.NegativeSentiment.ToString().Length * 7) : 25) : (item.NegativeSentiment * 6));
+                    }
+                    <div class="divSentimentMain sentimentFont"  style="width:@((negSentiWidth > 25 ? negSentiWidth : 25) + (posSentiWidth > 25 ? posSentiWidth : 25) + 1)px;">
+                        <div class="divSentimentNeg" @(negSentiWidth > 25 ? "style=width:" + negSentiWidth + "px" : string.Empty)>
+                            <div style="width: @(negSentiWidth)px;">
+                                @if (item.NegativeSentiment > 0)
+                                {
+                                    <text>@string.Format("{0:N0}", item.NegativeSentiment)</text>
+                                }
+                                else
+                                {
+                                    <text>&nbsp;</text>
+                                }
+                            </div>
+                        </div>
+                        <div class="divSentimentPos" @(posSentiWidth > 25 ? "style=width:" + posSentiWidth + "px" : string.Empty)>
+                            <div style="width: @(posSentiWidth)px;" >
+                                @if (item.PositiveSentiment > 0)
+                                {
+                                    <text>@string.Format("{0:N0}", item.PositiveSentiment)</text>
+                                }
+                                else
+                                {
+                                    <text>&nbsp;</text>
+                                }
+                             </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        }
+    </table>
+    }
+    else
+    {
+    <table width="100%" style="text-align: center;">
+        <tr>
+            <td>
+                <span style="background: none repeat scroll 0 0 #F2F2F2; border: 1px solid #DCDCDC;
+                    margin-bottom: 10px; margin-right: 10px; padding: 3px 10px 3px 6px; position: relative;
+                    width: 300px !important;">No Results found</span>
+            </td>
+        </tr>
+    </table>
+    }
+}*@

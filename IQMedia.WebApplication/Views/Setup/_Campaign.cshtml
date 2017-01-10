@@ -1,0 +1,130 @@
+﻿@using IQMedia.Model;
+@model Dictionary<string, object>
+
+<script language="javascript" type="text/javascript">
+    // Used to set 
+    //$(".navbar-inner > div:nth-child(1)").css("width", "auto");
+    $("#divSetupCampaign_ScrollContent").css("height", documentHeight - 150);
+    $("#divSetupCampaign_ScrollContent").mCustomScrollbar({
+        advanced: {
+            updateOnContentResize: true,
+            autoScrollOnFocus: false
+        }
+    });
+</script>
+
+<style type="text/css">
+    .suspended
+    {
+        opacity: 0.5;
+    }
+</style>
+
+<div style="margin-top:10px;padding-bottom:10px;overflow:auto;">
+    <div style="float:left;">
+        <span style="font-size:25px;font-weight:bold;">Manage Campaigns</span>
+    </div>
+    <div style="float:right;">
+        <a href="javascript:void(0);" style="margin-right:10px" onclick="ShowCreatePopup();">Create Campaign</a>
+    </div>
+</div>
+<hr style="margin:0px;padding-bottom:5px;" />
+<div id="divSetupCampaign_ScrollContent">
+    <div style="padding-right:15px">
+        @foreach (AnalyticsCampaign item in (List<AnalyticsCampaign>)Model["campaigns"])
+        {
+            <div class="media" id="divCampaignRequest_@item.CampaignID">
+                <div id="divName_@item.CampaignID" class="pull-left maxWidth85 @(item.IsActive == 2 ? "suspended" : "")">
+                    <div>
+                        <h4 class="media-heading">
+                            <a href="javascript:void(0);" onclick="ShowEditPopup(@item.CampaignID);">@item.CampaignName</a>
+                        </h4>
+                    </div>
+                </div>
+                <div class="pull-right">
+                </div>
+                <div class="clear">
+                    <div class="pull-left @(item.IsActive == 2 ? "suspended" : "")">
+                        Agent: @item.QueryName
+                    </div>
+                </div>
+                <div class="clear">
+                    <div id="divInfo_@item.CampaignID" class="pull-left marginright35 marginRight0 @(item.IsActive == 2 ? "suspended" : "")">
+                        <div class="pull-left marginright35">
+                            Version: @item.QueryVersion
+                        </div>
+                        <div class="pull-left">
+                            Last Modified: <span id="spanModifiedDate_@item.CampaignID">@item.ModifiedDate.ToString("MMM dd, yyy hh:mm:ss tt")</span>
+                        </div>
+                    </div>
+                    <div class="pull-right minWidth52IE8">
+                        <div>
+                            <a id="aEdit_@item.CampaignID" href="javascript:void(0);" onclick="ShowEditPopup(@item.CampaignID);" title="Edit" class="">
+                                <img src="~/Images/edit_icon.png" alt="Edit" />
+                            </a>
+                            <a id="aDelete_@item.CampaignID" href="javascript:void(0);" onclick="DeleteCampaign(@item.CampaignID);" title="Delete">
+                                <img src="~/Images/delete_icon.png" alt="Delete" />
+                            </a>
+                            <a id="aStop_@item.CampaignID" href="javascript:void(0);" onclick="StopCampaign(@item.CampaignID);" title="Stop">
+                                <img src="~/Images/Setup/stop_icon.png" alt="Stop" />
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+<div id="divCampaignSetupAddEditPopup" class="modal fade hide resizable modalPopupDiv">
+    <div class="closemodalpopup">
+        <img src="~/images/close-icon.png" alt="close" class="popup-top-close" onclick="CancelCampaignPopup();" />
+    </div>
+    <div style="padding:20px;overflow:auto;">
+        <div class="">
+            <h3 id="campaignSetupAddEditTitle" style="margin-top:0px;"></h3>
+        </div>
+        <div style="margin-bottom:10px;">
+            Campaigns are subsets of agents that run for a specified time frame. Define your campaign here.
+        </div>
+        <div>
+            <table style="width:100%;">
+                <tr>
+                    <td style="text-align:right;width:300px;">
+                        Campaign Name:&nbsp;&nbsp;
+                    </td>
+                    <td>
+                        <input id="txtCampaignName" type="text" style="width:100%;" />
+                        <input id="hdnCampaignID" type="hidden" value="null" />
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align:right;">
+                        Select Agent that campaign will be tied to:&nbsp;&nbsp;
+                    </td>
+                    <td>
+                        <select id="ddAgentForCampaign" style="width:100%;">
+                            <option value="null">Select an agent</option>
+                            @foreach (IQAgent_SearchRequestModel agent in (List<IQAgent_SearchRequestModel>)Model["agents"])
+                            {
+                                <option value="@agent.ID">@agent.QueryName</option>
+                            }
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align:right;">
+                        Select the time period the campaign will run:&nbsp;&nbsp;
+                    </td>
+                    <td>
+                        <input type="text" id="dpDateStart" style="width:75px;position:relative;z-index:2000" /> to <input type="text" id="dpDateEnd" style="width:75px;" />
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div style="float:right;">
+            <input type="button" id="btnCancelCampaignAddEdit" value="cancel" onclick="CancelCampaignPopup();" />
+            &nbsp;
+            <input type="button" id="btnSaveCampaignAddEdit" value="save" onclick="SaveCampaign();" />
+        </div>
+    </div>
+</div>

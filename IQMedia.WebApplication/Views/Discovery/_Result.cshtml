@@ -1,0 +1,92 @@
+﻿@using IQMedia.Model;
+@using IQMedia.Shared.Utility;
+@using System.Configuration;
+@using IQCommon.Model;
+@model List<DiscoveryMediaResult>
+@if (Model != null)
+{
+    try
+    {
+        ActiveUser sessionInformation = IQMedia.WebApplication.Utility.ActiveUserMgr.GetActiveUser();
+
+        foreach (DiscoveryMediaResult item in Model)
+        {
+            string maxNegSentmtWidth = string.Empty;
+            string maxPosSentmtWidth = string.Empty;
+            string body = string.Empty;
+            string title = string.Empty;
+            string publication = string.Empty;
+            
+            if (!string.IsNullOrEmpty(item.Body))
+            {
+                body = item.Body.Length > 300 ? item.Body.Substring(0, 300) : item.Body;
+                body = System.Text.RegularExpressions.Regex.Replace(body, "(</span(?!>)|</spa(?!n>)|</sp(?!an>)|</s(?!pan>)|</(?!span>))\\Z", "</span>");
+                body = CommonFunctions.ProcessHighlightingText(item.Body, body);
+            }
+
+            if (!string.IsNullOrEmpty(item.Title))
+            {
+                if (item.Title.Trim().Length > 65)
+                {
+                    title = item.Title.Trim().Substring(0, 62) + "...";
+                }
+                else
+                {
+                    title = item.Title.Trim();
+                }
+            }
+
+            if (!string.IsNullOrEmpty(item.Publication))
+            {                
+                if (item.Publication.Trim().Length > 23)
+                {
+                    publication = item.Publication.Trim().Substring(0, 21) + "...";
+                }
+                else
+                {
+                    publication = item.Publication.Trim();
+                }
+            }
+
+            if (item.NegativeSentiment.HasValue && item.PositiveSentiment.HasValue)
+            {
+                if ((item.NegativeSentiment * 6) > 25)
+                {
+                    maxNegSentmtWidth = "25px";
+                }
+                else
+                {
+                    maxNegSentmtWidth = Convert.ToString(item.NegativeSentiment * 6) + "px";
+                }
+
+                if ((item.PositiveSentiment * 6) > 25)
+                {
+                    maxPosSentmtWidth = "25px";
+                }
+                else
+                {
+                    maxPosSentmtWidth = Convert.ToString(item.PositiveSentiment * 6) + "px";
+                } 
+            }
+
+            IQ_MediaTypeModel objMediaType = sessionInformation.MediaTypes.FirstOrDefault(s => s.SubMediaType == item.MediumType && s.TypeLevel == 2);
+
+            ViewDataDictionary viewData = new ViewDataDictionary();
+            viewData.Add("Body", body);
+            viewData.Add("Title", title);
+            viewData.Add("Publication", publication);
+            viewData.Add("MaxNegativeSentimentWidth", maxNegSentmtWidth);
+            viewData.Add("MaxPositiveSentimentWidth", maxPosSentmtWidth);
+            viewData.Add("SubMediaType", objMediaType.SubMediaType);
+            viewData.Add("MediaIconPath", objMediaType.MediaIconPath);
+            viewData.Add("MediaTypeDescription", objMediaType.DisplayName);
+             
+            @Html.Partial(objMediaType.DiscoveryResultView, item, viewData);            
+        }
+    }
+    catch (Exception ex)
+    {
+        Log4NetLogger.Error("error parsing results ", ex);
+        throw;
+    }
+}

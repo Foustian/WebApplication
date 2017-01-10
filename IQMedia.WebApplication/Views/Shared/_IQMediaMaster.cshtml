@@ -1,0 +1,67 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    <link href="~/Css/style_v2.css" rel="stylesheet" type="text/css" />
+    <link href="~/Css/superfish.css" rel="stylesheet" type="text/css" />
+    <link href="~/Css/fonts/stylesheet.css" rel="stylesheet" type="text/css" />
+    <script src="~/Scripts/jquery-1.9.1.min.js?v=1.0" type="text/javascript"></script>
+    <script src="~/Scripts/jquery.validate.min.js?v=1.0" type="text/javascript"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js?v=1.0" type="text/javascript"></script>
+    <script src="~/Scripts/Navigation.js?v=1.0" type="text/javascript"></script>
+</head>
+<body>
+    @{string tempVariable = @ViewBag.CurrentPage;}
+    <div id="wrapper">
+        <header>
+    <div class="logo">
+    <a runat="server" id="anchorHome" href="~/">
+        <img id="imgLogo" runat="server" src="~/images/logo_N.png" alt="" /></a></div>
+        @{
+            
+            IQMedia.Model.ActiveUser sessionInformation = IQMedia.WebApplication.Utility.ActiveUserMgr.GetActiveUser();
+            if (sessionInformation != null 
+                //&& sessionInformation.AuthorizedVersion.HasValue && (sessionInformation.AuthorizedVersion == 0 || sessionInformation.AuthorizedVersion == 4)
+                )
+            {
+                @Html.Partial("~/Views/LogOut/_LogOut.cshtml");
+            }
+            else
+            {
+             @Html.Partial("~/Views/SignIn/_Signin.cshtml");
+            }
+        }
+        
+        @Html.Partial("~/Views/Shared/_Navigation.cshtml")
+        <script type="text/javascript">
+            setActiveMenu('@ViewBag.CurrentMenu');
+    </script>
+    </header>
+        <section>
+        <div class="content-main">
+            <div class="about-left">
+                <div class="top">
+                    <img src="../images/about-top-bg.png" alt=""></div>
+                <div class="about-mid">
+                    @Html.Partial("~/Views/Shared/_SocialMedia.cshtml")
+                    @RenderBody()
+                </div>
+                <div class="bottom"><img src="../images/about-bottom-bg.png" alt=""></div>
+            </div>
+            <div class="about-right">
+            @*@Html.Partial("~/Views/PartialViews/StaticRightSideContent.cshtml")*@
+            @if (!String.IsNullOrWhiteSpace(tempVariable))
+            {
+            @Html.Partial("~/Views/Shared/_StaticRightSideContent.cshtml", @tempVariable)
+            }
+            </div>
+        </div>
+        </section>
+        @Html.Partial("~/Views/Shared/_Footer.cshtml")
+    </div>
+</body>
+</html>

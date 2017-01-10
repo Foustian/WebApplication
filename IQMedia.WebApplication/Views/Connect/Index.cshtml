@@ -1,0 +1,25 @@
+﻿@model Dictionary<string, string>
+@{
+    Layout = "~/Views/Shared/_IQMediaMasterInner.cshtml";
+}
+
+<style type="text/css">
+    html, body
+    {
+        height: 97%;
+    }
+</style>
+
+<div class="container container_custom" style="height:95%;">
+    @if (Model != null && Model.ContainsKey("Token"))
+    {
+        <iframe src="https://connect.iqmcorp.com?token=@(Model["Token"])" style="width: 100%; height: 100%;" frameborder="0"></iframe>
+    }
+    else
+    {
+        <div style="text-align:center; margin-top:150px;">
+            <div style="font-size:20pt; font-weight:bold;">Connect Service Currently Unavailable</div>
+            <div style="font-size:12pt; margin-top:20px;">Please contact support at <a target="_top" href="mailto:support@iq.media">support@iq.media</a></div>
+        </div>
+    }
+</div>

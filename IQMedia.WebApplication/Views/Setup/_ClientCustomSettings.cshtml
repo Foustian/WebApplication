@@ -1,0 +1,454 @@
+﻿@model Dictionary<string, IQMedia.Model.IQClient_CustomSettingsModel>
+@{
+    IQMedia.Model.IQClient_CustomSettingsModel ClientSettings = Model["ClientSettings"];
+    IQMedia.Model.IQClient_CustomSettingsModel DefaultSettings = Model["DefaultSettings"];
+}
+<div style="padding-right: 15px;">
+    <div class="sidebar-nav" style="margin-top: 7px;">
+        <h5>
+            Client Custom Settings</h5>
+    </div>
+    <br />
+    <div class="row-fluid row-custom">
+        <b>Client</b></div>
+    <br />
+    <div class="line-group">
+        <label class="display-label">
+            Display Time zone : </label>
+        <div class="display-content">
+            @{
+                IQMedia.Model.ActiveUser sessionInformation = IQMedia.WebApplication.Utility.ActiveUserMgr.GetActiveUser();   
+            }
+            @sessionInformation.TimeZone
+        </div>
+    </div>
+    <div class="line-group">
+        <label class="display-label">
+            Auto Clip Duration (secs) : </label>
+        <div class="display-content">
+            @(ClientSettings.AutoClipDuration.HasValue ? ClientSettings.AutoClipDuration.Value.ToString("N0") : DefaultSettings.AutoClipDuration.Value.ToString("N0") + " (Default)")
+        </div>
+    </div>
+    <div class="line-group" name="needAgentAccess">
+        <label class="display-label">
+            Total number of IQ Agents subscribed : </label>
+        <div class="display-content">
+            @(ClientSettings.TotalNoOfIQAgent.HasValue ? ClientSettings.TotalNoOfIQAgent.Value.ToString("N0") : DefaultSettings.TotalNoOfIQAgent.Value.ToString("N0") + " (Default)")
+        </div>
+    </div>
+    <div class="line-group">
+        <label class="display-label">
+            Total Number of items in a single report created from Discovery : </label>
+        <div class="display-content">
+            @(ClientSettings.v4MaxDiscoveryReportItems.HasValue ? ClientSettings.v4MaxDiscoveryReportItems.Value.ToString("N0") : DefaultSettings.v4MaxDiscoveryReportItems.Value.ToString("N0") + " (Default)")
+        </div>
+    </div>
+    <div class="line-group">
+        <label class="display-label">
+            Total Number of items that can be exported from Discovery : </label>
+        <div class="display-content">
+            @(ClientSettings.v4MaxDiscoveryExportItems.HasValue ? ClientSettings.v4MaxDiscoveryExportItems.Value.ToString("N0") : DefaultSettings.v4MaxDiscoveryExportItems.Value.ToString("N0") + " (Default)")
+        </div>
+    </div>
+    <div class="line-group">
+        <label class="display-label">
+            Industries visible to account : </label>
+        <div class="display-content">
+            @(ClientSettings.visibleLRIndustries != null ? string.Join(", ", ClientSettings.visibleLRIndustries.Select(s => s.Name)) : string.Join(", ", DefaultSettings.visibleLRIndustries.Select(s => s.Name)) +" (Default)")
+            
+        </div>
+    </div>
+    <div class="line-group">
+        <label class="display-label">
+            Total months back that can be seen from Discovery History : </label>
+        <div class="display-content">
+            @(ClientSettings.v4MaxDiscoveryHistory != null ? ClientSettings.v4MaxDiscoveryHistory.ToString() : DefaultSettings.v4MaxDiscoveryHistory.ToString("N0") + " (Default)")
+        </div>
+    </div>
+    <div class="line-group" name="needFeedAccess">
+        <label class="display-label">
+            Total Number of items that can be exported from Feeds : </label>
+        <div class="display-content">
+            @(ClientSettings.v4MaxFeedsExportItems.HasValue ? ClientSettings.v4MaxFeedsExportItems.Value.ToString("N0") : DefaultSettings.v4MaxFeedsExportItems.Value.ToString("N0") + " (Default)")
+        </div>
+    </div>
+    <div class="line-group" name="needFeedAccess">
+        <label class="display-label">
+            Total Number of items in a single report created from Feeds : </label>
+        <div class="display-content">
+            @(ClientSettings.v4MaxFeedsReportItems.HasValue ? ClientSettings.v4MaxFeedsReportItems.Value.ToString("N0") : DefaultSettings.v4MaxFeedsReportItems.Value.ToString("N0") + " (Default)")
+        </div>
+    </div>
+    <div class="line-group">
+        <label class="display-label">
+            Total Number of items that can be emailed from Library : </label>
+        <div class="display-content">
+            @(ClientSettings.v4MaxLibraryEmailReportItems.HasValue ? ClientSettings.v4MaxLibraryEmailReportItems.Value.ToString("N0") : DefaultSettings.v4MaxLibraryEmailReportItems.Value.ToString("N0") + " (Default)")
+        </div>
+    </div>
+    <div class="line-group">
+        <label class="display-label">
+            Total Number of items in a single report created from Library : </label>
+        <div class="display-content">
+            @(ClientSettings.v4MaxLibraryReportItems.HasValue ? ClientSettings.v4MaxLibraryReportItems.Value.ToString("N0") : DefaultSettings.v4MaxLibraryReportItems.Value.ToString("N0") + " (Default)")
+        </div>
+    </div>
+    <div class="line-group">
+        <label class="display-label">
+            Number of days until a TV link expires : </label>
+        <div class="display-content">
+            @(ClientSettings.IQRawMediaExpiration.HasValue ? ClientSettings.IQRawMediaExpiration.Value.ToString("N0") : DefaultSettings.IQRawMediaExpiration.Value.ToString("N0") + " (Default)")
+        </div>
+    </div>
+    <div class="line-group">
+        <label class="display-label">
+            Use Prominence Filter : </label>
+        <div class="display-content">
+            @(ClientSettings.UseProminence.HasValue ? (ClientSettings.UseProminence.Value ? "Yes" : "No") : (DefaultSettings.UseProminence.Value ? "Yes" : "No") + " (Default)") 
+        </div>
+    </div>
+    <div class="line-group">
+        <label class="display-label">
+            Force Category Selection : </label>
+        <div class="display-content">
+            @(ClientSettings.ForceCategorySelection.HasValue ? (ClientSettings.ForceCategorySelection.Value ? "Yes" : "No") : (DefaultSettings.ForceCategorySelection.Value ? "Yes" : "No") + " (Default)") 
+        </div>
+    </div>
+    <div class="line-group">
+        <label class="display-label">
+            Library Text Source : </label>
+        <div class="display-content">
+            @(ClientSettings.LibraryTextType != 0 ? (IQMedia.Shared.Utility.CommonFunctions.GetEnumDescription(ClientSettings.LibraryTextType)) : (IQMedia.Shared.Utility.CommonFunctions.GetEnumDescription(DefaultSettings.LibraryTextType)) + " (Default)")
+        </div>
+    </div>
+    <div class="line-group" name="needFeedAccess">
+        <label class="display-label">
+            Default Feeds Page Size : </label>
+        <div class="display-content">
+            @(ClientSettings.DefaultFeedsPageSize > 0 ? ClientSettings.DefaultFeedsPageSize.ToString() : DefaultSettings.DefaultFeedsPageSize + " (Default)") 
+        </div>
+    </div>
+    <div class="line-group">
+        <label class="display-label">
+            Default Discovery Page Size : </label>
+        <div class="display-content">
+            @(ClientSettings.DefaultDiscoveryPageSize > 0 ? ClientSettings.DefaultDiscoveryPageSize.ToString() : DefaultSettings.DefaultDiscoveryPageSize + " (Default)") 
+        </div>
+    </div>
+    <div class="line-group">
+        <label class="display-label">
+            Default Archive Page Size : </label>
+        <div class="display-content">
+            @(ClientSettings.DefaultArchivePageSize > 0 ? ClientSettings.DefaultArchivePageSize.ToString() : DefaultSettings.DefaultArchivePageSize + " (Default)") 
+        </div>
+    </div>
+    <div class="line-group">
+        <label class="display-label">
+            Embedded Clip Auto-Play By Default : </label>
+        <div class="display-content">
+            @(ClientSettings.ClipEmbedAutoPlay.HasValue ? (ClientSettings.ClipEmbedAutoPlay.Value ? "Yes" : "No") : (DefaultSettings.ClipEmbedAutoPlay.Value ? "Yes" : "No") + " (Default)") 
+        </div>
+    </div>
+    <div class="line-group">
+        <label class="display-label">
+            Feeds Show Unread By Default : </label>
+        <div class="display-content">
+            @(ClientSettings.DefaultFeedsShowUnread.HasValue ? (ClientSettings.DefaultFeedsShowUnread.Value ? "Yes" : "No") : (DefaultSettings.DefaultFeedsShowUnread.Value ? "Yes" : "No") + " (Default)") 
+        </div>
+    </div>
+    <div class="line-group">
+        <label class="display-label">
+            Use Customer Email As Default Sender : </label>
+        <div class="display-content">
+            @(ClientSettings.UseCustomerEmailDefault.HasValue ? (ClientSettings.UseCustomerEmailDefault.Value ? "Yes" : "No") : (DefaultSettings.UseCustomerEmailDefault.Value ? "Yes" : "No") + " (Default)") 
+        </div>
+    </div>
+    <div class="line-group">
+        <label class="display-label">
+            Media Room Published Template : </label>
+        <div class="display-content">
+            @(!String.IsNullOrEmpty(ClientSettings.MCMediaPublishedTemplate) ? ClientSettings.MCMediaPublishedTemplate : DefaultSettings.MCMediaPublishedTemplate + " (Default)") 
+        </div>
+    </div>
+    <div class="line-group">
+        <label class="display-label">
+            Media Room Default Email Template : </label>
+        <div class="display-content">
+            @(!String.IsNullOrEmpty(ClientSettings.MCMediaDefaultEmailTemplate) ? ClientSettings.MCMediaDefaultEmailTemplate : DefaultSettings.MCMediaDefaultEmailTemplate + " (Default)") 
+        </div>
+    </div>
+       <div class="line-group">
+        <label class="display-label">
+            Media Room Available Templates : </label>
+        <div class="display-content">
+            @if (ClientSettings.MCMediaAvailableTemplates != null)
+            {
+                <div class="resWidth2inLine">                    
+                    @if (ClientSettings.MCMediaAvailableTemplates.Published.IsAllowAll)
+                    {
+                        <b>Published - All</b><br />
+                    }
+                    else
+                    {
+                        <b>Published - Custom</b><br />
+                        @Html.Raw(string.Join("<br/>", ClientSettings.MCMediaAvailableTemplates.Published.Template.Select(a => a.Name)))
+                         
+                    }
+                </div>
+                <div class="resWidth2inLine">
+                    @if (ClientSettings.MCMediaAvailableTemplates.Email.IsAllowAll)
+                    {
+                        <b>Email - All</b><br />
+                    }
+                    else
+                    {
+                        <b>Email - Custom</b><br />
+                        @Html.Raw(string.Join("<br/>", ClientSettings.MCMediaAvailableTemplates.Email.Template.Select(a => a.Name)))
+                         
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="resWidth2inLine">
+                    <b>Published - Default</b><br />
+                    @if (DefaultSettings.MCMediaAvailableTemplates.Published.IsAllowAll)
+                    {
+                        <text>All</text>   
+                    }
+                    else
+                    {
+                        @Html.Raw(string.Join("<br/>", DefaultSettings.MCMediaAvailableTemplates.Published.Template.Select(a => a.Name)))    
+                    }
+                </div>
+                <div class="resWidth2inLine">
+                    <b>Email - Default</b><br /> 
+                    @if (DefaultSettings.MCMediaAvailableTemplates.Email.IsAllowAll)
+                    {
+                        <text>All</text>   
+                    }
+                    else
+                    {
+                        @Html.Raw(string.Join("<br/>", DefaultSettings.MCMediaAvailableTemplates.Email.Template.Select(a => a.Name)))    
+                    }
+                </div>
+            }
+        </div>
+    </div>
+    <div class="row-fluid row-custom">
+        <b>Sentiment Thresholds</b></div>
+    <br />
+    <div class="line-group">
+        <label class="display-label">
+            Low Threshold value for TV : </label>
+        <div class="display-content">
+            @(ClientSettings.TVLowThreshold.HasValue ? ClientSettings.TVLowThreshold.Value.ToString("N2") : DefaultSettings.TVLowThreshold.Value.ToString("N0") + " (Default)")
+        </div>
+    </div>
+    <div class="line-group">
+        <label class="display-label">
+            High Threshold value for TV : </label>
+        <div class="display-content">
+            @(ClientSettings.TVHighThreshold.HasValue ? ClientSettings.TVHighThreshold.Value.ToString("N2") : DefaultSettings.TVHighThreshold.Value.ToString("N0") + " (Default)")
+        </div>
+    </div>
+    <div class="line-group">
+        <label class="display-label">
+            Low Threshold value for Online News articles : </label>
+        <div class="display-content">
+            @(ClientSettings.NMLowThreshold.HasValue ? ClientSettings.NMLowThreshold.Value.ToString("N2") : DefaultSettings.NMLowThreshold.Value.ToString("N0") + " (Default)")
+        </div>
+    </div>
+    <div class="line-group">
+        <label class="display-label">
+            High Threshold value for Online News articles : </label>
+        <div class="display-content">
+            @(ClientSettings.NMHighThreshold.HasValue ? ClientSettings.NMHighThreshold.Value.ToString("N2") : DefaultSettings.NMHighThreshold.Value.ToString("N0") + " (Default)")
+        </div>
+    </div>
+    <div class="line-group">
+        <label class="display-label">
+            Low Threshold value for Blogs/Forums/Social Media : </label>
+        <div class="display-content">
+            @(ClientSettings.SMLowThreshold.HasValue ? ClientSettings.SMLowThreshold.Value.ToString("N2") : DefaultSettings.SMLowThreshold.Value.ToString("N0") + " (Default)")
+        </div>
+    </div>
+    <div class="line-group">
+        <label class="display-label">
+            High Threshold value for Blogs/Forums/Social Media : </label>
+        <div class="display-content">
+            @(ClientSettings.SMHighThreshold.HasValue ? ClientSettings.SMHighThreshold.Value.ToString("N2") : DefaultSettings.SMHighThreshold.Value.ToString("N0") + " (Default)")
+        </div>
+    </div>
+    <div class="line-group">
+        <label class="display-label">
+            Low Threshold value for Twitter : </label>
+        <div class="display-content">
+            @(ClientSettings.TwitterLowThreshold.HasValue ? ClientSettings.TwitterLowThreshold.Value.ToString("N2") : DefaultSettings.TwitterLowThreshold.Value.ToString("N0") + " (Default)")
+        </div>
+    </div>
+    <div class="line-group">
+        <label class="display-label">
+            High Threshold value for Twitter : </label>
+        <div class="display-content">
+            @(ClientSettings.TwitterHighThreshold.HasValue ? ClientSettings.TwitterHighThreshold.Value.ToString("N2") : DefaultSettings.TwitterHighThreshold.Value.ToString("N0") + " (Default)")
+        </div>
+    </div>
+    
+    <div class="line-group">
+        <label class="display-label">
+            Low Threshold value for ProQuest : </label>
+        <div class="display-content">
+            @(ClientSettings.PQLowThreshold.HasValue ? ClientSettings.PQLowThreshold.Value.ToString("N2") : DefaultSettings.PQLowThreshold.Value.ToString("N0") + " (Default)")
+        </div>
+    </div>
+    <div class="line-group">
+        <label class="display-label">
+            High Threshold value for ProQuest : </label>
+        <div class="display-content">
+            @(ClientSettings.PQHighThreshold.HasValue ? ClientSettings.PQHighThreshold.Value.ToString("N2") : DefaultSettings.PQHighThreshold.Value.ToString("N0") + " (Default)")
+        </div>
+    </div>
+
+    <div class="row-fluid row-custom">
+        <b>IQ Media Value Modifiers</b></div>
+    <br />
+    <div class="line-group">
+        <label class="display-label">
+            IQ Media Value Multiplier for TV : </label>
+        <div class="display-content">
+            @(ClientSettings.Multiplier.HasValue ? ClientSettings.Multiplier.Value.ToString("N2") : DefaultSettings.Multiplier.Value.ToString("N0") + " (Default)")
+        </div>
+    </div>
+    <div class="line-group">
+        <label class="display-label">
+            Audience Multiplier For TV: </label>
+        <div class="display-content">
+            @(ClientSettings.CompeteAudienceMultiplier.HasValue ? ClientSettings.CompeteAudienceMultiplier.Value.ToString("N2") : DefaultSettings.CompeteAudienceMultiplier.Value.ToString("N0") + " (Default)")
+        </div>
+    </div>
+    <div class="line-group">
+        <label class="display-label">
+            IQ Media Value Multiplier for Online News/Blogs/Forums/Social Media : </label>
+        <div class="display-content">
+            @(ClientSettings.CompeteMultiplier.HasValue ? ClientSettings.CompeteMultiplier.Value.ToString("N2") : DefaultSettings.CompeteMultiplier.Value.ToString("N0") + " (Default)")
+        </div>
+    </div>
+    <div class="line-group">
+        <label class="display-label">
+            Ad Rate for Online News articles : </label>
+        <div class="display-content">
+            $@(ClientSettings.OnlineNewsAdRate.HasValue ? ClientSettings.OnlineNewsAdRate.Value.ToString("N2") : DefaultSettings.OnlineNewsAdRate.Value.ToString("N0") + " (Default)")
+        </div>
+    </div>
+    <div class="line-group">
+        <label class="display-label">
+            Ad Rate for Blogs, Forums, Review sites : </label>
+        <div class="display-content">
+            $@(ClientSettings.OtherOnlineAdRate.HasValue ? ClientSettings.OtherOnlineAdRate.Value.ToString("N2") : DefaultSettings.OtherOnlineAdRate.Value.ToString("N0") + " (Default)")
+        </div>
+    </div>
+    <div class="line-group">
+        <label class="display-label">
+            Article Viewership percentage : </label>
+        <div class="display-content">
+            @(ClientSettings.URLPercentRead.HasValue ? ClientSettings.URLPercentRead.Value.ToString("N2") : DefaultSettings.URLPercentRead.Value.ToString("N0") + " (Default)")%
+        </div>
+    </div>
+    <div class="row-fluid row-custom">
+        <b>Default Search Parameters</b></div>
+    <br />
+    <div class="line-group">
+        <label class="display-label">
+            Search Settings : </label>
+        <div class="display-content">
+            @if (ClientSettings.SearchSettings != null)
+            {
+                <div class="resWidth3inLine">
+                    
+                    @if (ClientSettings.SearchSettings.IQ_Dma_Set.IsAllowAll)
+                    {
+                        <b>Market - All</b><br />
+                    }
+                    else
+                    {
+                        <b>Market - Custom</b><br />
+                        @Html.Raw(string.Join("<br/>", ClientSettings.SearchSettings.IQ_Dma_Set.IQ_Dma.Select(a => a.Name)))
+                         
+                    }
+                </div>
+                <div class="resWidth3inLine">
+                    
+                    @if (ClientSettings.SearchSettings.Station_Affiliate_Set.IsAllowAll)
+                    {
+                        <b>Affiliate - All</b><br /> 
+                    }
+                    else
+                    {
+                        <b>Affiliate - Custom</b><br /> 
+                        @Html.Raw(string.Join("<br/>", ClientSettings.SearchSettings.Station_Affiliate_Set.Station_Affiliate.Select(a => a.Name)))
+                    }
+                </div>
+                <div class="resWidth3inLine">
+                    
+                    @if (ClientSettings.SearchSettings.IQ_Class_Set.IsAllowAll)
+                    {
+                        <b>Class - All</b><br />
+                    }
+                    else
+                    {
+                        <b>Class - Custom</b><br />
+                        @Html.Raw(string.Join("<br/>", ClientSettings.SearchSettings.IQ_Class_Set.IQ_Class.Select(a => a.Name)))
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="resWidth3inLine">
+                    <b>Market - Default</b><br />
+                    @if (DefaultSettings.SearchSettings.IQ_Dma_Set.IsAllowAll)
+                    {
+                        <text>All</text>   
+                    }
+                    else
+                    {
+                        @Html.Raw(string.Join("<br/>", DefaultSettings.SearchSettings.IQ_Dma_Set.IQ_Dma.Select(a => a.Name)))    
+                    }
+                </div>
+                <div class="resWidth3inLine">
+                    <b>Affiliate - Default</b><br /> 
+                    @if (DefaultSettings.SearchSettings.Station_Affiliate_Set.IsAllowAll)
+                    {
+                        <text>All</text>   
+                    }
+                    else
+                    {
+                        @Html.Raw(string.Join("<br/>", DefaultSettings.SearchSettings.Station_Affiliate_Set.Station_Affiliate.Select(a => a.Name)))
+                    }
+                </div>
+                <div class="resWidth3inLine">
+                    <b>Class - Default</b><br />
+                    @if (DefaultSettings.SearchSettings.IQ_Class_Set.IsAllowAll)
+                    {
+                        <text>All</text>   
+                    }
+                    else
+                    {
+                        @Html.Raw(string.Join("<br/>", DefaultSettings.SearchSettings.IQ_Class_Set.IQ_Class.Select(a => a.Name)))
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var hasAgentAccess = @(sessionInformation.Isv4IQAgentAccess.ToString().ToLower());
+    var hasFeedAccess = @(sessionInformation.Isv4FeedsAccess.ToString().ToLower());
+
+    if(!hasAgentAccess) {
+        $('[name="needAgentAccess"]').toggleClass('greyOut', true);
+    }
+    if(!hasFeedAccess) {
+        $('[name="needFeedAccess"]').toggleClass('greyOut', true);
+    }
+</script>

@@ -1,0 +1,190 @@
+﻿@{
+    ViewBag.Title = "iQ media Software";
+    Layout = "~/Views/Shared/_IQMediaMasterStaticPages.cshtml";
+}
+@section HeaderImage
+{
+    <img src="~/images/StaticBanner/Software.jpg" alt="Software banner" id="imgSoftwareHeader" />
+}
+@section ContentOptional
+{
+    <div id="divStickerParent" class="marginBottom20">
+        <div id="sticker">
+            <a id="btnSoftwareDiscover" class="SoftwareDiscover cursorPointer"></a>@*<img id="imgDiscover" alt="" src="../../../images/Static/Sprite-Software.png" >*@
+            <img src="../../../images/Static/mid-arrow.png" alt=""><a id="btnSoftwareCreate" class="SoftwareCreate cursorPointer"></a>
+            @*<img src="../../../images/static/Sprite-Software.png" alt="" id="imgCreate">*@
+            <img src="../../../images/Static/mid-arrow.png" alt="" width="50" height="140" /><a
+                id="btnSoftwareEngage" class="SoftwareEngage cursorPointer"></a> @*<img src="../../../images/Static/Sprite-Software.png" alt="" id="imgEngage">*@
+            <div style="position: absolute; display: block; left: 0px; right: 0px; margin-top: 0px;
+                text-align: center;">
+                <div style="background: url(../../../images/Static/bottom-shadow.png) repeat-x left top;">
+                    <img src="../../../images/Static/sticky-arrow.png" style="margin-top: 0px; vertical-align: top;"
+                        alt="" /></div>
+            </div>
+        </div>
+    </div>
+}
+@section Content
+{
+    <link href="../../Css/Sticker.css" rel="stylesheet" />
+    <script type="text/javascript" src="../../Scripts/jquery.sticky.js?v=1.0"></script>
+    <script type="text/javascript" language="javascript">
+
+        var topOffsetForSticky = 0;
+        var x = 0;
+        $(document).ready(function () {
+
+
+
+            if ($(window).width() <= 768) {
+                topOffsetForSticky = 0;
+            }
+            else {
+                topOffsetForSticky = 48;
+            }
+
+            var fixDivPadding = 0;
+            if (topOffsetForSticky > 0) {
+                fixDivPadding = -48;
+            }
+            else {
+                fixDivPadding = 48;
+            }
+
+            var imgheaderTagTop = $('#imgSoftwareHeader').offset().top;
+
+            $('#btnSoftwareEngage').click(function () {
+                $('html, body').animate({
+                    //scrollTop: $("#divSoftwareEngage").offset().top - (imgheaderTagTop + $('#imgSoftwareHeader').parent().height()) + $('#divMenu').offset().top + fixDivPadding + 40
+                    scrollTop: $("#divSoftwareEngage").offset().top - ($('#divStickerParent').height() + topOffsetForSticky)
+
+                }, 500);
+            });
+
+            $('#btnSoftwareCreate').click(function () {
+                $('html, body').animate({
+                    //scrollTop: $("#divSoftwareCreate").offset().top - (imgheaderTagTop + $('#imgSoftwareHeader').parent().height()) + $('#divMenu').offset().top + fixDivPadding + 40
+                    scrollTop: $("#divSoftwareCreate").offset().top - ($('#divStickerParent').height() + topOffsetForSticky)
+                }, 500);
+
+            });
+
+            $('#btnSoftwareDiscover').click(function () {
+                $('html, body').animate({
+                    //scrollTop: $("#divSoftwareDiscover").offset().top - (imgheaderTagTop + $('#imgSoftwareHeader').parent().height()) + $('#divMenu').offset().top + fixDivPadding + 40
+                    scrollTop: $("#divSoftwareDiscover").offset().top - ($('#divStickerParent').height() + topOffsetForSticky)/*- $(window).scrollTop() */
+
+                }, 500);
+
+            });
+        });
+
+
+        $(window).scroll(function () {
+
+            if (x == 0) {
+                $("#sticker").sticky({ topSpacing: topOffsetForSticky });
+                x = 1;
+            }
+
+
+            if ($(window).scrollTop() >= $("#divSoftwareEngage").offset().top - ($('#divStickerParent').height() + topOffsetForSticky) - 10) {
+                // $('#sticker').css('width', '94%');
+                /*$('#imgDiscover').attr("src", "../../../images/Static/search-h.png");
+                $('#imgCreate').attr("src", "../../../images/Static/edit-h.png");
+                $('#imgEngage').attr("src", "../../../images/Static/chat.png");*/
+                $('#btnSoftwareDiscover').removeClass();
+                $('#btnSoftwareCreate').removeClass();
+                $('#btnSoftwareEngage').removeClass();
+                $('#btnSoftwareDiscover').addClass("SoftwareDiscover");
+                $('#btnSoftwareCreate').addClass("SoftwareCreate");
+                $('#btnSoftwareEngage').addClass("SoftwareEngageclicked");
+            }
+
+            else if ($(window).scrollTop() >= $("#divSoftwareCreate").offset().top - ($('#divStickerParent').height() + topOffsetForSticky) - 10) {
+                // $('#sticker').css('width', '94%');
+                /*$('#imgDiscover').attr("src", "../../../images/Static/search-h.png");
+                $('#imgCreate').attr("src", "../../../images/Static/edit.png");
+                $('#imgEngage').attr("src", "../../../images/Static/chat-h.png");*/
+
+                $('#btnSoftwareDiscover').removeClass();
+                $('#btnSoftwareCreate').removeClass();
+                $('#btnSoftwareEngage').removeClass();
+                $('#btnSoftwareDiscover').addClass("SoftwareDiscover");
+                $('#btnSoftwareCreate').addClass("SoftwareCreateclicked");
+                $('#btnSoftwareEngage').addClass("SoftwareEngage");
+
+            }
+
+            else if ($(window).scrollTop() >= $("#divSoftwareDiscover").offset().top - ($('#divStickerParent').height() + topOffsetForSticky) - 10) {
+                //  $('#sticker').css('width', '94%');
+                $('#btnSoftwareDiscover').removeClass();
+                $('#btnSoftwareCreate').removeClass();
+                $('#btnSoftwareEngage').removeClass();
+                $('#btnSoftwareDiscover').addClass("SoftwareDiscoverclicked");
+                $('#btnSoftwareCreate').addClass("SoftwareCreate");
+                $('#btnSoftwareEngage').addClass("SoftwareEngage");
+                /*$('#imgDiscover').attr("src", "../../../images/Static/search.png");
+                $('#imgCreate').attr("src", "../../../images/Static/edit-h.png");
+                $('#imgEngage').attr("src", "../../../images/Static/chat-h.png");*/
+            }
+
+            else {
+
+                $('#btnSoftwareDiscover').removeClass();
+                $('#btnSoftwareCreate').removeClass();
+                $('#btnSoftwareEngage').removeClass();
+                $('#btnSoftwareDiscover').addClass("SoftwareDiscover");
+                $('#btnSoftwareCreate').addClass("SoftwareCreate");
+                $('#btnSoftwareEngage').addClass("SoftwareEngage");
+
+                // $('#sticker').css('width', '');                
+                /*$('#imgDiscover').attr("src", "../../../images/Static/search-h.png");
+                $('#imgCreate').attr("src", "../../../images/Static/edit-h.png");
+                $('#imgEngage').attr("src", "../../../images/Static/chat-h.png");*/
+            }
+
+
+        });
+
+    </script>
+    <div class="row-fluid">
+        <div class="">
+        </div>
+        <div class="container">
+            <div class="small-text base softwareHeaderParagraph clearfix" id="divGeneralDetail">
+               <p>Communications professionals are at an interesting crossroads when it comes to using media intelligence as a way to promote their success and share valuable information not only internally, but also with the public.  Traditional media monitoring spends too much time looking in the rear view mirror and gives you little ability to put your media intelligence to use. With cliQ, you can discover, create, and engage while users of traditional media tools are still trying to figure out what happened.</p>
+               <p>cliQ is a new platform with media optimized for the cloud. Designed for today’s web-centric, always-connected world, cliQ gives you the power to:</p>
+          </div>
+          <a name="discover" id="divSoftwareDiscover"></a>
+          <div class="small-text row-content-column base clearfix">
+               <div class="span9">
+               <h4>Discover</h4>
+               <p> <img alt="Discover" src="../images/static/point-icon.png"> Access the world’s largest trove of US broadcast media and online content</p>
+               <p> <img alt="Discover" src="../images/static/point-icon.png"> Get meaningful content distilled from TV, online news, forums, blogs, review sites
+                    and social media portals</p>
+               <p> <img alt="Discover" src="../images/static/point-icon.png"> See trends and media values unavailable from any other source</p>
+               <p> <a href="/Software/Discover"> <img alt="Learn More" src="../images/static/LearnMore.png"></a></p>
+               </div><div class="span9"> <img alt="Discover" src="../images/static/discover-img.png"></div> </div>
+          <a name="create" id="divSoftwareCreate"></a>
+          <div class="small-text row-content-column base clearfix">
+               <div class="span9"> <img alt="Create" src="../images/static/Create-img.png"></div>
+               <div class="span9">
+	               <h4>Create</h4>
+                    <p> <img alt="Create" src="../images/static/point-icon.png"> Repurpose broadcast TV for content marketing</p>
+                    <p> <img alt="Create" src="../images/static/point-icon.png"> Develop insights from big data media resources</p>
+                    <p> <img alt="Create" src="../images/static/point-icon.png"> Amass an arsenal of high value communications assets</p>
+                    <p> <a href="/Software/Create"> <img alt="Learn More" src="../images/static/LearnMore.png"></a></p>
+               </div></div>
+          <a name="engage" id="divSoftwareEngage"></a>
+          <div class="small-text row-content-column base clearfix">
+               <div class="span9">
+               <h4> Engage</h4>
+               <p> <img alt="Create" src="../images/static/point-icon.png"> Push out top quality content while it’s still fresh</p>
+               <p> <img alt="Create" src="../images/static/point-icon.png"> Deliver video to phones, tablets, and computers</p>
+               <p> <img alt="Create" src="../images/static/point-icon.png"> Grow awareness and expand your network </p>
+               <p> <a href="/Software/Engage"> <img alt="Learn More" src="../images/static/LearnMore.png"></a></p>
+               </div><div class="span9"> <img alt="Engage" src="../images/static/Engage-img.png"></div> </div>
+        </div>
+    </div>
+}

@@ -1,0 +1,101 @@
+﻿@model List<IQMedia.Model.fliQ_UploadTrackingModel>
+<style type="text/css">
+    .topResult
+    {
+        font-size: 11px;
+        border: 1px solid #D8D8D8;
+    }
+    
+    .topResult tr th
+    {
+        padding: 4px;
+    }
+</style>
+<div class="row-fluid row-custom">
+    <!--/span-->
+    
+    <div class="btn-group">
+        <a class="btn dropdown-toggle no-background" data-toggle="dropdown" href="#" id="aSortDirection">
+            <script type="text/javascript">
+                SetDirectionHTML();
+            </script>
+            <span class="caret"></span></a>
+        <ul class="dropdown-menu">
+            <li class="cursorPointer"><a onclick="SortDirection('Date',false);">Uploaded Date Descending</a></li>
+            <li class="cursorPointer"><a onclick="SortDirection('Date',true);">Uploaded Date Ascending</a></li>
+            <li class="cursorPointer"><a onclick="SortDirection('CustomerName',false);">Customer Name Descending</a></li>
+            <li class="cursorPointer"><a onclick="SortDirection('CustomerName',true);">Customer Name Ascending</a></li>
+        </ul>
+    </div>
+</div>
+@if (Model != null && Model.Count > 0)
+{
+    <div id="divFliq_UGCUploadPreviousNext" class="nextprevdiv margintop10">
+        <span id="lblFliq_UGCUploadRecords" style="float: left; padding: 5px 10px 0 0;">
+        </span><a href="javascript:;" onclick="GetFliqUploads(false);" id="btnFliq_UGCUploadPreviousPage"
+            class="nextprevbtn">
+            <img src="../../Images/prev.png" /></a> <a href="javascript:;" onclick="GetFliqUploads(true);"
+                id="btnFliq_UGCUploadNextPage" class="nextprevbtn">
+                <img src="../../Images/next.png" /></a>
+    </div>
+    <div id="divFliq_FliqUploads_ScrollContent" class="clear">
+        <div class="float-left width100p" style="padding-right: 15px; margin-bottom: 10px;">
+            <table class="topResult" width="100%" cellpadding="0" cellspacing="0" style="margin-top: 15px;">
+                @{ bool IsHeader = false; }
+                @foreach (IQMedia.Model.fliQ_UploadTrackingModel item in Model)
+                {
+                    if (!IsHeader)
+                    {
+                    <tr>
+                        @{IsHeader = true; }
+                        <th style="text-align: left;">
+                            Customer Name
+                        </th>
+                        <th style="text-align: left;">
+                            Uploaded Date Time
+                        </th>
+                        <th style="text-align: left;">
+                            Category
+                        </th>
+                        <th style="text-align: left;">
+                            Tags
+                        </th>
+                        <th style="text-align: left;">
+                            Status
+                        </th>
+                    </tr>
+                    }
+                    <tr>
+                        <td style="text-align: left;">
+                            @item.CustomerFirstName @item.CustomerLastName
+                        </td>
+                        <td style="text-align: left;">
+                            @( item.UploadedDateTime.HasValue ? item.UploadedDateTime.Value.ToString("MMM dd, yyyy hh:mm:ss tt") : string.Empty)
+                        </td>
+                        <td style="text-align: left;">
+                            @item.CategoryName
+                        </td>
+                        <td style="text-align: left;">
+                            @item.Tags
+                        </td>
+                        <td style="text-align: left;">
+                            @item.Status
+                        </td>
+                    </tr> 
+                }
+            </table>
+        </div>
+    </div>
+}
+else
+{
+    <table width="100%" style="text-align: center;">
+        <tr>
+            <td>
+                <span style="background: none repeat scroll 0 0 #F2F2F2; border: 1px solid #DCDCDC;
+                    margin-bottom: 10px; margin-right: 10px; padding: 3px 10px 3px 6px; position: relative;
+                    width: 300px !important;">No Results found</span>
+            </td>
+        </tr>
+    </table>
+}

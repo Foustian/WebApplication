@@ -1,0 +1,89 @@
+﻿@model IQMedia.Model.IQGalleryResult
+@if (Model != null && Model.IQGalleryList != null)
+{
+    <div class="float-left width100p" style="padding-right: 15px; margin-bottom: 10px;">
+    <div class="row-fluid" style="text-align:right;">
+                        <a data-toggle="dropdown" class="dropdown-toggle" role="button"
+                                id="liTile" href="javascript:void(0)" onclick="OpenGallaryPopup();">Add</a>
+                    </div>
+    <table class="topResult jobStatuspg" width="100%" cellpadding="0" cellspacing="0" style="margin-top: 15px;">
+        @{ bool IsHeader = false; }
+        @foreach (IQMedia.Model.IQGalleryModel item in Model.IQGalleryList)
+        {
+            if (!IsHeader)
+            {
+            <tr>
+                @{IsHeader = true; }
+                <th style="text-align: left; width: 30%;">
+                    Name
+                </th>
+                <th style="text-align: left; width: 35%;">
+                    Description
+                </th>
+                <th style="text-align: left; width: 15%;">
+                    
+                </th>
+                <th style="text-align: left; width: 25%;">
+                    Created Date
+                </th>
+            </tr>
+            }
+            <tr>
+                <td style="text-align: left; word-break: break-all;">
+                    <a href="javascript:void(0)" onclick="OpenGallaryPopup(@item.ID);" style="cursor:pointer;">@item.Name</a>
+                </td>
+                <td style="text-align: left; word-break: break-all;">
+                    @item.Description
+                </td>
+                <td style="text-align: left; word-break: break-all;">
+                    <a href="~/Gallery?ID=@item.ID" style="cursor:pointer;" target="_blank">View</a>
+                </td>
+                <td style="text-align: left; word-break: break-all;">
+                    @( item.CreatedDate.ToString("MMM dd, yyyy hh:mm:ss tt"))
+                </td>
+            </tr> 
+        }
+    </table>
+    </div>
+    @*<table>
+        <tr style="border-bottom: 1px solid #cccccc">
+            <th style="text-align: left; width: 30%; height:20px;">
+                <a href="javascript:void(0)" onclick="OpenGallaryPopup(@item.ID);" style="cursor:pointer;">@item.Name</a>
+            </th>
+            <th style="text-align: left; width: 35%;">
+                Description
+            </th>
+            <th style="text-align: left; width: 10%;">
+                Link
+            </th>
+            <th style="text-align: left; width: 20%;">
+                Created Date
+            </th>
+            <th style="text-align: left; width: 5%;">
+                <div class="row-fluid" style="text-align:right;">
+                    <a data-toggle="dropdown" class="dropdown-toggle" role="button"
+                            id="liTile" href="javascript:void(0)" onclick="OpenGallaryPopup();">Add</a>
+                </div>
+            </th>
+        </tr>
+            @foreach (IQMedia.Model.IQGalleryModel item in Model.IQGalleryList)
+            {
+                <tr style="border-bottom: 1px solid #cccccc">
+                    <td style="text-align: left; height:50px; word-break: break-all;">
+                        <a href="javascript:void(0)" onclick="OpenGallaryPopup(@item.ID);" style="cursor:pointer;">@item.Name</a>
+                    </td>
+                    <td style="text-align: left; word-break: break-all;">
+                        @item.Description
+                    </td>
+                    <td style="text-align: left; word-break: break-all;">
+                        @item.Title
+                    </td>
+                    <td style="text-align: left; word-break: break-all;">
+                        @( item.CreatedDate.ToString("MMM dd, yyyy hh:mm:ss tt"))
+                    </td>
+                    <td style="text-align: left;">
+                    </td>
+                </tr> 
+            }
+    </table>*@
+}

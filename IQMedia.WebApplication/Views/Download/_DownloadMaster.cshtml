@@ -1,0 +1,61 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    <link href="../../Css/Fonts.css" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+        body
+        {
+            font-family: 'Open Sans' , sans-serif;
+            font-size: 14px;
+        }
+        .grid
+        {
+            border: 1px solid #d8d8d8;
+        }
+        
+        .grid tr th, .grid tr td
+        {
+            border-bottom: 1px solid #d8d8d8;
+            padding: 5px;
+        }
+        
+        .grid tr th
+        {
+            background: #f4f4f4;
+            padding: 7px;
+        }
+        
+        .button 
+        {
+	        background-color:#3E3E3E;
+	        padding: 4px 7px;
+	        padding-left:10px;
+	        padding-right:10px;
+	        border:1px solid #3b3b3b;
+	        margin: 10px 0;
+	        text-align: center;
+	        color:#ffffff;
+	        cursor:pointer;
+	        min-width:70px;
+        }
+        
+        input, button, select, textarea {
+            font-family: 'Open Sans';
+        }
+
+        .button:hover 
+        {    
+	        /*color:#8FD8D8;*/
+	        background-color:#000000;
+        }
+
+    </style>
+</head>
+<body>
+    <div style="padding:25px 25px 0px 25px;margin-bottom:15px;" >
+        @RenderBody()
+    </div>
+</body>
+</html>

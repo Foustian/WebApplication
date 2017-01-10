@@ -1,0 +1,54 @@
+﻿@using IQMedia.Model;
+@using IQMedia.Shared.Utility;
+@model List<ClientModel>
+<div id="divResult_ScrollContent">
+    @if (Model != null)
+    {
+        ActiveUser sessionInformation = IQMedia.WebApplication.Utility.ActiveUserMgr.GetActiveUser();
+        <table width="80%" class="topResult">
+            <tr>
+                <th style="text-align: left; width: 15%;">
+                </th>
+                <th style="text-align: left;">
+                    Client Name
+                </th>
+            </tr>
+            <tr>
+                <td>
+                    <button type="button" value="Login" class="cancelButton">
+                        Current</button>
+                </td>
+                <td style="text-align: left;">
+                    @sessionInformation.ClientName
+                </td>
+            </tr>
+            @foreach (ClientModel item in Model)
+            { 
+                <tr>
+                    <td>
+                        @using (Html.BeginForm("Index", "Group", new { p_ClientID = item.ClientKey }, FormMethod.Post, new { id = "frm_" + item.ClientKey }))
+                        {
+                            <button type="submit" value="Login" class="button" onclick="ValidateSwitch('@item.ClientKey');return false;" >
+                                Switch To</button>
+                        }
+                    </td>
+                    <td style="text-align: left;">
+                        @item.ClientName
+                    </td>
+                </tr>
+            }
+        </table>
+
+    }
+    else
+    {   
+        <table width="100%" style="text-align: center;">
+            <tr>
+                <td>
+                    <span style="background: none repeat scroll 0 0 #F2F2F2; border: 1px solid #DCDCDC;
+                        margin-bottom: 10px; margin-right: 10px; padding: 3px 10px 3px 6px; position: relative;
+                        width: 300px !important;">No Results found</span>
+                </td>
+            </tr>
+        </table>
+    }</div>

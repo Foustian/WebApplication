@@ -1,0 +1,195 @@
+﻿@using IQMedia.Model;
+@using IQMedia.Shared.Utility;
+@model List<IQArchive_MediaModel>
+@if (Model != null)
+{
+    ActiveUser sessionInformation = IQMedia.WebApplication.Utility.ActiveUserMgr.GetActiveUser();
+    foreach (IQArchive_MediaModel item in Model)
+    {
+        string hilightedText = string.Empty;
+        if (!string.IsNullOrEmpty(item.Content))
+        {
+            item.Content = item.Content.Replace("&lt;", "<").Replace("&gt;", ">");
+            if (item.SubMediaType != IQMedia.Shared.Utility.CommonFunctions.CategoryType.TW)
+            {
+                hilightedText = item.Content.Length > 300 ? item.Content.Substring(0, 300) : item.Content;
+            }
+            else
+            {
+                hilightedText = item.Content;
+            }
+            //hilightedText = System.Text.RegularExpressions.Regex.Replace(hilightedText, "(</span(?!>)|</spa(?!n>)|</sp(?!an>)|</s(?!pan>)|</(?!span>))\\Z", "</span>");
+        }
+
+        hilightedText = CommonFunctions.ProcessHighlightingText(item.Content, hilightedText);
+
+
+        IQArchive_ArchiveClipModel TVModel = item.MediaData as IQArchive_ArchiveClipModel;
+        string TotalAdShareValue = string.Empty;
+        string TotalNielsen_Result = string.Empty;
+        string TotalNeilsenAudience = string.Empty;
+
+        if (TVModel != null)
+        {
+
+            string TVThumbUrl = Convert.ToString(System.Configuration.ConfigurationManager.AppSettings["IQArchieve_TVThumbUrl"]);
+            TVThumbUrl += TVModel.ClipID;
+
+            string Month = TVModel.LocalDateTime != null ? TVModel.LocalDateTime.ToString("MMM", System.Globalization.CultureInfo.InvariantCulture) : string.Empty;
+            string Day = TVModel.LocalDateTime != null ? TVModel.LocalDateTime.Day.ToString() : string.Empty;
+            string Time = TVModel.LocalDateTime != null ? TVModel.LocalDateTime.ToString("hh:mm tt") : string.Empty;
+
+            if (TVModel.ChildResults != null && TVModel.ChildResults.Count > 0)
+            {
+                decimal SumAdShareValue = TVModel.National_IQAdShareValue.HasValue ? TVModel.National_IQAdShareValue.Value : 0;
+                if (SumAdShareValue > 0)
+                {
+                    TotalAdShareValue = string.Format("{0:n2}", (SumAdShareValue));
+                    TotalNielsen_Result = TVModel.National_Nielsen_Result;
+                }
+
+                long SumAudience = TVModel.National_Nielsen_Audience.HasValue ? TVModel.National_Nielsen_Audience.Value : 0;
+                if (SumAudience > 0)
+                {
+                    TotalNeilsenAudience = string.Format("{0:n0}", (SumAudience));
+                }
+
+            }
+                
+    <div id="divMedia_@item.ID" class="media">
+        <input type="checkbox" onclick="javascript:void(0);" style="display:none;" id="chkdivResults_@item.ID" value="@item.ID" name="@item.Title"/>
+        <div class="tvFeedsDate">
+            <div class="pull-left">
+                <div class="post-date">
+                    <span class="month">@Month</span><div>
+                        <span class="today">@Day</span></div>
+                    <span class="timeWithTimeZone">@Time @TVModel.TimeZone</span></div>
+                <div align="center" class="network">
+                    <img src="~/images/MediaIcon/network-icon.png" alt="tv"></div>
+            </div>
+        </div>
+        <div class="pull-left tvFeedsMarket">
+            <div style="float: left">
+                <div class="minHeight32">
+                    <img alt="" src="@TVModel.StationLogo" /></div>
+            </div>
+        </div>
+        <div class="tvFeedsContent">
+            <div class="pull-left media-body tvFeedsDetail">
+                <span class="media-heading" id="h4TVTitle_@item.ID">@item.Title</span>
+                <div class="clearfix">
+                </div>
+                @if (!string.IsNullOrWhiteSpace(@TVModel.Market))
+                {
+                    <span style="color: #73797F;">@TVModel.Market - </span>
+                }
+                @Html.Raw(hilightedText)
+            </div>
+        </div>
+        <div class="float-right tvFeedsThumbParent">
+            <div class="float-left video-thumb-width tvFeedsThumb marginRight10">
+                <div class="positionRelative">
+                    <input type="hidden" id="hdnclipid_@item.ID" value="@TVModel.ClipID" />
+                    <a class="cursorPointer" onclick="LoadClipPlayer('@TVModel.ClipID');">
+                        <img csrc="@TVThumbUrl" id="tvthumb_@item.ID" class="maxwidth130" alt="" /></a></div>
+            </div>
+        </div>
+        @if (TVModel.ChildResults != null && TVModel.ChildResults.Count > 0)
+        {
+            <div class="clear" style="display:none;" id="divChildMedia_@item.ID">
+                @foreach (IQArchive_MediaModel childItem in TVModel.ChildResults)
+                {
+                    IQArchive_ArchiveClipModel IQArchive_ChildArchiveClipModel = (IQArchive_ArchiveClipModel)childItem.MediaData;
+                    hilightedText = string.Empty;
+                    string maxNegativeSentimetnWidth = string.Empty;
+                    string maxPositiveSentimetnWidth = string.Empty;
+                    string NielsenAudience = string.Empty;
+                    string iqAdShareValue = string.Empty;
+                    string nielsen_Result = string.Empty;
+                    if (!string.IsNullOrEmpty(childItem.Content))
+                    {
+                        childItem.Content = childItem.Content.Replace("&lt;", "<").Replace("&gt;", ">");
+                        hilightedText = childItem.Content.Length > 300 ? childItem.Content.Substring(0, 300) : childItem.Content;
+                        hilightedText = CommonFunctions.ProcessHighlightingText(childItem.Content, hilightedText);
+                    }
+
+                    TVThumbUrl = Convert.ToString(System.Configuration.ConfigurationManager.AppSettings["IQArchieve_TVThumbUrl"]);
+                    TVThumbUrl += IQArchive_ChildArchiveClipModel.ClipID;
+
+                    if ((IQArchive_ChildArchiveClipModel.NegativeSentiment * 6) > 25)
+                    {
+
+                        maxNegativeSentimetnWidth = "25px";
+                    }
+                    else
+                    {
+                        maxNegativeSentimetnWidth = Convert.ToString(IQArchive_ChildArchiveClipModel.NegativeSentiment * 6) + "px";
+                    }
+
+
+                    if ((IQArchive_ChildArchiveClipModel.PositiveSentiment * 6) > 25)
+                    {
+
+                        maxPositiveSentimetnWidth = "25px";
+                    }
+                    else
+                    {
+                        maxPositiveSentimetnWidth = Convert.ToString(IQArchive_ChildArchiveClipModel.PositiveSentiment * 6) + "px";
+                    }
+
+
+
+                    if (IQArchive_ChildArchiveClipModel.Nielsen_Audience.HasValue)
+                    {
+                        NielsenAudience = string.Format("{0:n0}", IQArchive_ChildArchiveClipModel.Nielsen_Audience);
+                    }
+
+
+                    if (IQArchive_ChildArchiveClipModel.IQAdShareValue.HasValue)
+                    {
+                        iqAdShareValue = string.Format("{0:n2}", (IQArchive_ChildArchiveClipModel.IQAdShareValue.Value));
+
+                        if (!string.IsNullOrWhiteSpace(IQArchive_ChildArchiveClipModel.Nielsen_Result))
+                        {
+                            nielsen_Result = IQArchive_ChildArchiveClipModel.Nielsen_Result.ToUpper();
+                        }
+                    }
+                    <div class="media" id="divMedia_@childItem.ID">
+                        <div class="clear">
+                            <input type="checkbox" onclick="javascript:void(0);" style="display:none;" id="chkdivChildResults_@childItem.ID" value="@childItem.ID" />
+                            <div class="actionBarLeftDivTVLib float-left">
+                                <div style="width: 65px" class="float-left">
+                                    <div align="center" class="margintop2">
+                                        <img alt="" src="@IQArchive_ChildArchiveClipModel.StationLogo" /></div>
+                                </div>
+                                <div class="tvcreateddatediv tvsentimentmargintop trimtext">
+                                    @IQArchive_ChildArchiveClipModel.Market
+                                </div>
+                                <div class="float-left tvchild-tagLib tvsentimentmargintop">
+                                    <div class="TVvideo-tags-ParentChildLib margintop0  float-left actionBarsection">
+                                        @IQArchive_ChildArchiveClipModel.LocalDateTime.ToString("hh:mm tt") @IQArchive_ChildArchiveClipModel.TimeZone
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="float-right tvFeedsThumbParentChild">
+                                <div class="float-left tvFeedsThumb marginRight10" align="center">
+                                    <div class="positionRelative">
+                                        <a onclick="LoadClipPlayer('@IQArchive_ChildArchiveClipModel.ClipID');" class="cursorPointer">
+                                            <img width="42" height="42" id="ibtnPlay" src="../Images/Play.png" alt="" />
+                                            <input type="hidden" id="tvthumb_@childItem.ID" value="@TVThumbUrl" />
+                                            <input type="hidden" id="hdnclipid_@childItem.ID" value="@IQArchive_ChildArchiveClipModel.ClipID" />
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="clearfix">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+        }
+    }
+}

@@ -1,0 +1,344 @@
+﻿@using IQMedia.WebApplication.Utility;
+@using IQMedia.Model;
+@using IQCommon.Model;
+@{
+    ViewBag.Title = "iQ Media Analytics";
+    Layout = "~/Views/Shared/_IQMediaMasterInner.cshtml";
+}
+@{
+    ActiveUser sessionInfo = ActiveUserMgr.GetActiveUser();
+
+    List<IQ_MediaTypeModel> MasterMediaTypes = new List<IQ_MediaTypeModel>();
+    if (Model != null && Model["MasterMediaTypes"] != null)
+    {
+        MasterMediaTypes = Model["MasterMediaTypes"];
+    }
+}
+<link href="~/Css/analytics.css?v=2.2" type="text/css" rel="Stylesheet" />
+<script src="~/Scripts/Analytics.js?v=3.5" type="text/javascript"></script>
+<script src="~/Scripts/highcharts.js?v=1.1" type="text/javascript"></script>
+<script src="~/Scripts/highcharts.heatmap.js" type="text/javascript"></script>
+<script src="~/Scripts/fusioncharts.js?v=1.0" type="text/javascript"></script>
+<script src="~/Scripts/fusioncharts-jquery-plugin.min.js?v=1.0" type="text/javascript"></script>
+
+<script type="text/javascript">
+    function showPartialView(id) {
+        var partial = $("#" + id);
+
+        if (partial.css("display") == "none")
+            partial.show();
+        else
+            partial.hide();
+    }
+</script>
+
+<div class="container container_custom" style="width:100%">
+    <div class="row-fluid" id="divRowFluid" style="min-width:1360px;">
+        @if (ViewBag.IsSuccess)
+        {
+            <script type="text/javascript">
+                _IsLRAccess = @(sessionInfo.isv5LRAccess.ToString().ToLower());
+                _IsAdsAccess = @(sessionInfo.Isv5AdsAccess.ToString().ToLower());
+                _MasterMediaTypes = [@Html.Raw(string.Join(", ", MasterMediaTypes.Where(w => w.TypeLevel == 2 && w.IsArchiveOnly == false).Select(s => "['" + s.AnalyticsDataType + "','" + s.SubMediaType + "','" + s.DisplayName + "']").ToArray()))];
+                var _MaxEmailAdressAllowed = @System.Configuration.ConfigurationManager.AppSettings["MaxDefaultEmailAddress"];
+            </script>
+            
+            @*<div id="divLeftNav" class="span1 minheight500">
+                <div class="well sidebar-nav">
+                    <h5>Analytics</h5>
+                    <span class="bg-danger">Reserved Space</span>
+                    <div class="navbar">
+                        <ul class="nav floatNone sideMenuUl" style="min-height:500px;" role="navigation">
+                            <li class="dropdown" style="padding-left:0px">
+                                <a class="dropdown-toggle" href="#" role="button" data-toggle="dropdown">overview</a>
+                            </li>
+                            <li class="dropdown" style="padding-left:0px">
+                                <a class="dropdown-toggle" href="#" role="button" data-toggle="dropdown">realtime</a>
+                            </li>
+                            <li class="dropdown" style="padding-left:0px">
+                                <a class="dropdown-toggle" href="#" role="button" data-toggle="dropdown" onclick="showPartialView('divAmplificationContent');">amplification</a>
+                            </li>
+                            <li class="dropdown" style="padding-left:0px">
+                                <a class="dropdown-toggle" href="#" role="button" data-toggle="dropdown">campaign results</a>
+                            </li>
+                            <li class="dropdown" style="padding-left:0px">
+                                <a class="dropdown-toggle" href="#" role="button" data-toggle="dropdown">viewership</a>
+                            </li>
+                            <li class="dropdown" style="padding-left:0px">
+                                <a class="dropdown-toggle" href="#" role="button" data-toggle="dropdown">estimated spend</a>
+                            </li>
+                            <li class="dropdown" style="padding-left:0px">
+                                <a class="dropdown-toggle" href="#" role="button" data-toggle="dropdown">planning</a>
+                            </li>
+                            <li class="dropdown" style="padding-left:0px">
+                                <a class="dropdown-toggle" href="#" role="button" data-toggle="dropdown">optimization</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>*@
+            <div id="divContent" class="span10 rlBorders" style="margin-left:auto;margin-right:auto;float:none;min-width:1360px;">
+                <div class="clear">
+                    <div>
+                        <div id="divTopNav" class="navbar bg-NavDarkGray navbar-inverse" style="margin-bottom:0px">
+                            <div class="container">
+                                <div class="collapse nav-collapse">
+                                    <span class="navbar-text navTabHeading font13Pt">@Request.QueryString["type"]</span>
+                                    <ul id="ampBar" class="nav navbar-nav navTabs font13Pt">
+                                        <li id="liOverTime">
+                                            <a id="ampOverTime" href="javascript:ChangeTab('@SecondaryTabID.OverTime'); void(0);">over time</a>
+                                        </li>
+                                        <li>
+                                            <a id="ampDemographic" href="javascript:ChangeTab('@SecondaryTabID.Demographic'); void(0);">by demographics</a>
+                                        </li>
+                                        <li>
+                                            <a id="ampSources" href="javascript:ChangeTab('@SecondaryTabID.Sources'); void(0);">by sources</a>
+                                        </li>
+                                        <li>
+                                            <a id="ampMarket" href="javascript:ChangeTab('@SecondaryTabID.Market'); void(0);">by markets</a>
+                                        </li>
+                                        <li>
+                                            <a id="ampNetworks" href="javascript:ChangeTab('@SecondaryTabID.Networks'); void(0);">by networks</a>
+                                        </li>
+                                        <li>
+                                            <a id="ampShows" href="javascript:ChangeTab('@SecondaryTabID.Shows'); void(0);">by shows</a>
+                                        </li>
+                                        <li>
+                                            <a id="ampDaytime" href="javascript:ChangeTab('@SecondaryTabID.Daytime'); void(0);">by day/time</a>
+                                        </li>
+                                        <li>
+                                            <a id="ampDaypart" href="javascript:ChangeTab('@SecondaryTabID.Daypart'); void(0);">by day/part</a>
+                                        </li>
+                                        <!-- Not yet implemented
+                                        <li>
+                                            <a id="ampDMAs" href="#">by DMAs</a>
+                                        </li>
+                                        <li>
+                                            <a id="ampGeography" href="#">by geography</a>
+                                        </li>
+                                        <li>
+                                            <a id="ampOutlets" href="#">by outlets</a>
+                                        </li>
+                                        <li>
+                                            <a id="ampTopTime" href="#">by top time</a>
+                                        </li>
+                                        <li>
+                                            <a id="ampShows" href="#">by shows</a>
+                                        </li>
+                                        -->
+                                    </ul>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div id="divContentContainer">
+                            <div class="pull-left" style="width:100%">
+                                <div id="primaryContent" style="width:100%">
+                                    <div id="primaryContentHeader" class="bg-ContentGray">
+                                        <div style="padding:10px 10px;">
+                                            @if (Model != null)
+                                            {
+                                                @Html.Raw(Model["Filter"]);
+                                            }
+                                        </div>
+                                        <div class="navbar" style="width:100%">
+                                            <div class="container">
+                                                <ul id="primaryNavBar" class="nav navbar-nav navBorderedTabs blMargins4">
+                                                    <li class="primaryNavTabs">
+                                                        <a id="primaryNavAll" href="javascript:ClearPrimaryNavFilters();">
+                                                            <div style="width: 100%">
+                                                                <span class="font12Pt">all</span>
+                                                                <span class="QFCheck"></span>
+                                                            </div>
+                                                            <div style="width: 100%">
+                                                                <span id="primaryNavAll_Results" class="font14Pt">0</span>
+                                                            </div>
+                                                        </a>
+                                                    </li>
+                                                    <li class="primaryNavTabs">
+                                                        <a id="primaryNavOnAir" href="#" name="navSourceGroup" eleVal="OnAir">
+                                                            <div style="width: 100%">
+                                                                <span class="font12Pt">on air (tv)</span>
+                                                                <span class="QFCheck"></span>
+                                                            </div>
+                                                            <div style="width: 100%">
+                                                                <span id="primaryNavOnAir_Results" class="font14Pt">0</span>
+                                                            </div>
+                                                        </a>
+                                                    </li>
+                                                    <li class="primaryNavTabs">
+                                                        <a id="primaryNavOnline" href="#" name="navSourceGroup" eleVal="Online">
+                                                            <div style="width: 100%">
+                                                                <span class="font12Pt">online</span>
+                                                                <span class="QFCheck"></span>
+                                                            </div>
+                                                            <div style="width: 100%">
+                                                                <span id="primaryNavOnline_Results" class="font14Pt">0</span>
+                                                            </div>
+                                                        </a>
+                                                    </li>
+                                                    <li class="primaryNavTabs">
+                                                        <a id="primaryNavPrint" href="#" name="navSourceGroup" eleVal="Print">
+                                                            <div style="width: 100%">
+                                                                <span class="font12Pt">print</span>
+                                                                <span class="QFCheck"></span>
+                                                            </div>
+                                                            <div style="width: 100%">
+                                                                <span id="primaryNavPrint_Results" class="font14Pt">0</span>
+                                                            </div>
+                                                        </a>
+                                                    </li>
+                                                    <li class="primaryNavTabsSHR">
+                                                        <a id="primaryNavSeen" href="#" name="navPESHType" eleVal="Seen" style="display:none;">
+                                                            <div style="width: 100%">
+                                                                <span class="font12Pt">seen (tv)</span>
+                                                                <span class="QFCheck"></span>
+                                                            </div>
+                                                            <div style="width: 100%">
+                                                                <span id="primaryNavSeen_Results" class="font14Pt">0</span>
+                                                            </div>
+                                                        </a>
+                                                    </li>
+                                                    <li class="primaryNavTabsSHR">
+                                                        <a id="primaryNavHeard" href="#" name="navPESHType" eleVal="Heard" style="display:none;">
+                                                            <div style="width: 100%">
+                                                                <span class="font12Pt">heard (tv)</span>
+                                                                <span class="QFCheck"></span>
+                                                            </div>
+                                                            <div style="width: 100%">
+                                                                <span id="primaryNavHeard_Results" class="font14Pt">0</span>
+                                                            </div>
+                                                        </a>
+                                                    </li>
+                                                    <li class="primaryNavTabsSHR">
+                                                        <a id="primaryNavRead" href="#" name="navPESHType" eleVal="Read" style="display:none;">
+                                                            <div style="width:100%">
+                                                                <span class="font12Pt">read</span>
+                                                                <span class="QFCheck"></span>
+                                                            </div>
+                                                            <div style="width:100%">
+                                                                <span id="primaryNavRead_Results" class="font14Pt">0</span>
+                                                            </div>
+                                                        </a>
+                                                    </li>
+                                                    <li class="primaryNavTabsPE">
+                                                        <a id="primaryNavPaid" href="#" name="navPESHType" eleVal="Paid" style="display:none;">
+                                                            <div style="width: 100%">
+                                                                <span class="font12Pt">paid (tv)</span>
+                                                                <span class="QFCheck"></span>
+                                                            </div>
+                                                            <div style="width: 100%">
+                                                                <span id="primaryNavPaid_Results" class="font14Pt">0</span>
+                                                            </div>
+                                                        </a>
+                                                    </li>
+                                                    <li class="primaryNavTabsPE">
+                                                        <a id="primaryNavEarned" href="#" name="navPESHType" eleVal="Earned" style="display:none;">
+                                                            <div style="width: 100%">
+                                                                <span class="font12Pt">earned</span>
+                                                                <span class="QFCheck"></span>
+                                                            </div>
+                                                            <div style="width: 100%">
+                                                                <span id="primaryNavEarned_Results" class="font14Pt">0</span>
+                                                            </div>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="divPrimaryContent" style="min-height:350px">
+                                        @if (Model != null)
+                                        {
+                                            @Html.Raw(Model["Primary"]);
+                                        }
+                                    </div>
+                                </div>
+                                <div id="divSecondaryContent" style="width:100%;">
+                                    @if (Model != null)
+                                    {
+                                        @Html.Raw(Model["Secondary"]);
+                                    }
+                                </div>
+                            </div>
+                            @*<div id="divRightNav" class="pull-right bg-danger" style="border-left:thin solid black;min-height:500px;width:5%;">
+                                <span>Reserved Space</span>
+                            </div>*@
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="divEmailPopup" class="modal fade hide resizable modalPopupDiv">
+                <div class="closemodalpopup">
+                    <img id="imgCloseEmalilPopup" src="~/images/close-icon.png" alt="close" class="popup-top-close" onclick="CancelEmailpopup();" />
+                </div>
+                <div style="padding: 20px 20px 0px 20px;">
+                    <input type="hidden" id="hdnDefaultSender" value="@Model["DefaultEmailSender"]" />
+                    <div class="modalpopheadertitle" style="margin-bottom: 20px;">
+                        Share with friends
+                    </div>
+                    <div id="divEmailPopupScrollContent" style="padding-right: 15px;">
+                        <div class="control-group">
+                            @{
+                                bool useCustomerEmailAsDefault = Convert.ToBoolean(Model["UseCustomerEmailByDefault"]);
+                                <label class="control-label" for="txtFromEmail">@(useCustomerEmailAsDefault ? "Your" : "From") email</label>
+                                <div class="controls">
+                                    <input type="text" id="txtFromEmail" placeholder="From Email" class="txtwidth90per" @(useCustomerEmailAsDefault ? "" : "readonly=\"readonly\"") />
+                                    <span class="help-inline" id="spanFromEmail" style="color: #FF0000; display: none;"></span>
+                                </div>
+                            }
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label" for="txtToEmail">Friend's email</label>
+                            <div class="controls">
+                                <input type="text" id="txtToEmail" placeholder="To Email (separate multiple addresses with semicolon, up to @ViewBag.MaxEmailAddresses addresses)" class="txtwidth90per" />
+                                <span class="help-inline" id="spanToEmail" style="color: #FF0000; display: none;"></span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label" for="txtBCCEmail">BCC email</label>
+                            <div class="controls">
+                                <input type="text" id="txtBCCEmail" placeholder="BCC Email (separate multiple addresses with semicolon, up to @ViewBag.MaxEmailAddresses addresses)" class="txtwidth90per" />
+                                <span class="help-inline" id="spanBCCEmail" style="color: #FF0000; display: none;"></span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label" for="txtSubject">Subject</label>
+                            <div class="controls">
+                                <input type="text" id="txtSubject" placeholder="Subject" class="txtwidth90per" />
+                                <span class="help-inline" id="spanSubject" style="color: #FF0000; display: none;"></span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label" for="txtToEmail">Message</label>
+                            <div class="controls">
+                                <textarea id="txtMessage" rows="5" cols="50" placeholder="Message" class="txtwidth90per"></textarea>
+                                <span class="help-inline" id="spanMessage" style="color: #FF0000; display: none;vertical-align: top"></span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <div class="controls">
+                                <button type="button" id="btnCancel" onclick="CancelEmailpopup();" class="cancelButton">Cancel</button>
+                                <button type="button" id="btnSendEmail" onclick="GenerateEmail();" class="button">OK</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="divFeedsPage" class="modal fade hide resizable modalPopupDiv" style="width:65%;height:70%;position:static">
+                <div class="closemodalpopup">
+                    <img id="imgCloseIFramePopup" src="~/images/close-icon.png" alt="close" class="popup-top-close" onclick="CloseIFramePopup();" />
+                </div>
+                <div style="width:99.5%;height:99.5%;margin-left:10px;" id="divFrameResize">
+                    <iframe id="iFrameFeeds" style="width:100%;height:100%;" src="" frameborder="0"></iframe>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="mainerrorDiv">@IQMedia.WebApplication.Config.ConfigSettings.Settings.PageLoadErrorMessage</div>
+        }
+    </div>
+</div>
+
+

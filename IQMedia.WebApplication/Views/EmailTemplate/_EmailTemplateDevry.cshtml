@@ -1,0 +1,1011 @@
+﻿@using IQMedia.Model;
+@using IQMedia.Shared.Utility;
+@using IQCommon.Model;
+@model EmailResultsModel
+@if (Model != null)
+{
+    string ImageBaseUrl = Request.Url.Scheme + "://" + Request.Url.Host + "/images/";
+
+    string BaseUrl = Request.Url.Scheme + "://" + Request.Url.Host + "/";
+    ActiveUser sessionInformation = IQMedia.WebApplication.Utility.ActiveUserMgr.GetActiveUser();
+    string baseSize = "650px";
+    <style type="text/css">
+        body
+        {
+            font-family:sans-serif;
+        }
+        .highlight
+        {
+            background-color: #808081;
+            color: #FFFFFF;
+        }
+    </style>
+    
+    <div style="font-family: 'Microsoft Sans Serif'; padding-top: 10px; padding-bottom: 10px;">
+        ##UserMessage##
+    </div>
+    <br />
+    <table id="mainTable" width="@baseSize" style="width:@baseSize; background-color: #FFFFFF; border: solid 1px #A0A0A0; padding: 3px 3px 3px 3px;" align="center">
+        <tr>
+            <td>
+                <table style="width: 100%">
+                    <tr>
+                        <td id="divLogo" colspan="2">
+                            @if (string.IsNullOrEmpty(Model.CustomHeader) || !Model.MasterClientGuid.HasValue)
+                            {
+                                <img src="@(ImageBaseUrl + "logo_N.png")" alt="IQLogo" />
+                            }
+                            else
+                            {
+                                <img src="@System.Configuration.ConfigurationManager.AppSettings["UrlReportHeader"]@Model.MasterClientGuid.Value/@Model.CustomHeader" alt="Client Banner" />
+                            }
+                        </td>
+                    </tr>
+                    @if (Model.ReportGuid.HasValue)
+                    {
+                        <tr>
+                            <td style="text-align:center;">
+                                <a target="_blank" href="@(BaseUrl + "report/mcmediaroom?ID=" + Model.ReportGuid.Value)">
+                                    Click here for a searchable archive of the @Model.MasterClientName online media room.
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                    @foreach (var groupTier1Result in Model.GroupTier1Results)
+                    {
+                        if (groupTier1Result.IsEnabled)
+                        {      
+                            <tr>
+                                <td id="headerSub" style="font-size: 14px !important;background-color: #E2E2E2;border: solid 1px #A0A0A0;height: 27px;">
+                                    <span style="color:#333333;font-weight: bold;">@groupTier1Result.GroupName</span>
+                                </td>
+                            </tr>
+                        }
+                        foreach (var groupTier2Result in groupTier1Result.GroupTier2Results)
+                        {
+                            if (groupTier2Result.IsEnabled)
+                            {      
+                                <tr>
+                                    <td id="headerSub" style="font-size: 14px !important;background-color: #E2E2E2;border: solid 1px #A0A0A0;height: 27px;">
+                                        <span style="color:#333333;font-weight: bold;">@groupTier2Result.GroupName</span>
+                                    </td>
+                                </tr>
+                            }
+                            foreach (var groupTier3Result in groupTier2Result.GroupTier3Results)
+                            {
+                                <tr>
+                                    <td>
+                                        <table cellpadding="0" cellspacing="2" style="width: 100%;">
+                                            @foreach (IQArchive_MediaModel item in groupTier3Result.MediaResults)
+                                            {
+                                                <tr>
+                                                    <td style="border-top:1pt solid black; padding-bottom:10px;">
+                                            @{
+                                                IQ_MediaTypeModel objSubMediaType = sessionInformation.MediaTypes.First(w => w.SubMediaType == item.SubMediaType.ToString() && w.TypeLevel == 2);
+                                                string mediaIconPath = BaseUrl + objSubMediaType.EmailMediaIconPath;
+
+                                                string Month = item.MediaDate != null ? item.MediaDate.ToString("MMM", System.Globalization.CultureInfo.InvariantCulture) : string.Empty;
+                                                string Day = item.MediaDate != null ? item.MediaDate.Day.ToString() : string.Empty;
+                                                string Time = item.MediaDate != null ? item.MediaDate.ToString("hh:mm tt") : string.Empty;
+
+                                                switch (item.SubMediaType)
+                                                {
+                                                    case CommonFunctions.CategoryType.TV:
+                                                        IQArchive_ArchiveClipModel TVModel = item.MediaData as IQArchive_ArchiveClipModel;
+                                                        string TVThumbUrl = Convert.ToString(System.Configuration.ConfigurationManager.AppSettings["IQArchieve_TVThumbUrl"]);
+                                                        TVThumbUrl += TVModel.ClipID;
+                                                        Month = TVModel.LocalDateTime != null ? TVModel.LocalDateTime.ToString("MMM", System.Globalization.CultureInfo.InvariantCulture) : string.Empty;
+                                                        Day = TVModel.LocalDateTime != null ? TVModel.LocalDateTime.Day.ToString() : string.Empty;
+                                                        Time = TVModel.LocalDateTime != null ? TVModel.LocalDateTime.ToString("hh:mm tt") : string.Empty;
+
+                            <table style="width: 100%;">
+                                <tr>
+                                    <td id="mediaEntry" style="padding-top: 5px;  padding-bottom: 10px;">
+                                        <table style="width: 100%;">
+                                            <tr>
+                                                <td id="mediaDate" style="width: 65px; text-align: left; vertical-align: top;">
+                                                    <table sstyle="width: 100%; border-collapse: collapse; border-spacing: 0;">
+                                                        <tr>
+                                                            <td id="post-date" style="width: 65px; height: auto; padding-bottom: 6px;">
+                                                                <table style="width: 100%;">
+                                                                    <tr>
+                                                                        <td id="month" style="font-size: 18px; text-transform: uppercase; display: block; font-weight: normal; padding: 0px; color: #cc2900; text-align: center;">@Month</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td id="day" style="font-size: 30px; font-weight: normal; display: block; color: #666666; text-align: center; padding: 0px;">@Day</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td id="time" style="font-size: 11px; font-weight: normal; display: block; color: #666666; text-align: center; padding: 0px;">@Time @TVModel.TimeZone</td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                                <td id="mediaTypeLogo" style="width: 40px; min-height: 32px; float: center; vertical-align: top;" align="center">
+                                                    <img alt="@objSubMediaType.DisplayName" src="@TVModel.StationLogo" style="width: 25px;" />
+                                                </td>
+                                                <td id="mediaTVBody" style="text-align: left; vertical-align: top; width: 445px;">
+                                                    <table style="width: 100%;">
+                                                        <tr>
+                                                            <td id="mediaTitle" style="text-align: left; height: 20px; font-size: 17px;">
+                                                                <span id="fnt16px" style="color: #598ea2; font-weight: bold; text-decoration: none;" class="fnt16px">@item.Title</span>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                                <td id="mediaVideo" style="align: right; vertical-align: middle; width: 100px;">
+                                                    <a href="@(BaseUrl + "ClipPlayer/?ClipID=" + TVModel.ClipID)">
+                                                        <img width="100" height="65" src="@TVThumbUrl" alt="clip"/>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr id="actionBar" style="font-size: 10px !important;">
+                                    <td style="padding: 0px; font-size: 10px !important;  line-height: 0px;">
+                                        <table cellspacing="0" cellpadding="0" style="min-width:@baseSize; width:100%;">
+                                            <tr>
+                                                <td id="location" style="width: 150px; min-width: 150px;">
+                                                    <table>
+                                                        <tr>
+                                                            @if (!string.IsNullOrWhiteSpace(TVModel.Market))
+                                                            {
+                                                                <td>
+                                                                    <img src="@(ImageBaseUrl + "abarLocation.png")" width="15" />
+                                                                </td>                           
+                                                                <td style="text-align: left; white-space: nowrap;">
+                                                                    @TVModel.Market
+                                                                </td>
+                                                            }
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+
+                                                            break;
+                                                    case CommonFunctions.CategoryType.TW:
+                                                            IQArchive_ArchiveTweetsModel twitterModel = item.MediaData as IQArchive_ArchiveTweetsModel;
+
+                            <table style="width: 100%;">
+                                <tr>
+                                    <td style="padding-top: 5px;  padding-bottom: 10px;">
+                                        <table style="width: 100%; border-collapse: collapse; border-spacing: 0;">
+                                            <tr>
+                                                <td style="width: 65px; text-align: left; vertical-align: top;">
+                                                    <table style="width: 100%; border-collapse: collapse; border-spacing: 0;">
+                                                        <tr>
+                                                            <td class="post-date">
+                                                                <table style="width: 100%">
+                                                                    <tr>
+                                                                        <td style="font-size: 18px; text-transform: uppercase; display: block; font-weight: normal; padding: 0px; color: #cc2900; text-align: center;">@Month</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td style="font-size: 30px; font-weight: normal; display: block; color: #666666; text-align: center; padding: 0px;">@Day</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td style="font-size: 11px; font-weight: normal; display: block; color: #666666; text-align: center; padding: 0px;">@Time @sessionInformation.TimeZone</td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                                <td style="width: 40px; min-height: 32px; float: center; vertical-align: top;" align="center">
+                                                    <img src="@mediaIconPath" alt="@objSubMediaType.DisplayName" style="width: 25px;" />
+                                                </td>
+                                                <td id="mediaBody" style="text-align: left; vertical-align: top; width: 545px;">
+                                                    @{
+                                                                              string actorlink = string.Empty;
+                                                                              if (CommonFunctions.Validate_url(twitterModel.ActorLink + "/status/" + twitterModel.TweetID))
+                                                                              {
+                                                                                  actorlink = twitterModel.ActorLink + "/status/" + twitterModel.TweetID;
+                                                                              }
+                                                    }
+                                                    <table style="width: 100%;">
+                                                        <tr>
+                                                            <td id="mediaTitle" style="text-align: left; height: 20px; font-size: 17px;">
+                                                                <a href="@actorlink" style="color: #598ea2; font-weight: bold; text-decoration: none;"  class="fnt16px">@twitterModel.ActorDisplayname</a>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr id="actionBar" style="font-size: 10px !important;">
+                                    <td style="padding: 0px; font-size: 10px !important;  line-height: 0px;" >
+                                        <table cellspacing="0" cellpadding="0" style="font-size: 10px !important;">
+                                            <tr>
+                                                <td id="location" style="width: 150px; min-width: 150px;">
+                                                    <table>
+                                                        <tr>
+                                                            @if (!string.IsNullOrWhiteSpace(twitterModel.PreferredUserName))
+                                                            {
+                                                                 <td>
+                                                                    <img src="@(ImageBaseUrl + "abarLocation.png")" width="15" />
+                                                                 </td>                           
+                                                                 <td style="text-align: left; white-space: nowrap;">
+                                                                    @twitterModel.PreferredUserName
+                                                                </td>
+                                                            }
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+
+                                                            break;
+                                                    case CommonFunctions.CategoryType.NM:
+                                                    case CommonFunctions.CategoryType.LN:
+                                                            IQArchive_ArchiveNMModel newsMediaModel = item.MediaData as IQArchive_ArchiveNMModel;
+
+                            <table style="width: 100%;">
+                                <tr>
+                                    <td style="padding-top: 5px;  padding-bottom: 10px;">
+                                        <table style="width: 100%;">
+                                            <tr>
+                                                <td style="width: 65px; text-align: left; vertical-align: top;">
+                                                    <table style="width: 100%; border-collapse: collapse; border-spacing: 0;">
+                                                        <tr>
+                                                            <td class="post-date">
+                                                                <table style="width: 100%">
+                                                                    <tr>
+                                                                        <td style="font-size: 18px; text-transform: uppercase; display: block; font-weight: normal; padding: 0px; color: #cc2900; text-align: center;">@Month</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td style="font-size: 30px; font-weight: normal; display: block; color: #666666; text-align: center; padding: 0px;">@Day</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td style="font-size: 11px; font-weight: normal; display: block; color: #666666; text-align: center; padding: 0px;">@Time @sessionInformation.TimeZone</td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                                <td style="width: 40px; min-height: 32px; float: center; vertical-align: top;" align="center">
+                                                    <img src="@mediaIconPath" alt="@objSubMediaType.DisplayName" style="width: 25px;" />
+                                                </td>
+                                                <td id="mediaBody" style="text-align: left; vertical-align: top; width: 545px;">
+                                                    <table style="width: 100%;">
+                                                        <tr>
+                                                            <td id="mediaTitle" style="text-align: left; height: 20px; font-size: 17px;">
+                                                                @if (newsMediaModel.IQLicense == 3)
+                                                                {
+                                                                    <img src="@(ImageBaseUrl + "MediaIcon/LexisNexis_Small.png")" title="LexisNexis(R)" alt="LexisNexis(R)" width="20" />
+                                                                }
+                                                                <a style="color: #598ea2; font-weight: bold; text-decoration: none;" href="@(newsMediaModel.IQLicense > 0 ? "http://" + Request.ServerVariables["HTTP_HOST"] + Url.Action("Index", "Article", new { au = CommonFunctions.EncryptLicenseStringAES(sessionInformation.CustomerKey + "¶Library Email¶" + newsMediaModel.Url + "&u1=cliq40&u2=" + sessionInformation.ClientID + "¶" + newsMediaModel.IQLicense) }) : newsMediaModel.Url)" class="fnt16px">
+                                                                    @Html.Raw(item.Title)
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr id="actionBar" style="font-size: 10px !important;">
+                                    <td style="padding: 0px; font-size: 10px !important;  line-height: 0px;">
+                                        <table cellspacing="0" cellpadding="0" style="min-width:@baseSize; width:100%;">
+                                            <tr>
+                                                <td id="location" style="width: 150px; min-width: 150px;">
+                                                    <table>
+                                                        <tr>
+                                                            @if (!string.IsNullOrWhiteSpace(newsMediaModel.Publication))
+                                                            {
+                                                                 <td>
+                                                                    <img src="@(ImageBaseUrl + "abarLocation.png")" width="15" />
+                                                                 </td>                           
+                                                                 <td style="text-align: left; white-space: nowrap;">
+                                                                    @newsMediaModel.Publication
+                                                                </td>
+                                                            }
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+
+                                                            break;
+                                                    case CommonFunctions.CategoryType.PM:
+                                                            string PMBasePath = Convert.ToString(System.Configuration.ConfigurationManager.AppSettings["IQArchieve_PMBaseUrl"]);
+                                                            IQArchive_ArchiveBLPMModel PMModel = item.MediaData as IQArchive_ArchiveBLPMModel;
+
+                            <table style="width: 100%;">
+                                <tr>
+                                    <td style="padding-top: 5px;  padding-bottom: 10px;">
+                                        <table style="width: 100%;">
+                                            <tr>
+                                                <td style="width: 65px; text-align: left; vertical-align: top;">
+                                                    <table style="width: 100%; border-collapse: collapse; border-spacing: 0;">
+                                                        <tr>
+                                                            <td class="post-date">
+                                                                <table style="width: 100%">
+                                                                    <tr>
+                                                                        <td  style="font-size: 18px; text-transform: uppercase; display: block; font-weight: normal; padding: 0px; color: #cc2900; text-align: center;">@Month</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td style="font-size: 30px; font-weight: normal; display: block; color: #666666; text-align: center; padding: 0px;">@Day</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td style="font-size: 11px; font-weight: normal; display: block; color: #666666; text-align: center; padding: 0px;">@Time @sessionInformation.TimeZone</td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                                <td style="width: 40px; min-height: 32px; float: center; vertical-align: top;" align="center">
+                                                    <img src="@mediaIconPath" alt="@objSubMediaType.DisplayName" style="width: 25px;" />
+                                                </td>
+                                                <td id="mediaBody" style="text-align: left; vertical-align: top; width: 545px;">
+                                                    <table style="width: 100%;">
+                                                        <tr>
+                                                            <td id="mediaTitle" style="text-align: left; height: 20px; font-size: 17px;">
+                                                                <a style="color: #598ea2; font-weight: bold; text-decoration: none;" class="fnt16px" href="@(PMBasePath + PMModel.FileLocation.Replace(@"\", @"/"))">
+                                                                    @Html.Raw(item.Title)
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr id="actionBar" style="font-size: 10px !important;">
+                                    <td style="padding: 0px; font-size: 10px !important;  line-height: 0px;">
+                                        <table cellspacing="0" cellpadding="0" style="min-width:@baseSize; width:100%;">
+                                            <tr>
+                                                <td id="location" style="width: 150px; min-width: 150px;">
+                                                    <table>
+                                                        <tr>
+                                                            @if (!string.IsNullOrWhiteSpace(PMModel.Pub_Name))
+                                                            {
+                                                                 <td>
+                                                                    <img src="@(ImageBaseUrl + "abarLocation.png")" width="15" />
+                                                                 </td>                           
+                                                                 <td style="text-align: left;">
+                                                                    @PMModel.Pub_Name
+                                                                </td>
+                                                            }
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+
+                                                            break;
+                                                    case CommonFunctions.CategoryType.SocialMedia:
+                                                            IQArchive_ArchiveSMModel socialMediaModel = item.MediaData as IQArchive_ArchiveSMModel;
+
+                            <table style="width: 100%;">
+                                <tr>
+                                    <td style="padding-top: 5px;  padding-bottom: 10px;">
+                                        <table style="width: 100%;">
+                                            <tr>
+                                                <td style="width: 65px; text-align: left; vertical-align: top;">
+                                                    <table style="width: 100%; border-collapse: collapse; border-spacing: 0;">
+                                                        <tr>
+                                                            <td class="post-date">
+                                                                <table style="width: 100%">
+                                                                    <tr>
+                                                                        <td  style="font-size: 18px; text-transform: uppercase; display: block; font-weight: normal; padding: 0px; color: #cc2900; text-align: center;">@Month</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td style="font-size: 30px; font-weight: normal; display: block; color: #666666; text-align: center; padding: 0px;">@Day</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td style="font-size: 11px; font-weight: normal; display: block; color: #666666; text-align: center; padding: 0px;">@Time @sessionInformation.TimeZone</td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                                <td style="width: 40px; min-height: 32px; float: center; vertical-align: top;" align="center">
+                                                    <img src="@mediaIconPath" alt="@objSubMediaType.DisplayName" style="width: 25px;" />
+                                                </td>
+                                                <td id="mediaBody" style="text-align: left; vertical-align: top; width: 545px;">
+                                                    <table style="width: 100%;">
+                                                        <tr>
+                                                            <td id="mediaTitle" style="text-align: left; height: 20px; font-size: 17px;">
+                                                                <a style="color: #598ea2; font-weight: bold; text-decoration: none;" href="@socialMediaModel.Url" class="fnt16px">@Html.Raw(item.Title)</a>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr id="actionBar" style="font-size: 10px !important;">
+                                    <td style="padding: 0px; font-size: 10px !important;  line-height: 0px;">
+                                        <table cellspacing="0" cellpadding="0" style="min-width:@baseSize; width:100%;">
+                                            <tr>
+                                                <td id="location" style="width: 150px; min-width: 150px;">
+                                                    <table>
+                                                        <tr>
+                                                            @if (!string.IsNullOrWhiteSpace(socialMediaModel.Publication))
+                                                            {
+                                                                <td>
+                                                                    <img src="@(ImageBaseUrl + "abarLocation.png")" width="15" />
+                                                                </td>
+                                                                <td style="text-align: left;">
+                                                                    @socialMediaModel.Publication
+                                                                </td>
+                                                            }
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+
+                                                            break;
+                                                    case CommonFunctions.CategoryType.Forum:
+                                                            IQArchive_ArchiveSMModel forumModel = item.MediaData as IQArchive_ArchiveSMModel;
+
+                            <table style="width: 100%;">
+                                <tr>
+                                    <td style="padding-top: 5px;  padding-bottom: 10px;">
+                                        <table style="width: 100%;">
+                                            <tr>
+                                                <td style="width: 65px; text-align: left; vertical-align: top;">
+                                                    <table style="width: 100%; border-collapse: collapse; border-spacing: 0;">
+                                                        <tr>
+                                                            <td class="post-date">
+                                                                <table style="width: 100%">
+                                                                    <tr>
+                                                                        <td  style="font-size: 18px; text-transform: uppercase; display: block; font-weight: normal; padding: 0px; color: #cc2900; text-align: center;">@Month</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td style="font-size: 30px; font-weight: normal; display: block; color: #666666; text-align: center; padding: 0px;">@Day</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td style="font-size: 11px; font-weight: normal; display: block; color: #666666; text-align: center; padding: 0px;">@Time @sessionInformation.TimeZone</td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                                <td style="width: 40px; min-height: 32px; float: center; vertical-align: top;" align="center">
+                                                    <img src="@mediaIconPath" alt="@objSubMediaType.DisplayName" style="width: 25px;" />
+                                                </td>
+                                                <td id="mediaBody" style="text-align: left; vertical-align: top; width: 545px;">
+                                                    <table style="width: 100%;">
+                                                        <tr>
+                                                            <td id="mediaTitle" style="text-align: left; height: 20px; font-size: 17px;">
+                                                                <a href="@forumModel.Url" style="color: #598ea2; font-weight: bold; text-decoration: none;" class="fnt16px">@Html.Raw(item.Title)</a>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr id="actionBar" style="font-size: 10px !important;">
+                                    <td style="padding: 0px; font-size: 10px !important;  line-height: 0px;">
+                                        <table cellspacing="0" cellpadding="0" style="min-width:@baseSize; width:100%;">
+                                            <tr>
+                                                <td id="location" style="width: 150px; min-width: 150px;">
+                                                    <table>
+                                                        <tr>
+                                                            @if (!string.IsNullOrWhiteSpace(forumModel.Publication))
+                                                            {
+                                                                 <td>
+                                                                    <img src="@(ImageBaseUrl + "abarLocation.png")" width="15" />
+                                                                 </td>                           
+                                                                 <td style="text-align: left;  white-space: nowrap;">
+                                                                    @forumModel.Publication
+                                                                </td>
+                                                            }
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+
+                                                            break;
+                                                    case CommonFunctions.CategoryType.Blog:
+                                                            IQArchive_ArchiveSMModel blogModel = item.MediaData as IQArchive_ArchiveSMModel;
+
+                            <table style="width: 100%;">
+                                <tr>
+                                    <td style="padding-top: 5px;  padding-bottom: 10px;">
+                                        <table style="width: 100%;">
+                                            <tr>
+                                                <td style="width: 65px; text-align: left; vertical-align: top;">
+                                                    <table style="width: 100%; border-collapse: collapse; border-spacing: 0;">
+                                                        <tr>
+                                                            <td class="post-date">
+                                                                <table style="width: 100%">
+                                                                    <tr>
+                                                                        <td  style="font-size: 18px; text-transform: uppercase; display: block; font-weight: normal; padding: 0px; color: #cc2900; text-align: center;">@Month</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td style="font-size: 30px; font-weight: normal; display: block; color: #666666; text-align: center; padding: 0px;">@Day</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td style="font-size: 11px; font-weight: normal; display: block; color: #666666; text-align: center; padding: 0px;">@Time @sessionInformation.TimeZone</td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                                <td style="width: 40px; min-height: 32px; float: center; vertical-align: top;" align="center">
+                                                    <img src="@mediaIconPath" alt="@objSubMediaType.DisplayName" style="width: 25px;" />
+                                                </td>
+                                                <td id="mediaBody" style="text-align: left; vertical-align: top; width: 545px;">
+                                                    <table style="width: 100%;">
+                                                        <tr>
+                                                            <td id="mediaTitle" style="text-align: left; height: 20px; font-size: 17px;">
+                                                                <a href="@blogModel.Url" style="color: #598ea2; font-weight: bold; text-decoration: none;" class="fnt16px">@Html.Raw(item.Title)</a>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr id="actionBar" style="font-size: 10px !important;">
+                                    <td style="padding: 0px; font-size: 10px !important;  line-height: 0px;">
+                                        <table cellspacing="0" cellpadding="0" style="min-width:@baseSize; width:100%;">
+                                            <tr>
+                                                <td id="location" style="width: 150px; min-width: 150px;">
+                                                    <table>
+                                                        <tr>
+                                                            @if (!string.IsNullOrWhiteSpace(blogModel.Publication))
+                                                            {
+                                                                 <td>
+                                                                    <img src="@(ImageBaseUrl + "abarLocation.png")" width="15" />
+                                                                 </td>                           
+                                                                 <td style="text-align: left; white-space: nowrap;">
+                                                                    @blogModel.Publication
+                                                                </td>
+                                                            }
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+
+                                                            break;
+                                                    case CommonFunctions.CategoryType.FB:
+                                                    case CommonFunctions.CategoryType.IG:
+                                                            IQArchive_ArchiveSMModel fbModel = item.MediaData as IQArchive_ArchiveSMModel;
+
+                            <table style="width: 100%;">
+                                <tr>
+                                    <td style="padding-top: 5px;  padding-bottom: 10px;">
+                                        <table style="width: 100%;">
+                                            <tr>
+                                                <td style="width: 65px; text-align: left; vertical-align: top;">
+                                                    <table style="width: 100%; border-collapse: collapse; border-spacing: 0;">
+                                                        <tr>
+                                                            <td class="post-date">
+                                                                <table style="width: 100%">
+                                                                    <tr>
+                                                                        <td  style="font-size: 18px; text-transform: uppercase; display: block; font-weight: normal; padding: 0px; color: #cc2900; text-align: center;">@Month</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td style="font-size: 30px; font-weight: normal; display: block; color: #666666; text-align: center; padding: 0px;">@Day</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td style="font-size: 11px; font-weight: normal; display: block; color: #666666; text-align: center; padding: 0px;">@Time @sessionInformation.TimeZone</td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                                <td style="width: 40px; min-height: 32px; float: center; vertical-align: top;" align="center">
+                                                    <img src="@mediaIconPath" alt="@objSubMediaType.DisplayName" style="width: 25px;" />
+                                                </td>
+                                                <td id="mediaTVBody" style="text-align: left; vertical-align: top; width: 445px;">
+                                                    <table style="width: 100%;">
+                                                        <tr>
+                                                            <td id="mediaTitle" style="text-align: left; height: 20px; font-size: 17px;">
+                                                                <a class="fnt16px" style="color: #598ea2; font-weight: bold; text-decoration: none;" href="@fbModel.Url">
+                                                                    @item.Title
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                                                                                    <td id="mediaVideo" style="align: right; vertical-align: middle; width: 100px;">
+                                                @if (item.SubMediaType == CommonFunctions.CategoryType.IG)
+                                                {
+                                                        <img src="@fbModel.ThumbUrl" width="100" height="65" alt="post image" />
+                                                }
+                                                                                                    </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr id="actionBar" style="font-size: 10px !important;">
+                                    <td style="padding: 0px; font-size: 10px !important;  line-height: 0px;">
+                                        <table cellspacing="0" cellpadding="0" style="min-width:@baseSize; width:100%;">
+                                            <tr>
+                                                <td id="location" style="width: 150px; min-width: 150px;">
+                                                    <table>
+                                                        <tr>
+                                                            @if (!string.IsNullOrWhiteSpace(fbModel.Publication))
+                                                            {
+                                                                 <td>
+                                                                    <img src="@(ImageBaseUrl + "abarLocation.png")" width="15" />
+                                                                 </td>                           
+                                                                 <td style="text-align: left; white-space: nowrap;">
+                                                                    @fbModel.Publication
+                                                                </td>
+                                                            }
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+
+                                                            break;
+                                                    case CommonFunctions.CategoryType.Radio:
+                                                            IQArchive_ArchiveTVEyesModel TVEyesModel = item.MediaData as IQArchive_ArchiveTVEyesModel;
+                                                            Month = TVEyesModel.LocalDateTime != null ? TVEyesModel.LocalDateTime.ToString("MMM", System.Globalization.CultureInfo.InvariantCulture) : string.Empty;
+                                                            Day = TVEyesModel.LocalDateTime != null ? TVEyesModel.LocalDateTime.Day.ToString() : string.Empty;
+                                                            Time = TVEyesModel.LocalDateTime != null ? TVEyesModel.LocalDateTime.ToString("hh:mm tt") : string.Empty;
+
+                            <table style="width: 100%;">
+                                <tr>
+                                    <td style="padding-top: 5px;  padding-bottom: 10px;">
+                                        <table style="width: 100%;">
+                                            <tr>
+                                                <td style="width: 65px; text-align: left; vertical-align: top;">
+                                                    <table style="width: 100%; border-collapse: collapse; border-spacing: 0;">
+                                                        <tr>
+                                                            <td class="post-date">
+                                                                <table style="width: 100%">
+                                                                    <tr>
+                                                                        <td  style="font-size: 18px; text-transform: uppercase; display: block; font-weight: normal; padding: 0px; color: #cc2900; text-align: center;">@Month</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td style="font-size: 30px; font-weight: normal; display: block; color: #666666; text-align: center; padding: 0px;">@Day</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td style="font-size: 11px; font-weight: normal; display: block; color: #666666; text-align: center; padding: 0px;">@Time @TVEyesModel.TimeZone</td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                                <td style="width: 40px; min-height: 32px; float: center; vertical-align: top;" align="center">
+                                                    <img src="@mediaIconPath" alt="@objSubMediaType.DisplayName" style="width: 25px;" />
+                                                </td>
+                                                <td id="mediaBody" style="text-align: left; vertical-align: top; width: 545px;">
+                                                    <table style="width: 100%;">
+                                                        <tr>
+                                                            <td id="mediaTitle" style="text-align: left; height: 20px; font-size: 17px;">
+                                                                <a class="fnt16px" style="color: #598ea2; font-weight: bold; text-decoration: none;" href="@(System.Configuration.ConfigurationManager.AppSettings["RadioClipPlayerURL"] + Url.Encode(CommonFunctions.GenerateRandomString() + CommonFunctions.EncryptStringAES(item.ID.ToString(), CommonFunctions.AesKeyLibRadioPlayer, CommonFunctions.AesIVLibRadioPlayer)))">
+                                                                    @item.Title
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr id="actionBar" style="font-size: 10px !important;">
+                                    <td style="padding: 0px; font-size: 10px !important;  line-height: 0px;">
+                                        <table cellspacing="0" cellpadding="0" style="min-width:@baseSize; width:100%;">
+                                            <tr>
+                                                <td id="location" style="width: 150px; min-width: 150px;">
+                                                    <table>
+                                                        <tr>
+                                                            @if (!string.IsNullOrWhiteSpace(TVEyesModel.Market))
+                                                            {
+                                                                 <td>
+                                                                    <img src="@(ImageBaseUrl + "abarLocation.png")" width="15" />
+                                                                 </td>                           
+                                                                 <td style="text-align: left; white-space: nowrap;">
+                                                                    @TVEyesModel.Market
+                                                                </td>
+                                                            }
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+
+                                                            break;
+                                                    case CommonFunctions.CategoryType.MS:
+                                                            IQArchive_ArchiveMiscModel miscModel = item.MediaData as IQArchive_ArchiveMiscModel;
+                                                            Month = miscModel.CreateDT.ToString("MMM", System.Globalization.CultureInfo.InvariantCulture);
+                                                            Day = miscModel.CreateDT.Day.ToString();
+                                                            Time = miscModel.CreateDT.ToString("hh:mm tt");
+
+                                                            string catimg = string.Empty;
+                                                            switch (miscModel.FileType)
+                                                            {
+                                                                case CommonFunctions.IQUGCMediaTypes.Doc:
+                                                                    catimg = "word.png";
+                                                                    break;
+                                                                case CommonFunctions.IQUGCMediaTypes.Excel:
+                                                                    catimg = "excel.png";
+                                                                    break;
+                                                                case CommonFunctions.IQUGCMediaTypes.Pdf:
+                                                                    catimg = "pdf.png";
+                                                                    break;
+                                                                case CommonFunctions.IQUGCMediaTypes.Image:
+                                                                    catimg = "image.png";
+                                                                    break;
+                                                                default:
+                                                                    catimg = string.Empty;
+                                                                    break;
+                                                            }
+
+                            <table style="width: 100%;">
+                                <tr>
+                                    <td style="padding-top: 5px;  padding-bottom: 10px;">
+                                        <table style="width: 100%;">
+                                            <tr>
+                                                <td style="width: 65px; text-align: left; vertical-align: top;">
+                                                    <table style="width: 100%; border-collapse: collapse; border-spacing: 0;">
+                                                        <tr>
+                                                            <td class="post-date">
+                                                                <table style="width: 100%">
+                                                                    <tr>
+                                                                        <td  style="font-size: 18px; text-transform: uppercase; display: block; font-weight: normal; padding: 0px; color: #cc2900; text-align: center;">@Month</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td style="font-size: 30px; font-weight: normal; display: block; color: #666666; text-align: center; padding: 0px;">@Day</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td style="font-size: 11px; font-weight: normal; display: block; color: #666666; text-align: center; padding: 0px;">@Time @miscModel.TimeZone</td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                                <td style="width: 40px; min-height: 32px; float: center; vertical-align: top;" align="center">
+                                                    <img src="@(ImageBaseUrl + "MediaIcon/" + catimg)"  alt="Misc" style="width: 25px;" />
+                                                </td>
+                                                <td id="mediaBody" style="text-align: left; vertical-align: top; width: 545px;">
+                                                    <table style="width: 100%;">
+                                                        <tr>
+                                                            <td id="mediaTitle" style="text-align: left; height: 20px; font-size: 17px;">
+                                                                <a href="@miscModel.MediaUrl" style="color: #598ea2; font-weight: bold; text-decoration: none;" class="fnt16px">@item.Title</a>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr id="actionBar" style="font-size: 10px !important;">
+                                    <td style="padding: 0px; font-size: 10px !important;  line-height: 0px;">
+                                        <table cellspacing="0" cellpadding="0" style="min-width:@baseSize; width:100%;">
+                                            <tr>
+                                                <td id="location" style="width: 150px; min-width: 150px;">
+                                                    &nbsp;
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+
+                                                                                           break;
+                                                    case CommonFunctions.CategoryType.PQ:
+                                                                                           IQArchive_ArchivePQModel PQModel = item.MediaData as IQArchive_ArchivePQModel;
+                                                                                           string authors = String.Empty;
+                                                                                           if (PQModel.Authors != null && PQModel.Authors.Count > 0)
+                                                                                           {
+                                                                                               if (PQModel.Authors.Count > 2)
+                                                                                               {
+                                                                                                   authors = "(" + String.Join(", ", PQModel.Authors.Take(2)) + ", ...) ";
+                                                                                               }
+                                                                                               else
+                                                                                               {
+                                                                                                   authors = "(" + String.Join(", ", PQModel.Authors) + ") ";
+                                                                                               }
+                                                                                           }
+
+                            <table style="width: 100%;">
+                                <tr>
+                                    <td style="padding-top: 5px;  padding-bottom: 10px;">
+                                        <table style="width: 100%;">
+                                            <tr>
+                                                <td style="width: 65px; text-align: left; vertical-align: top;">
+                                                    <table style="width: 100%; border-collapse: collapse; border-spacing: 0;">
+                                                        <tr>
+                                                            <td class="post-date">
+                                                                <table style="width: 100%">
+                                                                    <tr>
+                                                                        <td  style="font-size: 18px; text-transform: uppercase; display: block; font-weight: normal; padding: 0px; color: #cc2900; text-align: center;">@Month</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td style="font-size: 30px; font-weight: normal; display: block; color: #666666; text-align: center; padding: 0px;">@Day</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td style="font-size: 11px; font-weight: normal; display: block; color: #666666; text-align: center; padding: 0px;">&nbsp;</td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                                <td style="width: 40px; min-height: 32px; float: center; vertical-align: top;" align="center">
+                                                    <img src="@mediaIconPath" alt="@objSubMediaType.DisplayName" style="width: 25px;" />
+                                                </td>
+                                                <td id="mediaBody" style="text-align: left; vertical-align: top; width: 545px;">
+                                                    <table style="width: 100%;">
+                                                        <tr>
+                                                            <td id="mediaTitle" style="text-align: left; height: 20px; font-size: 17px;">
+                                                                <a class="fnt16px" style="color: #598ea2; font-weight: bold; text-decoration: none;" href="@(BaseUrl + "/ProQuest/Index?source=library&id=" + item.ID)">
+                                                                    @Html.Raw(item.Title)
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr id="actionBar" style="font-size: 10px !important;">
+                                    <td style="padding: 0px; font-size: 10px !important;  line-height: 0px;">
+                                        <table cellspacing="0" cellpadding="0" style="min-width:@baseSize; width:100%;">
+                                            <tr>
+                                                <td id="location" style="width: 150px; min-width: 150px;">
+                                                    <table>
+                                                        <tr>
+                                                            @if (!string.IsNullOrWhiteSpace(@PQModel.Publication) || !string.IsNullOrWhiteSpace(@authors))
+                                                            {
+                                                                 <td>
+                                                                    <img src="@(ImageBaseUrl + "abarLocation.png")" width="15" />
+                                                                 </td>                           
+                                                                 <td style="text-align: left; white-space: nowrap;">
+                                                                    @PQModel.Publication @authors
+                                                                </td>
+                                                            }
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+
+                                                            break;
+
+                                                    case CommonFunctions.CategoryType.IQRadio:
+                                                            IQArchive_ArchiveRadioModel RadioModel = item.MediaData as IQArchive_ArchiveRadioModel;
+                                                            Month = RadioModel.LocalDateTime != null ? RadioModel.LocalDateTime.ToString("MMM", System.Globalization.CultureInfo.InvariantCulture) : string.Empty;
+                                                            Day = RadioModel.LocalDateTime != null ? RadioModel.LocalDateTime.Day.ToString() : string.Empty;
+                                                            Time = RadioModel.LocalDateTime != null ? RadioModel.LocalDateTime.ToString("hh:mm tt") : string.Empty;
+
+                            <table style="width: 100%;">
+                                <tr>
+                                    <td id="mediaEntry" style="padding-top: 5px;  padding-bottom: 10px;">
+                                        <table style="width: 100%;">
+                                            <tr>
+                                                <td id="mediaDate" style="width: 65px; text-align: left; vertical-align: top;">
+                                                    <table sstyle="width: 100%; border-collapse: collapse; border-spacing: 0;">
+                                                        <tr>
+                                                            <td id="post-date" style="width: 65px; height: auto; padding-bottom: 6px;">
+                                                                <table style="width: 100%;">
+                                                                    <tr>
+                                                                        <td id="month" style="font-size: 18px; text-transform: uppercase; display: block; font-weight: normal; padding: 0px; color: #cc2900; text-align: center;">@Month</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td id="day" style="font-size: 30px; font-weight: normal; display: block; color: #666666; text-align: center; padding: 0px;">@Day</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td id="time" style="font-size: 11px; font-weight: normal; display: block; color: #666666; text-align: center; padding: 0px;">@Time @RadioModel.TimeZone</td>
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                                <td id="mediaTypeLogo" style="width: 40px; min-height: 32px; float: center; vertical-align: top;" align="center">
+                                                    <img alt="@objSubMediaType.DisplayName" src="@RadioModel.StationLogo" style="width: 25px;" />
+                                                </td>
+                                                <td id="mediaTVBody" style="text-align: left; vertical-align: top; width: 445px;">
+                                                    <table style="width: 100%;">
+                                                        <tr>
+                                                            <td id="mediaTitle" style="text-align: left; height: 20px; font-size: 17px;">
+                                                                <span id="fnt16px" style="color: #598ea2; font-weight: bold; text-decoration: none;" class="fnt16px">@item.Title</span>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                                <td id="mediaVideo" style="align: right; vertical-align: middle; width: 100px;">
+                                                    <a href="@(BaseUrl + "ClipPlayer/?ClipID=" + RadioModel.ClipGuid)">
+                                                        <img width="100" height="65" src="@(ImageBaseUrl + "video.png")" alt="clip"/>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr id="actionBar" style="font-size: 10px !important;">
+                                    <td style="padding: 0px; font-size: 10px !important;  line-height: 0px;">
+                                        <table cellspacing="0" cellpadding="0" style="min-width:@baseSize; width:100%;">
+                                            <tr>
+                                                <td id="location" style="width: 150px; min-width: 150px;">
+                                                    <table>
+                                                        <tr>
+                                                            @if (!string.IsNullOrWhiteSpace(RadioModel.Market))
+                                                            {
+                                                                <td>
+                                                                    <img src="@(ImageBaseUrl + "abarLocation.png")" width="15" />
+                                                                </td>                           
+                                                                <td style="text-align: left; white-space: nowrap;">
+                                                                    @RadioModel.Market
+                                                                </td>
+                                                            }
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+
+                                                            break;
+                                                }
+                                            }
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </table>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    }
+                </table>
+            </td>
+        </tr>
+    </table>
+}

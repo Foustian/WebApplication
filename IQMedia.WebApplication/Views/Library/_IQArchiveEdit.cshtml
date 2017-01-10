@@ -1,0 +1,107 @@
+﻿@model IQMedia.Model.IQArchive_EditModel
+<div class="modalpopheadertitle" style="margin-bottom: 20px;">
+    Edit record
+</div>
+<div id="divEditRecordScrollContent">
+    <form class="form-horizontal">
+    <div id="divCommonErrorMsg" style="color: #FF0000; display: none; padding-left: 15px;
+        margin-bottom: 10px;">
+    </div>
+    <input type="hidden" id="hdIQArchiveMediaKey" value="@Model.ID" />
+    <div class="control-group">
+        <label class="control-label" for="txtTitle">
+            Title</label>
+        <div class="controls">
+            @Html.TextBox("txtTitle", Model.Title, new { @placeholder = "Title", @class = "txtwidth90per" })
+            <span class="help-inline" id="spanTitle" style="color: #FF0000; display: none;">
+            </span>
+        </div>
+    </div>
+    <div id="divEditCategory" class="control-group">
+        <label class="control-label" for="ddlCategory">
+            Category</label>
+        <div class="controls">
+            @Html.DropDownList("ddlCategory", new SelectList(Model.Categories, "CategoryGuid", "CategoryName", Model.CategoryGuid), "<Blank>", new { placeholder = "Categoy", onchange = "OnSelectOfCategory(this.id);" })
+            <span class="help-inline" id="spanCategory" style="color: #FF0000; display: none;">
+            </span> <a class="cursorPointer" onclick="CreateAndOpenAddCategoryPopup(BindCustomCategoryDropDown,true);">Add Category
+                            </a>
+        </div>
+    </div>
+    <div id="divEditSubcategory1" class="control-group">
+        <label class="control-label" for="ddlSubCategory1">
+            Sub category 1</label>
+        <div class="controls">
+            @Html.DropDownList("ddlSubCategory1", new SelectList(Model.Categories, "CategoryGuid", "CategoryName", Model.SubCategory1Guid), "<Blank>", new { placeholder = "SubCategoy1", onchange = "OnSelectOfCategory(this.id);" }) <a class="cursorPointer" onclick="CreateAndOpenAddCategoryPopup(BindCustomCategoryDropDown,true);">Add Category
+                            </a>
+        </div>
+    </div>
+    <div id="divEditSubcategory2" class="control-group">
+        <label class="control-label" for="ddlSubCategory2">
+            Sub category 2</label>
+        <div class="controls">
+            @Html.DropDownList("ddlSubCategory2", new SelectList(Model.Categories, "CategoryGuid", "CategoryName", Model.SubCategory2Guid), "<Blank>", new { placeholder = "SubCategoy2", onchange = "OnSelectOfCategory(this.id);" }) <a class="cursorPointer" onclick="CreateAndOpenAddCategoryPopup(BindCustomCategoryDropDown,true);">Add Category
+                            </a>
+        </div>
+    </div>
+    <div id="divEditSubcategory3" class="control-group">
+        <label class="control-label" for="ddlSubCategory3">
+            Sub category 3</label>
+        <div class="controls">
+            @Html.DropDownList("ddlSubCategory3", new SelectList(Model.Categories, "CategoryGuid", "CategoryName", Model.SubCategory3Guid), "<Blank>", new { placeholder = "SubCategoy3", onchange = "OnSelectOfCategory(this.id);" }) <a class="cursorPointer" onclick="CreateAndOpenAddCategoryPopup(BindCustomCategoryDropDown,true);">Add Category
+                            </a>
+        </div>
+    </div>
+    <div id="divEditKeywords" class="control-group">
+        <label class="control-label" for="txtKeywords">
+            Keywords</label>
+        <div class="controls">
+            @Html.TextArea("txtKeywords", Model.Keywords, 3, 50, new { placeholder = "Keywords", @class = "txtwidth90per" })
+            <span class="help-inline" id="spanKeywords" style="color: #FF0000; display: none;">
+            </span>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="txtDescription">
+            Description</label>
+        <div class="controls">
+            @Html.TextArea("txtDescription", Model.Description, 3, 50, new { placeholder = "Description", @class = "txtwidth90per" })
+        </div>
+    </div>
+    <div id="divEditPosSentiment" class="control-group">
+        <label class="control-label" for="txtPosSentiment">
+            Positive Sentiment</label>
+        <div class="controls">
+            @Html.TextBox("txtPosSentiment", Model.PositiveSentiment, new { @placeholder = "Positive Sentiment", @class = "txtwidth66per" })   
+            <span class="help-inline" id="spanPosSentiment" style="color: #FF0000; display: none;">
+            </span>      
+        </div>
+    </div>
+    <div id="divEditNegSentiment" class="control-group">
+        <label class="control-label" for="txtNegSentiment">
+            Negative Sentiment</label>
+        <div class="controls">
+            @Html.TextBox("txtNegSentiment", Model.NegativeSentiment, new { @placeholder = "Negative Sentiment", @class = "txtwidth66per" })        
+            <span class="help-inline" id="spanNegSentiment" style="color: #FF0000; display: none;">
+            </span>     
+        </div>
+    </div>
+    @if (Model.UseDisplayDescription) 
+    {
+    <div class="control-group">
+        <label class="control-label" for="chkDisplayDescription">
+            Display Description</label>
+        <div class="controls">
+            @Html.CheckBox("chkDisplayDescription", Model.DisplayDescription)
+        </div>
+    </div>
+    }
+    <div class="control-group">
+        <div class="controls">
+            <button type="button" id="btnCancel" onclick="CancelEditPopup();" class="cancelButton">
+                Cancel</button>
+            <button type="button" id="btnUpdate" onclick="UpdateRecord();" class="button">
+                Update</button>
+        </div>
+    </div>
+    </form>
+</div>

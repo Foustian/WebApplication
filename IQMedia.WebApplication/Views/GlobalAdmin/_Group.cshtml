@@ -1,0 +1,124 @@
+﻿@using IQMedia.Model;
+@using System.Collections.Generic;
+@using System.Linq;
+@using Newtonsoft.Json;
+@model List<IQMedia.Model.ClientModel>
+<style>
+    .controls
+    {
+        width: 50% !important;
+    }
+</style>
+<div id="divGroup_ScrollContent" style="margin-bottom:30px;">
+    <div class="row-fluid row-custom" style="margin-bottom:20px;">
+        <!--/span-->
+        <div class="btn-group">
+            <a class="btn dropdown-toggle no-background" style="font-size:14px; font-weight:bold;" data-toggle="dropdown" href="#" id="aGroupOption">
+            <script type="text/javascript">
+                GroupSetOption();
+                                </script>
+            </a>
+            <ul class="dropdown-menu">
+                <li class="cursorPointer"><a onclick="GroupSetOption('Client');">Group
+                    Client</a></li>
+                <li class="cursorPointer"><a onclick="GroupSetOption('Cust');">Group
+                    Customer</a></li>
+            </ul>
+        </div>
+    </div>
+    <div style="padding-right: 15px;" id="divGrpClient">        
+        <div class="control-group">
+            <label for="ddlMC" class="control-label">
+                Master Client</label>
+            <div class="controls">
+                <select id="ddlMC" name="ddlMC" class="chosen-select" data-placeholder="Select Master Client">
+                    <option value="0">Select</option>
+                    @foreach (IQMedia.Model.ClientModel item in Model.Where(c => c.MCID == 0 || c.MCID == c.ClientKey))
+                    {
+                        <option value="@item.ClientKey">@item.ClientName</option>
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="ddlSC" class="control-label">
+                Sub Clients</label>
+            <div class="controls">
+                <select id="ddlSC" name="ddlSC" class="chosen-select ddlwidth93per" data-placeholder="Select Sub Clients"
+                    multiple="multiple">
+                </select>
+            </div>
+        </div>
+        <div class="control-group">
+            <div class="controls">
+                <input type="button" id="btnCA" class="button" value="Add" />
+            </div>
+        </div>
+        <div style="display: none;" id="divSCList">
+            <div class="sidebar-nav" style="margin-top: 7px;">
+                <h5>
+                    Existing Sub Clients of Selected Master Client</h5>
+            </div>
+            <table id="tblSC" class="topResult">
+            </table>
+        </div>
+    </div>
+    <div style="padding-right: 15px;display:none;" id="divGrpCust">        
+        <div class="control-group">
+            <label for="ddlMCG" class="control-label">
+                Choose Group Master Client</label>
+            <div class="controls">
+                <select id="ddlMCG" name="ddlMCG" class="chosen-select" data-placeholder="Select Group Master Client">
+                    <option value="0">Select</option>
+                </select>
+            </div>
+        </div>
+        <div class="clear" style="height:25px;"></div>
+        <div class="control-group">
+            <label for="ddlMCC" class="control-label">
+                Choose Customer's Default Login Client</label>
+            <div class="controls">
+                <select id="ddlMCC" name="ddlMCC" class="chosen-select" data-placeholder="Select Customer's Default Login Client">
+                </select>
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="ddlMCust" class="control-label">
+                Choose Customer</label>
+            <div class="controls">
+                <select id="ddlMCust" name="ddlMCust" class="chosen-select" data-placeholder="Choose Customer">
+                </select>
+            </div>
+        </div>
+        <div class="clear" style="margin:25px 0px; text-align:center; font-weight:bold; font-size:18px; width:50%;">Link To</div>
+        <div class="control-group">
+            <label for="ddlSCC" class="control-label">
+                Choose Sub Client</label>
+            <div class="controls">
+                <select id="ddlSCC" name="ddlSCC" class="chosen-select" data-placeholder="Select Choose Sub Client">
+                </select>
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="ddlSCust" class="control-label">
+                Choose Sub Customer</label>
+            <div class="controls">
+                <select id="ddlSCust" name="ddlSCust" class="chosen-select" data-placeholder="Select Sub Customer">
+                </select>
+            </div>
+        </div>
+        <div class="control-group">
+            <div class="controls">
+                <input type="button" id="btnCustA" class="button" value="Add" />
+            </div>
+        </div>
+        <div style="display: none;" id="divSCustList">
+            <div class="sidebar-nav" style="margin-top: 7px;">
+                <h5>
+                    Existing Sub Customers of Selected Master Customer</h5>
+            </div>
+            <table id="tblSCust" class="topResult">
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,92 @@
+﻿@using IQMedia.Model;
+@using PMGSearch;
+@model NewsResult
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>iQ media News Article</title>
+    <link href="../../Css/Fonts.css" rel="stylesheet" type="text/css" />
+    <link href="../../Css/bootstrap.css" rel="stylesheet" type="text/css" />
+    <link href="../../Css/bootstrap-responsive.css" rel="stylesheet" type="text/css" />
+    <style>
+        .container_custom{ margin-top: 88px;}        
+        .pq-pub { font-family:'OpenSans-Bold';}
+        .pq-header { padding-bottom:15px; border-bottom:1px solid #666666;}
+        .pq-header h2 { margin:7px 0px; font-weight:normal; font-size:30px;}
+        .pq-content { font-size:16px; line-height:28px; margin-top:20px; padding-bottom:20px; border-bottom:1px solid #666666;}
+        .pq-expired { font-size:14px; text-align:center; line-height:28px; margin:10px auto 0px auto; padding-top:10px; border-top:1px solid #666666; width:60%;}
+        .pq-copyright { text-align:center; margin:10px 0px;}
+        .pq-author { color:#666666;}
+        .pq-date{ color:#666666;}
+    </style>
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top" style="background-color: #fff;">
+        <!-- from desinger-->
+        <div class="container">
+        </div>
+        <!-- from desinger-->
+        <div class="navbar-inner navbar-custome" style="padding:0 5%; box-sizing:border-box;">
+            <div class="container">
+                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span
+                    class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+                </a><a class="brand iqmedia-logo" href="#">
+                    <img src="~/images/home_new/logo.png" alt="IQ Media" /></a>
+                <div class="nav-collapse collapse">
+                </div>
+                <!--/.nav-collapse -->
+            </div>
+        </div>
+    </div>
+    @if(Model != null)
+    {
+        <div class="container container_custom">
+        <div class="row-fluid" id="divRowFluid" style="padding:0 5%; box-sizing:border-box;">
+            <div class="pq-header">
+                <div style="float:right;">
+                    <a href="http://www.lexisnexis.com" target="_blank"><img src="~/images/MediaIcon/LexisNexis.png" alt="LexisNexis(R)" /></a>
+                </div>
+                <div style="float:left; padding-top:35px;">
+                    @if (!String.IsNullOrEmpty(Model.Source))
+                    {
+                        <span class="pq-pub">@Model.Source</span><span>&nbsp;|</span> 
+                    }
+                    <span class="pq-date">@Model.date</span>
+                </div>
+                <div style="clear:both">
+                    <h2>@Model.Title</h2>
+                    <div class="pq-author">
+                        @Html.Raw(Model.AuthorName)
+                    </div>
+                </div>
+            </div>            
+            <div class="pq-content">
+                @Html.Raw(ViewBag.IsExpired ? IQMedia.Shared.Utility.CommonFunctions.ProcessHighlightingText(Model.Content, Model.Content.Substring(0, 250)) + " ..." : Model.Content)
+            </div>
+            <div class="pq-copyright">
+                @if (!String.IsNullOrEmpty(Model.Copyright))
+                {
+                    @Model.Copyright<span>&nbsp;|</span>
+                }
+                <a href="http://www.lexisnexis.com/terms/general/" target="_blank">LexisNexis Terms & Conditions</a>
+            </div>
+            @if (ViewBag.IsExpired)
+            {
+                <div class="pq-expired">
+                    The full text of Lexis Nexis content is available for 90 days.  At this time, this item is accessible for searching and analysis only and the full text is no longer available for viewing.
+                </div>
+            }
+        </div>
+    </div>
+    }
+    else
+    {
+        <div class="container container_custom">An error occurred, please try again later.</div>
+    }
+</body>
+</html>

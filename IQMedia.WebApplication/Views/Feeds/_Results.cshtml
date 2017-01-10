@@ -1,0 +1,54 @@
+﻿@using IQMedia.Model;
+@using IQMedia.Shared.Utility;
+@using IQMedia.WebApplication.Models.TempData;
+@using IQCommon.Model;
+@model List<IQAgent_MediaResultsModel>
+@if (Model != null)
+{
+    ActiveUser sessioninfo = IQMedia.WebApplication.Utility.ActiveUserMgr.GetActiveUser();
+    FeedsTempData feedsTempData = ((IQMedia.WebApplication.Controllers.FeedsController)this.ViewContext.Controller).GetTempData();
+    int wordsBeforeSpan = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["HighlightWordsBeforeSpan"]);
+    int wordsAfterSpan = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["HighlightWordsAfterSpan"]);
+    bool useProminenceMediaValue = feedsTempData.UseProminenceMediaValue == true;
+    
+    foreach (IQAgent_MediaResultsModel item in Model)
+    {
+        string maxNegativeSentimentWidth = string.Empty;
+        string maxPositiveSentimentWidth = string.Empty;
+
+        if ((item.NegativeSentiment * 6) > 25)
+        {
+            maxNegativeSentimentWidth = "25px";
+        }
+        else
+        {
+            maxNegativeSentimentWidth = Convert.ToString(item.NegativeSentiment * 6) + "px";
+        }
+
+        if ((item.PositiveSentiment * 6) > 25)
+        {
+            maxPositiveSentimentWidth = "25px";
+        }
+        else
+        {
+            maxPositiveSentimentWidth = Convert.ToString(item.PositiveSentiment * 6) + "px";
+        }
+        
+        IQ_MediaTypeModel objMediaType = sessioninfo.MediaTypes.FirstOrDefault(s => s.SubMediaType == item.CategoryType && s.TypeLevel == 2);
+        
+        ViewDataDictionary viewData = new ViewDataDictionary();
+        viewData.Add("WordsBeforeSpan", wordsBeforeSpan);
+        viewData.Add("WordsAfterSpan", wordsAfterSpan);
+        viewData.Add("Separator", "...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;...");
+        viewData.Add("HighlightKeyword", "span");
+        viewData.Add("UseProminenceMediaValue", useProminenceMediaValue);
+        viewData.Add("MaxNegativeSentimentWidth", maxNegativeSentimentWidth);
+        viewData.Add("MaxPositiveSentimentWidth", maxPositiveSentimentWidth);
+        viewData.Add("MediaIconPath", objMediaType.MediaIconPath);
+        viewData.Add("MediaTypeDescription", objMediaType.DisplayName);
+        viewData.Add("UseAudience", objMediaType.UseAudience);
+        viewData.Add("UseMediaValue", objMediaType.UseMediaValue);
+             
+        @Html.Partial(objMediaType.FeedsResultView, item, viewData);
+    }
+}

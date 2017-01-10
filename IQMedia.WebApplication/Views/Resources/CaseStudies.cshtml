@@ -1,0 +1,111 @@
+﻿@{
+    ViewBag.Title = "iQ media Case Studies";
+    Layout = "~/Views/Shared/_IQMediaMasterStaticPages.cshtml";
+}
+@section HeaderImage
+{
+    <img src="~/Images/StaticBanner/Resources.jpg" alt="Resources banner" />
+}
+@section Content
+{
+    <div class="span4">
+        @Html.Partial("~/Views/Resources/_Left.cshtml")
+    </div>
+    <div class="span14 span14pad">
+        <div class="title">
+            <h3>
+                Success Stories</h3>
+        </div>
+        <div class="small-text">
+            <div class="row-fluid cs">
+                <div class="span6">
+                    <a target="_blank" href="~/pdf/SuccessStory_LeggMason.pdf">
+                    <img src="~/images/staticBanner/Legg_Mason_Badge.jpg" alt="Legg Mason Badge" class="cs-img" /></a></div>
+                    
+                <div class="span12 pull-right">
+                    <h4 class="cs-title">
+                        Legg Mason and Big Data. Not just an Investment Tool Anymore</h4>
+                    <p>
+                        We interview Legg Mason on the success of cliQ and metriQs as they begin exploring
+                        the data amassed for PR professionals to understand possible trends in communications
+                        strategies.</p>
+                </div>
+            </div>
+            <div class="row-fluid cs">
+                <div class="span6">
+                    <a target="_blank" href="~/pdf/Success%20Stories_Miami%20Hurricanes.pdf">
+                        <img src="~/images/staticBanner/Miami_Badge.jpg" alt="Miami Badge" class="cs-img" />
+                    </a>
+                </div>
+                <div class="span12 pull-right">
+                    <h4 class="cs-title">
+                        Superstar Performace from University of Miami’s Athletic Department</h4>
+                    <p>
+                        How did the ‘Canes’athletic department handle the “madness”with the unprecedented
+                        national coverage of the men’s basketball team received during a remarkable regular
+                        season, followed by the first ACC Tournament Championship in the school’s history.</p>
+                </div>
+            </div>
+            <div class="row-fluid cs">
+                <div class="span6">
+                    <a href="~/pdf/Success Stories_Temple_01.pdf" target="_blank">
+                        <img src="~/images/staticBanner/Temple_badge.jpg" alt="Temple Badge" class="cs-img" />
+                    </a>
+                </div>
+                <div class="span12 pull-right">
+                    <h4 class="cs-title">
+                        Temple Owls Show Their Media Wisdom</h4>
+                    <p>
+                        Temple Athletics has a great story to tell – but how do you get the word out to
+                        corporate sponsors, donors, alumni, and the Temple community when the competition
+                        for people’s mindshare is so intense?</p>
+                </div>
+            </div>
+        </div>
+        <div class="title">
+            <h3>
+                White Papers</h3>
+        </div>
+        <div class="small-text">
+            <div class="row-fluid cs">
+                <div class="span6">
+                    <a href="~/pdf/IQMedia_AcademicUseBroadcastTV_WP.pdf" target="_blank">
+                        <img src="~/images/staticBanner/WP03_Badge.jpg" alt="WP03 Badge" class="cs-img" />
+                    </a>
+                </div>
+                <div class="span12 pull-right">
+                    <h4 class="cs-title">
+                        Academic Usage of Broadcast Video</h4>
+                    <p>
+                        Finding new ways to help keep classroom information fresh, interesting and up to
+                        date can often be challenging with limits on copyrighted material. We try to help
+                        give guidance on when and how you can use broadcast content to give a lift to educating
+                        in and out of your classroom.</p>
+                </div>
+            </div>
+            <div class="row-fluid cs">
+                <div class="span6">
+                    <a target="_blank" href="~/pdf/WP01-Overcoming-TV%20Media-Monitoring-Limits.pdf">
+                        <img src="~/images/staticBanner/Overcoming_limits_badge.png" alt="Overcoming Limits Badge"
+                            class="cs-img" />
+                    </a>
+                </div>
+                <div class="span12 pull-right">
+                    <h4 class="cs-title">
+                        Overcoming the Limits of TV Media Monitoring</h4>
+                    <p>
+                        Learn why a media intelligence platform is the new must-have technology for organizations
+                        with a message to promote or a brand to protect.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" language="javascript">
+
+        $(document).ready(function () {
+            SetHighligtedLi('ulResourcesNavigation', 'liCaseStudies');
+        });
+    
+    
+    </script>
+}

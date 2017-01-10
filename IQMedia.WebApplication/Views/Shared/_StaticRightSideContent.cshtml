@@ -1,0 +1,171 @@
+﻿@*@if (@Model == "ProPrep")
+{
+
+}*@
+<script type="text/javascript">
+    var TakeTourContent = '<div class="about-right-bg"><a target="_blank" href="http://www.iqmediacorp.com/ClipPlayer/default.aspx?ClipID=ce641edb-44c4-4e73-aabb-32c3f0f61f4e&TE=nb%2fdH9YSimVlgeHlRzMuFAYD3wKa6p4GCFMFEirCGeQ%3d&PN=bt9sZFac%2bKA%3d" ><img src="../images/about/about-img03.png"></a></div>';
+    var GetWhiltePaper = '<div class="about-right-bg"><a href="../pdf/WP01-Overcoming-TMS-Limits.pdf" target="_blank"><img src="../images/about/about-img01.png"></a></div>';
+    var LearnMore = '<div class="about-right-bg"><a href="../pdf/PL1-cliQ-4-pages.pdf" target="_blank"><img src="../images/about/about-img02.png"></a></div>';
+    var SeeProPrep = '<div class="about-right-bg"><a target="_blank" href="http://www.iqmediacorp.com/ClipPlayer/default.aspx?ClipID=6a11df8c-89ca-4906-b610-aaa98f5824c5&TE=iZGAy3ctoirsk62csKd07OZPUyLM19sj&PN=bt9sZFac%2bKA%3d"><img src="../images/about/ProPrep.png"></a></div>';
+    var OptimizedCloud = '<div class="about-right-bg"><a href="../pdf/PL2-Media-Cloud.pdf" target="_blank"><img src="../images/about/about-img04.png"></a></div>';
+    var QuickFacts = '<div class="about-right-bg"><a href="../pdf/PL1-cliQ-2-pages.pdf" target="_blank"><img src="../images/about/about-img07.png"></a></div>';
+    var LearnInlineWorkShop = '<div class="about-right-bg"><a href="../pdf/PL2-Inline-Workspace.pdf" target="_blank"><img src="../images/about/about-img05.png"></a></div>';
+    var LearnMyiQ = '<div class="about-right-bg"><a href="../pdf/PL2-My-iQ.pdf" target="_blank"><img src="../images/about/about-img06.png"></a></div>';
+    var SuccessButtonTemple = '<div class="about-right-bg"><a href="../pdf/Success Stories_Temple_01.pdf" target="_blank"><img src="../images/home/IQ_SuccessButton_Temple202.jpg"></a></div>';
+    var MiamiSuccessStories = '<div class="about-right-bg"><a href="../pdf/Success Stories_Miami Hurricanes.pdf" target="_blank"><img src="../images/home/IQ_SuccessButton_Miami202.jpg"></a></div>';
+
+    function ClearAllDiv() {
+        $('#divRightContent').html();
+    }
+    function GetContent(contentid) {
+
+        $('#' + contentid).css('display', 'block');
+        if (contentid == "TakeTourContent") {
+            $('#divRightContent').html($('#divRightContent').html() + TakeTourContent);
+        }
+        else if (contentid == "GetWhiltePaper") {
+            $('#divRightContent').html($('#divRightContent').html() + GetWhiltePaper);
+
+        }
+        else if (contentid == "LearnMore") {
+            $('#divRightContent').html($('#divRightContent').html() + LearnMore);
+
+        }
+        else if (contentid == "SeeProPrep") {
+            $('#divRightContent').html($('#divRightContent').html() + SeeProPrep);
+
+        }
+        else if (contentid == "OptimizedCloud") {
+            $('#divRightContent').html($('#divRightContent').html() + OptimizedCloud);
+
+        }
+        else if (contentid == "QuickFacts") {
+            $('#divRightContent').html($('#divRightContent').html() + QuickFacts);
+
+        }
+        else if (contentid == "LearnInlineWorkShop") {
+            $('#divRightContent').html($('#divRightContent').html() + LearnInlineWorkShop);
+
+        }
+        else if (contentid == "LearnMyiQ") {
+            $('#divRightContent').html($('#divRightContent').html() + LearnMyiQ);
+
+        }
+        else if (contentid == "SuccessButtonTemple") {
+            $('#divRightContent').html($('#divRightContent').html() + SuccessButtonTemple);
+
+        }
+        else if (contentid == "MiamiSuccessStories") {
+            $('#divRightContent').html($('#divRightContent').html() + MiamiSuccessStories);
+
+        }
+    }
+</script>
+<div id="divRightContent">
+</div>
+@if (@Model == "Products")
+{
+    <script type="text/javascript">
+        ClearAllDiv();
+        GetContent("TakeTourContent");
+        GetContent("GetWhiltePaper");
+        GetContent("LearnMore");
+        GetContent("SeeProPrep");
+    </script>
+}
+@if (@Model == "ProPrep")
+{
+    <script type="text/javascript">
+        ClearAllDiv();
+        GetContent("SeeProPrep");
+    </script>
+}
+@if (@Model == "OptimizedCloud")
+{
+    <script type="text/javascript">
+        ClearAllDiv();
+        GetContent("TakeTourContent");
+        GetContent("OptimizedCloud");
+        GetContent("QuickFacts");
+        GetContent("SeeProPrep");
+    </script>
+}
+@if (@Model == "InlineWorkShop")
+{
+    <script type="text/javascript">
+        ClearAllDiv();
+        GetContent("TakeTourContent");
+        GetContent("LearnInlineWorkShop");
+        GetContent("GetWhiltePaper");
+        GetContent("SeeProPrep");
+    </script>
+}
+@if (@Model == "MyiQ")
+{
+    <script type="text/javascript">
+        ClearAllDiv();
+        GetContent("TakeTourContent");
+        GetContent("LearnMyiQ");
+        GetContent("QuickFacts");
+        GetContent("SeeProPrep");
+    </script>
+}
+@if (@Model == "Industries")
+{
+    <script type="text/javascript">
+        ClearAllDiv();
+        GetContent("TakeTourContent");
+        GetContent("SuccessButtonTemple");
+        GetContent("GetWhiltePaper");
+    </script>
+}
+@if (@Model == "IndustriesPoliticalParties")
+{
+    <script type="text/javascript">
+        ClearAllDiv();
+        GetContent("TakeTourContent");
+        GetContent("GetWhiltePaper");
+        GetContent("LearnMore");
+        GetContent("SeeProPrep");  
+    </script>
+}
+@if (@Model == "IndustriesUniverties")
+{
+    <script type="text/javascript">
+        ClearAllDiv();
+        GetContent("TakeTourContent");
+        GetContent("GetWhiltePaper");
+        GetContent("LearnMore");
+        GetContent("SeeProPrep");      
+    </script>
+}
+@if (@Model == "IndustriesProfessional")
+{
+    <script type="text/javascript">
+        ClearAllDiv();
+        GetContent("TakeTourContent");
+        GetContent("GetWhiltePaper");
+        GetContent("LearnMore");
+        GetContent("SeeProPrep");       
+    </script>
+}
+@if (@Model == "CollegiateAthleticPrograms")
+{
+    <script type="text/javascript">
+        ClearAllDiv();
+        GetContent("TakeTourContent");
+        GetContent("MiamiSuccessStories");
+        GetContent("SuccessButtonTemple");
+        GetContent("GetWhiltePaper");       
+    </script>
+}
+@if (@Model == "AboutUs")
+{
+    <script type="text/javascript">
+        ClearAllDiv();
+        GetContent("QuickFacts");
+        GetContent("TakeTourContent");
+        GetContent("LearnMore");
+        GetContent("SeeProPrep");     
+    </script>
+}

@@ -1,0 +1,132 @@
+﻿@{
+    ViewBag.Title = "iQ media Product Literature";
+    Layout = "~/Views/Shared/_IQMediaMasterStaticPages.cshtml";
+}
+@section HeaderImage
+{
+    <img src="~/Images/StaticBanner/Resources.jpg" alt="Resources banner" />
+}
+@section Content
+{
+    <div class="span4">
+        @Html.Partial("~/Views/Resources/_Left.cshtml")
+    </div>
+    <div class="span14 span14pad">
+        <div class="title">
+            <h3>
+                Product Literature</h3>
+        </div>
+        <div class="padding10">
+            <div class="span6">
+                <a target="_blank" href="~/pdf/iQ_cliQ_4.0.pdf">
+                    <img src="../images/staticBanner/cliq4.png" alt="Cliq4" /></a></div>
+            <div class="span8">
+                Learn how to discover new insights, create effective content marketing videos, and
+                engage your audience in new powerful ways. cliQ maximizes the business value of
+                your media coverage.</div>
+        </div>
+        <div class="padding10 clear">
+            <div class="span6">
+                <a target="_blank" href="~/pdf/PL1-cliQ-Fast-Facts.pdf">
+                    <img src="../images/home/home-img07.png" alt="Quick Facts" /></a></div>
+            <div class="span8">
+                Passed for time? Here are the key facts about cliQ on a single sheet of paper (well,
+                we did use both sides).</div>
+        </div>
+        <div class="padding10 clear">
+            <div class="span6">
+                <a target="_blank" href="~/pdf/iQNumbers.pdf">
+                    <img src="../images/home/home-img08.png" alt="iQ behind numbers" /></a></div>
+            <div class="span8">
+                No blackbox algorithms or secret sauce to modify or inflate numbers. We use leading
+                industry sources to provide an realistic representation of viewership and media
+                values.</div>
+        </div>
+        <div class="padding10 clear">
+            <div class="span6">
+                <a target="_blank" href="~/pdf/PL2-Media-Optimized-for-the-Cloud.pdf">
+                    <img src="../images/home/home-img04.png" alt="Quick Facts" /></a></div>
+            <div class="span8">
+                cliQ's cloud-based media resource is based on a software technology breakthrough,
+                delivering high quality content to your desktop, smartphone, or tablet.</div>
+        </div>
+        <div class="padding10 clear">
+            <div class="span6">
+                <a target="_blank" href="~/pdf/PL2-Inline-Media-Workspace.pdf">
+                    <img src="../images/home/home-img05.png" alt="Quick Facts" /></a></div>
+            <div class="span8">
+                Tracking media is no good unless you can do something with it. cliQ provides a complete
+                Inline Media Workspace that maximize your return on time spent.</div>
+        </div>
+        <div class="padding10 clear">
+            <div class="span6">
+                <a target="_blank" href="~/pdf/PL2-My-iQ-Enterprise-Media-Center.pdf">
+                    <img src="../images/home/home-img02.png" alt="Quick Facts" /></a></div>
+            <div class="span8">
+                To really leverage media content, you need an Enterprise Media Center. My gives
+                you the power to share, manage, and leverage the content that is most important
+                to your irganization's strategic goals.</div>
+        </div>
+        <div class="padding10 clear">
+            <div class="span6">
+                <a target="_blank" href="~/pdf/FairUse.pdf">
+                    <img src="../images/home/home-img09.png" alt="Fair Use" /></a></div>
+            <div class="span8">
+                At iQ Media, we take fair use seriously. cliQ, our Media Intelligence Platform,
+                is designed to support fair use principles. For each customer, cliQ can be configured
+                to support institutional policies regarding media access and reuse.</div>
+        </div>
+    </div>
+    @*<div class="span14 span14pad">
+        <div class="padding10">
+            <div class="floatLeft span6">
+                <a href="../pdf/PL1-cliQ-Fast-Facts.pdf" target="_blank">
+                    <img src="../images/home/home-img07.png" alt="" /></a></div>
+            <div class="floatRight span8" style="color: #727272;">
+                Pressed for time? Here are the key facts about cliQ on a single sheet of paper (well,
+                we did use both sides).</div>
+        </div>
+        <div class="padding10 clear">
+            <div class="floatLeft span6">
+                <a href="../pdf/PL1-cliQ-Overview.pdf" target="_blank">
+                    <img src="../images/home/home-img02.png" alt=""></a></div>
+            <div class="floatRight span8" style="color: #727272;">
+                cliQ is a media research platform for that empowers organizations to leverage broadcast
+                media content in ways that were not possible until now. This four-page brochure
+                gives you an introduction to cliQ.</div>
+        </div>
+        <div class="padding10 clear">
+            <div class="floatLeft span6">
+                <a href="../pdf/PL2-Media-Optimized-for-the-Cloud.pdf" target="_blank">
+                    <img src="../images/home/home-img04.png" alt="" /></a></div>
+            <div class="floatRight span8" style="color: #727272;">
+                cliQ's cloud-based media resource is based on a software technology breakthrough,
+                delivering high quality content to your desktop, smartphone, or tablet.</div>
+        </div>
+        <div class="padding10 clear">
+            <div class="floatLeft span6">
+                <a href="../pdf/PL2-Inline-Media-Workspace.pdf" target="_blank">
+                    <img src="../images/home/home-img05.png" alt=""></a></div>
+            <div class="floatRight span6" style="color: #727272;">
+                Tracking media is no good unless you can do something with it. cliQ provides a complete
+                Inline Media Workspace that maximizes your return on time spent.</div>
+        </div>
+        <div class="padding10 clear">
+            <div class="floatLeft span6">
+                <a href="../pdf/PL2-My-iQ-Enterprise-Media-Center.pdf" target="_blank">
+                    <img src="../images/home/home-img06.png" alt="" /></a></div>
+            <div class="floatRight span8" style="color: #727272;">
+                To really leverage media content, you need an Enterprise Media Center. My iQ gives
+                you the power to share, manage, and leverage the content that is most important
+                to your organization's strategic goals.</div>
+        </div>
+    </div>*@
+    <script type="text/javascript" language="javascript">
+
+        $(document).ready(function () {
+            SetHighligtedLi('ulResourcesNavigation', 'liProduct');
+        });
+    
+    
+    </script>
+}

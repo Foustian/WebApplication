@@ -1,0 +1,56 @@
+﻿@using IQMedia.Model;
+@model List<IQAgent_TVResultsModel>
+@if (Model != null && Model.Count > 0)
+{
+    ActiveUser sessionInformation = IQMedia.WebApplication.Utility.ActiveUserMgr.GetActiveUser();
+    <table width="100%" class="timeshiftpg">
+        <tr>
+            <th style="text-align: center; width: 8%;">
+                Station
+            </th>
+            <th style="text-align: left; width: 45%;">
+                Program
+            </th>
+            <th style="text-align: right; width: 40%;">
+                Date Time 
+            </th>
+            <th style="text-align: center; width: 7%;">
+                Play
+            </th>
+        </tr>
+        @foreach (IQAgent_TVResultsModel item in Model)
+        {
+            var imgurl = "../../StationLogoImages/" + item.StationID + ".jpg";
+           
+            <tr>
+                <td style="text-align: center;">
+                    <img src="@imgurl" alt="" />
+                </td>
+                <td style="text-align: left;">
+                    @item.Title120
+                </td>
+                <td style="text-align: right;">
+                    @item.Date.ToString("MM/dd/yyyy hh:mm tt") @item.TimeZone
+                </td>
+                <td style="text-align: center;">
+                    <a onclick="LoadChartNPlayer('@item.RL_VideoGUID','@item.IQ_CC_Key')" href="javascript:void(0)">
+                        <img src="../../Images/play.jpg" alt="" /></a>
+                </td>
+            </tr> 
+        }
+    </table>
+
+}
+else
+{
+    <table width="100%" style="text-align: center;">
+        <tr>
+            <td>
+                <span style="background: none repeat scroll 0 0 #F2F2F2; border: 1px solid #DCDCDC;
+                    margin-bottom: 10px; margin-right: 10px; padding: 3px 10px 3px 6px; position: relative;
+                    width: 300px !important;">No Results found</span>
+            </td>
+        </tr>
+    </table>
+    
+}

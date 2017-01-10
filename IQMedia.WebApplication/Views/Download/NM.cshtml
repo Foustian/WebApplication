@@ -1,0 +1,94 @@
+﻿@model List<IQMedia.Model.ArticleNMDownload>
+@{
+    ViewBag.Title = "iQ media Download News Articles";
+    Layout = "~/Views/Download/_DownloadMaster.cshtml";
+}
+@using (Html.BeginForm("NM", "Download"))
+{
+    var PendingDownload = Model.Where(article => article.DownloadStatus == 1).ToList();
+    var CompletedDownload = Model.Where(article => article.DownloadStatus == 2).ToList();
+    
+    <div>
+        <div style="font-weight: bold; border-bottom: 1px solid #dadada; padding-bottom: 10px;">
+            Step 1: Pending Article Download Requests</div>
+        <br />
+        @if (PendingDownload.Count > 0)
+        {
+            <table cellpadding="3" cellspacing="0" class="grid" width="100%">
+                <tr>
+                    <th>
+                        Article Title
+                    </th>
+                    <th width="170px">
+                        Requested Date
+                    </th>
+                </tr>
+                @foreach (IQMedia.Model.ArticleNMDownload item in PendingDownload)
+                {
+                    <tr>
+                        <td>@item.ArticleTitle
+                        </td>
+                        <td>@item.DLRequestDateTime
+                        </td>
+                    </tr>
+                }
+            </table>
+        }
+        else
+        {
+            <div>
+                No pending download available</div>
+        }
+    </div>
+    <br />
+    <br />
+    <div>
+        <div style="font-weight: bold; border-bottom: 1px solid #dadada; padding-bottom: 10px;">
+            Step 2: Article Ready for Download</div>
+        <br />
+        @if (CompletedDownload.Count > 0)
+        {
+            <table cellpadding="3" cellspacing="3" class="grid" width="100%">
+                <tr>
+                    <th style="width: 400px;">
+                        Article Title
+                    </th>
+                    <th style="width: 170px;">
+                        Requested Date
+                    </th>
+                </tr>
+                @foreach (IQMedia.Model.ArticleNMDownload item in CompletedDownload)
+                {
+                    <tr>
+                        <td>
+                            <a href="/Download/DownloadNMFile?NMDownloadID=@item.ID">
+                                @item.ArticleTitle
+                            </a>
+                        </td>
+                        <td>@item.DLRequestDateTime
+                        </td>
+                    </tr>
+                }
+            </table>
+        }
+        else
+        {
+            <div>
+                No files available</div>
+        }
+    </div>
+    <br />
+    <br />
+    <div>
+        <table>
+            <tr>
+                <td>
+                    <input type="submit" value="Refresh" />
+                </td>
+                <td>
+                    <input type="button" id="btnCancel" name="btnCancel" value="Cancel" onclick="javascript:window.close();" />
+                </td>
+            </tr>
+        </table>
+    </div>
+}

@@ -1,0 +1,664 @@
+﻿@using IQMedia.WebApplication.Models.TempData;
+@using IQMedia.Model;
+@{
+    ViewBag.Title = "iQ media TAds";
+    Layout = "~/Views/Shared/_IQMediaMasterInner.cshtml";
+}
+<script type="text/javascript" src="~/Scripts/TAds.js?v=3.5"></script>
+<script type="text/javascript" src="~/Scripts/PlayerScript.js?v=1.1"></script>
+<script type="text/javascript" src="../../Scripts/TAdsRadio.js?v=1.1"></script>
+<script src="~/Scripts/chosen.jquery.js?v=1.6.2" type="text/javascript"></script>
+<link rel="stylesheet" href="~/Css/Chosen/chosen.css" />
+@{ 
+    IQMedia.Model.ActiveUser sessionInformation = IQMedia.WebApplication.Utility.ActiveUserMgr.GetActiveUser();
+    TAdsTempData tAdsTempData = ((IQMedia.WebApplication.Controllers.TAdsController)this.ViewContext.Controller).GetTempData();
+}
+@{
+    <script type="text/javascript">
+        var _clipLimit = @ViewBag.ManualClipDuration
+        
+        var _PlaySecondsSetting = @ViewBag.RawMediaPauseSecs
+        var _IsShowMTChart = true; // Required to display Logo/Ads chart in player
+
+        // commented for now, uncomment below if need to pause by absolute time
+        //var _RawPlaySeconds = @ViewBag.RawMediaPauseSecs;
+        //var _PlaySecondsSetting =0;
+        
+    </script>
+}
+<link href="~/Css/TAds.css?v=1.1" type="text/css" rel="Stylesheet" />
+<link href="~/Css/tads-video-player.css?v=1.3" type="text/css" rel="Stylesheet" />
+<script type="text/javascript" src="~/Scripts/TAdsVideoPlayer.js?v=1.24"></script>
+<script type="text/javascript" src="~/Scripts/VideoPlayerChart.js?v=1.3"></script>
+<script src="~/Scripts/highcharts.js?v=1.1" type="text/javascript"></script>
+<script type="text/javascript" src="~/Scripts/enscroll.js?v=1.0"></script>
+<div class="container container_custom">
+    <div class="row-fluid" id="divRowFluid">
+        @if (ViewBag.IsSuccess)
+        {
+        <div class="span3 minheight500" id="divQuickFeedFinder">
+            <div class="well sidebar-nav">
+                <h5 id="h5TV" class="tvheader-active" onclick="CollapseExpandLeftSection(1);">TV</h5>
+                <div id="divTVSection" style="padding-left: 10px;">
+                    <input type="text" class="keywordTetBox" placeholder="Quick Finder" id="txtKeyword" /><img id="imgKeyword" title="Search" src="../../Images/magnifier.png" class="imgsearch" />
+                    <div id="divAdvancedSearch">
+                        <input type="text" class="keywordTetBox" placeholder="Search Title" id="txtTitle" /><img
+                            id="imgTitle" title="Search" src="../../Images/magnifier.png" class="imgsearch" />
+                        <input type="text" id="dpFrom" readonly="readonly" class="date" />
+                        <input type="text" id="dpTo" readonly="readonly" class="date" />
+                        <br />
+                        <br />
+                        <div class="navbar" style="margin-bottom:0px;">
+                            <h5>Program Filters</h5>
+                            <ul id="narrowResultsMenu" role="navigation" class="nav floatNone sideMenuUl width100p">
+                                <li class="dropdown ndate" onclick="toggleDiv('ulCalender')"><a data-toggle="dropdown" class="dropdown-toggle" role="button"
+                                    href="#" id="drop1">Date<span class="spnArrow">&nbsp;</span></a>
+                                    <ul id="ulCalender" aria-labelledby="drop1" role="menu" style="display:none;" class="dropdown-menu sideMenu ulCalenderFilter">
+                                        <li role="presentation">
+                                            <div id="divCalender">
+                                            </div>
+                                    </ul>
+                                </li>
+                                <li class="dropdown region" onclick="toggleDiv('ulRegion')"><a data-toggle="dropdown" class="dropdown-toggle" role="button"
+                                    id="drop2" href="#">Region<span class="spnArrow">&nbsp;</span></a>
+                                    <ul aria-labelledby="drop2" role="menu" class="dropdown-menu sideMenu" style='display:none;' id="ulRegion">
+                                        @{
+            List<TadsRegion> listIQRegions = new List<TadsRegion>();
+
+            if (Model != null && Model["IQ_Region"] != null)
+            {
+                listIQRegions = (List<TadsRegion>)(Model["IQ_Region"]);
+            }
+
+            if (listIQRegions.Count > 0)
+            {
+
+                foreach (TadsRegion item in listIQRegions)
+                {
+                                            <li role="presentation" onclick="SetRegion('@item.ID','@item.Name.Replace("\'", "\\\'")');" class="cursorPointer">
+                                                <a tabindex="-1" role="menuitem">@item.Name (@item.CountFormatted)</a></li>
+                }
+            }
+            else
+            {
+                                        
+                                            <li role="presentation" class="cursorPointer"><a tabindex="-1" role="menuitem">No Filter Available</a></li>
+            }
+
+                                        }
+                                    </ul>
+                                </li>
+                                <li class="dropdown country" onclick="toggleDiv('ulCountry')"><a data-toggle="dropdown" class="dropdown-toggle" role="button"
+                                    id="drop2" href="#">Country<span class="spnArrow">&nbsp;</span></a>
+                                    <ul aria-labelledby="drop2" role="menu" class="dropdown-menu sideMenu" style="display:none;" id="ulCountry">
+                                        @{
+            List<TadsCountry> listIQCountries = new List<TadsCountry>();
+
+            if (Model != null && Model["IQ_Country"] != null)
+            {
+                listIQCountries = (List<TadsCountry>)(Model["IQ_Country"]);
+            }
+
+            if (listIQCountries.Count > 0)
+            {
+
+                foreach (TadsCountry item in listIQCountries)
+                {
+                                            <li role="presentation" onclick="SetCountry('@item.ID','@item.Name.Replace("\'", "\\\'")');" class="cursorPointer">
+                                                <a tabindex="-1" role="menuitem">@item.Name (@item.CountFormatted)</a></li>
+                }
+            }
+            else
+            {
+                                        
+                                            <li role="presentation" class="cursorPointer"><a tabindex="-1" role="menuitem">No Filter
+                                                Available</a></li>
+            }
+
+                                        }
+                                    </ul>
+                                </li>
+
+                       <li class="dropdown market" onclick="toggleDiv('ulMarketMain')"><a id="liDmaFilter" data-toggle="dropdown">Market<span class="spnArrow">&nbsp;</span></a>
+                                    <div class="nav-dropdpwn top0" style="display:none;" id="ulMarketMain">
+                                    @{
+            List<TadsDma> listIQMarket = new List<TadsDma>();
+            if (Model != null && Model["IQ_Dma"] != null)
+            {
+                listIQMarket = (List<TadsDma>)(Model["IQ_Dma"]);
+            }
+            if (listIQMarket.Count > 0)
+            {
+                                            <select id="tadsMarketSelect" class="chosen-select" multiple data-placeholder="Stations">
+                                                 <option value="0"></option>
+                                                    @foreach (TadsDma item in listIQMarket)
+                                                    {
+                                                        <option value="@item.Name">@item.Name (@item.CountFormatted)</option>  
+                                                    }
+                                                    </select>
+                                                    <div id="divMarketSideMenu" class=" top0" style="display:none; text-align:center;"><button onclick="SearchDma()">Search</button></div>
+                                                    var jsonMarketID = Newtonsoft.Json.JsonConvert.SerializeObject(listIQMarket);
+                                            <script type="text/javascript"> _CurrentDmaFilter = @Html.Raw(jsonMarketID); </script>
+            }
+            else
+            {
+                                            <li role="presentation" style="padding: 0px;text-align:center;">
+                                                <ul class="sideMenu sub-submenu" aria-labelledby="drop2" role="menu" id="ulMarketList">
+                                                    <li role="presentation" class="cursorPointer"><a tabindex="-1" role="menuitem">No Filter
+                                                        Available</a></li>
+                                                </ul>
+                                            </li>
+            }                            
+        }
+                                    </div>
+                                    </li>
+                                    <li class="dropdown nnetwork" onclick="toggleDiv('ulNetwork')"><a id="liAfilFilter" data-toggle="dropdown">Affiliate Network<span class="spnArrow">&nbsp;</span></a>
+                                    <div class="nav-dropdpwn top0" style="display:none" id="ulNetwork">
+                                    @{
+            List<TadsAffiliate> listIQAffiliate = new List<TadsAffiliate>();
+            if (Model != null && Model["Station_Affil"] != null)
+            {
+                listIQAffiliate = (List<TadsAffiliate>)(Model["Station_Affil"]);
+            }
+            if (listIQAffiliate.Count > 0)
+            {
+                                            <select id="tadsAffiliateSelect" class="chosen-select" multiple data-placeholder="Networks">
+                                                 <option value="0"></option>
+                                                    @foreach (TadsAffiliate item in listIQAffiliate)
+                                                    {
+                                                        <option value="@item.Name">@item.Name (@item.CountFormatted)</option>  
+                                                    }
+                                                    </select>
+                                                    <div id="divAffiliateSideMenu" class=" top0" style="display:none; text-align:center;"><button onclick="SearchAffiliate()">Search</button></div>
+                                                    var jsonAfilID = Newtonsoft.Json.JsonConvert.SerializeObject(listIQAffiliate);
+                                            <script type="text/javascript"> _CurrentStationFilter = @Html.Raw(jsonAfilID); </script>
+            }
+            else
+            {
+                                            <li role="presentation" style="padding: 0px;text-align:center;">
+                                                <ul class="sideMenu sub-submenu" aria-labelledby="drop2" role="menu" id="ulNetorkList">
+                                                    <li role="presentation" class="cursorPointer"><a tabindex="-1" role="menuitem">No Filter
+                                                        Available</a></li>
+                                                </ul>
+                                            </li>
+            }                            
+        }
+                                    </div>
+                                    </li>
+                                <li class="dropdown station" onclick="toggleDiv('ulStationMain')"><a id="liStationIDFilter" data-toggle="dropdown">Stations<span class="spnArrow">&nbsp;</span></a>
+                                    <div class="nav-dropdpwn top0" style="display:none;" id="ulStationMain">
+                                    @{
+            List<TadsStation> listIQStation = new List<TadsStation>();
+            if (Model != null && Model["IQ_Station"] != null)
+            {
+                listIQStation = (List<TadsStation>)(Model["IQ_Station"]);
+            }
+            if (listIQStation.Count > 0)
+            {
+                                            <select id="tadsStationSelect" class="chosen-select" multiple data-placeholder="Stations">
+                                                 <option value="0"></option>
+                                                    @foreach (TadsStation item in listIQStation)
+                                                    {
+                                                        <option value="@item.ID:@item.Name">@item.Name (@item.CountFormatted)</option>  
+                                                    }
+                                                    </select>
+                                                    <div id="divStationSideMenu" class=" top0" style="display:none; text-align:center;"><button onclick="SearchStation()">Search</button></div>
+                                                    var jsonIndID = Newtonsoft.Json.JsonConvert.SerializeObject(listIQStation);
+                                            <script type="text/javascript"> _CurrentStationIDFilter = @Html.Raw(jsonIndID); </script>
+            }
+            else
+            {
+                                            <li role="presentation" style="padding: 0px;text-align:center;">
+                                                <ul class="sideMenu sub-submenu" aria-labelledby="drop2" role="menu" id="ulStationList">
+                                                    <li role="presentation" class="cursorPointer"><a tabindex="-1" role="menuitem">No Filter
+                                                        Available</a></li>
+                                                </ul>
+                                            </li>
+            }                            
+        }
+                                    </div>
+                                    </li>
+                                <li class="dropdown category" onclick="toggleDiv('ulCategory')"><a data-toggle="dropdown" class="dropdown-toggle" role="button"
+                                    id="drop2" href="#">Program Category<span class="spnArrow">&nbsp;</span></a>
+                                    <ul aria-labelledby="drop2" role="menu" style="display:none;" class="dropdown-menu sideMenu" id="ulCategory">
+                                        @{
+            List<TadsClass> listIQClass = new List<TadsClass>();
+
+            if (Model != null && Model["IQ_Class"] != null)
+            {
+                listIQClass = (List<TadsClass>)(Model["IQ_Class"]);
+            }
+
+            if (listIQClass.Count > 0)
+            {
+
+                foreach (TadsClass item in listIQClass)
+                {
+                                            <li role="presentation" onclick="SetClass('@item.ID','@item.Name.Replace("\'", "\\\'")');" class="cursorPointer">
+                                                <a tabindex="-1" role="menuitem">@item.Name (@item.CountFormatted)</a></li>
+                }
+            }
+            else
+            {
+                                        
+                                            <li role="presentation" class="cursorPointer"><a tabindex="-1" role="menuitem">No Filter
+                                                Available</a></li>
+            }
+
+                                        }
+                                    </ul>
+                                </li>
+                                <div style="clear: both;">
+                                </div>
+                            </ul>
+                            <br />
+                            <br />
+                            <div style="clear: both;">
+                            </div>
+                            <div style="padding-top: 25px;"><h5>Logo Filters</h5></div>
+                            <ul id="logoFilterMenu" role="navigation" class="nav floatNone sideMenuUl width100p">
+
+                                    <li class="dropdown industry" onclick="toggleDiv('ulIndustryMain')"><a id="liIndustryFilter" data-toggle="dropdown">Industries<span class="spnArrow">&nbsp;</span></a>
+                                    <div class="nav-dropdpwn top0" style="display:none;" id="ulIndustryMain">
+                                    @{
+            List<TadsIndustry> listIQIndustries = new List<TadsIndustry>();
+            if (Model != null && Model["IQ_Industry"] != null)
+            {
+                listIQIndustries = (List<TadsIndustry>)(Model["IQ_Industry"]);
+            }
+            if (listIQIndustries.Count > 0)
+            {
+                                            <select id="tadsIndustrySelect" class="chosen-select" multiple data-placeholder="Industries">
+                                                 <option value="0"></option>
+                                                    @foreach (TadsIndustry item in listIQIndustries)
+                                                    {
+                                                        <option value="@item.ID:@item.Name">@item.Name</option>  
+                                                    }
+                                                    </select>
+                                                    <div id="divIndustrySideMenu" class=" top0" style="display:none; text-align:center;"><button onclick="SearchIndustry()">Search</button></div>
+                                                    var jsonIndID = Newtonsoft.Json.JsonConvert.SerializeObject(listIQIndustries);
+                                            <script type="text/javascript"> _CurrentIndustryIDFilter = @Html.Raw(jsonIndID); </script>
+            }
+            else
+            {
+                                            <li role="presentation" style="padding: 0px;text-align:center;">
+                                                <ul class="sideMenu sub-submenu" aria-labelledby="drop2" role="menu" id="ulIndustryList">
+                                                    <li role="presentation" class="cursorPointer"><a tabindex="-1" role="menuitem">No Filter
+                                                        Available</a></li>
+                                                </ul>
+                                            </li>
+            }                            
+        }
+                                    </div>
+                                    </li>
+
+                                     <li class="dropdown ncompany" onclick="toggleDiv('ulBrandMain')"><a id="liBrandFilter" data-toggle="dropdown">Brand<span class="spnArrow">&nbsp;</span></a>
+                                    <div class="nav-dropdpwn top0" style="display:none;" id="ulBrandMain">
+                            @{
+            List<TadsBrand> listIQBrands = new List<TadsBrand>();
+
+            if (Model != null && Model["IQ_Brand"] != null)
+            {
+                listIQBrands = (List<TadsBrand>)(Model["IQ_Brand"]);
+            }
+            if (listIQBrands.Count > 0)
+            {
+                                           
+                                                <select id="tadsBrandSelect" class="chosen-select" data-placeholder="Brands">
+                                                 <option value="0"></option>
+                                                    @foreach (TadsBrand item in listIQBrands)
+                                                    {
+                                                        <option value="@item.ID:@item.Name">@item.Name</option>  
+                                                    }
+                                                    </select>
+                                                    var jsonBrandID = Newtonsoft.Json.JsonConvert.SerializeObject(listIQBrands);
+                                            <script type="text/javascript"> _CurrentBrandIDFilter = @Html.Raw(jsonBrandID); </script>
+            }
+            else
+            {
+                                        
+                                            <li role="presentation" style="padding: 0px;">
+                                                <ul class="sideMenu sub-submenu" aria-labelledby="drop2" role="menu" id="ulBrandList">
+                                                    <li role="presentation" class="cursorPointer"><a tabindex="-1" role="menuitem">No Filter
+                                                        Available</a></li>
+                                                </ul>
+                                            </li>
+            }
+        }
+        </div>
+        </li>
+
+        <li class="dropdown logo" onclick="toggleDiv('ulSearchLogoMain')"><a id="liLogoFilter" data-toggle="dropdown">Images<span class="spnArrow">&nbsp</span></a>                                                           
+             <div id="ulSearchLogoMain" class="nav-dropdpwn top0" style="display:none;">
+
+                                      @{  List<TadsBrand> listIQLogos = new List<TadsBrand>();
+                                          List<TadsLogo> ActualLogos = new List<TadsLogo>();
+                                          if (Model != null && Model["IQ_Brand"] != null)
+                                          {
+                                              listIQLogos = (List<TadsBrand>)(Model["IQ_Brand"]);
+                                              ActualLogos = (List<TadsLogo>)(Model["IQ_Logo"]);
+                                            <select id="tadsLogoSelect" class="chosen-select" data-placeholder="Images">
+                                                <option value="0"></option>
+                                            @foreach (TadsBrand item in listIQLogos)
+                                            {
+                                                <option value="@item.ID">@item.Name</option>
+                                            }
+                                            </select>
+                                            <div id="divSearchLogoSideMenu" class="nav-dropdpwn top0" style="display:none;"></div>
+                                            var jsonLogoID = Newtonsoft.Json.JsonConvert.SerializeObject(ActualLogos);
+                                            <script type="text/javascript"> _CurrentLogoIDFilter = @Html.Raw(jsonLogoID); </script>
+                                          }
+                                          else
+                                          {
+                                             <ul class="sideMenu sub-submenu" aria-labelledby="drop2" role="menu" style="padding: 0px;text-align:center;">
+                                                <li role="presentation" class="cursorPointer"><a tabindex="-1" role="menuitem">No Filter Available</a>
+                                                </li>
+                                             </ul>
+                                          }
+        }
+           </div>  
+           <div id="ulSearchLogoError" class="nav-dropdpwn top0" style="display:none;"></div>    
+       </li>                                            
+    </ul>
+                            <br />
+                            <br />
+                            <div style="clear: both;"></div>
+    <div style="padding-top: 25px;"><h5>Ad Filters</h5></div>
+    <ul id="adFilterMenu" role="navigation" class="nav floatNone sideMenuUl width100p">
+        <li class="dropdown npe" onclick="toggleDiv('ulPEMain')"><a id="liPEFilter" role="button" id="drop2" href="#">Paid/Earned<span class="spnArrow">&nbsp;</span></a>
+               <ul aria-labelledby="drop2" role="menu" class="nav-dropdpwn top0" style="display:none;" id="ulPEMain">
+
+                            @{
+                                          PaidEarnedContainer IQPaidEarned = new PaidEarnedContainer();
+
+                                          if (Model != null && Model["IQ_PaidEarned"] != null)
+                                          {
+                                              IQPaidEarned = (PaidEarnedContainer)(Model["IQ_PaidEarned"]);
+                                          }
+                                          if (IQPaidEarned.Paid != null && IQPaidEarned.Paid.Counts > 0)
+                                          {
+                                            <li role="presentation" style="padding: 0px;text-align:center;">
+                                                <ul class="sideMenu sub-submenu" aria-labelledby="drop2" role="menu" id="ulPaid">
+
+                                                        <li role="presentation" onclick="SetPE('Paid', @IQPaidEarned.Paid.CountFormatted);" class="cursorPointer">
+                                                            <a tabindex="-1" role="menuitem">Paid  </a></li>
+                                                    
+                                                </ul>
+                                            </li>
+                                          }
+                                          if (IQPaidEarned.Earned != null && IQPaidEarned.Earned.Counts > 0)
+                                          {
+                                            <li role="presentation" style="padding: 0px;text-align:center;">
+                                                <ul class="sideMenu sub-submenu" aria-labelledby="drop2" role="menu" id="ulEarned">
+                                                        <li role="presentation" onclick="SetPE('Earned', @IQPaidEarned.Paid.CountFormatted);" class="cursorPointer">
+                                                            <a tabindex="-1" role="menuitem">Earned </a></li>                                                  
+                                                </ul>
+                                            </li>
+                                          }
+                                          else
+                                          {
+                                        
+                                            <li role="presentation" style="padding: 0px;">
+                                            <ul class="sideMenu dropdown-menu" aria-labelledby="drop2" role="menu" id="ulPE" style="text-align:center;">
+                                                    <li role="presentation"><a tabindex="-1" role="menuitem">No Filter Available</a></li>
+                                            </ul>
+                                            </li>
+                                          }
+        }
+              </ul>
+        </li>              
+    </ul>
+                            <br />
+                            <br />
+                            <div style="clear: both;">
+                            </div>
+                            <div class="float-right displayNone" id="divTAdsClearAll" style="padding-top: 50px;">
+                                <a data-original-title="" onclick="ClearSearch();" id="aClearSearch" class="cursorPointer">
+                                    <img src="../../Images/clear.png" alt="Clear" id="imgClearSearch" class="float-left marginRight9"><span>Clear All</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="margin:20px 0px;">
+                         <div id="divSavedSearch" class="text-align-center paddingBottom10">
+                                <img alt="" id="imgSaveSearchLoading" class="marginRight10" src="../../Images/Loading_1.gif" />
+                         </div>
+                         <div class="clear">
+                                <a onclick="ShowSaveSearchTads();" id="aSaveSearch" class="cursorPointer">
+                                    <img src="../../Images/Save_Floppy.png" alt="Save Search" id="imgSaveSearch" class="float-left margintop3 marginRight9" /><span>Save
+                                        New Search</span></a></div>
+                    </div>
+                </div>
+
+                <br />
+                 <h5 id="h5Radio" class="radioheader-inactive" onclick="CollapseExpandLeftSection(0);">Radio</h5>
+                 <div id="divRadioSection" style="padding-left: 10px; display:none;">
+                    <input type="text" class="keywordTetBox" placeholder="Quick Finder" id="txtRadioKeyword" /><img id="imgRadioKeyword" title="Search" src="../../Images/magnifier.png" class="imgsearch" />
+                    <div id="divRadioAdvancedSearch">
+                        <input type="text" id="dpRadioFrom" readonly="readonly" class="date" />
+                        <input type="text" id="dpRadioTo" readonly="readonly" class="date" />
+                        <div class="navbar" style="margin-bottom:0px;">
+                            <ul id="narrowResultsRadioMenu" role="navigation" class="nav floatNone sideMenuUl width100p">
+                                    <li class="dropdown ndate"><a data-toggle="dropdown" class="dropdown-toggle" role="button"
+                                        href="#" id="radioDatePicker">Date<span class="spnArrow">&nbsp;</span></a>
+                                        <ul id="ulRadio" aria-labelledby="radioDatePicker" role="menu" class="dropdown-menu sideMenu ulCalenderFilter">
+                                            <li role="presentation">
+                                                <div id="divRadioCalender">
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="dropdown market" onclick="toggleDiv('divRadioMarket')"><a data-toggle="dropdown" id="radioMarket">Market<span class="spnArrow">&nbsp;</span></a>
+                                        <div id="divRadioMarket" class="nav-dropdpwn top0" style="display:none;">
+                                            <select id="radioMarketSelect" class="chosen-select" data-placeholder="Radio Market">
+                                                <option value="loading filters..."></option>
+                                            </select>
+                                        </div>
+                                    </li>
+                                    <li class="dropdown station" onclick="toggleDiv('divRadioStation')"><a data-toggle="dropdown" id="radioStation">Station<span class="spnArrow">&nbsp;</span></a>
+                                        <div id="divRadioStation" class="nav-dropdpwn top0" style="display:none;">
+                                            <select id="radioStationSelect" class="chosen-select" data-placeholder="Radio Station">
+                                                <option value="loading filters..."></option>
+                                            </select>
+                                        </div>
+                                    </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>                 
+        </div>
+        <div class="span9 span9-custom">
+            <div id="divContent" class="clear">
+                <div id="divTVContent">
+                    @if (Model != null && Model["DefaultHTML"] != null)
+                    {
+                        var html = Model["DefaultHTML"];
+                        if (html != IQMedia.WebApplication.Config.ConfigSettings.Settings.ErrorOccurred)
+                        {
+                    <div class="row-fluid row-custom">
+                        <div class="btn-group">
+                            <a class="btn dropdown-toggle no-background" data-toggle="dropdown" href="#" id="aSortDirection">Most Recent&nbsp;&nbsp;<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li class="cursorPointer"><a onclick="SortDirection('Date',false);">Most Recent</a></li>
+                                <li class="cursorPointer"><a onclick="SortDirection('Date',true);">Oldest First</a></li>
+                                <li class="cursorPointer"><a onclick="SortDirection('Market',true);">Market Ascending</a></li>
+                                <li class="cursorPointer"><a onclick="SortDirection('Market',false);">Market Descending</a></li>
+                            </ul>
+                        </div>
+                        <div class="btn-group">
+                            <a class="btn dropdown-toggle no-background" data-toggle="dropdown" href="#" id="aDuration">All&nbsp;&nbsp;<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li class="cursorPointer"><a onclick="GetResultOnDuration(0);">All</a></li>
+                                <li class="cursorPointer"><a onclick="GetResultOnDuration(1);">Last 24 Hours</a></li>
+                                <li class="cursorPointer"><a onclick="GetResultOnDuration(2);">Last Week</a></li>
+                                <li class="cursorPointer"><a onclick="GetResultOnDuration(3);">Last Month</a></li>
+                                <li class="cursorPointer"><a onclick="GetResultOnDuration(4);">Last 3 Months</a></li>
+                                <li disabled><a>Custom</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                        }
+                    }
+                    <!--/row-->
+                    <div id="divMessage" class="notificationdiv">
+                        <span id="spnNotification"></span>
+                    </div>
+                    <div id="divActiveFilter" class="row-fluid filter">
+                    </div>
+                    <div id="divPreviousNext" class="nextprevdiv">
+                        <span id="lblRecords" style="float: left; padding: 5px 10px 0 0;"></span><a href="javascript:;"
+                            onclick="SearchResultPaging(false);" id="btnPreviousPage" class="nextprevbtn">
+                            <img src="~/Images/prev.png" /></a> <a href="javascript:;" onclick="SearchResultPaging(true);"
+                                id="btnNextPage" class="nextprevbtn">
+                                <img src="../../Images/next.png" /></a>
+                    </div>
+                    <div style="clear: both;">
+                    </div>
+                    <div id="divTVScrollContent" class="mainContent">
+                        <div class="row-fluid posts" id="ulTAdsResults">
+                            @{
+                    
+                    if (Model != null && Model["DefaultHTML"] != null)
+                    {
+                        var html = Model["DefaultHTML"];
+                                @Html.Raw(@html)
+                        if (tAdsTempData != null && tAdsTempData.HasMoreResultPage)
+                        {
+                                <script type="text/javascript">
+                                    $("#btnNextPage").show();
+                                </script>
+                        }
+                        if (tAdsTempData != null && tAdsTempData.RecordNumber != null)
+                        {
+                            var recnum = tAdsTempData.RecordNumber;
+                                <script type="text/javascript">
+                                    $("#lblRecords").html('@recnum');
+                                </script>
+                        }
+
+                    }
+                    if (Model != null && Model["DefaultLogo"] != null)
+                    {
+                        <script type="text/javascript">
+                            PopulateDefaultLogos("<%#@(Model["DefaultLogo"])%>");
+                        </script>
+                    }
+                    if (Model != null && Model["DefaultAds"] != null)
+                    {
+                        <script type="text/javascript">
+                            PopulateDefaultAds("<%#@(Model["DefaultAds"])%>");
+                        </script>
+                    }
+                            }
+                        </div>
+                        <div align="center" id="divShowResult">
+                        </div>
+                        <div id="divResultMain" class="heightWidth0">
+                            <div id="divResultHeader">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                    @if (sessionInformation.Isv4TimeshiftRadioAccess)
+                    {
+                        <div id="divRadioContent" style="display: none;">
+                            <div class="row-fluid row-custom">
+                                <!--/span-->
+                                <div class="btn-group">
+                                    <a class="btn dropdown-toggle no-background" data-toggle="dropdown" href="#" id="aRadioSortDirection">
+                                        Most Recent&nbsp;&nbsp;<span class="caret"></span></a>
+                                    <ul class="dropdown-menu">
+                                        <li class="cursorPointer"><a onclick="RadioSortDirection(false);">Most Recent</a></li>
+                                        <li class="cursorPointer"><a onclick="RadioSortDirection(true);">Oldest First</a></li>
+                                    </ul>
+                                </div>
+                                <div class="btn-group">
+                                    <a class="btn dropdown-toggle no-background" data-toggle="dropdown" href="#" id="aRadioDuration">
+                                        All&nbsp;&nbsp;<span class="caret"></span></a>
+                                    <ul class="dropdown-menu">
+                                        <li class="cursorPointer"><a onclick="GetRadioResultOnDuration(0);">All</a></li>
+                                        <li class="cursorPointer"><a onclick="GetRadioResultOnDuration(1);">Last 24 Hours</a></li>
+                                        <li class="cursorPointer"><a onclick="GetRadioResultOnDuration(2);">Last Week</a></li>
+                                        <li class="cursorPointer"><a onclick="GetRadioResultOnDuration(3);">Last Month</a></li>
+                                        <li class="cursorPointer"><a onclick="GetRadioResultOnDuration(4);">Last 3 Months</a></li>
+                                        <li disabled><a>Custom</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <!--/row-->
+                            <div id="divRadioMessage" class="notificationdiv">
+                                <span id="spnRadioNotification"></span>
+                            </div>
+                            <div id="divRadioActiveFilter" class="row-fluid filter">
+                            </div>
+                            <div id="divRadioPreviousNext" class="nextprevdiv">
+                                <span id="lblRadioRecords" style="float: left; padding: 5px 10px 0 0;"></span><a
+                                    href="#" onclick="SearchRadioResultPaging(false);" id="btnRadioPreviousPage"
+                                    class="nextprevbtn">
+                                    <img src="../../Images/prev.png" onmouseover="" src="../../Images/prev.png" onmouseout=""
+                                        src="../../Images/prev-hover.png"></a> <a href="#" onclick="SearchRadioResultPaging(true);"
+                                            id="btnRadioNextPage" class="nextprevbtn">
+                                            <img src="../../Images/next.png" onmouseover="" src="../../Images/next.png" onmouseout=""
+                                                src="../../Images/next-hover.png"></a>
+                            </div>
+                            <div style="clear: both;">
+                            </div>
+                            <div id="divRadioScrollContent" class="mainContent">
+                                <div id="divRadioResults" class="row-fluid posts">
+                                </div>
+                            </div>
+                        </div>
+                    }
+            </div>
+        </div>
+        }
+        else
+        {
+            <div class="mainerrorDiv">@IQMedia.WebApplication.Config.ConfigSettings.Settings.PageLoadErrorMessage</div>
+        }
+    </div>
+</div>
+@if (ViewBag.IsSuccess)
+{
+    <div id="divUpdateSavedSearchPopup" class="modal fade hide resizable modalPopupDiv">
+        <div class="closemodalpopup">
+            <img id="imgUpdateSavedSearchPopup" src="~/images/close-icon.png" alt="close" class="popup-top-close"
+                onclick="ClosePopUp('divUpdateSavedSearchPopup');" /></div>
+        <div style="padding-top: 20px;">
+            <form class="form-horizontal">
+            <div style="padding-bottom: 5px; border-bottom: 1px solid #dadada; margin: 1px 15px 1px 15px;
+                font-weight: bold;">
+                Update Saved Search
+            </div>
+            <br />
+            <div class="control-group">
+                <label class="control-label" for="spnUpdateSavedSearchNote">
+                </label>
+                <div class="controls">
+                    <span id="spnUpdateSavedSearchPopupNote" class="RedFont"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="txtSavedSearchTitle">
+                    Title</label>
+                <div class="controls">
+                    <input type="hidden" id="hdnSavedSearchID" value="0" />
+                    <input type="text" id="txtSavedSearchTitle" placeholder="Saved Search Title" style="width: 85%;" />
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="controls">
+                    <button type="button" id="btnSaveSearchCancel" onclick="ClosePopUp('divUpdateSavedSearchPopup');"
+                        class="cancelButton">
+                        Cancel</button>
+                    <button type="button" id="btnEditSavedSearch" onclick="UpdateTimeshiftSavedSearch();"
+                        class="button">
+                        Update</button>
+                    <img alt="" id="imgUpdateSaveSearchLoading" class="marginLeft10 displayNone" src="../../Images/Loading_1.gif" />
+                </div>
+            </div>
+            </form>
+        </div>
+    </div>
+}

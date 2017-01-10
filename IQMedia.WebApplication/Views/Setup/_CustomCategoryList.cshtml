@@ -1,0 +1,76 @@
+﻿@model List<IQMedia.Model.CustomCategoryModel>
+<script language="javascript" type="text/javascript">
+    $("#divSetupCustomCategoryList_ScrollContent").css("height", documentHeight - 150);
+    $("#divSetupCustomCategoryList_ScrollContent").mCustomScrollbar({
+        advanced: {
+            updateOnContentResize: true,
+            autoScrollOnFocus: false
+        }
+    });
+</script>
+@if (Model != null && Model.Count > 0)
+{
+    <a href="javascript:void(0);" onclick="GetAddEditCustomCategory(0);">Add Category</a>
+    <div id="divSetupCustomCategoryList_ScrollContent">
+        <div style="padding-right: 15px;">
+            <table width="100%" class="timeshiftpg" cellpadding="0" cellspacing="0" style="margin-top: 15px;">
+            <tr>
+                <th style="text-align: center; width: 10%;">
+                </th>
+                <th style="text-align: center; width: 10%;">
+                </th>
+                <th style="text-align: left; width: 25%;">
+                    Category Name
+                </th>
+                <th style="text-align: left; width: 55%;">
+                    Description
+                </th>
+            </tr>
+            @foreach (IQMedia.Model.CustomCategoryModel item in Model)
+            {
+                <tr>
+                    <td style="text-align: center;">
+                        @if (string.Compare(item.CategoryName.ToUpper(), "Default", true) != 0)
+                        {
+                            <a href="javascript:void(0);" onclick="GetAddEditCustomCategory('@item.CategoryKey');">
+                                Edit</a>
+                        }
+                    </td>
+                    <td style="text-align: center;">
+                        @if (string.Compare(item.CategoryName.ToUpper(), "Default", true) != 0)
+                        {
+                            <a href="javascript:void(0);" onclick="DeleteCustomCategory('@item.CategoryKey');">Delete</a>
+                        }
+                    </td>
+                    <td style="text-align: left;">
+                        @item.CategoryName
+                    </td>
+                    <td style="text-align: left;">
+                        @item.CategoryDescription
+                    </td>
+                </tr> 
+            }
+        </table>
+        </div>
+    </div>
+}
+else
+{
+    <table width="100%" style="text-align: center;">
+        <tr>
+            <td>
+                <span style="background: none repeat scroll 0 0 #F2F2F2; border: 1px solid #DCDCDC;
+                    margin-bottom: 10px; margin-right: 10px; padding: 3px 10px 3px 6px; position: relative;
+                    width: 300px !important;">No Results found</span>
+            </td>
+        </tr>
+    </table>
+    
+}
+<div id="divCustomCategoryAddEditPopup" class="modal fade hide resizable modalPopupDiv">
+    <div class="closemodalpopup">
+        <img id="imgCloseEditPopup" src="~/images/close-icon.png" alt="close" class="popup-top-close"
+            onclick="CancelCustomCategoryAddEditPopup();" /></div>
+    <div id="divCustomCategoryAddEditHTML" style="padding-top: 20px;">
+    </div>
+</div>

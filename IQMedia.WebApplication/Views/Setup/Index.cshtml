@@ -1,0 +1,236 @@
+﻿@{
+    ViewBag.Title = "iQ media Setup";
+    Layout = "~/Views/Shared/_IQMediaMasterInner.cshtml";
+
+    IQMedia.Model.ActiveUser sessionInformation = IQMedia.WebApplication.Utility.ActiveUserMgr.GetActiveUser();
+}
+<link href="~/Css/Timeshift.css" type="text/css" rel="Stylesheet" />
+<link rel="stylesheet" href="~/Css/Chosen/chosen.css" />
+<script src="~/Scripts/Setup.js?v=1.4" type="text/javascript"></script>
+<script src="~/Scripts/jstree.js"></script>
+@if (sessionInformation.Isv4IQAgentAccess)
+{
+    <script src="~/Scripts/IQAgentSetup.js?v=4.2" type="text/javascript"></script>
+    <script src="~/Scripts/IQNotification.js?v=1.2" type="text/javascript"></script>
+}
+@if (sessionInformation.Isv5AnalyticsAccess)
+{
+    <script src="~/Scripts/CampaignSetup.js?v=1.1" type="text/javascript"></script>
+}
+<script src="~/Scripts/ReportFolder.js?v=1.0" type="text/javascript"></script>
+<script src="~/Scripts/ReportImage.js?v=1.3" type="text/javascript"></script>
+<script src="~/Scripts/SetupFliq.js?v=1.3" type="text/javascript"></script>
+<script src="~/Scripts/JobStatus.js?v=1.3" type="text/javascript"></script>
+<script src="~/Scripts/jquery.multi-select.js?v=1.0" type="text/javascript"></script>
+@*<script src="~/Scripts/chosen.jquery.min.js?v=1.0" type="text/javascript"></script>*@
+<script src="~/Scripts/chosen.jquery.js?v=1.1" type="text/javascript"></script>
+<script src="~/Scripts/jquery.form.js?v=1.0" type="text/javascript"></script>
+<script type="text/javascript" src="~/Scripts/jquery.ui.rlightbox.min.js?v=1.0"></script>
+<script language="javascript" type="text/javascript" src="~/Scripts/enscroll.js?v=1.0"></script>
+<script type="text/javascript" src="~/Scripts/Account.js"></script>
+
+<link type="text/css" rel="stylesheet" href="~/Css/lightbox.min.css" />
+<link type="text/css" rel="stylesheet" href="~/Css/jstree-style.css?v=1.1" />
+<link type="text/css" rel="stylesheet" href="~/Css/multi-select.css" />
+@*<script src="~/Scripts/jquery.Jcrop.js?v=1.0" type="text/javascript"></script>*@
+<script src="~/Scripts/jquery.imgareaselect.js?v=1.0" type="text/javascript"></script>
+<link type="text/css" rel="stylesheet" href="~/Css/imgareaselect-animated.css" />
+<style type="text/css">
+    #divIQAgentSetupIQNotificationHTML select, #divIQAgentSetupIQNotificationHTML input[type="text"]
+    {
+        margin: 0px;
+    }
+    #divIQAgentSetupIQNotificationHTML input[type="button"]
+    {
+        width: 100px;
+    }
+    
+    .row-custom .dropdown-menu
+    {
+        width: 190px !important;
+    }
+    
+    .twitterRuleTxt
+    {
+        display: block;
+        margin-left: 30px;
+        width:90%;
+    }
+    
+    .twitterRuleError
+    {
+        border: 1px solid red;
+    }
+    
+    .twitterRuleOptions li
+    {
+        display: inline-block;
+    }
+    
+    .twitterRuleOptions input
+    {
+        margin: -3px 3px 0px 15px;
+    }
+    
+    .tvEyesRuleTxt
+    {
+        display: block;
+        margin-left: 30px;
+        width:90%;
+    }
+</style>
+@{
+    string strImageFileTypes = string.Join("', '", @System.Configuration.ConfigurationManager.AppSettings["ClientReportImageExtensions"].Split(new char[] { ',' }));
+}
+<script language="javascript" type="text/javascript">
+    var imageFileTypes = ['@Html.Raw(strImageFileTypes)'];
+    var JS = '@Request.QueryString["JS"]' != null ? '@Request.QueryString["JS"]' : false;
+    if (JS) {
+        LoadJobStatusPartial();
+    }
+</script>
+<div class="container container_custom">
+    <div class="row-fluid" id="divRowFluid">
+        <div class="span3 minheight500">
+            <div class="well sidebar-nav">
+                <h5>
+                    Setup</h5>
+                <div class="navbar">
+                    <ul role="navigation" class="nav floatNone sideMenuUl width100p">
+                        <li class="dropdown CustomCategory" onclick="GetCustomCategoryContent();"><a data-toggle="dropdown"
+                            class="dropdown-toggle" role="button" id="drop1" href="#">Category<span class="spnArrow">&nbsp;</span></a>
+                        </li>
+                        @if (sessionInformation.Isv4IQAgentAccess)
+                        {
+                            <li class="dropdown iqagent-setup" onclick="GetIQAgentSetupContent(0);">
+                                <a data-toggle="dropdown" class="dropdown-toggle" role="button" id="drop2" href="#">
+                                    IQ Agent Setup<span class="spnArrow">&nbsp;</span>
+                                </a>
+                            </li>
+                            <li class="dropdown agentnotification" onclick="GetIQNotification();">
+                                <a data-toggle="dropdown" class="dropdown-toggle" role="button" id="drop2" href="#">
+                                    IQ Agent Notification<span class="spnArrow">&nbsp;</span>
+                                </a>
+                            </li>
+                        }
+                        @if (sessionInformation.Isv5AnalyticsAccess)
+                        {
+                            <li class="dropdown campaignsetup" onclick="GetCampaignSetupContent();">
+                                <a data-toggle="dropdown" class="dropdown-toggle" role="button" id="drop2" href="#">
+                                    Campaign Setup<span class="spnArrow">&nbsp;</span>
+                                </a>
+                            </li>
+                        }
+                        @if (sessionInformation.Isv4CustomImage)
+                        {
+                            <li class="dropdown custom-image" onclick="GetReportImages(0);"><a data-toggle="dropdown"
+                                class="dropdown-toggle" role="button" id="drop2" href="#">Custom Images<span class="spnArrow">&nbsp;</span></a>
+                            </li>
+                        }
+                        @if (sessionInformation.Isv4CustomSettings)
+                        {
+                            <li class="dropdown customsetup" onclick="GetClientCustomSettings();"><a data-toggle="dropdown"
+                                class="dropdown-toggle" role="button" id="drop2" href="#">Custom Settings<span class="spnArrow">&nbsp;</span></a>
+                            </li>
+                        }
+                        @if (sessionInformation.IsfliQAdmin)
+                        {
+                            <li class="dropdown fliq_client" onclick="GetClientApplication();"><a data-toggle="dropdown"
+                                class="dropdown-toggle" role="button" id="drop2" href="#">fliQ Client App Mapping<span
+                                    class="spnArrow">&nbsp;</span></a> </li>
+                            <li class="dropdown fliq_customer" onclick="GetCustomerApplication();"><a data-toggle="dropdown"
+                                class="dropdown-toggle" role="button" id="drop2" href="#">fliQ Customer App Mapping<span
+                                    class="spnArrow">&nbsp;</span></a> </li>
+                            <li class="dropdown fliq_status" onclick="GetFliqUploads();"><a data-toggle="dropdown"
+                                class="dropdown-toggle" role="button" id="drop2" href="#">fliQ Upload Status<span
+                                    class="spnArrow">&nbsp;</span></a> </li>
+                        }
+                        <li class="dropdown reportfile" onclick="GetClientReportFolder();"><a data-toggle="dropdown"
+                            class="dropdown-toggle" role="button" id="drop2" href="#">Report Folder<span class="spnArrow">&nbsp;</span></a>
+                        </li>
+                        <li class="dropdown jobstatus" onclick="LoadJobStatusPartial();"><a data-toggle="dropdown"
+                            class="dropdown-toggle" role="button" id="drop2" href="#">Job Status<span class="spnArrow">&nbsp;</span></a>
+                        </li>
+                        @if (sessionInformation.Isv4Google)
+                        {
+                            <li class="dropdown googlesignin" onclick="LoadGoogleSignIn();"><a data-toggle="dropdown"
+                                class="dropdown-toggle" role="button" id="drop2" href="#">Google Sign-In<span class="spnArrow">&nbsp;</span></a>
+                            </li>
+                        }
+                        <!--
+                        @if (sessionInformation.Isv4SM)
+                        {
+                            <li class="dropdown custom-settings" onclick="LoadInstagramSetup();"><a data-toggle="dropdown"
+                                class="dropdown-toggle" role="button" id="drop2" href="#">Instagram Setup<span class="spnArrow">&nbsp;</span></a>
+                            </li>
+                        }
+                        -->
+                        <li class="dropdown change-pwd" onclick="GetChangePwdFrm();"><a data-toggle="dropdown"
+                            class="dropdown-toggle" role="button" href="javascript:void();">Change Password<span class="spnArrow">&nbsp;</span></a> </li>
+                    </ul>
+                </div>
+            </div>
+            <!--/.well -->
+        </div>
+        <!--/span-->
+        <div class="span9 span9-custom" id="divMainContainer">
+            <div id="divMessage" class="notificationdiv">
+                <span id="spnNotification"></span>
+            </div>
+            <div style="clear: both;">
+            </div>
+            <div id="divMainContent" class="mainContent">
+                <div class="row-fluid posts" id="divSetupContent">
+                </div>
+            </div>
+        </div>
+        <!--/span-->
+        @*  <div class="span3 span3-custom" style="display: none;" id="divThirdSection">
+            This is 3rd section
+        </div>*@
+    </div>
+    <!--/row-->
+</div>
+@if (sessionInformation.Isv4IQAgentAccess)
+{
+    <div id="divIQAgentSetupAddEditPopup" class="modal fade hide resizable modalPopupDiv">
+        <div class="closemodalpopup">
+            <img src="~/images/close-icon.png" alt="close" class="popup-top-close" onclick="CloseIQAgentSetupPopup();" /></div>
+        <div style="padding: 20px;">
+            @{ Html.RenderAction("_FillDropDownIQAgentSetup", "Setup"); }
+        </div>
+    </div>
+    <div id="divIQAgentSetupdisplayXMLPopup" class="modal fade hide resizable modalPopupDiv">
+        <div class="closemodalpopup">
+            <img src="~/images/close-icon.png" alt="close" class="popup-top-close" onclick="CancelIQAgentPopup('divIQAgentSetupdisplayXMLPopup');" /></div>
+        <div style="padding: 20px;">
+            <div class="modalpopheadertitle">
+                IQAgent Search Request XML
+            </div>
+            <div>
+                <textarea id="textareaIQAgentSetupDisplayXML" rows="15" cols="50" style="width: 100%"
+                    disabled="disabled">
+            </textarea>
+            </div>
+        </div>
+    </div>
+    
+    <div id="divIQAgentSetupIQNotificationPopup" class="modal fade hide resizable modalPopupDiv">
+        <div class="closemodalpopup">
+            <img src="~/images/close-icon.png" alt="close" class="popup-top-close" onclick="CancelIQAgentPopup('divIQAgentSetupIQNotificationPopup');" /></div>
+        <div style="padding: 20px;">
+            <div class="modalpopheadertitle">
+                IQ Notifications
+            </div>
+            <div id="divIQNotificationMessage" style="color: #ff0000; margin-top: 5px; margin-bottom: 5px;
+                display: none">
+            </div>
+            <input type="hidden" id="hdnIQAgentSearchRequestID" value="" />
+            <div id="divIQAgentSetupIQNotificationHTML">
+            </div>
+        </div>
+    </div>
+    
+    
+    
+}

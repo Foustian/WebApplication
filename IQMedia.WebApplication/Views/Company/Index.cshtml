@@ -1,0 +1,209 @@
+﻿@{
+    
+    ViewBag.Title = "iQ media Company";
+    Layout = "~/Views/Shared/_IQMediaMasterStaticPages_New.cshtml";   
+}
+@section HeadSection
+{
+    <link rel="Stylesheet" type="text/css" href="~/Css/bootstrap3/Company.css" />
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#liAbout').siblings().removeClass('activeAbout')
+            $('#liAbout').addClass('activeAbout');
+
+            $(window).scroll(function () {
+                var NTBright = $('.NTBright').offset().top + 100;
+                var BMIleft = $('.BMIleft').offset().top;
+                var INVright = $('.INVright').offset().top;
+                var GSright = $('.GSright').offset().top;
+                var GROWright = $('.GROWright').offset().top;
+                var bottom_of_window = $(window).scrollTop() + $(window).height();
+
+                if (bottom_of_window > NTBright) {
+                    $('.NTBright').fadeTo(1000, 1);
+                }
+                bottom_of_window = bottom_of_window - 300;
+                if (bottom_of_window > BMIleft) {
+                    $('.BMIleft').fadeTo(1000, 1);
+                }
+                bottom_of_window = bottom_of_window;
+                if (bottom_of_window > INVright) {
+                    $('.INVright').fadeTo(1000, 1);
+                }
+                bottom_of_window = bottom_of_window;
+                if (bottom_of_window > GSright) {
+                    $('.GSright').fadeTo(1000, 1);
+                    $('.MUOright').fadeTo(1000, 1);
+                }
+                bottom_of_window = bottom_of_window;
+                if (bottom_of_window > GROWright) {
+                    $('.GROWright').fadeTo(1000, 1);
+                }
+            });
+        });
+    </script>
+}
+@section TopSection
+{
+    <!-- Main jumbotron for a primary marketing message or call to action -->
+    <div class="company-banner">
+		<div class="container company-in-width company-iq">
+			<div class="col-md-12">
+				<div class="col-sm-5 company-lr0">
+					<div class="Company-round-link">
+						<img alt="" src="/Images/home_new/Company/company-hd.png">
+					</div>
+				</div>
+				<div class="col-sm-7 company-lr0"><span class="hd-right-text">THE BIG DATA SOLUTION
+25 YEARS IN THE MAKING</span>
+				</div>
+			</div>
+		</div>
+	</div>
+}
+<div class="jumbotron Black-box">
+		<div class="container company-in-width">
+			<div class="col-md-12 text-left WhiteTitle">COMPANY</div>
+		</div>
+	</div>
+
+<div class="jumbotron white-box-noborder padding-small">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-12 col-md-12">
+        <div class="row">
+        	
+            
+          <div class="col-sm-12 col-md-12 col-lg-12">            
+            <div class="clearfix">
+            	<div class="text-center CompanyBlueText">We love to solve hard problems. Our customers mean everything to us and our employees collectively generate value that none of us could do alone.</div>
+                <div class="text-center CompanyGrayText mtp2">Revolutions are often born from an outlier -- driven by someone who takes a very different approach. We felt we could provide that different approach to media monitoring. Most importantly, we wanted to advance the old monitoring platforms into the "Media Intelligence Age." The revolution of iQ media was born in an office over John's garage in rural Pennsylvania. </div>
+            
+              
+</div>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container" id="divMainContent">
+    <div class="row">
+      <div class="col-sm-12 RoundMain">	  
+	  <canvas id="canvas" width=0 height=0></canvas>
+    	<div class="NTBBox">
+        	<div class="NTBYear">1989</div>
+        	<div class="NTBleft"><img src="/Images/home_new/Company/25years.png" alt="" id="1"></div>
+            <div class="NTBright"><h3>A Napkin and Two Barstools</h3><p>John and Lakshmi teamed up nearly 25 years ago, forging an inseparable relationship that made them pioneers of big data before it was a trendy word to use. Recognizing that there were unique technology challenges in the media monitoring industry that nobody was trying to overcome, John and Lakshmi felt that these issues were solvable with the same approaches to data models and infrastructures that had been developed for the banking industry. The two of them developed the entire plan of iQ media on the bar napkin.<a href="http://blog.iqmediacorp.com/intro-to-the-iq-media-blog-the-beginning-of-media-intelligence/" target="_blank" class="highlight-blue"> Learn more about their story.</a></p></div>
+        </div>
+        <div class="BMIBox">
+        <div class="BMIYear"><div class="BMITooltip visible-lg"><img src="/Images/home_new/Company/goodbye_bubble.png" alt=""></div>2010</div>
+        <div class="BMIright"><img src="/Images/home_new/Company/garage.png" alt="" id="2"></div>
+        	<div class="BMIleft"><h3>The Birth of Media Intelligence</h3><p>Revolutions often come from an outlier, driven by someone who takes a very different approach. John and Lakshmi felt they could provide this different approach to media monitoring. Most importantly, they wanted to advance the old monitoring platforms into the "Media Intelligence Age." The revolution of iQ media and the media intelligence age was born in an office over John's garage in rural Pennsylvania in 2010.</p></div>
+        	
+            
+        </div>	
+    	<div class="INVBox">
+         <div class="INVYear">2011</div>
+        	<div class="INVleft"><img src="/Images/home_new/Company/gmh.png" alt=""></div>
+            <div class="INVright"><h3>iQ Investment</h3><p>In 2011, iQ media received its first investment from GMH Ventures. iQ showed promise and innovation which captured GMH's interest and ultimately resulted in their involvement in our evolution. They were able to foresee the growth and expansion that was in store for iQ and knew they had to take this opportunity to invest in the future of media intelligence.</p></div>
+        </div>
+        <div class="GSBox">
+       		 <div class="GSYear">2012</div>
+        	<div class="GSleft"><img src="/Images/home_new/Company/doylestown.png" alt=""></div>
+            <div class="GSright"><h3>Garage Sale</h3><p>2012 ushered in big changes and improvements and spurred the decision to move the company from above John's garage to an office in Doylestown, PA. During this time, the company continued to grow and develop. Advancing in technology helped begin to make a name for iQ media among the top names in media monitoring.</p></div>
+        </div>
+        <div class="MUOBox">
+        	<div class="MUOYear">2014</div>
+        	<div class="MUOleft"><img src="/Images/home_new/Company/conshy.png" alt=""></div>
+            <div class="MUOright"><h3>Moving Up and Out</h3><p>In 2014, iQ media moved down the turnpike from Doyelstown to an office right outside Philadelphia in Conshohocken, PA. With the move to a larger office space, iQ continued to grow and cultivate itself, stepping into the forefront of the media monitoring industry and revolutionizing the media intelligence age.</p></div>
+        </div>
+        <div class="GROWBox">
+        	<div class="GROWYear"><div class="GROWTooltip visible-lg"><img src="/Images/home_new/Company/hello_bubble.png" alt=""></div>2015</div>
+        	<div class="GROWleft"><img src="/Images/home_new/Company/philabundance.png" alt=""></div>
+            <div class="GROWright"><h3>200% and growing</h3><p>Since the move to Conshohocken, the team has continued to flourish. Departments are constantly expanding as the company has jumped from 13 employees to over 40 in 2014. Using our numbers for good, we have taken the opportunity to give back and help out in our community. iQ media offers and opportunity to thrive and advance within the company, and we look for innovation and determination in potential candidates. Find out what opportunities are available at iQ on our <a href="~/Careers" class="highlight-blue">Careers</a> page.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+<script type="text/javascript">
+
+    $(window).load(function () {
+
+        if ($(window).width() >= 1024) {
+            CanvasRenderingContext2D.prototype.dashedLine = function (x1, y1, x2, y2, dashLen) {
+                if (dashLen == undefined) dashLen = 2;
+                this.moveTo(x1, y1);
+
+                var dX = (x2 - x1);
+                var dY = (y2 - y1);
+                var dashes = Math.floor(Math.sqrt(dX * dX + dY * dY) / dashLen);
+                var dashX = dX / dashes;
+                var dashY = dY / dashes;
+
+                var q = 0;
+                while (q++ < dashes) {
+                    x1 += dashX;
+                    y1 += dashY;
+                    this[q % 2 == 0 ? 'moveTo' : 'lineTo'](x1, y1);
+                }
+                this[q % 2 == 0 ? 'moveTo' : 'lineTo'](x2, y2);
+            };
+            //And you can use this as 
+
+            var $1 = $(".NTBBox");
+            var $2 = $(".BMIBox");
+            var $3 = $('.INVBox');
+            var $4 = $('.GSBox');
+            var $5 = $('.MUOBox');
+            var $6 = $('.GROWBox');
+            var $2img = $(".BMIright>img");
+            var $3img = $(".INVleft>img");
+            var $4img = $(".GSleft>img");
+            var $5img = $(".MUOleft>img");
+            var $6img = $(".GROWleft>img");
+
+            var pos1 = $1.position();
+            var pos2 = $2.position();
+            var pos3 = $3.position();
+            var pos4 = $4.position();
+            var pos5 = $5.position();
+            var pos6 = $6.position();
+            var pos2img = $2img.position();
+            var pos3img = $3img.position();
+            var pos4img = $4img.position();
+            var pos5img = $5img.position();
+            var pos6img = $6img.position();
+
+            var canvas = document.getElementById("canvas");
+            var ctx = canvas.getContext("2d");
+            canvas.width = $('#divMainContent').width();
+            canvas.height = $('#divMainContent').height();
+            ctx.lineWidth = 1;
+
+            //ctx.dashedLine(100, 500,500, 100,5);      
+            //ctx.dashedLine(pos2.left+$2.width()-3, pos2.top+$2.height()/2,pos1.left+5, pos1.top+$1.height()/2,5);      
+
+            //ctx.dashedLine(pos1.left-20, pos1.top+$1.height()/2,pos2.left+$2.width(), pos2.top+$2.height()/2,5);      
+            ctx.dashedLine(pos1.left - 20, pos1.top + $1.height() / 2, pos2img.left + $2img.width() + 10, pos2.top + ($2img.height() / 2), 5);
+
+            //ctx.dashedLine(pos2.left+$2.width(), pos2.top+$2.height()/2,pos3.left-20, pos3.top+$3.height()/2,5);      
+            ctx.dashedLine(pos2img.left + $2img.width() + 10, (pos2.top + ($2img.height() / 2)), (pos3.left - 20), (pos3.top + ($3img.height() / 2)), 5);
+
+            //ctx.dashedLine(pos3.left-20, pos3.top+$3.height()/2,pos4.left+$('.GSleft>img').width()-20, pos4.top+10,5);      
+            ctx.dashedLine((pos3.left - 20), (pos3.top + ($3img.height() / 2)), pos4img.left + $4img.width() - 10, pos4.top + 10, 5);
+
+            //ctx.dashedLine(pos4.left+$('.GSleft>img').width()-20, pos4.top+10,pos5.left-20, pos5.top+$5.height()/2,5);      
+            ctx.dashedLine(pos4img.left + $4img.width() - 10, pos4.top + 10, (pos5.left - 20), (pos5.top + ($5img.height() / 2)), 5);
+
+            //ctx.dashedLine(pos5.left-20, pos5.top+$5.height()/2,pos6.left-500, pos6.top+$6.height()+500,5);      
+
+            //ctx.dashedLine(pos6.left, pos6.top+100,pos5.left-20, pos5.top+$5.height()/2,5);      
+            ctx.dashedLine((pos5.left - 20), (pos5.top + ($5img.height() / 2)), (pos6.left + $6img.width() - 25), (pos6.top + 50), 5);
+
+            ctx.strokeStyle = "#e60177";
+            ctx.stroke();
+        }
+    });
+</script>

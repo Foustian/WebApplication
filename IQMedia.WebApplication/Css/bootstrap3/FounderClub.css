@@ -1,0 +1,186 @@
+@charset "utf-8";
+/* CSS Document */
+
+html {
+	-webkit-text-size-adjust: none; /* Prevent font scaling in landscape */
+}
+body{ font-family:'open_sansregular'; padding-top: 0px;}
+h1, h2, h3, h4, h5, h6, ul, ol, li, form, input, textarea, select {
+	margin: 0;
+	padding: 0;
+}
+
+img {
+	border: 0;
+}
+a {
+	text-decoration: none;
+	outline: none !important;
+	color: #09f;
+	outline-color: transparent !important;
+}
+a:link, a:hover {
+	text-decoration: none;
+	color: #09f;
+}
+
+.mtp0 {
+	margin-top:0px;
+}
+.mtp5 {
+	margin-top:5px;
+}
+.mtp10 {
+	margin-top:10px;
+}
+.mtp15 {
+	margin-top:15px;
+}
+.mtp20 {
+	margin-top:20px;
+}
+.mtp25 {
+	margin-top:25px;
+}
+.mbp0 {
+	margin-bottom:0px;
+}
+.mbp5 {
+	margin-bottom:5px;
+}
+.mbp10 {
+	margin-bottom:10px;
+}
+.mbp15 {
+	margin-bottom:15px;
+}
+.mbp20 {
+	margin-bottom:20px;
+}
+.mbp25 {
+	margin-bottom:25px;
+}
+.ptp {
+	padding-top:0px;
+}
+.ptp5 {
+	padding-top:5px;
+}
+.ptp10 {
+	padding-top:10px;
+}
+.ptp15 {
+	padding-top:15px;
+}
+.ptp20 {
+	padding-top:20px;
+}
+.ptp25 {
+	padding-top:25px;
+}
+.ptp45 {
+	padding-top:45px;
+}
+.ptp30 {
+	padding-top:30px;
+}
+.ptp5 {
+	padding-top:5px;
+}
+.pbp {
+	padding-bottom:0px;
+}
+.pbp5 {
+	padding-bottom:5px;
+}
+.pbp10 {
+	padding-bottom:10px;
+}
+.pbp15 {
+	padding-bottom:15px;
+}
+.pbp20 {
+	padding-bottom:20px;
+}
+.pbp25 {
+	padding-bottom:25px;
+}
+.wrapper{ background:url(../../Images/home_new/FounderClub/body-bg.png) repeat-x bottom center; clear:both; padding-bottom:40px;}
+/*===========================================
+foundersclub
+============================================*/
+.container{ max-width:900px;}
+.LRSpace{ padding-left:60px; padding-right:60px;}
+.TSpace{ margin-top:40px;}
+
+.logo{ display:block; text-align:right; margin-bottom:12px;  margin-top:20px; }
+.logo img{ display:inline-block;}
+.three-img{ display:block; margin-top:0px; }
+
+.bigTitle{font:29px/32px 'open_sanssemibold'; color:#53BDEC; text-align:right; margin-top:50px;}
+.bigTitle span{font:14px/15px 'open_sanslight'; color:#EE2375; font-style:italic; display:block; clear:both; margin-top:10px;}
+.GreeTitle{font:22px/24px 'open_sanssemibold'; color:#C1D72E; margin-bottom:2px;}
+.mr50{ margin-right:0px;}
+
+.topimg{position:absolute; left:0px; padding:0px;}
+.topimg img{ width:68%;}
+
+ul.ClientList{ list-style:none; margin:0px; padding:0px; text-align:center; }
+ul.ClientList li{ display:inline-block; vertical-align:top; width:100%; margin-left:0px; margin-right:0px; min-height:200px; margin-bottom:12px; }
+ul.ClientList li.clientimg{ width:100%; font:12px/18px 'open_sanslight';}
+ul.ClientList li.clientimg span{ margin-bottom:3px;}
+ul.ClientList li.client-photo{ display:block; text-align:center;}
+ul.ClientList li span{ display:block; text-align:center; font:15px/18px 'open_sanslight'; margin-top:10px; }
+
+.flr{ float:none;}
+
+@media (min-width: 480px) {
+	.three-img img{ width:95%;}
+	.bigTitle { font: 43px/41px "open_sanssemibold"; margin-top: 0px;}
+	.TSpace {
+    margin-top: 20px;
+}
+ul.ClientList li{ display:inline-block; vertical-align:top; width:47%; margin-left:0px; margin-right:0px;}
+ul.ClientList li.clientimg{ width:47%;}
+
+
+}
+@media (min-width: 640px) {
+	.three-img img{ width:70%;}
+	
+	
+	ul.ClientList li{ display:inline-block; vertical-align:top; width:32%; margin-left:0px; margin-right:0px;}
+	ul.ClientList li.clientimg{ width:32%;}
+}
+@media (min-width: 768px) {
+.bigTitle {
+    font: 44px/43px "open_sanssemibold";
+    margin-top: 37px;
+}
+.three-img {
+    margin-top: -40px;
+}
+.topimg{position:absolute; left:0px; padding:0px; width:inherit;}
+.logo{margin-bottom:30px;   margin-top:inherit;}
+.three-img img{ width:inherit;}
+.topimg img {
+    width: 68%;
+}
+ul.ClientList li{ display:inline-block; vertical-align:top; width:24%; margin-left:0px; margin-right:0px;}
+.GreeTitle{font:26px/32px 'open_sanssemibold';}
+.flr{ float:none;}
+}
+@media (min-width: 992px) {
+	.topimg img{ width:78%;}
+	.mr50 {
+    margin-right: 0px;
+}
+ul.ClientList li{ vertical-align:top; width:17%; margin-left:12px; margin-right:12px; min-height:200px; margin-bottom:12px; }
+ul.ClientList li:first-child{ margin-left:0px;}
+ul.ClientList li:Last-child{ margin-right::0px;}
+ul.ClientList li.clientimg{ width:44%; margin-left: 0; margin-right: 0;}
+.flr{ float:right;}
+}
+@media (min-width: 1200px) {
+	.topimg img{ width:inherit;}
+}

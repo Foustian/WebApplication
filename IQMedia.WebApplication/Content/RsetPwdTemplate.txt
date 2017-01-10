@@ -1,0 +1,17 @@
+﻿<table style="font-family:sans-serif;font-size:16px;">
+	<tr>
+		<td>
+			Dear User,
+		</td>
+	</tr>
+	<tr>
+		<td>
+			To reset your iQ media password, please click on the below link or copy and paste it into your browser. The link will expire in two hours.
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<a href="##Link##">##Link##</a>
+		</td>
+	</tr>
+</table>

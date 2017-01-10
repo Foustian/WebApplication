@@ -1,0 +1,73 @@
+﻿<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>Highcharts Example 1</title>
+	<script type="text/javascript" src="/Scripts/jquery-1.9.1.min.js" charset="utf-8"></script>
+	<script type="text/javascript">
+		$(function () {
+			var ChartData = '{"chart":{"height":300,"type":null,"width":750},"legend":{"align":"center","borderWidth":"0","layout":"horizontal","verticalAlign":"bottom","width":150},"plotOptions":{"column":null,"cursor":null,"series":{"cursor":"pointer","point":{"Events":{"click":"ChartClick"}}}},"series":[{"data":[{"SearchTerm":"music","y":60879},{"SearchTerm":"music","y":58347},{"SearchTerm":"music","y":44325},{"SearchTerm":"music","y":37540},{"SearchTerm":"music","y":52416},{"SearchTerm":"music","y":60216},{"SearchTerm":"music","y":59920},{"SearchTerm":"music","y":62250},{"SearchTerm":"music","y":58824},{"SearchTerm":"music","y":35306},{"SearchTerm":"music","y":39370},{"SearchTerm":"music","y":53062},{"SearchTerm":"music","y":56602},{"SearchTerm":"music","y":78093},{"SearchTerm":"music","y":62970},{"SearchTerm":"music","y":54107},{"SearchTerm":"music","y":39950},{"SearchTerm":"music","y":35365},{"SearchTerm":"music","y":54992},{"SearchTerm":"music","y":65466},{"SearchTerm":"music","y":62960},{"SearchTerm":"music","y":65374},{"SearchTerm":"music","y":60293},{"SearchTerm":"music","y":49793},{"SearchTerm":"music","y":38416},{"SearchTerm":"music","y":62481},{"SearchTerm":"music","y":63929},{"SearchTerm":"music","y":63634},{"SearchTerm":"music","y":59611},{"SearchTerm":"music","y":59369},{"SearchTerm":"music","y":37695},{"SearchTerm":"music","y":35580},{"SearchTerm":"music","y":55821},{"SearchTerm":"music","y":56792},{"SearchTerm":"music","y":59640},{"SearchTerm":"music","y":59290},{"SearchTerm":"music","y":55396},{"SearchTerm":"music","y":39584},{"SearchTerm":"music","y":35605},{"SearchTerm":"music","y":54471},{"SearchTerm":"music","y":60378},{"SearchTerm":"music","y":57262},{"SearchTerm":"music","y":61901},{"SearchTerm":"music","y":59132},{"SearchTerm":"music","y":40720},{"SearchTerm":"music","y":36610},{"SearchTerm":"music","y":51578},{"SearchTerm":"music","y":59765},{"SearchTerm":"music","y":60427},{"SearchTerm":"music","y":59244},{"SearchTerm":"music","y":54878},{"SearchTerm":"music","y":37984},{"SearchTerm":"music","y":36098},{"SearchTerm":"music","y":56021},{"SearchTerm":"music","y":58689},{"SearchTerm":"music","y":57487},{"SearchTerm":"music","y":58662},{"SearchTerm":"music","y":59012},{"SearchTerm":"music","y":38189},{"SearchTerm":"music","y":34835},{"SearchTerm":"music","y":56534},{"SearchTerm":"music","y":61010},{"SearchTerm":"music","y":60457},{"SearchTerm":"music","y":59404},{"SearchTerm":"music","y":55730},{"SearchTerm":"music","y":34326},{"SearchTerm":"music","y":38773},{"SearchTerm":"music","y":66383},{"SearchTerm":"music","y":63346},{"SearchTerm":"music","y":60122},{"SearchTerm":"music","y":58964},{"SearchTerm":"music","y":56718},{"SearchTerm":"music","y":38739},{"SearchTerm":"music","y":37981},{"SearchTerm":"music","y":44843},{"SearchTerm":"music","y":58034},{"SearchTerm":"music","y":62225},{"SearchTerm":"music","y":62959},{"SearchTerm":"music","y":58513},{"SearchTerm":"music","y":42022},{"SearchTerm":"music","y":40204},{"SearchTerm":"music","y":61217},{"SearchTerm":"music","y":61279},{"SearchTerm":"music","y":60732},{"SearchTerm":"music","y":65276},{"SearchTerm":"music","y":58628},{"SearchTerm":"music","y":39640},{"SearchTerm":"music","y":35524},{"SearchTerm":"music","y":57711},{"SearchTerm":"music","y":63455},{"SearchTerm":"music","y":64538},{"SearchTerm":"music","y":64631},{"SearchTerm":"music","y":16859}],"name":"music"}],"subtitle":{"text":"","x":"-20"},"title":{"text":"Trend over Time","x":-20},"tooltip":{"valueSuffix":""},"xAxis":{"categories":["6\/20\/2013","6\/21\/2013","6\/22\/2013","6\/23\/2013","6\/24\/2013","6\/25\/2013","6\/26\/2013","6\/27\/2013","6\/28\/2013","6\/29\/2013","6\/30\/2013","7\/1\/2013","7\/2\/2013","7\/3\/2013","7\/4\/2013","7\/5\/2013","7\/6\/2013","7\/7\/2013","7\/8\/2013","7\/9\/2013","7\/10\/2013","7\/11\/2013","7\/12\/2013","7\/13\/2013","7\/14\/2013","7\/15\/2013","7\/16\/2013","7\/17\/2013","7\/18\/2013","7\/19\/2013","7\/20\/2013","7\/21\/2013","7\/22\/2013","7\/23\/2013","7\/24\/2013","7\/25\/2013","7\/26\/2013","7\/27\/2013","7\/28\/2013","7\/29\/2013","7\/30\/2013","7\/31\/2013","8\/1\/2013","8\/2\/2013","8\/3\/2013","8\/4\/2013","8\/5\/2013","8\/6\/2013","8\/7\/2013","8\/8\/2013","8\/9\/2013","8\/10\/2013","8\/11\/2013","8\/12\/2013","8\/13\/2013","8\/14\/2013","8\/15\/2013","8\/16\/2013","8\/17\/2013","8\/18\/2013","8\/19\/2013","8\/20\/2013","8\/21\/2013","8\/22\/2013","8\/23\/2013","8\/24\/2013","8\/25\/2013","8\/26\/2013","8\/27\/2013","8\/28\/2013","8\/29\/2013","8\/30\/2013","8\/31\/2013","9\/1\/2013","9\/2\/2013","9\/3\/2013","9\/4\/2013","9\/5\/2013","9\/6\/2013","9\/7\/2013","9\/8\/2013","9\/9\/2013","9\/10\/2013","9\/11\/2013","9\/12\/2013","9\/13\/2013","9\/14\/2013","9\/15\/2013","9\/16\/2013","9\/17\/2013","9\/18\/2013","9\/19\/2013","9\/20\/2013"],"labels":{"rotation":270}},"yAxis":{"plotLines":[{"color":"#808080","value":"0","width":"1"}],"title":{"text":null}}}';
+			var JsonLineChart = JSON.parse(ChartData);
+			$('#container').highcharts({
+				chart: {
+					height: 300,
+					type: null,
+					width: 750
+				},
+				legend: {
+					align: "center",
+					borderWidth: 0,
+					layout: "horizontal",
+					verticalAlign: "bottom",
+					width: 150
+				},
+				plotOptions: {
+					series: {
+						cursor: "pointer",
+						point: {
+							events: {
+								click: function () {
+									alert('hi');
+								}
+							}
+						}
+					}
+				},
+				series: JsonLineChart.series,
+				subtitle: {
+					text: "",
+					x: -20
+				},
+				title: {
+					text: "Trend over Time",
+					x: -20
+				},
+				tooltip: {
+					valueSuffix: ""
+				},
+				xAxis: JsonLineChart.xAxis,
+				yAxis: {
+					plotLines: [{
+						color: "#808080",
+						value: "-1",
+						width: 1
+					}],
+					title: {
+						text: ""
+					}
+				}
+			});
+		});
+
+
+		</script>
+</head>
+<body>
+	<script type="text/javascript" src="/Scripts/highcharts.js"></script>
+	<!-- Additional files for the Highslide popup effect -->
+	<script type="text/javascript" src="http://www.highcharts.com/highslide/highslide-full.min.js"></script>
+	<script type="text/javascript" src="http://www.highcharts.com/highslide/highslide.config.js" charset="utf-8"></script>
+	<link rel="stylesheet" type="text/css" href="http://www.highcharts.com/highslide/highslide.css" />
+	<div id="container" style="min-width: 310px; height: 400px; margin: 0 auto">
+	</div>
+</body>
+</html>

@@ -1,0 +1,44 @@
+﻿@model List<IQMedia.Model.JobStatusModel>
+    <div class="row-fluid row-custom">
+    <!--/span-->
+    <div class="btn-group">
+        <a class="btn dropdown-toggle no-background" data-toggle="dropdown" href="#" id="aSortDirectionJobStatus">
+            <script type="text/javascript">
+                SetDirectionHTMLJobStatus();
+            </script>
+        </a>
+        <ul class="dropdown-menu">
+            <li class="cursorPointer"><a onclick="SortDirectionJobStatus('RequestedBy',true);">
+                Requested By Ascending</a></li>
+            <li class="cursorPointer"><a onclick="SortDirectionJobStatus('RequestedBy',false);">
+                Requested By Descending</a></li>
+            <li class="cursorPointer"><a onclick="SortDirectionJobStatus('RequestedDateTime',true);">
+                Oldest First (Requested Date)</a></li>
+            <li class="cursorPointer"><a onclick="SortDirectionJobStatus('RequestedDateTime',false);">
+                Most Recent (Requested Date)</a></li>
+            <li class="cursorPointer"><a onclick="SortDirectionJobStatus('CompletedDateTime',true);">
+                Oldest First (Completed Date)</a></li>
+            <li class="cursorPointer"><a onclick="SortDirectionJobStatus('CompletedDateTime',false);">
+                Most Recent (Completed Date)</a></li>
+        </ul>
+    </div>
+    <div class="btn-group">
+        <a class="btn dropdown-toggle no-background" data-toggle="dropdown" href="#" id="aJobType">
+            All&nbsp;&nbsp;<span class="caret"></span></a>
+        <ul class="dropdown-menu" style="width:220px !important;">
+            @{List<IQMedia.Model.JobType> lstJobType = ((IQMedia.WebApplication.Controllers.SetupController)this.ViewContext.Controller).GetJobTypeList();}
+            <li class="cursorPointer"><a onclick="SetJobType(null,'All');">All</a></li>
+            @foreach (IQMedia.Model.JobType item in lstJobType)
+            {
+                <li class="cursorPointer"><a onclick="SetJobType(@item.ID,'@item.Description');">@item.Description</a></li>
+            }
+        </ul>
+    </div>
+    <br />
+<div style="clear: both;">
+</div>
+<div id="divPartialContent">
+                @{Html.RenderPartial("~/Views/Setup/_JobStatusResult.cshtml");}
+    </div>
+</div>
+

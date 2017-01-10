@@ -1,0 +1,190 @@
+﻿@model List<IQMedia.Model.IQClient_CustomImageModel>
+<script language="javascript" type="text/javascript">
+    $("#divSetupReportImageList_ScrollContent").css("height", documentHeight - 150);
+    $("#divSetupReportImageList_ScrollContent").mCustomScrollbar({
+        advanced: {
+            updateOnContentResize: true,
+            autoScrollOnFocus: false
+        }
+    });
+</script>
+<style type="text/css">
+    #preview_ie
+    {
+        filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod=scale);
+    }
+</style>
+@{
+    
+    IQMedia.Model.ActiveUser sessionInformation = IQMedia.WebApplication.Utility.ActiveUserMgr.GetActiveUser();
+    Random rndm = new Random();
+    double rndmno = rndm.NextDouble();
+}
+<div style="margin-top: 10px; margin-bottom: 20px; text-align: right">
+    <a onclick="OpenAddReportImage(0);" style="margin-right: 10px;" href="javascript:void(0);">
+        Add Report Image</a>
+</div>
+@if (Model != null && Model.Count > 0)
+{
+    <div id="divSetupReportImageList_ScrollContent">
+        <div style="padding-right: 15px;">
+            <table width="100%" class="timeshiftpg" cellpadding="0" cellspacing="0" style="margin-top: 15px;">
+                <tr>
+                    <th style="text-align: center;">
+                        Image
+                    </th>
+                    <th style="text-align: center;">
+                        Reports
+                    </th>
+                    <th style="text-align: center;">
+                        Email Alerts
+                    </th>
+                    <th style="text-align: left;">
+                        Image Name
+                    </th>
+                    <th style="text-align: left;">
+                        Last Modified
+                    </th>
+                    <th style="text-align: center;">
+                        Delete Image
+                    </th>
+                </tr>
+                @foreach (IQMedia.Model.IQClient_CustomImageModel item in Model)
+                {
+                    <tr>
+                        <td style="text-align: center;">
+                            <a href="@(System.Configuration.ConfigurationManager.AppSettings["UrlReportHeader"] + sessionInformation.ClientGUID + "/" + item.Location)" class="imgHeader" title="@item.Location" >
+                                <img src ="@(System.Configuration.ConfigurationManager.AppSettings["UrlReportHeader"] + sessionInformation.ClientGUID + "/" + item.Location + "?" + rndmno)" style="max-width:100px;" alt="@item.Location" /></a>
+                        </td>
+                        <td style="text-align: center;">
+                            @if (!item.IsDefault)
+                            {
+                                <a href="javascript:void(0)" onclick="SetDefaultImage('@item.ID');">Set As Default</a>
+                            }
+                            else
+                            {
+                                <span class="boldpink">Default Image</span>
+                            }
+                        </td>
+                        <td style="text-align: center;">
+                            @if (!item.IsDefaultEmail)
+                            {
+                                <a href="javascript:void(0)" onclick="SetDefaultEmailImage('@item.ID');">Set As Default</a>
+                            }
+                            else
+                            {
+                                <span class="boldpink">Default Image</span>
+                            }
+                        </td>
+                        <td style="text-align: left; width: 30%" class="tmStationDiv">
+                            @item.Location
+                        </td>
+                        <td style="text-align: left;">
+                            @item.ModifiedDate
+                        </td>
+                        <td style="text-align: center;">
+                            @if (!item.IsDefault && !item.IsDefaultEmail)
+                            {
+                                <a href="javascript:void(0)" onclick="DeleteReportImage('@item.ID','@item.Location.Replace("'", "\\\'")');">
+                                    Delete</a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </table>
+        </div>
+    </div>   
+}
+<div id="divReportImageAddPopup" class="modal fade hide resizable modalPopupDiv">
+    <div class="closemodalpopup">
+        <img id="imgCloseEditPopup" src="~/images/close-icon.png" alt="close" class="popup-top-close"
+            onclick="CancelFileUpload();" /></div>
+    <div id="divReportImageAddHTML" style="padding-top: 20px;">
+        @using (Html.BeginForm("ClientCustomImage", "InsertReportImage", FormMethod.Post, new { @class = "form-horizontal", enctype = "multipart/form-data", @id = "frmReportImage" }))
+        {
+            string _ImageTypeMessage = "Only " + System.Configuration.ConfigurationManager.AppSettings["ClientReportImageExtensions"].Replace(",", ", ") + " image is allowed";
+            string _CustomHeaderSizeMessage = "Size of image should be within width=" + System.Configuration.ConfigurationManager.AppSettings["ReportHeaderWidth"] + "px, height=" + System.Configuration.ConfigurationManager.AppSettings["ReportHeaderHeight"] + "px";
+            <div style="padding-bottom: 5px; border-bottom: 1px solid #dadada; margin: 1px 15px 1px 15px;
+                font-weight: bold;">
+                Add Report Image
+            </div>
+            <br />
+            <div class="control-group">
+                <label for="flCustomHeader" class="control-label">
+                    Report Header</label>
+                <div class="controls">
+                    <div class="fleft">
+                        <input id="txtCustomHeaderSelectedFileDisplay" name="txtCustomHeaderSelectedFileDisplay"
+                            disabled="disabled" type="text" />
+                        <input id="hfCustomHeaderImage" name="hfCustomHeaderImage" type="hidden" />
+                        <input type="file" name="flCustomHeader" id="flCustomHeader" />
+                        <button class="btn marginLeft14" type="button" id="btnCustomHeaderBrowseFile">
+                            Browse</button>
+                        <a href="javascript:;" onclick="showcropdialog()">Crop Image</a> <a href="javascript:;"
+                            onclick="clearcrop()">Reset Crop</a>
+                        <input type="hidden" id="hdnCropWidth" name="hdnCropWidth" value="" />
+                        <input type="hidden" id="hdnCropHeight" name="hdnCropHeight" value="" />
+                        <input type="hidden" id="hdnCropX" name="hdnCropX" value="" />
+                        <input type="hidden" id="hdnCropY" name="hdnCropY" value="" />
+                    </div>
+                    <span style="position: relative; top: 5px;" class="fleft"></span>
+                    <div class="fleft width100p">
+                        <span style="color: #FF0000; display: none; vertical-align: top" id="spanCustomHeader"
+                            class="help-inline"></span>
+                        <h6>@_ImageTypeMessage</h6>
+                        <h6>@_CustomHeaderSizeMessage</h6>
+                    </div>
+                    <div class="fleft">
+                        <img id="imgthumb" style="display: none; max-width: inherit; width: 100px; cursor: pointer"
+                            onclick="ShowFullPreview();" src=""></div>
+                    <span class="fleft width100p marginbottom5">
+                        <input type="checkbox" style="margin-top: -3px" checked="checked" id="chkIsReplaceImage"
+                            name="chkIsReplaceImage" value="true" />
+                        Replace Existing Image </span><span class="fleft width100p marginbottom5">
+                            <input type="checkbox" style="margin-top: -3px" id="chkIsDefault" name="chkIsDefault"
+                                value="true" />
+                            Is Default </span><span class="fleft width100p">
+                                <input type="checkbox" style="margin-top: -3px" id="chkIsDefaultEmail" name="chkIsDefaultEmail"
+                                    value="true" />
+                                Is Default Email </span>
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="controls">
+                    <button type="button" id="btnCancel" onclick="CancelFileUpload();" class="cancelButton">
+                        Cancel</button>
+                    <button type="button" id="btnUpdate" onclick="SaveReportImage();" class="button">
+                        Add Report Image
+                    </button>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+<div id="divReportImagePreview" class="modal fade hide resizable modalPopupDivPreview">
+    <div class="closemodalpopup">
+        <img id="imgCloseEditPopup" src="~/images/close-icon.png" alt="close" class="popup-top-close"
+            onclick="closeModal('divReportImagePreview');" /></div>
+    <div class="clear" style="position: relative;">
+        <div class="float-left width100p" id="divLogo" style="position: relative;">
+            <img id="imgprvw" src="" alt="Custom Image" />
+            <div id="preview_ie">
+            </div>
+        </div>
+    </div>
+    <div class="clear buttons">
+        <div class="float-right">
+            <div class="okcrop" onclick="cropimage()">
+            </div>
+        </div>
+    </div>
+</div>
+<div id="divReportCropImagePreview" class="modal fade hide resizable modalPopupDivPreview">
+    <div class="closemodalpopup">
+        <img src="~/images/close-icon.png" alt="close" class="popup-top-close" onclick="closeModal('divReportCropImagePreview');$('#imgthumbFull').attr('src','');" /></div>
+    <div class="clear">
+        <div class="float-left width100p">
+            <img id="imgthumbFull" src="" alt="Custom Image" />
+        </div>
+    </div>
+</div>

@@ -1,0 +1,25 @@
+/*!
+ * Bootstrap v3.2.0 (http://getbootstrap.com)
+ * Copyright 2011-2014 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ */
+
+
+body {
+    padding-top: 58px;
+}
+
+/*===========================================
+NEw
+============================*/
+.navbar{margin-bottom:0px; min-height:58px; border-radius:0px;}
+.navbar-brand {
+    padding: 4px;
+}
+
+/*# sourceMappingURL=bootstrap-theme.css.map */
+@media (min-width: 1200px) {
+	body {
+    padding-top: 58px;
+}
+}

@@ -1,0 +1,186 @@
+﻿@using IQMedia.Model;
+@using IQMedia.Shared.Utility;
+@model IQAgent_MediaResultsModel
+@if (Model != null)
+{
+    ActiveUser sessioninfo = IQMedia.WebApplication.Utility.ActiveUserMgr.GetActiveUser();
+    IQAgent_TwitterResultsModel twitterModel = (IQAgent_TwitterResultsModel)Model.MediaData;
+    string fTitle = string.Empty;
+    string sTitle = string.Empty;
+    string fSource = string.Empty;
+    string sSource = string.Empty;
+    string actorLink = string.Empty;
+    string highlightedTWText = string.Empty;
+    string highlightedTWOutput = string.Empty;
+    string sFollowers = string.Empty;
+    string fFollowers = string.Format("{0:N0}", twitterModel.Actor_FollowersCount);
+    string sFriends = string.Empty;
+    string fFriends = string.Format("{0:N0}", twitterModel.Actor_FriendsCount);
+    int Billion = 1000000000;
+    decimal BillionD = 1000000000;
+    int Million = 1000000;
+    decimal MillionD = 1000000;
+
+    if (twitterModel.Actor_FollowersCount >= Billion)
+    {
+        sFollowers = string.Format("{0:F1} bil", twitterModel.Actor_FollowersCount / BillionD);
+    }
+    else if (twitterModel.Actor_FollowersCount >= Million)
+    {
+        sFollowers = string.Format("{0:F1} mil", twitterModel.Actor_FollowersCount / MillionD);
+    }
+    else
+    {
+        sFollowers = fFollowers;
+    }
+
+    if (twitterModel.Actor_FriendsCount >= Billion)
+    {
+        sFriends = string.Format("{0:F1} bil", twitterModel.Actor_FriendsCount / BillionD);
+    }
+    else if (twitterModel.Actor_FriendsCount >= Million)
+    {
+        sFriends = string.Format("{0:F1} mil", twitterModel.Actor_FriendsCount / MillionD);
+    }
+    else
+    {
+        sFriends = fFriends;
+    }
+
+    if (CommonFunctions.Validate_url(twitterModel.Actor_Link + "/status/" + twitterModel.TweetID))
+    {
+        actorLink = twitterModel.Actor_Link + "/status/" + twitterModel.TweetID;
+    }
+
+    if (!string.IsNullOrWhiteSpace(twitterModel.Actor_PreferredName))
+    {
+        fSource = twitterModel.Actor_PreferredName.Trim();
+
+        if (fSource.Length > 23)
+        {
+            sSource = fSource.Substring(0, 21) + "...";
+        }
+        else
+        {
+            sSource = fSource;
+        }
+    }
+
+    if (!string.IsNullOrWhiteSpace(twitterModel.Actor_DisplayName))
+    {
+        fTitle = twitterModel.Actor_DisplayName.Trim();
+
+        if (fTitle.Length > 65)
+        {
+            sTitle = fTitle.Substring(0, 62) + "...";
+        }
+        else
+        {
+            sTitle = fTitle;
+        }
+    }
+
+    if (twitterModel.HighlightedOutput != null)
+    {
+        highlightedTWOutput = twitterModel.HighlightedOutput.Highlights;
+        highlightedTWText = highlightedTWOutput;
+    }
+    
+    <div class="media" id="divMedia_@Model.ID">
+        <div class="MediaDate">
+            <div class="post-date">
+                <span class="month">@Model.MediaDateTime.ToString("MMM", System.Globalization.CultureInfo.InvariantCulture)</span>
+                <div>
+                    <span class="today">@Model.MediaDateTime.Day</span>
+                </div>
+                <span class="timeWithTimeZone">@Model.MediaDateTime.ToString("hh:mm tt") @sessioninfo.TimeZone</span>
+            </div>
+        </div>
+        <div class="MediaTypeLogo">
+            <img src="@ViewData["MediaIconPath"]" title="@ViewData["MediaTypeDescription"]" alt="" />
+        </div>
+        <div class="pull-right">
+            <input type="checkbox" onclick="CheckUncheckMasterCheckBox(this.id,'ulMediaResults','chkInputAll');" value="@Model.ID:@Model.MediaType" id="chkdivResults_@Model.ID" />
+            <input type="hidden" value="0" id="hdnParentID_@Model.ID" />
+        </div>
+        <div class="FeedsContentNone borderBoxSizing">
+            <div class="media-heading float-left">
+                <a id="aActorLink_@Model.ID" title="@fTitle" target="_blank" href="@actorLink">
+                    <span id="lblDisplayName_@Model.ID">@sTitle</span>
+                </a>
+            </div>
+            <div class="subheading float-left margintop1">
+                @Model.timeDifference
+            </div>
+            <div class="clear float-left media-body">
+                <span id="lblTweetBody_@Model.ID">@Html.Raw(highlightedTWText)</span>
+            </div>
+        </div>
+        <div class="clear post-divider"></div>
+        <div class="clear margintop2 marginbottom2">
+            <div class="FeedsActionBarLeftDiv">
+                <div class="viewmore"></div>
+                <div id="divLocationTW_@Model.ID" class="viewlocation">
+                    @if (!string.IsNullOrWhiteSpace(fSource))
+                    { 
+                        <div class="location-tag" title="@fSource">
+                            @sSource
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="margintop2"></div>
+                    }
+                </div>
+                <div id="divSentiment_@Model.ID" class="viewsentiment" title="Sentiment">
+                    <div class="sentimentLeftFloat sentiment-tag">
+                        <div class="divSentimentMain sentimentFont">
+                            <div class="divSentimentNeg">
+                                <div style='width:@ViewData["maxNegativeSentimentWidth"]'>
+                                    @Model.NegativeSentiment
+                                </div>
+                            </div>
+                            <div class="divSentimentPos">
+                                <div style='width:@ViewData["maxPositiveSentimentWidth"]'>
+                                    @Model.PositiveSentiment
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="viewcontentdetail">
+                    <div class="viewshortdetail">
+                        <div id="lblKloutScore_@Model.ID" class="klout" title="Klout Score">
+                            @string.Format("{0:N0}", twitterModel.KlOutScore)
+                        </div>
+                    </div>
+                    <div class="viewshortdetail">
+                        <div id="lblActorFollowers_@Model.ID" class="followers" title="Followers @fFollowers">
+                            @sFollowers
+                        </div>
+                    </div>
+                    <div class="viewshortdetail">
+                        <div id="lblActorFriends_@Model.ID" class="following" title="Following @fFriends">
+                            @sFriends
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="FeedsActionBarRightDiv minWidth52IE8">
+                <div class="float-right">
+                    <div class="detailIcon">
+                        <a id="lnlSaveTweet_@Model.ID" class="cursorPointer saveMedia saveArticle" title="Save Tweet" rel="popover" href="#"  onclick="ShowSaveArticle(@Model.ID ,this.id);return false;"></a>
+                    </div>
+                    <div class="detailIcon">
+                        <!--Padding on the right-->
+                        <div align="center" class="margintop2"></div>
+                    </div>
+                    <div class="detailIcon">
+                        <!--Padding on the right-->
+                        <div align="center" class="margintop2"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>    
+}

@@ -1,0 +1,27 @@
+﻿@{
+    ViewBag.Title = "iQ media Legal";
+    Layout = "~/Views/Shared/_IQMediaMasterStaticPages.cshtml";
+}
+@section HeaderImage
+{
+    <img src="~/Images/StaticBanner/Legal.jpg" alt="Legal" />
+}
+@section Content
+{
+    <div class="span4">
+        @Html.Partial("~/Views/Legal/_Left.cshtml")
+    </div>
+    <div class="span14">
+        <p>
+            iQ media Group LLC (“iQ media”) is committed to protecting the rights of copyright
+            holders, including broadcast content owners, protecting the privacy of our customers,
+            ensuring latest security protocols and hardware, along with protection of data with
+            our international customers.
+        </p>
+    </div>
+    <script type="text/javascript" language="javascript">
+        $(document).ready(function () {
+            SetHighligtedLi('ulLegalNavigation', 'liOverview');
+        });    
+    </script>
+}

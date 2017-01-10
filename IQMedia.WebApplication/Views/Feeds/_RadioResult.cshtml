@@ -1,0 +1,145 @@
+﻿@using IQMedia.Model;
+@using IQMedia.Shared.Utility;
+@model IQAgent_MediaResultsModel
+@if (Model != null)
+{
+    ActiveUser sessioninfo = IQMedia.WebApplication.Utility.ActiveUserMgr.GetActiveUser();                                                                                                                           
+    IQAgent_TVEyesResultsModel iQAgent_TVEyesResultsModel = (IQAgent_TVEyesResultsModel)Model.MediaData;
+    string highlightedTMText = string.Empty;
+    string highlightedTMOutput = iQAgent_TVEyesResultsModel.HighlightingText.Replace("&lt;", "<").Replace("&gt;", ">");
+
+    if (highlightedTMOutput.Length > 300)
+    {
+        highlightedTMText = highlightedTMOutput.Substring(0, 300);
+    }
+    else
+    {
+        highlightedTMText = highlightedTMOutput;
+    }
+
+    highlightedTMText = CommonFunctions.ProcessHighlightingText(highlightedTMOutput, highlightedTMText).Trim();
+                
+    <div class="media" id="divMedia_@Model.ID">
+        <div class="MediaDate">
+            <div class="post-date">
+                <span class="month">@iQAgent_TVEyesResultsModel.LocalDateTime.ToString("MMM", System.Globalization.CultureInfo.InvariantCulture)</span>
+                <div>
+                    <span class="today">@iQAgent_TVEyesResultsModel.LocalDateTime.Day</span>
+                </div>
+                <span class="timeWithTimeZone">@iQAgent_TVEyesResultsModel.LocalDateTime.ToString("hh:mm tt") @iQAgent_TVEyesResultsModel.TimeZone</span>
+            </div>
+        </div>
+        <div class="MediaTypeLogo">
+            <img src="@ViewData["MediaIconPath"]" title="@ViewData["MediaTypeDescription"]">
+        </div>
+        <div class="float-right FeedsVideoSpacer">
+            <div class="float-left FeedsVideo positionRelative">
+                <a onclick="LoadTMPopup('@iQAgent_TVEyesResultsModel.TranscriptUrl.Replace("\'", "\\\'")')" class="cursorPointer">
+                    <img class="media-object" src="~/images/video.png" alt="" />
+                </a>
+            </div>
+            <div class="float-right tvFeedsCheck">
+                <input type="checkbox" value="@Model.ID:@Model.MediaType" id="chkdivResults_@Model.ID" onclick="CheckUncheckMasterCheckBox(this.id,'ulMediaResults','chkInputAll');" />
+                <input type="hidden" value="0" id="hdnParentID_@Model.ID" />
+            </div>
+            <div class="clearfix">
+            </div>
+        </div>
+        <div class="FeedsContentVideo">
+            @{
+                string tmTitle = string.Empty;
+
+                if (iQAgent_TVEyesResultsModel.Title.Trim().Length > 65)
+                {
+                    tmTitle = iQAgent_TVEyesResultsModel.Title.Trim().Substring(0, 62) + "...";
+                }
+                else
+                {
+                    tmTitle = iQAgent_TVEyesResultsModel.Title.Trim();
+                }
+            }
+
+            <div class="float-left media-heading" title="@iQAgent_TVEyesResultsModel.Title">
+                @tmTitle
+            </div>
+            <div class="subheading float-left margintop1" >
+                @Model.timeDifference
+            </div>
+            <div class="clear float-left media-body">
+                <span style="color:#73897F">@iQAgent_TVEyesResultsModel.StationID</span>
+                @if (!string.IsNullOrWhiteSpace(highlightedTMText))
+                {
+                    <span> - @Html.Raw(highlightedTMText)</span>
+                }
+            </div>
+        </div>
+        <div class="clear post-divider"></div>
+        <div class="clear margintop2 marginbottom2">
+            <div class="FeedsActionBarLeftDiv">
+                <div class="viewmore"></div>
+                <div id="divLocationTM_@Model.ID" class="viewlocation">
+                    <div class="">
+                        @if (!string.IsNullOrWhiteSpace(iQAgent_TVEyesResultsModel.Market))
+                        {
+                            <div class="location-tag" title="@iQAgent_TVEyesResultsModel.Market">
+                                @{
+                                    if (iQAgent_TVEyesResultsModel.Market.Trim().Length > 23)
+                                    {
+                                        @(iQAgent_TVEyesResultsModel.Market.Trim().Substring(0, 21) + "...")
+                                    }
+                                    else
+                                    {
+                                        @iQAgent_TVEyesResultsModel.Market.Trim()
+                                    }
+                                }
+                            </div>   
+                        }
+                    </div>
+                </div>
+                <div class="viewsentiment" title="Sentiment">
+                    <div class="sentimentLeftFloat sentiment-tag">
+                        <div class="divSentimentMain sentimentFont">
+                            <div class="divSentimentNeg">
+                                <div style='width:@ViewData["maxNegativeSentimentWidth"]'>
+                                    @Model.NegativeSentiment
+                                </div>
+                            </div>
+                            <div class="divSentimentPos">
+                                <div style='width:@ViewData["maxPositiveSentimentWidth"]'>
+                                    @Model.PositiveSentiment
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="viewcontentdetail">
+                    @if (!string.IsNullOrEmpty(iQAgent_TVEyesResultsModel.DMARank))
+                    {
+                        <div class="marketrank pull-left" title="Market Rank @iQAgent_TVEyesResultsModel.DMARank">
+                            <span>@iQAgent_TVEyesResultsModel.DMARank</span>
+                        </div>
+                    }
+                    else
+                    {
+                        <div align="center" class="margintop2"></div>
+                    }
+                </div>
+            </div>
+            <div class="FeedsActionBarRightDiv minWidth52IE8">
+                <div class="detailIcon">
+                    <a class="cursorPointer saveMedia saveArticle" title="Save Article"  onclick="ShowSaveArticle(@Model.ID,this.id);return false;" target="_blank" id=""></a>
+                </div>
+                <div class="detailIcon">
+                    <!--Padding View Article-->
+                    <div align="center" class="margintop2">
+                    </div>
+                </div>
+                <div class="detailIcon">
+                    <!--Padding on the right-->
+                    <div align="center" class="margintop2">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

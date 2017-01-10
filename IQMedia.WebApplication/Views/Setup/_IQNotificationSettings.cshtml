@@ -1,0 +1,70 @@
+﻿@model List<IQMedia.Model.IQNotifationSettingsModel>
+@{
+    List<string> frequencies = System.Configuration.ConfigurationManager.AppSettings["IQNotificationFrequency"].Split(new char[] { ',' }).ToList();
+    Dictionary<short, string> daysOfWeek = System.Configuration.ConfigurationManager.AppSettings["DaysOfWeek"].Split(',').ToDictionary(a => Convert.ToInt16(a.Split('|')[1]), b => b.Split('|')[0]);
+    List<string> timeOfDay = System.Configuration.ConfigurationManager.AppSettings["TimeOfDay"].Split(new char[] { ',' }).ToList();
+@*IQMedia.WebApplication.Models.TempData.SetupTempData setupTempData = ((IQMedia.WebApplication.Controllers.SetupController)this.ViewContext.Controller).GetTempData();*@
+}
+@if (Model != null && Model.Count > 0)
+{
+    <div id="divIQNotificationUpdateScrollContent">
+        <div style="padding-right: 10px;">
+            <table width="100%" cellpadding="3" cellspacing="0">
+                <tr>
+                    <th style="text-align: left">
+                        Email Address(es)
+                    </th>
+                    <th style="text-align: left">
+                        Frequency
+                    </th>
+                    <th style="text-align: left">
+                        Notification Day
+                    </th>
+                    <th style="text-align: left">
+                        Notification Time
+                    </th>
+                    <th style="text-align: left">
+                        Media Types
+                    </th>
+                </tr>
+                @foreach (IQMedia.Model.IQNotifationSettingsModel item in Model)
+                {
+                
+                    <tr>
+                        <td>@string.Join(";", item.Notification_Address)
+                        </td>
+                        <td>@item.Frequency.ToString()
+                        </td>
+                        <td>@(item.Notification_Day == null ? string.Empty : daysOfWeek[item.Notification_Day.Value])
+                        </td>
+                        <td>@(item.Notification_Time == null ? string.Empty : Convert.ToDateTime(item.Notification_Time).ToShortTimeString())
+                        </td>
+                        <td>
+                            @if (item.MediaTypeList != null && item.MediaTypeList.Count > 0)
+                            {
+                                <text>@string.Join(", ", item.MediaTypeList)</text>
+                            }
+                            else
+                            {
+                                <text>@string.Join(", ", Enum.GetValues(typeof(IQMedia.Shared.Utility.CommonFunctions.SearchRequestMediaType)).Cast<IQMedia.Shared.Utility.CommonFunctions.SearchRequestMediaType>())</text>
+                            }
+                        </td>
+                    </tr>
+                
+                }
+            </table>
+        </div>
+    </div>
+}
+else
+{
+    <table width="100%" style="text-align: center;margin-top:20px;">
+        <tr>
+            <td>
+                <span style="background: none repeat scroll 0 0 #F2F2F2; border: 1px solid #DCDCDC;
+                    margin-bottom: 10px; margin-right: 10px; padding: 3px 10px 3px 6px; position: relative;
+                    width: 300px !important;">No Results found</span>
+            </td>
+        </tr>
+    </table>
+}

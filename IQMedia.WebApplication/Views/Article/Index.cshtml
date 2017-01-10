@@ -1,0 +1,51 @@
+﻿@using System.Configuration;
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>iQ media</title>
+    <meta name="viewport" content="width=device-width" />
+    <link href="../../Css/Fonts.css" rel="stylesheet" type="text/css" />
+    <link href="../../Css/bootstrap.css" rel="stylesheet" type="text/css" />
+    <link href="../../Css/bootstrap-responsive.css" rel="stylesheet" type="text/css" />
+    <link href="../../css/feed.css?v=1.2" rel="stylesheet" type="text/css" />
+    <link href="../../css/MasterInner.css" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+        body
+        {
+            padding-top: 40px; /*padding-bottom: 40px;*/
+            font-family: 'Open Sans';
+        }
+    </style>
+</head>
+<body id="mainBody">
+    <div class="navbar navbar-inverse navbar-fixed-top" style="background-color: #000;">
+        <!-- from desinger-->
+        <div class="container">
+        </div>
+        <!-- from desinger-->
+        <div class="navbar-inner navbar-custome">
+            <div class="container">
+                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span
+                    class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+                </a><a class="brand iqmedia-logo" href="#">
+                    <img src="~/images/iq-media.png" width="205" height="45" alt="IQ Media" /></a>
+                <div class="nav-collapse collapse">
+                </div>
+                <!--/.nav-collapse -->
+            </div>
+        </div>
+    </div>
+    <div class="container container_custom">
+        <div class="row-fluid" id="divRowFluid">
+            <div style="min-height: 500px; padding: 25px;">
+                <br />
+                 <div class="hero-unit center" >  
+                    @ViewBag.ErrorMessage
+                 </div>
+            </div>
+        </div>
+    </div>
+    @Html.Partial("~/Views/Shared/_Footer.cshtml")
+</body>
+</html>
+

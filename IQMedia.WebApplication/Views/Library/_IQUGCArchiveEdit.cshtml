@@ -1,0 +1,86 @@
+﻿@model IQMedia.Model.IQUGCArchiveEditModel
+<div id="divIQUGCArchiveEditErrorMsg" style="color: #FF0000; display: none; padding-bottom: 10px;">
+</div>
+<input type="hidden" id="hdnEditIQUGCArchiveKey" value="@Model.IQUGCArchiveKey" />
+<div id="divIQUGCArchiveEditFormScrollContent" style="padding-right: 10px;margin-top:10px;">
+    <form class="form-horizontal" id="formIQUGCArchiveUpdate">
+    <div class="control-group">
+        <label class="control-label" for="txtUGCTitleEdit">
+            Title</label>
+        <div class="controls">
+
+            @Html.TextBox("txtUGCTitleEdit",Model.Title,new { @class="txtwidth90per", @placeholder="Title"})
+        
+            <span class="help-inline" id="spanUGCTitleEdit" style="color: #FF0000; display: none;
+                vertical-align: top"></span>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="txtUGCKeywordsEdit">
+            Keywords</label>
+        <div class="controls">
+            @Html.TextBox("txtUGCKeywordsEdit", Model.Keywords, new { @class = "txtwidth90per", @placeholder = "Keywords" })
+        </div>
+    </div>
+     <div class="control-group">
+        <label class="control-label" for="ddlUGCCustomerEdit">
+            Customer</label>
+        <div class="controls">
+            @Html.DropDownList("ddlUGCCustomerEdit", new SelectList(Model.Customers, "CustomerGUID", "FullName", Model.CustomerGuid), "<Blank>", new { placeholder = "Customer", @class = "ddlwidth93per" })
+            <span class="help-inline" id="spanUGCCustomerEdit" style="color: #FF0000; display: none;
+                vertical-align: top"></span>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="ddlUGCCategoryEdit">
+            Category</label>
+        <div class="controls">
+        @Html.DropDownList("ddlUGCCategoryEdit", new SelectList(Model.CustomCategories, "CategoryGuid", "CategoryName", Model.CategoryGuid), "<Blank>", new { placeholder = "Categoy", onchange = "OnSelectOfCategory_UGCcontent(this.id,'ddlUGCCategoryEdit','ddlUGCSubCategory1Edit','ddlUGCSubCategory2Edit','ddlUGCSubCategory3Edit','divIQUGCArchiveEditErrorMsg');" })
+            
+            <span class="help-inline" id="spanUGCCategoryEdit" style="color: #FF0000; display: none;
+                vertical-align: top"></span> <a class="cursorPointer" onclick="CreateAndOpenAddCategoryPopup(BindCustomCategoryDropDown,true);">Add Category
+                            </a>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="txtUGCSubCategory1Edit">
+            Sub Category1</label>
+        <div class="controls">
+            @Html.DropDownList("ddlUGCSubCategory1Edit", new SelectList(Model.CustomCategories, "CategoryGuid", "CategoryName", Model.SubCategory1Guid), "<Blank>", new { placeholder = "SubCategoy1", onchange = "OnSelectOfCategory_UGCcontent(this.id,'ddlUGCCategoryEdit','ddlUGCSubCategory1Edit','ddlUGCSubCategory2Edit','ddlUGCSubCategory3Edit','divIQUGCArchiveEditErrorMsg');" }) <a class="cursorPointer" onclick="CreateAndOpenAddCategoryPopup(BindCustomCategoryDropDown,true);">Add Category
+                            </a>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="txtUGCSubCategory2Edit">
+            Sub Category2</label>
+        <div class="controls">
+            @Html.DropDownList("ddlUGCSubCategory2Edit", new SelectList(Model.CustomCategories, "CategoryGuid", "CategoryName", Model.SubCategory2Guid), "<Blank>", new { placeholder = "SubCategoy2", onchange = "OnSelectOfCategory_UGCcontent(this.id,'ddlUGCCategoryEdit','ddlUGCSubCategory1Edit','ddlUGCSubCategory2Edit','ddlUGCSubCategory3Edit','divIQUGCArchiveEditErrorMsg');" }) <a class="cursorPointer" onclick="CreateAndOpenAddCategoryPopup(BindCustomCategoryDropDown,true);">Add Category
+                            </a>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="txtUGCSubCategory3Edit">
+            Sub Category3</label>
+        <div class="controls">
+            @Html.DropDownList("ddlUGCSubCategory3Edit", new SelectList(Model.CustomCategories, "CategoryGuid", "CategoryName", Model.SubCategory3Guid), "<Blank>", new { placeholder = "SubCategoy3", onchange = "OnSelectOfCategory_UGCcontent(this.id,'ddlUGCCategoryEdit','ddlUGCSubCategory1Edit','ddlUGCSubCategory2Edit','ddlUGCSubCategory3Edit','divIQUGCArchiveEditErrorMsg');" }) <a class="cursorPointer" onclick="CreateAndOpenAddCategoryPopup(BindCustomCategoryDropDown,true);">Add Category
+                            </a>
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="txtUGCDescriptionEdit">
+            Description</label>
+        <div class="controls">
+            @Html.TextArea("txtUGCDescriptionEdit", Model.Description, 3, 50, new { placeholder = "Description", @class = "txtwidth90per" })
+        </div>
+    </div>
+    <div class="control-group">
+        <div class="controls">
+            <button type="button" id="btnCancelUGCContentUpdate" onclick="CancelIQUGCArchiveEditPopup();"
+                class="cancelButton">
+                Cancel</button>
+            <button type="button" id="btnUGCContentUpdate" onclick="UpdateIQUGCArchiveEdit();" class="button">
+                Update</button>
+        </div>
+    </div>
+    </form>
+</div>

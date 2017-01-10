@@ -1,0 +1,168 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{ED5B1FC9-8C04-4F5E-BDAA-60D8A7C227E3}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>IQMedia.Web.Logic</RootNamespace>
+    <AssemblyName>IQMedia.Web.Logic</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AnalyticsSearch">
+      <HintPath>..\..\..\AnalyticsSearch\AnalyticsSearch\bin\Debug\AnalyticsSearch.dll</HintPath>
+    </Reference>
+    <Reference Include="FeedsSearch">
+      <HintPath>..\..\..\FeedsSearch\bin\Debug\FeedsSearch.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\IQMedia.WebApplication\packages\Newtonsoft.Json.8.0.3\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AnalyticsLogic.cs" />
+    <Compile Include="ArticleLogic.cs" />
+    <Compile Include="Base\ILogic.cs" />
+    <Compile Include="Base\LogicFactory.cs" />
+    <Compile Include="CohortLogic.cs" />
+    <Compile Include="DataImportLogic.cs" />
+    <Compile Include="FacebookLogic.cs" />
+    <Compile Include="GoogleLogic.cs" />
+    <Compile Include="InstagramLogic.cs" />
+    <Compile Include="IQService_FeedsLogic.cs" />
+    <Compile Include="IQTads_SavedSearchLogic.cs" />
+    <Compile Include="MCMediaTemplateLogic.cs" />
+    <Compile Include="ClientLogic.cs" />
+    <Compile Include="ClipLogic.cs" />
+    <Compile Include="DiscoveryLiteLogic.cs" />
+    <Compile Include="CustomCategoryLogic.cs" />
+    <Compile Include="CustomerLogic.cs" />
+    <Compile Include="DashboardLogic.cs" />
+    <Compile Include="DiscoveryLogic.cs" />
+    <Compile Include="EmailTemplateLogic.cs" />
+    <Compile Include="fliq_ApplicationLogic.cs" />
+    <Compile Include="fliq_ClientApplicationLogic.cs" />
+    <Compile Include="fliq_CustomerApplicationLogic.cs" />
+    <Compile Include="fliq_CustomerLogic.cs" />
+    <Compile Include="GalleryLogic.cs" />
+    <Compile Include="IQAgentLogic.cs" />
+    <Compile Include="IQNotificationSettingsLogic.cs" />
+    <Compile Include="IQArchieveLogic.cs" />
+    <Compile Include="IQDiscovery_SavedSearchLogic.cs" />
+    <Compile Include="IQDiscovery_ToFeedsLogic.cs" />
+    <Compile Include="IQNewsLogic.cs" />
+    <Compile Include="IQNielsenLogic.cs" />
+    <Compile Include="IQClient_CustomImageLogic.cs" />
+    <Compile Include="IQReport_FolderLogic.cs" />
+    <Compile Include="IQService_DiscoveryLogic.cs" />
+    <Compile Include="IQSolrEngineLogic.cs" />
+    <Compile Include="IQTimeshift_SavedSearchLogic.cs" />
+    <Compile Include="IQTimeSync_DataLogic.cs" />
+    <Compile Include="IQTrack_LicenseClickLogic.cs" />
+    <Compile Include="IQUGCArchiveLogic.cs" />
+    <Compile Include="IQ_SMSCampaignLogic.cs" />
+    <Compile Include="IQ_QVCDataLogic.cs" />
+    <Compile Include="JobStatusLogic.cs" />
+    <Compile Include="NMLogic.cs" />
+    <Compile Include="ImagiQLogic.cs" />
+    <Compile Include="PlayerLogic.cs" />
+    <Compile Include="PQLogic.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RadioLogic.cs" />
+    <Compile Include="ReportLogic.cs" />
+    <Compile Include="SessionLogic.cs" />
+    <Compile Include="SMLogic.cs" />
+    <Compile Include="SSPLogic.cs" />
+    <Compile Include="ThirdPartyLogic.cs" />
+    <Compile Include="TVEyesLogic.cs" />
+    <Compile Include="TVLogic.cs" />
+    <Compile Include="TWLogic.cs" />
+    <Compile Include="UGCLogic.cs" />
+    <Compile Include="UtilityLogic.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\IQCommon\IQCommon\IQCommon.csproj">
+      <Project>{6C491916-50C9-4E52-A355-596FDE89816B}</Project>
+      <Name>IQCommon</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\IQRadioSearch\IQRadioSearch\IQRadioSearch.csproj">
+      <Project>{42C034CA-BFEA-4C5E-9B74-9415518C0FCC}</Project>
+      <Name>IQRadioSearch</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\PMGSearch\PMGSearch\PMGSearch.csproj">
+      <Project>{669A2777-33C6-4458-99D7-49A7466FE662}</Project>
+      <Name>PMGSearch</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Security\IQMedia.Security\IQMedia.Security.csproj">
+      <Project>{CE5163B5-A186-41FA-9BC7-CE88FF750F39}</Project>
+      <Name>IQMedia.Security</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Sentiment\Sentiment.csproj">
+      <Project>{2171FFA6-BDEC-4882-94F9-50FEE34F9ED9}</Project>
+      <Name>Sentiment</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Common\IQMedia.Shared\IQMedia.Shared.csproj">
+      <Project>{0B641996-1E4E-41D7-AB14-36295FAA3F4E}</Project>
+      <Name>IQMedia.Shared</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Prominence\Prominence.csproj">
+      <Project>{3E93345A-ABF9-422D-B9E4-CCD8A1F5A7D5}</Project>
+      <Name>Prominence</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\IQMedia.Data\IQMedia.Data.csproj">
+      <Project>{C9AE798E-9EAE-4539-95E5-35D124BEB028}</Project>
+      <Name>IQMedia.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\IQMedia.Model\IQMedia.Model.csproj">
+      <Project>{27287047-85ED-43FF-9A0E-E61C7B5C6887}</Project>
+      <Name>IQMedia.Model</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

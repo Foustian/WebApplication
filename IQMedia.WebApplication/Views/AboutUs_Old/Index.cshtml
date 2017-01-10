@@ -1,0 +1,59 @@
+﻿@{
+    
+    ViewBag.Title = "iQ media About Us";
+    Layout = "~/Views/Shared/_IQMediaMasterStaticPages.cshtml";   
+}
+@section HeaderImage
+{
+    <img src="~/Images/StaticBanner/About.jpg" alt="about banner" />
+}
+@section Content
+{
+    <div class="span4">
+        @Html.Partial("~/Views/AboutUs_Old/_Left.cshtml")
+    </div>
+    <div class="span14 span14pad">
+        <p>
+            iQ media provides advanced media based cloud services for business intelligence
+            and video content marketing. We help organizations of any size grow their network,
+            generate awareness, and increase value across the web, social networks, mobile devices,
+            and television.</p>
+        <p>
+            iQ media is leading the transformation from traditional media monitoring services
+            to Media Intelligence Platforms. Our product, cliQ, empowers our customers to move
+            beyond media monitoring to proactively leverage media content to drive topline revenue
+            and further their strategic communications goals.</p>
+        <p>
+            Broadcast TV continues to be the most important influencer of public opinion and
+            buying decisions, and it is the first place most people turn to for breaking news.
+            Yet the technology infrastructure for monitoring TV media is aging, has not been
+            fundamentally updated for years, and was not designed for the Internet age.</p>
+        <p>
+            At iQ media, we have developed media optimized for the cloud – a new way of accessing
+            content that effectively integrates broadcast TV, online news, social media, and
+            even user generated content with the new information delivery channels increasingly
+            preferred by today’s end users: email, social media, and streaming content directly
+            to smartphones, tablets, and computers.</p>
+        <p>
+            Our customers use cliQ to discover, create, engage, while leveraging fair use media
+            content in ways that simply were not possible just two or three years ago. They
+            have moved from relying on monitoring tools that only help them discover the past
+            to actionable capabilities that enable them to change the future.</p>
+        <p>
+            Any organization with an important message or brand needs to activate their consumers,
+            constituents, employees and the media, not just monitor them. Our customers include
+            major consumer brands, political organizations, professional sports teams, universities,
+            collegiate athletic programs, PR agencies, and non-profits. For those in the media
+            monitoring industry we offer an OEM version of our cloud-based media resource, providing
+            them with API access to more media content, faster search capabilities, and a modern
+            technology infrastructure.</p>
+    </div>
+    <script type="text/javascript" language="javascript">
+
+        $(document).ready(function () {
+            SetHighligtedLi('ulAboutUsNavigation', 'liAboutUs');
+        });
+    
+    
+    </script>
+}

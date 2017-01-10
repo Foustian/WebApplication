@@ -1,0 +1,90 @@
+﻿body
+{
+    padding-top: 40px; /*padding-bottom: 40px;*/
+    font-family: 'Open Sans';
+}
+        
+.pieChartActive
+{
+    border-bottom: 1px solid #FFFFFF;
+    border-left: medium none;
+}
+        
+.discoveryTabParent
+{
+    border-left: medium none;
+    border-bottom: 1px solid #808080;
+    height: 31px;
+}
+        
+.ActiveParent
+{
+    border-left: 1px solid #808080;
+}
+        
+.kantarHeader
+{
+    border-bottom: 1px solid #DADADA;
+}
+        
+.chartTabHeader
+{
+    min-width: 50px; 
+    cursor: pointer; 
+    float: left;
+}
+        
+.divCharNPlayerCotent
+{
+    margin-left: 0; 
+    visibility: hidden;
+}
+.divChart
+{
+    border-bottom: 1px solid #808080; 
+    border-left: 1px solid #808080;
+    border-right: 1px solid #808080;
+    width:1020px;
+}
+        
+.divScrollChart
+{
+    overflow-x: scroll; 
+    overflow-y: hidden; 
+    z-index: 9999;
+}
+
+.divActiveFilter
+{
+    border-bottom:1px solid #ECECEC;
+    margin-bottom:5px;
+}
+
+
+.divInActiveFilter
+{
+    border:none;
+    margin-bottom:5px;
+}
+
+.show-hide
+{
+    padding: 3px;
+    display: block;
+    color: #2f2f2f;
+    border: solid 1px #dfdfdf;
+    border-radius:0px;
+    clear: both;
+    overflow: hidden;
+    background:none;
+}
+
+.divChartNPlayer
+{
+    border:1px solid #808080
+}
+
+.margintop15
+{
+    margin-top:15px;
+}

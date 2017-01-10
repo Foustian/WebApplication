@@ -1,0 +1,122 @@
+﻿@using IQMedia.Shared.Utility;
+@model Dictionary<string, object>
+<head>
+    <title>iQ media Iframe Microsite</title>
+    <link rel="stylesheet" type="text/css" href="~/Css/IFrameMicrosite.css" />
+    <script src="~/Scripts/jquery-1.9.1.min.js?v=1.0" type="text/javascript"></script>
+    <script src="~/Scripts/IFrameMicrositeScript.js?v=1.2" type="text/javascript"></script>
+    <script src="~/Scripts/jquery.placeholder.js?v=1.0" type="text/javascript"></script>
+    <script src="~/Scripts/IQMediaCommon.js?v=2.6" type="text/javascript"></script>
+    <link href="~/Css/bootstrap.css" rel="stylesheet" type="text/css" />
+    <link href="~/Css/feed.css?v=3.2" rel="stylesheet" type="text/css" />
+    <link href="~/Css/Fonts.css" rel="stylesheet" type="text/css" />
+</head>
+@if (ViewBag.IsSuccess)
+{
+
+
+    int maxWidth = 0;
+    if (Model != null)
+    {
+        maxWidth = Convert.ToInt32(Model["MaxWidth"]);
+    }
+
+<div align="center" class="paddingTop15">
+    <div id="divPlayer" class="displayNone">
+        Player
+    </div>
+    <div id="divCaptionHeader" class="show-hide displayNone maxWidth545 marginTop15">
+        <div onclick="ShowHidedivCaption(true);" class="float-left">
+            <a href="javascript:;">
+                <img alt="" src="../images/show.png">
+                SHOW CAPTION</a></div>
+        <div onclick="ShowHidedivCaption(false);" class="float-right">
+            <a href="javascript:;">HIDE
+                <img alt="" src="../images/hiden.png"></a></div>
+    </div>
+    <div id="divCaption" class="displayNone clear maxWidth545 minHeight100" align="left">
+        <div>
+            Closed Caption:<br />
+        </div>
+        <div id="divCaptionContent" class="CaptionMain" style="width: 97%;">
+        </div>
+    </div>
+</div>
+<div class="marginLeft30p">
+    <span>Search :</span> &nbsp;
+    <input type="text" class="searchTextBox" placeholder="Search Text" id="txtKeyword"
+        onkeypress="SetSearchTerm(event);" />
+    &nbsp;
+    <input type="button" value="Clear Search" class="ClearSearchButton" onclick="ClearSearch();" />
+</div>
+<div align="center">
+    <div class="paddingTop15" id="divMainContent" style="padding-right:170px; width:@maxWidth">
+        <div class="clear" id="divPreviousNext" style="width:@(maxWidth - (maxWidth / 140 * 24))" align="center">
+            <div class="nextprevdiv">
+                <span style="float: left; padding: 5px 10px 0 0;" id="lblRecords"></span>
+                @if (Model != null && Model["CurrentPageNumber"] != null && Convert.ToInt32(Model["CurrentPageNumber"]) > 0)
+                {
+                    <a class="nextprevbtn" id="btnPreviousPage" onclick="IFrameMicrositeResultPaging(false);"
+                        href="#">
+                        <img onmouseout="" onmouseover="" src="../../Images/prev.png" alt="Previous"></a> 
+                }
+                else
+                {
+                    <a class="nextprevbtn displayNone" id="btnPreviousPage" onclick="IFrameMicrositeResultPaging(false);"
+                        href="#">
+                        <img onmouseout="" onmouseover="" src="../../Images/prev.png" alt="Previous"></a> 
+                }
+                @if (Model != null && Model["HasMoreResult"] != null && Convert.ToBoolean(Model["HasMoreResult"]))
+                {
+                    <a class="nextprevbtn displayNone" id="btnNextPage" onclick="IFrameMicrositeResultPaging(true);"
+                        href="#" style="display: inline;">
+                        <img onmouseout="" onmouseover="" src="../../Images/next.png" alt="Next"></a>
+                }
+                else
+                {
+                    <a class="nextprevbtn" id="btnNextPage" onclick="IFrameMicrositeResultPaging(true);"
+                        href="#" style="display: inline;">
+                        <img onmouseout="" onmouseover="" src="../../Images/next.png" alt="Next"></a>    
+                }
+            </div>
+        </div>
+        <div id="divResult" align="center">
+            @{ 
+                if (Model != null && Model["Result"] != null)
+                {
+                    Html.RenderPartial("_Results", Model["Result"]);
+                }
+            }
+        </div>
+    </div>
+</div>
+@*<script src="../../Scripts/Bootstrap/bootstrap-transition.js?v=1.0" type="text/javascript"></script>
+<script src="../../Scripts/Bootstrap/bootstrap-alert.js?v=1.0" type="text/javascript"></script>
+<script src="../../Scripts/Bootstrap/bootstrap-modal.js?v=1.0" type="text/javascript"></script>
+<script src="../../Scripts/Bootstrap/bootstrap-dropdown.js?v=1.0" type="text/javascript"></script>
+<script src="../../Scripts/Bootstrap/bootstrap-scrollspy.js?v=1.0" type="text/javascript"></script>
+<script src="../../Scripts/Bootstrap/bootstrap-tab.js?v=1.0" type="text/javascript"></script>
+<script src="../../Scripts/Bootstrap/bootstrap-tooltip.js?v=1.0" type="text/javascript"></script>
+<script src="../../Scripts/Bootstrap/bootstrap-popover.js?v=1.0" type="text/javascript"></script>
+<script src="../../Scripts/Bootstrap/bootstrap-button.js?v=1.0" type="text/javascript"></script>
+<script src="../../Scripts/Bootstrap/bootstrap-collapse.js?v=1.0" type="text/javascript"></script>
+<script src="../../Scripts/Bootstrap/bootstrap-carousel.js?v=1.0" type="text/javascript"></script>
+<script src="../../Scripts/Bootstrap/bootstrap-typeahead.js?v=1.0" type="text/javascript"></script>
+*@<script type="text/javascript">
+@{if (Model["ClipID"] != null)
+  {
+      <text>
+      
+       setTimeout(function(){
+       LoadPlayerbyGuid('@(Convert.ToString(Model["ClipID"]))');
+        },200);
+        </text>
+  }
+      }    
+    
+</script>
+}
+else
+{
+    <div class="mainerrorDiv">@IQMedia.WebApplication.Config.ConfigSettings.Settings.PageLoadErrorMessage</div>
+}

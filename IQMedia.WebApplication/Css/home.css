@@ -1,0 +1,153 @@
+body
+{
+    padding-top:0px !important;    
+}
+.ulProdDetail li
+{
+    width: 100%;
+    float: left;
+    text-align: center;
+    font-size: 20px;
+    padding: 5px;
+}
+
+.ulProdDetail li h3
+{
+    font:35px "lato-regular";    
+}
+
+.clientGreyImg
+{
+    padding-top:0px;
+    padding-bottom:0px;
+    background-color:#eeeeee;
+    height:90px;
+    width:100%;
+    overflow:hidden;
+}
+.clientGreyImg img
+{
+    max-height: 70px;
+    padding-right:50px;
+}
+
+.clientGreyImg img:last-child
+{
+    padding-right:0;    
+}
+
+.marquee
+{
+    overflow:hidden;position:relative;width:100%;
+}
+
+.marquee div
+{
+    position:absolute;width:100%;animation: marquee 10s linear infinite;overflow:hidden;left:0px;
+    }
+    .marquee div ul
+{
+    width:100%;
+}
+.marquee div li
+{
+    float:right;
+    }    
+    
+@keyframes marquee {
+    0%   { left: 120%; }   
+    100% { left: -120%; }
+    
+}
+
+.result
+{    
+    background:url(../../Images/home_new/results_img.png) no-repeat;    
+    background-size:100% auto;
+    color:#ffffff;
+    padding-top:30px;
+    padding-bottom:30px;
+}
+
+.h-result-title a{color:inherit;text-decoration:none;}
+
+.resultPoints div
+{
+    color:#ffffff;
+    font-size:20px;    
+}
+
+.resultPoints h2
+{ margin-bottom:10px;}
+
+.resultPoints p
+{ font-size:16px;}
+
+.media-content
+{
+    width:60%;
+    font-size:20px;
+    }
+    
+    .media-content h1
+{
+    font-size:63px;
+} 
+
+    
+.bg-grey
+{
+    background-color:#f7f7f7;    
+}
+
+.pad-tb-30{padding-top:30px !important;padding-bottom:30px !important;}  
+
+.divdemobtn{position:absolute; top:57%;width:100%; margin:0 auto;}
+
+.peso p{font-size:16px; text-align:justify;}
+
+.peso h2{font:35px "lato-bold";}
+
+.resources{background:#588EA1;color:#ffffff;padding-top:10px;}
+
+.resources h1{margin-top:0px; margin-bottom:30px;text-align:center; font-size:63px;}
+
+.resources div{text-align:center;}
+
+.resources .resources-label {font-size:25px;margin-top:10px;text-align:center;}
+
+.resources span {display:block;font-family:'lato-thin-italic';}
+
+.resources .row > div {position:relative;}
+
+.resources .row a{position:absolute;width:100%;height:100%;top:0;left:0;}
+
+.hiring{background:url(../Images/home_new/hiring_banner.png) no-repeat;background-size: 100% auto;padding-top:80px;padding-bottom:60px;}
+
+.hiring h1{font-size:50px;text-align:center;margin:0px;}
+
+.hiring h1 a {color:inherit; outline:none;}
+
+.h-result-title h1{font-size:63px;}
+
+@media (min-width: 480px)
+{
+    .ulProdDetail li
+    {
+        width: 33.3333%;
+        padding: 0px;
+    }
+}
+
+@media(max-width:991px)
+{
+    .result
+    {
+        background:#5F6060;
+    }
+    
+    .h-result-title h1
+    {
+        font-size:40px;
+    }
+}

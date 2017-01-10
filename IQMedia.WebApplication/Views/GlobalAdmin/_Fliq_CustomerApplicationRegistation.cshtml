@@ -1,0 +1,115 @@
+﻿@using IQMedia.Model;
+@model fliQ_CustomerApplicationPostModel
+@{
+    
+    IQMedia.Model.ActiveUser sessionInformation = IQMedia.WebApplication.Utility.ActiveUserMgr.GetActiveUser();
+}
+<script src="~/Scripts/jquery.form.js?v=1.0" type="text/javascript"></script>
+<script language="javascript" type="text/javascript">
+    $("#divFliq_CustomerApplicationRegistration_ScrollContent").css("height", documentHeight - 250);
+    $("#divFliq_CustomerApplicationRegistration_ScrollContent").mCustomScrollbar({
+        advanced: {
+            updateOnContentResize: true,
+            autoScrollOnFocus: true
+        }
+    });
+</script>
+<div style="clear: both;">
+</div>
+<div id="divFliq_CustomerApplicationRegistration_ScrollContent">
+    @using (Html.BeginForm("Fliq_CustomerApplicationRegistration", "FliqCustomer", FormMethod.Post, new { @class = "form-horizontal", @id = "frmFliq_CustomerApplication" }))
+    {
+        <div style="padding-right: 15px;">
+            <div class="sidebar-nav" style="margin-top: 7px;">
+                <h5>
+                    Fliq Customer Application Setup Page</h5>
+            </div>
+            <br />
+            <div class="control-group">
+                <label for="customerApplication_ClientID" class="control-label">
+                    Client</label>
+                <div class="controls">
+                    <input type="hidden" id="customerApplication_ID" name="customerApplication.ID" value="@Model.customerApplication.ID" />
+                    <select name="customerApplication.ClientID" id="customerApplication_ClientID" @(Model.customerApplication.ID == 0 ? string.Empty : "disabled=disabled")>
+                        <option value="0">Select</option>
+                        @foreach (ClientModel client in Model.CustomerApplication_DropDown.ClientList)
+                        {
+                            <option value="@client.ClientKey" @(Model.customerApplication.ClientID == client.ClientKey ? "selected=\"selected\"" : string.Empty)>@client.ClientName</option>
+                        }
+                    </select>
+                    @if (Model.customerApplication.ID > 0)
+                    {
+                        <input type="hidden" name="customerApplication.ClientID" value="@Model.customerApplication.ClientID" />
+                    }
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spancustomerApplication_ClientID"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="customerApplication_CustomerID" class="control-label">
+                    Customer</label>
+                <div class="controls">
+                    <select name="customerApplication.CustomerID" id="customerApplication_CustomerID"
+                        disabled="disabled">
+                        <option value="0">Select</option>
+                        @if (Model.CustomerApplication_DropDown.CustomerList != null)
+                        {
+                            foreach (fliq_CustomerModel customer in Model.CustomerApplication_DropDown.CustomerList)
+                            {
+                            <option value="@customer.CustomerKey" @(Model.customerApplication.CustomerID == customer.CustomerKey ? "selected=\"selected\"" : string.Empty)>@(customer.FirstName + " " + customer.LastName)</option>
+                            }
+                        }
+                    </select>
+                    @if (Model.customerApplication.ID > 0)
+                    {
+                        <input type="hidden" name="customerApplication.CustomerID" value="@Model.customerApplication.CustomerID" />
+                    }
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spancustomerApplication_CustomerID"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="customerApplication_FliqApplicationID" class="control-label">
+                    Application</label>
+                <div class="controls">
+                    <select name="customerApplication.FliqApplicationID" id="customerApplication_FliqApplicationID"
+                        disabled="disabled">
+                        <option value="0">Select</option>
+                        @if (Model.CustomerApplication_DropDown.CustomerList != null)
+                        {
+                            foreach (fliQ_ApplicationModel app in Model.CustomerApplication_DropDown.ApplicationList)
+                            {
+                            <option value="@app.ID" @(Model.customerApplication.FliqApplicationID == app.ID ? "selected=\"selected\"" : string.Empty)>@app.Application</option>
+                            }
+                        }
+                        @if (Model.customerApplication.ID > 0)
+                        {
+                            <input type="hidden" name="customerApplication.FliqApplicationID" value="@Model.customerApplication.FliqApplicationID" />
+                        }
+                    </select>
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spancustomerApplication_FliqApplicationID"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="customerApplication_IsActive" class="control-label">
+                    Is Active</label>
+                <div class="controls">
+                    <input type="checkbox" name="customerApplication.IsActive" id="customerApplication_IsActive" checked="@(Model.customerApplication.IsActive.HasValue ? Model.customerApplication.IsActive.Value : true)" value="true" />
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">
+                    &nbsp;</label>
+                <div class="controls">
+                    <input type="button" id="btnCancelFliq_CustomerApplicationRegistration" name="btnCancelFliq_CustomerApplicationRegistration"
+                        value="Cancel" onclick="CancelFliq_CustomerApplicationRegistration();" class="button"
+                        style="margin: 0px;" />
+                    <input type="button" onclick="SaveFliq_CustomerApplication()" id="btnSubmitFliq_CustomerApplicationRegistration"
+                        name="btnSubmitFliq_CustomerApplicationRegistration" value="Submit" class="button"
+                        style="margin: 0px;" />
+                </div>
+            </div>
+        </div>
+    }
+</div>

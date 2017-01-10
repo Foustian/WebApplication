@@ -1,0 +1,64 @@
+﻿<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="row-fluid top-bg">
+            <div class="container">
+                <div class="span7">
+                    <div class="socil-main">
+                        <a href="https://www.facebook.com/iqmediacorp" target="_blank" class="socil-icon">
+                            <img src="../../images/f.png" alt="Facebook"></a> <a href="http://www.linkedin.com/company/1442342?trk=null" target="_blank" class="socil-icon">
+                                <img src="../../images/in.png" alt="Linkedin"></a> <a href="https://twitter.com/iQMediaCorp" target="_blank" class="socil-icon">
+                                    <img src="../../images/t.png" alt="Twitter"></a>
+                    </div>
+                    <div class="iphone">
+                        <span>855-476-3342</span></div>
+                </div>
+                <div class="span9 pull-right" id="top-link">
+                    <span>Try iQ media Software</span> <a href="http://iqmediacorp.sites.hubspot.com/free-sms-broadcast-alerts" target="_blank">Free Alerts</a> <strong>|</strong>
+                    @{
+                        IQMedia.Model.ActiveUser sessionInformation = IQMedia.WebApplication.Utility.ActiveUserMgr.GetActiveUser();
+                        if (sessionInformation.IsLogIn == true
+                            && sessionInformation.AuthorizedVersion.HasValue && (sessionInformation.AuthorizedVersion == 0 || sessionInformation.AuthorizedVersion == 4)
+                            )
+                        {                            
+                        <a href="~/Dashboard/" class="ReturnFeeds">Return To cliQ</a><strong>|</strong>
+                        <a class="marginright15" href="~/LogOut/LogOut">Sign Out</a>
+                        }
+                        else
+                        {
+                        <a  class="marginright15" href="~/SignIn">Sign In</a>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row-fluid">
+    <div class="container">
+        <div class="navbar navbar-inverse">
+            <div class="">
+                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span
+                    class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+                </a><a class="brand" href="~/Home_Old/Index">
+                    <img src="~/images/logo.png" alt="IQ Media"></a>
+                <div class="nav-collapse collapse" id="nave-top-space">
+                    <ul class="nav pull-right">
+                        <li><a href="~/Software">Software</a></li>
+                        <li><a href="~/Services" data-toggle="dropdown" data-hover="dropdown">Services</a>
+                        </li>
+                        <!--<li class="dropdown"><a href="#Solutions" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown">Resources</a>
+              <ul class="dropdown-menu">
+                <li><a href="business-process-mgmt.html">Business Process Management</a></li>
+              <li><a href="business_intelligence.html">Business Intelligence </a></li>
+            </ul>
+            </li>-->
+                        <li><a href="~/Resources">Resources</a></li>
+                        <li><a href="~/Customers">Customers</a></li>
+                        <li><a href="~/AboutUs_Old">About Us</a></li>
+                        <li><a href="http://info.iqmediacorp.com/blog">Blog</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

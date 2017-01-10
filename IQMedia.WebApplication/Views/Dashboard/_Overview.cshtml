@@ -1,0 +1,178 @@
+﻿@using IQMedia.Shared.Utility;
+@model IQMedia.WebApplication.Models.DashboardOverviewResults
+<div class="clear">
+    <div id="divLineChartOptions" class="clear">
+        <div class="pull-left">
+            <a href="#" onclick="changeTab('2');" class="marginRight-4">
+                <img id="imgMultipleLine" src="../../Images/Dashboard/multiple-line-normal.png" alt="" /></a>
+            <a href="#" onclick="changeTab('1');">
+                <img id="imgSingleLine" src="../../Images/Dashboard/single-line-active.png" alt="" /></a>
+        </div>
+        <div class="pull-right" id="divDuration">
+            <div id="divHourlyDuration" class="floatLeft SearchType leftSideBorderRadius" onclick="ChangeSearchType(0);">
+                Hour</div>
+            <div id="divDayDuration" class="floatLeft SearchType" onclick="ChangeSearchType(1);">
+                Day</div>
+            @*<div id="divWeekDuration" class="pull-right SearchType" onclick="ChangeSearchType(2);">
+                Week</div>*@
+            <div id="divMonthDuration" class="pull-right SearchType rightSideBorderRadius" onclick="ChangeSearchType(3);">
+                Month</div>
+        </div>
+    </div>
+    <div class="clear">
+        <div style="width: auto; height: 0; overflow: hidden;" id="divLineChartMedia">
+        </div>
+    </div>
+    <div class="clear">
+        <div id="divLineChartSubMedia">
+        </div>
+    </div>
+</div>
+<h5 class="clearDiv">
+    <span id="totalNumOfHits">@Model.TotNumOfHits Total Hits</span>
+</h5>
+<div style="background-color: #F5F5F5; width: 68%; padding: 2px 0px;" class="pull-left">
+    <ul id="ulOvSubMediaCharts" class="ulSubMediaCharts">        
+        <li class="liSubMediaCharts" id="liAudienceChart">
+            <div>
+                <table align="center" width="100%">
+                    <tr>
+                        <td class="broadcastSmallChartHeaderMedium" colspan="2">
+                            Views
+                        </td>
+                    </tr>
+                    <tr>
+                        <td id="divComparisionOfAudience" class="paddinLeft15 width50p">
+                            @if (Model.IsprevSummaryEnoughData)
+                            {
+                                <div class="dashboardTotal">
+                                    @Model.SumAudienceRecord.ToString("N0")
+                                </div>
+                                <div class="no-background">
+                                    Compare to @Model.PrevSumAudienceRecord.ToString("N0")
+                                </div>
+                                if (Model.SumAudienceRecord == Model.PrevSumAudienceRecord)
+                                {
+                                <div class="dashboardUpDiv" style="background: none">
+                                    Same</div>
+                                }
+                                else if (Model.SumAudienceRecord > Model.PrevSumAudienceRecord)
+                                {
+                                <div class="dashboardUpDiv">
+                                    &nbsp;Up 
+                                    @if (Model.PrevSumAudienceRecord != 0)
+                                    {
+                                        @(CommonFunctions.GetPercentageRelative(Model.PrevSumAudienceRecord, Model.SumAudienceRecord) + "%")
+                                    }
+                                    (@(Math.Abs(Model.PrevSumAudienceRecord - Model.SumAudienceRecord).ToString("N0")))</div>
+                                }
+                                else
+                                {
+                                <div class="dashboardDownDiv">
+                                    &nbsp;Down @(CommonFunctions.GetPercentageRelative(Model.PrevSumAudienceRecord, Model.SumAudienceRecord))%
+                                    (@((Model.PrevSumAudienceRecord - Model.SumAudienceRecord).ToString("N0")))</div>
+                                }
+
+                            }
+                            else
+                            {
+                                <div class="dashboardTotal">
+                                    @Model.SumAudienceRecord.ToString("N0")
+                                </div>
+                            }
+                        </td>
+                        <td id="divAudienceSparkChart" class="width50p">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                        </td>
+                        <td id="sumAudienceSparkChart" align="center" class="fontBold">
+                            @if (!Model.IsprevSummaryEnoughData)
+                            {
+                                Model.SumAudienceRecord.ToString("N0");
+                            }
+                        </td>
+                    </tr>
+                </table>
+                @* <div id="divAudienceSparkChart" class="pull-left">
+                </div>
+                <div id="sumAudienceSparkChart" class="clear center">
+                </div>*@
+            </div>
+        </li>
+        <li class="liSubMediaCharts" id="liMediaValueChart">
+            <div>
+                <table align="center" width="100%">
+                    <tr>
+                        <td class="broadcastSmallChartHeaderMedium" colspan="2">
+                            Media Value
+                        </td>
+                    </tr>
+                    <tr>
+                        <td id="divComparisionOfMediaValue" class="paddinLeft15 width50p">
+                            @if (Model.IsprevSummaryEnoughData)
+                            {
+                                <div class="dashboardTotal">
+                                    @Model.SumIQMediaValueRecord.ToString("N2")
+                                </div>
+                                <div class="no-background">
+                                    Compare to @Model.PrevSumIQMediaValueRecord.ToString("N2")
+                                </div>
+                                if (Model.SumIQMediaValueRecord == Model.PrevSumIQMediaValueRecord)
+                                {
+                                <div class="dashboardUpDiv" style="background: none">
+                                    Same</div>
+                                }
+                                else if (Model.SumIQMediaValueRecord > Model.PrevSumIQMediaValueRecord)
+                                {
+                                <div class="dashboardUpDiv">
+                                    &nbsp;Up 
+                                    @if (Model.PrevSumIQMediaValueRecord != 0)
+                                    {
+                                        @(CommonFunctions.GetPercentageRelative(Model.PrevSumIQMediaValueRecord, Model.SumIQMediaValueRecord) + "%")
+                                    }
+                                    (@(Math.Abs(Model.PrevSumIQMediaValueRecord - Model.SumIQMediaValueRecord).ToString("N2")))</div>
+                                }
+                                else
+                                {
+                                <div class="dashboardDownDiv">
+                                    &nbsp;Down @(CommonFunctions.GetPercentageRelative(Model.PrevSumIQMediaValueRecord, Model.SumIQMediaValueRecord))%
+                                    (@((Model.PrevSumIQMediaValueRecord - Model.SumIQMediaValueRecord).ToString("N2")))</div>
+                                }
+
+                            }
+                            else
+                            {
+                                <div class="dashboardTotal">
+                                    @Model.SumIQMediaValueRecord.ToString("N2")
+                                </div>
+                            }
+                        </td>
+                        <td id="divIQMediaValueSparkChart" class="width50p">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                        </td>
+                        <td id="sumIQMediaValueSparkChart" align="center" class="fontBold">
+                            @if (!Model.IsprevSummaryEnoughData)
+                            {
+                                Model.SumIQMediaValueRecord.ToString("N2");
+                            }
+                        </td>
+                    </tr>
+                </table>
+                @*<div id="divIQMediaValueSparkChart" class="pull-left">
+                </div>
+                <div id="sumIQMediaValueSparkChart" class="clear center">
+                </div>*@
+            </div>
+        </li>
+    </ul>
+</div>
+<div style="width: 30%;" class="pull-left">
+    <div id="divPieChartData" class="clear">
+    </div>
+    <div id="divPieChartText" style="position:absolute; left:0px; top:0px;"></div>
+</div>

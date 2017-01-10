@@ -1,0 +1,47 @@
+﻿@using IQMedia.Model;
+@model List<Timeshift_SavedSearchModel>
+@if (Model != null)
+{
+    var timeshiftTempData = (IQMedia.WebApplication.Models.TempData.TimeShiftTempData)TempData["TimeShiftTempData"];
+    <div class="float-left">
+        <h5>
+            Saved Search</h5>
+    </div>
+    if (Model.Count > 0)
+    {
+    
+    <div class="SavedSearchPager float-right">
+        <span id="spnSavedSearchRecordDetail" >
+        </span><a class="nextprevbtn cursorPointer" id="aSavedSearchPrevious" onclick="GetSavedSearch(false,false);"
+            style="display: inline;">
+            <img onmouseout="src=&quot;../../Images/prev-hover.png&quot;" onmouseover="src=&quot;../../Images/prev.png&quot;"
+                src="../../Images/prev-hover.png">
+        </a><a class="nextprevbtn cursorPointer" id="aSavedSearchNext" onclick="GetSavedSearch(true,false);"
+            style="display: inline;">
+            <img onmouseout="src=&quot;../../Images/next-hover.png&quot;" onmouseover="src=&quot;../../Images/next.png&quot;"
+                src="../../Images/next-hover.png">
+        </a>
+    </div>
+    <br class="clear" />
+    <br />
+    }
+        
+    <div class="DiscoveryGrid">
+        @if (Model.Count > 0)
+        {
+            foreach (Timeshift_SavedSearchModel item in Model)
+            {
+            <div class="clear">
+                <img
+                            src="../../Images/Delete.png?v=1.1" alt="Delete" class="cursorPointer  marginRight10 float-left" onclick="DeleteSavedSearchByID(@item.ID);" />
+                <div class="cursorPointer float-left actionBarLeftDivTV" style="border:none;padding:0;" onclick="LoadSavedSearch(@item.ID);">@item.Title</div>
+                @if (timeshiftTempData != null && timeshiftTempData.ActiveSearch != null && item.ID == timeshiftTempData.ActiveSearch.ID)
+                {
+                    <span class="float-right">
+                        <img src="../../Images/Save_Floppy.png" alt="Update" title="Update Saved Search" class="cursorPointer" onclick="OpenSavedSearchPopup(@item.ID,'@item.Title.Replace("\'", "\\\'")');" /></span>
+                }
+            </div>
+            }
+        }
+    </div>
+}

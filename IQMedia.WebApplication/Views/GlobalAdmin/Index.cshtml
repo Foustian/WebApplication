@@ -1,0 +1,512 @@
+﻿@{
+    ViewBag.Title = "iQ media Global Admin";
+    Layout = "~/Views/Shared/_IQMediaMasterInner.cshtml";
+}
+@using IQMedia.Model;
+@using IQMedia.Shared.Utility;
+@model IEnumerable<ActiveUser>
+<link rel="stylesheet" href="~/Css/Chosen/chosen.css" />
+<script src="~/Scripts/chosen.jquery.js?v=1.1" type="text/javascript"></script>
+<script type="text/javascript" src="~/Scripts/GlobalAdminScript.js?v=1.6"></script>
+<script type="text/javascript" src="~/Scripts/Client.js?v=1.8"></script>
+<script type="text/javascript" src="~/Scripts/Customer.js?v=1.8"></script>
+<script type="text/javascript" src="~/Scripts/fliq_Customer.js?v=1.2"></script>
+<script type="text/javascript" src="~/Scripts/fliq_Application.js?v=1.0"></script>
+<script type="text/javascript" src="~/Scripts/fliq_CustomerApplication.js?v=1.2"></script>
+<script type="text/javascript" src="~/Scripts/fliq_ClientApplication.js?v=1.1"></script>
+<script type="text/javascript" src="~/Scripts/UGCMapSettings.js?v=1.2" ></script>
+<script type="text/javascript" src="~/Scripts/jquery.ui.rlightbox.min.js?v=1.0"></script>
+@*<link type="text/css" rel="stylesheet" href="~/Css/jquery-ui-1.8.16.custom.css" />*@
+<link type="text/css" rel="stylesheet" href="~/Css/lightbox.min.css" />
+<script language="javascript" type="text/javascript" src="~/Scripts/enscroll.js?v=1.0"></script>
+@if (ViewBag.IsSuccess)
+{
+    string strImageFileTypes = string.Join("', '", @System.Configuration.ConfigurationManager.AppSettings["ClientImageExtensions"].Split(new char[] { ',' }));
+    string masterClientList = string.Join("','", (TempData["GlobalAdminTempData"] as IQMedia.WebApplication.Models.GlobalAdminTempData).Client_DropDowns.Client_MasterClientList);
+    <script language="javascript" type="text/javascript">
+        var imageFileTypes = ['@Html.Raw(strImageFileTypes)'];
+        var masterClients = ['@Html.Raw(masterClientList)'];
+    </script>
+    
+}
+<style type="text/css">
+    .row-custom .dropdown-menu
+    {
+        width: 190px !important;
+    }
+</style>
+<div class="container container_custom">
+    <div class="row-fluid" id="divRowFluid">
+        @if (ViewBag.IsSuccess)
+        {
+            <div class="span3 minheight500" id="divQuickFeedFinder">
+                <div class="well sidebar-nav">
+                    <h5>
+                        Global Admin
+                    </h5>
+                    <div class="minHeight120">
+                        <ul role="navigation" class="nav nav-tabs nav-stacked sideMenuUl width100p">
+                            <li class="active-user" id="liActiveUsers"><a role="button" class="sideMenuUlPad"
+                                id="A1" href="#" onclick="GetActiveUsers()">Active Users</a> </li>
+                            <li onclick="GetClients(0);" class="client-registration" id="liClient"><a id="A1"
+                                class="sideMenuUlPad" role="button" href="#">Client Registration</a> </li>
+                            <li onclick="GetCustomers(0);" class="customer-registration" id="liCustomer"><a id="A1"
+                                class="sideMenuUlPad" role="button" href="#">Customer Registration</a> </li>
+                            <li onclick="GetFliq_Application(0);" class="customer-registration" id="liFliq_Application">
+                                <a class="sideMenuUlPad" role="button" href="#">fliQ Application</a> </li>
+                            <li onclick="GetFliq_ClientApplication(0);" class="customer-registration" id="liFliq_ClientApplication">
+                                <a class="sideMenuUlPad" role="button" href="#">fliQ Client App Mapping</a>
+                            </li>
+                            <li onclick="GetFliq_Customers(0);" class="customer-registration" id="liFliq_Customer">
+                                <a id="A1" class="sideMenuUlPad" role="button" href="#">fliQ Customer Registration</a>
+                            </li>
+                            <li onclick="GetFliq_CustomerApplication(0);" class="customer-registration" id="liFliq_CustomerApplication">
+                                <a class="sideMenuUlPad" role="button" href="#">fliQ Customer App Mapping</a>
+                            </li>
+                            <li onclick="GetUGCSetupSettings();" class="customer-registration" id="liUGCMap">
+                                <a class="sideMenuUlPad" role="button" href="#">Cloud Settings</a>
+                            </li>
+                            <li onclick="GetGroupSettings();" class="customer-registration" id="liGroupAdmin">
+                                <a class="sideMenuUlPad" role="button" href="javascript:void(0);">Group Settings</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="span9 span9-custom">
+                <div id="divResult">
+                    <div class="row-fluid row-custom">
+                        <!--/span-->
+                        <div class="btn-group">
+                            <a class="btn dropdown-toggle no-background" data-toggle="dropdown" href="#" id="aSortDirectionActiveUser">
+                                <script type="text/javascript">
+                                    SetDirectionHTMLActiveUser();
+                                </script>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li class="cursorPointer"><a onclick="SortActiveUser('LastAccessTime',true);">Last Access
+                                    Time Ascending</a></li>
+                                <li class="cursorPointer"><a onclick="SortActiveUser('LastAccessTime',false);">Last
+                                    Access Time Descending</a></li>
+                                <li class="cursorPointer"><a onclick="SortActiveUser('LoginID',true);">Email Ascending</a></li>
+                                <li class="cursorPointer"><a onclick="SortActiveUser('LoginID',false);">Email Descending</a></li>
+                                <li class="cursorPointer"><a onclick="SortActiveUser('FirstName',true);">First Name
+                                    Ascending</a></li>
+                                <li class="cursorPointer"><a onclick="SortActiveUser('FirstName',false);">First Name
+                                    Descending</a></li>
+                                <li class="cursorPointer"><a onclick="SortActiveUser('LastName',true);">Last Name Ascending</a></li>
+                                <li class="cursorPointer"><a onclick="SortActiveUser('LastName',false);">Last Name Descending</a></li>
+                                <li class="cursorPointer"><a onclick="SortActiveUser('Server',true);">Server Ascending</a></li>
+                                <li class="cursorPointer"><a onclick="SortActiveUser('Server',false);">Server Descending</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="sidebar-nav" style="margin-top: 8px;">
+                        <h5>
+                            Active Users</h5>
+                    </div>
+                    <br />
+                    <div class="span10 float-left" style="padding-bottom: 10px;">
+                        <div class="span3 float-left" style="padding-top: 5px;">
+                            Search Active Users
+                        </div>
+                        <div class="span5 float-left">
+                            <input type="text" id="txtActiveUserSearchTerm" name="txtActiveUserSearchTerm" class="txtwidth90per"
+                                placeholder="Search Active User" />
+                        </div>
+                        <div class="float-left" style="padding-bottom: 10px;">
+                            <input type="button" style="margin: 0px;" class="button" onclick="SearchActiveUsers();"
+                                value="Search" id="btnSearchActiveUser" />
+                            <input type="button" style="margin: 0px;" class="button" onclick="ClearActiveUser();"
+                                value="Clear Search" id="btnClearActiveUser" /></div>
+                    </div>
+                    @if (Model != null)
+                    {
+                        <div id="divResult_Content" class="paddinBottom20 clear">
+                            @Html.Partial("~/Views/GlobalAdmin/_Results.cshtml", Model)
+                        </div>
+                    }
+                </div>
+                <div id="divClients" class="displayNone">
+                    <div class="sidebar-nav" style="margin-top: 8px;">
+                        <h5>
+                            Client Registration</h5>
+                    </div>
+                    <br />
+                    <div class="span10 float-left" style="padding-bottom: 10px;">
+                        <div class="span2 float-left" style="padding-top: 5px;">
+                            Select Client
+                        </div>
+                        <div class="span5 float-left">
+                            <input type="text" id="txtClients" name="txtClients" class="txtwidth90per" placeholder="Search Client" />
+                        </div>
+                        <div class="float-left" style="padding-bottom: 10px;">
+                            <input type="button" style="margin: 0px;" class="button" onclick="SearchClient();"
+                                value="Search" id="btnSearchClient" />
+                            <input type="button" style="margin: 0px;" class="button" onclick="ClearSearchClient();"
+                                value="Clear Search" id="btnClearSearchClient" /></div>
+                    </div>
+                    <div class="margintop5 float-right" style="margin-bottom: 20px;">
+                        <a onclick="GetClientRegistration(0);" style="margin-right: 10px;" href="javascript:void(0);">
+                            Add Client
+                            <img alt="add" src="../../images/iqagent/addicon.png"></a>
+                    </div>
+                    <div style="clear: both;">
+                    </div>
+                    <div id="divPreviousNext" class="nextprevdiv">
+                        <span id="lblRecords" style="float: left; padding: 5px 10px 0 0;"></span><a href="#"
+                            onclick="GetClients(0,false);" id="btnPreviousPage" class="nextprevbtn">
+                            <img src="../../Images/prev.png" onmouseover="" src="../../Images/prev.png" onmouseout=""
+                                src="../../Images/prev-hover.png"></a> <a href="#" onclick="GetClients(0,true);"
+                                    id="btnNextPage" class="nextprevbtn">
+                                    <img src="../../Images/next.png" onmouseover="" src="../../Images/next.png" onmouseout=""
+                                        src="../../Images/next-hover.png"></a>
+                    </div>
+                    <div style="clear: both;">
+                    </div>
+                    <div id="divClients_Content">
+                    </div>
+                </div>
+                <div id="divCustomers" class="displayNone">
+                    <div class="sidebar-nav" style="margin-top: 8px;">
+                        <h5>
+                            Customer Registration</h5>
+                    </div>
+                    <br />
+                    <div class="span8 float-left" style="padding-bottom: 10px;">
+                        <div class="margintop5">
+                            <div class="span3 float-left" style="padding-top: 5px;">
+                                Select Client
+                            </div>
+                            <div class="span8 float-left">
+                                <select id="ddlClients" name="ddlClients" class="chosen-select ddlwidth93per" data-placeholder="Select Client">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="clear" style="padding-top: 5px;">
+                            <div class="span3 float-left" style="padding-top: 5px;">
+                                Search Customer
+                            </div>
+                            <div class="span8 float-left">
+                                <input type="text" id="txtCustomer" name="txtCustomer" class="txtwidth90per" placeholder="Search Customer" />
+                            </div>
+                        </div>
+                        <div class="clear" style="padding-top: 5px;">
+                            <div class="span3 float-left">
+                            </div>
+                            <div class="span8 float-left">
+                                <input type="button" style="margin: 0px;" class="button" onclick="ClearCustomerSearch();"
+                                    value="Clear Search" id="btnClearSearchCustomer" />
+                                <input type="button" style="margin: 0px;" class="button" onclick="SearchCustomer();"
+                                    value="Search" id="btnSearchClient" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="margintop5 float-right" style="margin-bottom: 20px;">
+                        <a onclick="GetCustomerRegistration(0);" style="margin-right: 10px;" href="javascript:void(0);">
+                            Add Customer
+                            <img alt="add" src="../../images/iqagent/addicon.png"></a>
+                    </div>
+                    <div style="clear: both;">
+                    </div>
+                    <div id="divCustomerPreviousNext" class="nextprevdiv">
+                        <span id="lblCustomerRecords" style="float: left; padding: 5px 10px 0 0;"></span>
+                        <a href="#" onclick="GetCustomers(0,false);" id="btnCustomerPreviousPage" class="nextprevbtn">
+                            <img src="../../Images/prev.png" onmouseover="" src="../../Images/prev.png" onmouseout=""
+                                src="../../Images/prev-hover.png"></a> <a href="#" onclick="GetCustomers(0,true);"
+                                    id="btnCustomerNextPage" class="nextprevbtn">
+                                    <img src="../../Images/next.png" onmouseover="" src="../../Images/next.png" onmouseout=""
+                                        src="../../Images/next-hover.png"></a>
+                    </div>
+                    <div id="divCustomers_Content" class="paddinBottom20">
+                    </div>
+                </div>
+                <div id="divFliq_Customers" class="displayNone">
+                    <div class="sidebar-nav" style="margin-top: 8px;">
+                        <h5>
+                            fliQ Customer Registration</h5>
+                    </div>
+                    <br />
+                    <div class="span8 float-left" style="padding-bottom: 10px;">
+                        <div class="margintop5">
+                            <div class="span3 float-left" style="padding-top: 5px;">
+                                Select Client
+                            </div>
+                            <div class="span8 float-left">
+                                <select id="ddlFliq_Clients" name="ddlFliq_Clients" class="chosen-select ddlwidth93per"
+                                    data-placeholder="Select Client">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="clear" style="padding-top: 5px;">
+                            <div class="span3 float-left" style="padding-top: 5px;">
+                                Search Customer
+                            </div>
+                            <div class="span8 float-left">
+                                <input type="text" id="txtFliq_Customer" name="txtFliq_Customer" class="txtwidth90per"
+                                    placeholder="Search Customer" />
+                            </div>
+                        </div>
+                        <div class="clear" style="padding-top: 5px;">
+                            <div class="span3 float-left">
+                            </div>
+                            <div class="span8 float-left">
+                                <input type="button" style="margin: 0px;" class="button" onclick="ClearFliq_CustomerSearch();"
+                                    value="Clear Search" id="btnClearSearchFliq_Customer" />
+                                <input type="button" style="margin: 0px;" class="button" onclick="SearchFliq_Customer();"
+                                    value="Search" id="btnFliq_SearchClient" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="margintop5 float-right" style="margin-bottom: 20px;">
+                        <a onclick="GetFliq_CustomerRegistration(0);" style="margin-right: 10px;" href="javascript:void(0);">
+                            Add Customer
+                            <img alt="add" src="../../images/iqagent/addicon.png"></a>
+                    </div>
+                    <div style="clear: both;">
+                    </div>
+                    <div id="divFliq_CustomerPreviousNext" class="nextprevdiv">
+                        <span id="lblFliq_CustomerRecords" style="float: left; padding: 5px 10px 0 0;"></span>
+                        <a href="#" onclick="GetFliq_Customers(0,false);" id="btnFliq_CustomerPreviousPage"
+                            class="nextprevbtn">
+                            <img src="../../Images/prev.png" /></a> <a href="#" onclick="GetFliq_Customers(0,true);"
+                                id="btnFliq_CustomerNextPage" class="nextprevbtn">
+                                <img src="../../Images/next.png" /></a>
+                    </div>
+                    <div id="divFliq_Customers_Content" class="paddinBottom20">
+                    </div>
+                </div>
+                <div id="divFliq_Application" class="displayNone">
+                    <div class="sidebar-nav" style="margin-top: 8px;">
+                        <h5>
+                            fliQ Application</h5>
+                    </div>
+                    <br />
+                    <div class="span9 float-left" style="padding-bottom: 10px;">
+                        <div class="span2 float-left" style="padding-top: 5px;">
+                            Search Application
+                        </div>
+                        <div class="span5 float-left">
+                            <input type="text" id="txtFliq_Application" name="txtFliq_Application" class="txtwidth90per"
+                                placeholder="Search Application" />
+                        </div>
+                        <div class="float-left" style="padding-bottom: 10px;">
+                            <input type="button" style="margin: 0px;" class="button" onclick="SearchFliq_Application();"
+                                value="Search" id="btnSearchFliq_Application" />
+                            <input type="button" style="margin: 0px;" class="button" onclick="ClearFliq_Application();"
+                                value="Clear Search" id="btnClearFliq_Application" />
+                        </div>
+                    </div>
+                    <div class="margintop5 float-right" style="margin-bottom: 20px;">
+                        <a onclick="GetFliq_ApplicationRegistration(0);" style="margin-right: 10px;" href="javascript:void(0);">
+                            Add Application
+                            <img alt="add" src="../../images/iqagent/addicon.png"></a>
+                    </div>
+                    <div id="divFliq_ApplicationPreviousNext" class="nextprevdiv">
+                        <span id="lblFliq_ApplicationRecords" style="float: left; padding: 5px 10px 0 0;">
+                        </span><a href="#" onclick="GetFliq_Application(0,false);" id="btnFliq_ApplicationPreviousPage"
+                            class="nextprevbtn">
+                            <img src="../../Images/prev.png" /></a> <a href="#" onclick="GetFliq_Application(0,true);"
+                                id="btnFliq_ApplicationNextPage" class="nextprevbtn">
+                                <img src="../../Images/next.png" /></a>
+                    </div>
+                    <div id="divFliq_Application_Content" class="paddinBottom20">
+                    </div>
+                </div>
+                <div id="divFliq_ClientApplication" class="displayNone">
+                    <div class="sidebar-nav" style="margin-top: 8px;">
+                        <h5>
+                            fliQ Client Application</h5>
+                    </div>
+                    <br />
+                    <div class="span8 float-left" style="padding-bottom: 10px;">
+                        <div class="margintop5">
+                            <div class="span3 float-left" style="padding-top: 5px;">
+                                Select Client
+                            </div>
+                            <div class="span8 float-left">
+                                <select id="ddlFliq_AppClients" name="ddlFliq_AppClients" class="chosen-select ddlwidth93per"
+                                    data-placeholder="Select Client">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="clear" style="padding-top: 5px;">
+                            <div class="span3 float-left" style="padding-top: 5px;">
+                                Search Application
+                            </div>
+                            <div class="span8 float-left">
+                                <input type="text" id="txtFliq_ClientApplication" name="txtFliq_ClientApplication"
+                                    class="txtwidth90per" placeholder="Search Application" />
+                            </div>
+                        </div>
+                        <div class="clear" style="padding-top: 5px;">
+                            <div class="span3 float-left">
+                            </div>
+                            <div class="span8 float-left">
+                                <input type="button" style="margin: 0px;" class="button" onclick="ClearSearchFliq_ClientApplication();"
+                                    value="Clear Search" id="btnClearFliq_ClientApplication" />
+                                <input type="button" style="margin: 0px;" class="button" onclick="SearchFliq_ClientApplication();"
+                                    value="Search" id="btnSearchFliq_ClientApplication" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="margintop5 float-right" style="margin-bottom: 20px;">
+                        <a onclick="GetFliq_ClientApplicationRegistration(0);" style="margin-right: 10px;"
+                            href="javascript:void(0);">Add Client Application
+                            <img alt="add" src="../../images/iqagent/addicon.png"></a>
+                    </div>
+                    <div id="divFliq_ClientApplicationPreviousNext" class="clear nextprevdiv">
+                        <span id="lblFliq_ClientApplicationRecords" style="float: left; padding: 5px 10px 0 0;">
+                        </span><a href="#" onclick="GetFliq_ClientApplication(0,false);" id="btnFliq_ClientApplicationPreviousPage"
+                            class="nextprevbtn">
+                            <img src="../../Images/prev.png" /></a> <a href="#" onclick="GetFliq_ClientApplication(0,true);"
+                                id="btnFliq_ClientApplicationNextPage" class="nextprevbtn">
+                                <img src="../../Images/next.png" /></a>
+                    </div>
+                    <div id="divFliq_ClientApplication_Content" class="paddinBottom20">
+                    </div>
+                </div>
+                <div id="divFliq_CustomerApplication" class="displayNone">
+                    <div class="row-fluid row-custom">
+                        <!--/span-->
+                        <div class="btn-group">
+                            <a class="btn dropdown-toggle no-background" data-toggle="dropdown" href="#" id="aSortDirectionCustomerApp">
+                                <script type="text/javascript">
+                                    SetDirectionHTMLCustomerApp();
+                                </script>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li class="cursorPointer"><a onclick="SortDirectionCustomerApp('Application',true);">
+                                    Application Ascending</a></li>
+                                <li class="cursorPointer"><a onclick="SortDirectionCustomerApp('Application',false);">
+                                    Application Descending</a></li>
+                                <li class="cursorPointer"><a onclick="SortDirectionCustomerApp('CustomerName',true);">
+                                    Customer Name Ascending</a></li>
+                                <li class="cursorPointer"><a onclick="SortDirectionCustomerApp('CustomerName',false);">
+                                    Customer Name Descending</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="sidebar-nav" style="margin-top: 8px;">
+                        <h5>
+                            fliQ Customer Application</h5>
+                    </div>
+                    <br />
+                    <div class="span8 float-left" style="padding-bottom: 10px;">
+                        <div class="margintop5">
+                            <div class="span3 float-left" style="padding-top: 5px;">
+                                Select Client
+                            </div>
+                            <div class="span8 float-left">
+                                <select id="ddlFliq_AppClients2" name="ddlFliq_AppClients2" class="chosen-select ddlwidth93per"
+                                    data-placeholder="Select Client">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="clear" style="padding-top: 5px;">
+                            <div class="span3 float-left" style="padding-top: 5px;">
+                                Select Customer
+                            </div>
+                            <div class="span8 float-left">
+                                <input type="text" id="txtFliq_ClientCustomer" name="txtFliq_ClientCustomer" class="txtwidth90per"
+                                    placeholder="Search Customer" />
+                            </div>
+                        </div>
+                        <div class="clear" style="padding-top: 5px;">
+                            <div class="span3 float-left">
+                            </div>
+                            <div class="span8 float-left">
+                                <input type="button" style="margin: 0px;" class="button" onclick="ClearFliq_CustomerApplication();"
+                                    value="Clear Search" id="btnClearFliq_CustomerApplication" />
+                                <input type="button" style="margin: 0px;" class="button" onclick="SearchFliq_CustomerApplication();"
+                                    value="Search" id="btnSearchFliq_CustomerApplication" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="margintop5 float-right" style="margin-bottom: 20px;">
+                        <a onclick="GetFliq_CustomerApplicationRegistration(0);" style="margin-right: 10px;"
+                            href="javascript:void(0);">Add Customer Application
+                            <img alt="add" src="../../images/iqagent/addicon.png"></a>
+                    </div>
+                    <div id="divFliq_CustomerApplicationPreviousNext" class="nextprevdiv">
+                        <span id="lblFliq_CustomerApplicationRecords" style="float: left; padding: 5px 10px 0 0;">
+                        </span><a href="#" onclick="GetFliq_CustomerApplication(0,false);" id="btnFliq_CustomerApplicationPreviousPage"
+                            class="nextprevbtn">
+                            <img src="../../Images/prev.png" /></a> <a href="#" onclick="GetFliq_CustomerApplication(0,true);"
+                                id="btnFliq_CustomerApplicationNextPage" class="nextprevbtn">
+                                <img src="../../Images/next.png" /></a>
+                    </div>
+                    <div id="divFliq_CustomerApplication_Content" class="paddinBottom20">
+                    </div>
+                </div>
+                <div id="divClient_UGCMap" class="displayNone">
+                    <div class="sidebar-nav" style="margin-top: 8px;">
+                        <h5>
+                            Client UGC Setup</h5>
+                    </div>
+                    <br />
+                    <div class="span8 float-left" style="padding-bottom: 10px;">
+                        <div class="margintop5">
+                            <div class="span3 float-left" style="padding-top: 5px;">
+                                Select Client
+                            </div>
+                            <div class="span8 float-left">
+                                <select id="ddlUGCMap_Client" name="ddlUGCMap_Client" class="chosen-select ddlwidth93per"
+                                    data-placeholder="Select Client">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="clear" style="padding-top: 5px;">
+                            <div class="span3 float-left" style="padding-top: 5px;">
+                                Search UGC Map
+                            </div>
+                            <div class="span8 float-left">
+                                <input type="text" id="txtUGCMap_SearchTerm" name="txtUGCMap_SearchTerm" class="txtwidth90per"
+                                    placeholder="Search UGC Map" />
+                            </div>
+                        </div>
+                        <div class="clear" style="padding-top: 5px;">
+                            <div class="span3 float-left">
+                            </div>
+                            <div class="span8 float-left">
+                                <input type="button" style="margin: 0px;" class="button" onclick="ClearClient_UGCMap();"
+                                    value="Clear Search" id="btnClearClient_UGCMap" />
+                                <input type="button" style="margin: 0px;" class="button" onclick="SearchClient_UGCMap();"
+                                    value="Search" id="btnSearchClient_UGCMap" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="margintop5 float-right" style="margin-bottom: 20px;">
+                        <a onclick="EditClientUGCSettings(0);" style="margin-right: 10px;" href="javascript:void(0);">
+                            Add Client UGC Map Settings
+                            <img alt="add" src="../../images/iqagent/addicon.png"></a>
+                    </div>
+                    <div id="divClient_UGCMapPreviousNext" class="nextprevdiv clear">
+                        <span id="lblClient_UGCMapRecords" style="float: left; padding: 5px 10px 0 0;">
+                        </span><a href="#" onclick="GetUGCSetupSettings(false);" id="btnClient_UGCMapPreviousPage"
+                            class="nextprevbtn">
+                            <img src="../../Images/prev.png" /></a> <a href="#" onclick="GetUGCSetupSettings(true);"
+                                id="btnClient_UGCMapNextPage" class="nextprevbtn">
+                                <img src="../../Images/next.png" /></a>
+                    </div>
+                     <div id="divClient_UGCMap_Content" class="paddinBottom20">
+                    </div>
+                </div>
+                <div id="divRegistration" class="displayNone">
+                </div>
+                <div id="divGroup" class="displayNone"></div>
+            </div>
+        }
+        else
+        {
+            <div class="mainerrorDiv">@IQMedia.WebApplication.Config.ConfigSettings.Settings.PageLoadErrorMessage</div>
+        }
+    </div>
+</div>
+@if (ViewBag.IsSuccess)
+{
+    <script src="~/Scripts/Bootstrap/navbar-horizontal.js?v=1.0" type="text/javascript"></script>
+    <script type="text/javascript">
+        $("#liActiveUsers").ActiveNav();
+    </script>
+}

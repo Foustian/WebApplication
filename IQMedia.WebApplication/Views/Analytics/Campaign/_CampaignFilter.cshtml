@@ -1,0 +1,77 @@
+﻿@using IQMedia.Model;
+@using IQMedia.WebApplication.Utility;
+@using IQCommon.Model;
+@model List<IQAgent_CampaignModel>
+
+@if (Model != null)
+{
+    ActiveUser sessionInfo = ActiveUserMgr.GetActiveUser();
+    List<IQ_MediaTypeModel> mediaTypes = sessionInfo.MediaTypes == null ? new List<IQCommon.Model.IQ_MediaTypeModel>() : sessionInfo.MediaTypes.Where(w => w.TypeLevel == 2 && w.IsArchiveOnly == false).OrderBy(o => o.DisplayName).ToList();
+
+    <div>
+        <span id="campFilterText" class="font14Pt" style="float:left;">How many occurrences are there across campaigns?</span>
+        <a id="sendEmailLink" class="cursorPointer" title="Email" onclick="ShowEmailPopup()" style="float:right; margin-left:5px;">
+            <img src="../../Images/email_new.png" alt="Email" />
+        </a>
+        <a id="saveAsPDF" class="cursorPointer" title="Save as PDF" onclick="GeneratePDF();" style="float:right;">
+            <img src="../../Images/pdf_new.png" alt="Save as PDF" />
+        </a>
+    </div>
+    <br />
+    <div class="font13Pt">
+        <span id="spnCampResults" class="font13Pt">Results in the campaigns with </span>
+        <a id="filterLink" class="font13Pt underlined cursorPointer">no filters applied</a>
+    </div>
+    <div id="divFilters" class="font13Pt hidden">
+        <br />
+        <div id="divAgentFilter0">
+            <select id="ddAgentFilter0" onchange="ChangeCampaign(this, 'dpDateFromFilter0', 'dpDateToFilter0', 'ddAgentFilter1');">
+                @{
+                    <option id="filterAgent0_Narrow" value="null">Narrow to campaign</option>
+                    foreach (IQAgent_CampaignModel campaign in Model)
+                    {
+                        <option id="filterAgent0_@campaign.ID" value="@campaign.ID" startdate="@campaign.StartDateTime.ToShortDateString()" enddate="@campaign.EndDateTime.ToShortDateString()">@campaign.Name</option>
+                    }
+                }
+            </select>
+            <select id="ddSourceFilter0">
+                <option value="null">Narrow to Source</option>
+                @foreach (IQ_MediaTypeModel mt in mediaTypes)
+                {
+                    <option value="@mt.SubMediaType">@mt.DisplayName</option>
+                }
+            </select>
+            <input id="dpDateFromFilter0" type="text" style="width:75px" readonly="readonly" />
+            <span> to </span>
+            <input id="dpDateToFilter0" type="text" style="width:75px" readonly="readonly" />
+        </div>
+        <div id="divAddAgentFilter0" style="margin-bottom:10px;">
+            <a id="linkAddAgentFilter0" class="underlined cursorPointer">+ compare</a>
+        </div>
+        <div id="divAgentFilter1" class="hidden">
+            <select id="ddAgentFilter1" onchange="ChangeCampaign(this, 'dpDateFromFilter1', 'dpDateToFilter1', 'ddAgentFilter0');">
+                @{
+                    <option id="filterAgent1_Narrow" value="null">Narrow to campaign</option>
+                    foreach (IQAgent_CampaignModel campaign in Model)
+                    {
+                        <option id="filterAgent1_@campaign.ID" value="@campaign.ID" startdate="@campaign.StartDateTime.ToShortDateString()" enddate="@campaign.EndDateTime.ToShortDateString()">@campaign.Name</option>
+                    }
+                }
+            </select>
+            <select id="ddSourceFilter1">
+                <option value="null">Narrow to Source</option>
+                @foreach (IQ_MediaTypeModel mt in mediaTypes)
+                {
+                    <option value="@mt.SubMediaType">@mt.DisplayName</option>
+                }
+            </select>
+            <input id="dpDateFromFilter1" type="text" style="width:75px" readonly="readonly" />
+            <span> to </span>
+            <input id="dpDateToFilter1" type="text" style="width:75px" readonly="readonly" />
+        </div>
+        <div style="overflow:auto;width:100%">
+            <a id="linkApplyFilters" class="underlined cursorPointer">apply filters</a>
+            <a id="linkRemoveFilters" class="underlined marginLeft15 cursorPointer">remove filters</a>
+        </div>
+    </div>
+}

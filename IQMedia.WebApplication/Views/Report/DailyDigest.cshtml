@@ -1,0 +1,2017 @@
+﻿@using IQMedia.Model;
+@using IQMedia.Shared.Utility;
+@model IQAgentReport
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>iQ media IQAgent Report</title>@*<link href="../../Css/jquery-ui.css" rel="stylesheet" type="text/css" />*@
+    <link href="../../Css/Fonts.css" rel="stylesheet" type="text/css" />
+    <link href="../../Css/bootstrap.css" rel="stylesheet" type="text/css" />
+    <link href="../../Css/bootstrap-responsive.css" rel="stylesheet" type="text/css" />
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js?v=1.0"></script>
+    <![endif]-->
+    <script src="~/Scripts/jquery-1.9.1.min.js?v=1.0" type="text/javascript"></script>
+    <script src="~/Scripts/jquery.placeholder.js" type="text/javascript"></script>
+    <script src="~/Scripts/ConstantScript.js?v=1.32" type="text/javascript"></script>
+    <script src="~/Scripts/IQMediaCommon.js?v=2.6" type="text/javascript"></script>
+    <script src="~/Scripts/PlayerScript.js?v=1.1" type="text/javascript"></script>
+    <link href="~/Css/jquery.mCustomScrollbar.css?v=1.0" rel="stylesheet" type="text/css" />
+    <!-- Customizable CSS -->
+    <link href="~/css/feed.css?v=3.3" rel="stylesheet" type="text/css" />
+    @*<link href="~/css/MasterInner.css" rel="stylesheet" type="text/css" />*@
+    <script src="~/Scripts/jquery.mCustomScrollbar.concat.min.js?v=1.1" type="text/javascript"></script>
+    <style type="text/css">
+        body
+        {
+            padding-top: 40px;
+            font-family: 'Open Sans';
+        }
+        .mediatitlediv
+        {
+            line-height: 25px;
+            background-color: #EAEAEA;
+            font-weight: bold;
+            font-size: 15px;
+            border: 1px solid #A0A0A0;
+            vertical-align: middle;
+            padding-left: 10px;
+        }
+        .mediatitlesubdiv
+        {
+            line-height: 22px;
+            background-color: #EAEAEA;
+            font-weight: bold;
+            font-size: 14px;
+            vertical-align: middle;
+            padding-left: 10px;
+        }
+        .loadingdiv
+        {
+            top: 71px !important;
+        }
+    </style>
+</head>
+<body id="mainBody">
+    @{
+        ActiveUser sessionInformation = IQMedia.WebApplication.Utility.ActiveUserMgr.GetActiveUser();
+    }
+    <div class="navbar navbar-inverse navbar-fixed-top" style="background-color: #fff;">
+        <!-- from desinger-->
+        <div class="container">
+        </div>
+        <!-- from desinger-->
+        <div class="navbar-inner navbar-custome">
+            <div class="container">
+                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span
+                    class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+                </a><a class="brand iqmedia-logo" href="#">
+                    <img src="~/images/iq-media.png?v=1.3" width="155" height="45" alt="IQ Media" /></a>
+                <div class="nav-collapse collapse">
+                </div>
+                <!--/.nav-collapse -->
+            </div>
+        </div>
+    </div>
+    <div class="container container_custom">
+        <div class="row-fluid" id="divRowFluid">
+            <div style="min-height: 500px; padding: 10px 25px 25px 25px;">
+                @if (Model != null && Model.Results != null)
+                {
+                    try
+                    {
+                
+                    <div style="padding-bottom: 5px; border-bottom: solid 1px #dadada; font-size: 18px;">
+                        <div style="float: left; height: 100%; vertical-align: middle; margin-top: 25px;">@Model.ReportTitle</div>
+                        <div style="text-align: right; padding-top: 10px;">
+                            <br />
+                            <br />
+                            @*<input type="button" id="btnDownloadPDF" class="button" value="Download PDF" onclick="DownloadPDFIQAgentReport('@Model.ReportID');" />
+                            <input type="button" id="btnDownloadCSV" class="button" value="Download CSV" onclick="DownloadCSVIQAgentReport('@Model.ReportID');" />*@
+                        </div>
+                    </div>
+                    <div style="padding-top: 10px; text-align: center;">
+                        @if (string.IsNullOrEmpty(Model.CustomHeader))
+                        {
+                            <img src="~/Images/EmailNotificationBanner.png" alt="email notification banner" />
+                        }
+                        else
+                        {
+                            <img src="@System.Configuration.ConfigurationManager.AppSettings["UrlReportHeader"]@Model.ClientGuid/@Model.CustomHeader" alt="Client Banner" />
+                        }
+                    </div>
+                    <div id="divResults" style="padding: 25px; height: 475px; overflow: auto;">
+                        <div style="padding-right: 20px;">
+                            @foreach (var request in Model.Results)
+                            {
+                                if (request != null && request.MediaResults != null && request.MediaResults.Count > 0)
+                                {
+                                    var subMediaTypes = request.MediaResults.Select(c => c.CategoryType).Distinct(); 
+                                <div id="divMedia_@request.SearchRequestID" class="mediatitlediv">@request.QueryName</div>
+                                <br />
+                                    foreach (string type in subMediaTypes)
+                                    {
+                                        CommonFunctions.CategoryType categoryType = (CommonFunctions.CategoryType)Enum.Parse(typeof(CommonFunctions.CategoryType), type);
+
+                                <div id="divMedia_@categoryType" class="mediatitlesubdiv">@IQMedia.Shared.Utility.CommonFunctions.GetEnumDescription(categoryType)</div>
+                            
+                                        foreach (IQAgent_MediaResultsModel item in request.MediaResults.Where(r => r.CategoryType == type))
+                                        {
+
+                                            string Month = item.MediaDateTime != null ? item.MediaDateTime.ToString("MMM", System.Globalization.CultureInfo.InvariantCulture) : string.Empty;
+                                            string Day = item.MediaDateTime != null ? item.MediaDateTime.Day.ToString() : string.Empty;
+                                            string Time = item.MediaDateTime != null ? item.MediaDateTime.ToString("hh:mm tt") : string.Empty;
+
+                                            string sLocalAudience = string.Empty;
+                                            string fLocalAudience = string.Empty;
+                                            string sLocalMediaValue = string.Empty;
+                                            string fLocalMediaValue = string.Empty;
+
+                                            int Billion = 1000000000;
+                                            decimal BillionD = 1000000000;
+                                            int Million = 1000000;
+                                            decimal MillionD = 1000000;
+                                            
+
+                                            switch (categoryType)
+                                            {
+                                                case IQMedia.Shared.Utility.CommonFunctions.CategoryType.TV:
+
+                                                    IQAgent_TVResultsModel TVModel = item.MediaData as IQAgent_TVResultsModel;
+
+                                                    Month = TVModel.LocalDateTime != null ? TVModel.LocalDateTime.ToString("MMM", System.Globalization.CultureInfo.InvariantCulture) : string.Empty;
+                                                    Day = TVModel.LocalDateTime != null ? TVModel.LocalDateTime.Day.ToString() : string.Empty;
+                                                    Time = TVModel.LocalDateTime != null ? TVModel.LocalDateTime.ToString("hh:mm tt") : string.Empty;
+
+                                                    if (Model.UseRollup && TVModel._ParentID > 0)
+                                                    {
+                                                        continue;
+                                                    }
+
+                                                    string RawMediaPlayerUrl = System.Configuration.ConfigurationManager.AppSettings["IQAgentReportRawMediaPlayerUrl"];
+                                                    RawMediaPlayerUrl = string.Format(RawMediaPlayerUrl, TVModel.IQAgentResultUrl);
+                                                    
+                                                    if (TVModel.Nielsen_Audience.HasValue && TVModel.Nielsen_Audience > 0)
+                                                    {
+                                                        fLocalAudience = string.Format("{0:N0}", TVModel.Nielsen_Audience);
+
+                                                        if (TVModel.Nielsen_Audience >= Billion)
+                                                        {
+                                                            sLocalAudience = string.Format("{0:F1} bil", TVModel.Nielsen_Audience / BillionD);
+                                                        }
+                                                        else if (TVModel.Nielsen_Audience >= Million)
+                                                        {
+                                                            sLocalAudience = string.Format("{0:F1} mil", TVModel.Nielsen_Audience / MillionD);
+                                                        }
+                                                        else
+                                                        {
+                                                            sLocalAudience = fLocalAudience;
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        sLocalAudience = "NA";
+                                                    }
+
+                                                    if (TVModel.IQAdShareValue.HasValue && TVModel.IQAdShareValue > 0)
+                                                    {
+                                                        fLocalMediaValue = string.Format("{0:N2}", TVModel.IQAdShareValue);
+
+                                                        if (TVModel.IQAdShareValue >= BillionD)
+                                                        {
+                                                            sLocalMediaValue = string.Format("{0:F1} bil", TVModel.IQAdShareValue / BillionD);
+                                                        }
+                                                        else if (TVModel.IQAdShareValue >= MillionD)
+                                                        {
+                                                            sLocalMediaValue = string.Format("{0:F1} mil", TVModel.IQAdShareValue / MillionD);
+                                                        }
+                                                        else
+                                                        {
+                                                            sLocalMediaValue = fLocalMediaValue;
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        sLocalMediaValue = "NA";
+                                                    }
+                
+                                    <div id="divMedia_@item.ID" class="media">
+                                        <div class="MediaDate">
+                                            <div class="post-date">
+                                                <span class="month">@Month</span>
+                                                <div>
+                                                    <span class="today">@Day</span>
+                                                </div>
+                                                <span class="timeWithTimeZone">@Time @TVModel.TimeZone</span>
+                                            </div>
+                                        </div>
+                                        <div class="MediaTypeLogo" align="center">
+                                            <img src="@TVModel.StationLogo" alt="TV" title="@CommonFunctions.GetEnumDescription(CommonFunctions.CategoryType.TV)" />
+                                        </div>
+                                        <div class="float-right FeedsVideoSpacer">
+                                            <div class="FeedsVideo positionRelative float-left">
+                                                @if (sessionInformation.IsLogIn && sessionInformation.ClientGUID != Guid.Empty)
+                                                {
+                                                    <a class="cursorPointer" onclick="LoadPlayerbyAgentID('@item.ID');">
+                                                        @if (!string.IsNullOrWhiteSpace(TVModel.RawMediaThumbUrl))
+                                                        {
+                                                            <img src="@TVModel.RawMediaThumbUrl" class="media-object" alt="play video" />
+                                                        }
+                                                        else
+                                                        {
+                                                            <img src="~/images/video.png" class="media-object" alt="play video" />
+                                                        }
+                                                    </a>
+                                                }
+                                                else
+                                                {
+                                                    <a class="cursorPointer" href="@RawMediaPlayerUrl" target="_blank">
+                                                        @if (!string.IsNullOrWhiteSpace(TVModel.RawMediaThumbUrl))
+                                                        {
+                                                            <img src="@TVModel.RawMediaThumbUrl" class="media-object" alt="play video" />
+                                                        }
+                                                        else
+                                                        {
+                                                            <img src="~/images/video.png" class="media-object" alt="play video" />
+                                                        }
+                                                    </a>    
+                                                }
+                                            </div>
+                                        </div>
+                                        <div class="FeedsContentVideo">
+                                            @{
+                                                string tvTitle = string.Empty;
+
+                                                if (@TVModel.Title120.Trim().Length > 65)
+                                                {
+                                                    tvTitle = TVModel.Title120.Trim().Substring(0, 62) + "...";
+                                                }
+                                                else
+                                                {
+                                                    tvTitle = TVModel.Title120.Trim();
+                                                }
+                                            }
+                                            <div class="media-heading float-left" title="@TVModel.Title120">
+                                                @tvTitle
+                                            </div>
+                                            <div class="subheading float-left margintop1" >
+                                                @item.timeDifference
+                                            </div>
+                                            <div class="clear float-left media-body">
+                                                @Html.Raw(TVModel.higlightedCC)
+                                            </div>
+                                        </div>
+                                        <div class="clear post-divider"></div>
+                                        <div class="clear margintop2 marginbottom2">
+                                            <div class="FeedsActionBarLeftDiv">
+                                                <div class="viewmore margintop2">
+                                                </div>
+                                                <div id="divLocationTV_@item.ID" class="viewlocation">
+                                                    <div class="">
+                                                        @if (!string.IsNullOrWhiteSpace(TVModel.Market))
+                                                        {
+                                                            <div class="location-tag" title="@TVModel.Market">    
+                                                                @if (TVModel.Market.Trim().Length > 23)
+                                                                {
+                                                                    @(TVModel.Market.Trim().Substring(0, 21) + "...")
+                                                                }
+                                                                else
+                                                                {
+                                                                    @TVModel.Market.Trim()
+                                                                }
+                                                            </div>
+                                                        }
+                                                        else
+                                                        { 
+                                                            <div class="margintop2"> 
+                                                            </div>                                  
+                                                        }
+                                                    </div>
+                                                </div>
+                                                <div id="divSentimentTV_@item.ID" class="viewsentiment" title="Sentiment">
+                                                    <div class="sentimentLeftFloat sentiment-tag">
+                                                        <div class="divSentimentMain sentimentFont">
+                                                            <div class="divSentimentNeg">
+                                                                <div style='width:@((item.NegativeSentiment * 6) > 25 ? 25 : (item.NegativeSentiment * 6))px'>
+                                                                    @item.NegativeSentiment
+                                                                </div>
+                                                            </div>
+                                                            <div class="divSentimentPos">
+                                                                <div style='width:@((item.PositiveSentiment * 6) > 25 ? 25 : (item.PositiveSentiment * 6))px;'>
+                                                                    @item.PositiveSentiment
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="viewcontentdetail">
+                                                    <div class="viewshortdetail">
+                                                            @if (TVModel.Nielsen_Audience > 0)
+                                                            {
+                                                                <div class="view" title="Local Audience @fLocalAudience">
+                                                                    @sLocalAudience
+                                                                </div>
+                                                            }
+                                                            else
+                                                            {
+                                                                <div align="center" class="margintop2">
+                                                                </div>
+                                                            }  
+                                                    </div>
+                                                    <div class="viewshortdetail">
+                                                            @if (TVModel.IQAdShareValue > 0)
+                                                            {
+                                                                <div class="price" title="Local Media Value @fLocalMediaValue">
+                                                                    @(string.Format("{0:n2} {1}", sLocalMediaValue, (TVModel.IQAdShareValue.HasValue ? (!string.IsNullOrWhiteSpace(TVModel.Nielsen_Result) ? "(" + TVModel.Nielsen_Result.ToUpper() + ")" : string.Empty) : string.Empty)))
+                                                                </div>
+                                                            }
+                                                            else
+                                                            {
+                                                                <div align="center" class="margintop2">
+                                                                </div>
+                                                            }  
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="FeedsActionBarRightDiv minWidth52IE8">
+                                                <div class="detailIcon">
+                                                    <!--Padding Save Article-->
+                                                    <div align="center" class="margintop2">
+                                                    </div>
+                                                </div>
+                                                <div class="detailIcon">
+                                                    <!--Padding View Article-->
+                                                    <div align="center" class="margintop2">
+                                                    </div>
+                                                </div>
+                                                <div class="detailIcon">
+                                                    <!--Padding on the right-->
+                                                    <div align="center" class="margintop2">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @if (Model.UseRollup && request.MediaResults.Where(r => r.CategoryType == categoryType.ToString() && ((IQAgent_TVResultsModel)r.MediaData)._ParentID == item.ID).Count() > 0)
+                                        {
+                                            <div class="clear MediaChildContent">
+                                                @foreach (var childMediaResults in request.MediaResults.Where(r => r.CategoryType == categoryType.ToString() && ((IQAgent_TVResultsModel)r.MediaData)._ParentID == item.ID))
+                                                {
+                                                    var childTV = (IQAgent_TVResultsModel)childMediaResults.MediaData;
+
+                                                    string childTVPlayerUrl = System.Configuration.ConfigurationManager.AppSettings["IQAgentReportRawMediaPlayerUrl"];
+                                                    childTVPlayerUrl = string.Format(childTVPlayerUrl, childTV.IQAgentResultUrl);
+                                                    string sChildSource = string.Empty;
+                                                    string fChildSource = string.Empty;
+                                                    string sChildAudience = string.Empty;
+                                                    string fChildAudience = string.Empty;
+                                                    string sChildMediaValue = string.Empty;
+                                                    string fChildMediaValue = string.Empty;
+
+                                                    if (!string.IsNullOrWhiteSpace(childTV.Market))
+                                                    {
+                                                        fChildSource = childTV.Market.Trim();
+                                                        if (fChildSource.Length > 23)
+                                                        {
+                                                            sChildSource = fChildSource.Substring(0, 21) + "...";
+                                                        }
+                                                        else
+                                                        {
+                                                            sChildSource = fChildSource;
+                                                        }
+                                                    }
+
+                                                    if (childTV.Nielsen_Audience.HasValue)
+                                                    {
+                                                        fChildAudience = string.Format("{0:n0}", childTV.Nielsen_Audience);
+
+                                                        if (childTV.Nielsen_Audience >= Billion)
+                                                        {
+                                                            sChildAudience = string.Format("{0:F1} bil", childTV.Nielsen_Audience / BillionD);
+                                                        }
+                                                        else if (childTV.Nielsen_Audience >= Million)
+                                                        {
+                                                            sChildAudience = string.Format("{0:F1} mil", childTV.Nielsen_Audience / MillionD);
+                                                        }
+                                                        else
+                                                        {
+                                                            sChildAudience = fChildAudience;
+                                                        }
+                                                    }
+
+                                                    if (childTV.IQAdShareValue.HasValue)
+                                                    {
+                                                        fChildMediaValue = string.Format("{0:n2}", childTV.IQAdShareValue);
+
+                                                        if (childTV.IQAdShareValue >= BillionD)
+                                                        {
+                                                            sChildMediaValue = string.Format("{0:F1} bil", childTV.IQAdShareValue / BillionD);
+                                                        }
+                                                        else if (childTV.IQAdShareValue >= MillionD)
+                                                        {
+                                                            sChildMediaValue = string.Format("{0:F1} mil", childTV.IQAdShareValue / MillionD);
+                                                        }
+                                                        else
+                                                        {
+                                                            sChildMediaValue = fChildMediaValue;
+                                                        }
+                                                    }
+                                            
+                                                    <div class="clear post-divider-dark" style="width:94%; margin-left:2%;"></div>
+                                                    <div class="media">
+                                                        <div class="clear margintop2 marginbottom2">
+                                                            <div class="FeedsActionBarLeftDiv">
+                                                                <div class="viewmore">
+                                                                    <div align="center" class="margintop2">
+                                                                        <img alt="" style="height:20px; width:20px; vertical-align:top;" src="@childTV.StationLogo" />
+                                                                    </div>
+                                                                </div>
+                                                                <div id="divLocationTV_@childTV.ID" class="viewlocation">  
+                                                                    <div class="">              
+                                                                    @{
+                                                    if (!string.IsNullOrWhiteSpace(fChildSource))
+                                                    {
+                                                                            <div class="location-tag" title="@fChildSource">    
+                                                                                @sChildSource                                        
+                                                                            </div>
+                                                    }
+                                                    else
+                                                    {
+                                                                            <div align="center" class="margintop2">
+                                                                            </div>
+                                                    }                                       
+                                                                    }
+                                                                    </div>
+                                                                </div>
+                                                                <div id="divSentimentTV_@childTV.ID" class="viewsentiment" title="@childTV.LocalDateTime.ToString("MM/dd/yyyy hh:mm tt") @childTV.TimeZone">
+                                                                    @childTV.LocalDateTime.ToString("hh:mm tt") @childTV.TimeZone
+                                                                </div>
+                                                                <div class="viewcontentdetail">
+                                                                    <div class="viewshortdetail">
+                                                                            @if (childTV.Nielsen_Audience > 0)
+                                                                            {
+                                                                                <div class="view" title="Local Audience @fChildAudience">
+                                                                                    @sChildAudience
+                                                                                </div>
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <div align="center" class="margintop2">
+                                                                                </div>
+                                                                            }
+                                                                    </div>
+                                                                    <div class="viewshortdetail">
+                                                                            @if (childTV.IQAdShareValue > 0)
+                                                                            {
+                                                                                <div class="price" title="Local Media Value @fChildMediaValue">
+                                                                                    @sChildMediaValue @((childTV.IQAdShareValue.HasValue ? (!string.IsNullOrWhiteSpace(childTV.Nielsen_Result) ? "(" + childTV.Nielsen_Result.ToUpper() + ")" : string.Empty) : string.Empty))
+                                                                                </div>
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <div align="center" class="margintop2">
+                                                                                </div>
+                                                                            }
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </div>
+                                        }
+                                    </div>
+                            
+                                                    break;
+
+                                                case IQMedia.Shared.Utility.CommonFunctions.CategoryType.TW:
+
+                                                    IQAgent_TwitterResultsModel twitterModel = item.MediaData as IQAgent_TwitterResultsModel;
+                                                    string sFollowers = string.Empty;
+                                                    string fFollowers = string.Format("{0:N0}", twitterModel.Actor_FollowersCount);
+                                                    string sFriends = string.Empty;
+                                                    string fFriends = string.Format("{0:N0}", twitterModel.Actor_FriendsCount);
+
+                                                    if (twitterModel.Actor_FollowersCount >= Billion)
+                                                    {
+                                                        sFollowers = string.Format("{0:F1} bil", twitterModel.Actor_FollowersCount / BillionD);
+                                                    }
+                                                    else if (twitterModel.Actor_FollowersCount >= Million)
+                                                    {
+                                                        sFollowers = string.Format("{0:F1} mil", twitterModel.Actor_FollowersCount / MillionD);
+                                                    }
+                                                    else
+                                                    {
+                                                        sFollowers = fFollowers;
+                                                    }
+
+                                                    if (twitterModel.Actor_FriendsCount >= Billion)
+                                                    {
+                                                        sFriends = string.Format("{0:F1} bil", twitterModel.Actor_FriendsCount / BillionD);
+                                                    }
+                                                    else if (twitterModel.Actor_FriendsCount >= Million)
+                                                    {
+                                                        sFriends = string.Format("{0:F1} mil", twitterModel.Actor_FriendsCount / MillionD);
+                                                    }
+                                                    else
+                                                    {
+                                                        sFriends = fFriends;
+                                                    }
+                                        
+                                    <div class="media" id="divMedia_@item.ID">
+                                        <div class="MediaDate">
+                                            <div class="post-date">
+                                                <span class="month">@Month</span>
+                                                <div>
+                                                    <span class="today">@Day</span>
+                                                </div>
+                                                <span class="timeWithTimeZone">@Time @(sessionInformation.IsLogIn ? sessionInformation.TimeZone : string.Empty)</span>
+                                            </div>
+                                        </div>
+                                        <div class="MediaTypeLogo" align="center">
+                                            <img src="~/images/MediaIcon/25twitter.png" alt="twitter" title="@CommonFunctions.GetEnumDescription(CommonFunctions.CategoryType.TW)" />
+                                        </div>
+                                        <div class="FeedsContentNone borderBoxSizing">
+                                            <div class="float-left media-heading">
+                                                @{
+                                                    string actorlink = string.Empty;
+                                                    string twTitle = string.Empty;
+
+                                                    if (IQMedia.Shared.Utility.CommonFunctions.Validate_url(twitterModel.Actor_Link + "/status/" + twitterModel.TweetID))
+                                                    {
+                                                        actorlink = twitterModel.Actor_Link + "/status/" + twitterModel.TweetID;
+                                                    }
+
+                                                    if (twitterModel.Actor_DisplayName.Trim().Length > 65)
+                                                    {
+                                                        twTitle = twitterModel.Actor_PreferredName.Trim().Substring(0, 62) + "...";
+                                                    }
+                                                    else
+                                                    {
+                                                        twTitle = twitterModel.Actor_PreferredName.Trim();
+                                                    }
+                                                }
+                                                <a target="_blank" id="aActorLink_@item.ID"  href="@actorlink" title="@twitterModel.Actor_PreferredName.Trim()">
+                                                    <span id="lblDisplayName_@item.ID">@twTitle</span>
+                                                </a>
+                                            </div>
+                                            <div class="subheading float-left margintop1" >
+                                                @item.timeDifference
+                                            </div>
+                                            <div class="clear float-left media-body">
+                                                <span id="lblTweetBody_@item.ID">@Html.Raw(twitterModel.HighlightedOutput.Highlights)</span>
+                                            </div>
+                                        </div>
+                                        <div class="clear post-divider"></div>
+                                        <div class="clear margintop2 marginbottom2">
+                                            <div class="FeedsActionBarLeftDiv">
+                                                <div class="viewmore">
+                                                    <div class="margintop2"> 
+                                                    </div>
+                                                </div>
+                                                <div id="divLocationTW_@item.ID" class="viewlocation">
+                                                    <div class="">
+                                                        @if (!string.IsNullOrWhiteSpace(twitterModel.Actor_PreferredName))
+                                                        {
+                                                            <div class="location-tag" title="@twitterModel.Actor_PreferredName">
+                                                            @{
+                                                            if (twitterModel.Actor_PreferredName.Trim().Length > 23)
+                                                            {
+                                                                    @(twitterModel.Actor_PreferredName.Trim().Substring(0, 21) + "...")
+                                                            }
+                                                            else
+                                                            {
+                                                                    @twitterModel.Actor_PreferredName.Trim()
+                                                            }
+                                                            }
+                                                            </div>   
+                                                        }
+                                                        else
+                                                        {
+                                                            <div class="margintop2"></div>
+                                                        }
+                                                    </div>
+                                                </div> 
+                                                <div id="divSentimentTW_@item.ID" class="viewsentiment" title="Sentiment">
+                                                    <div class="sentimentLeftFloat sentiment-tag">
+                                                        <div class="divSentimentMain sentimentFont">
+                                                            <div class="divSentimentNeg">
+                                                                <div style='width:@((item.NegativeSentiment * 6) > 25 ? 25 : (item.NegativeSentiment * 6))px;'>
+                                                                    @item.NegativeSentiment
+                                                                </div>
+                                                            </div>
+                                                            <div class="divSentimentPos">
+                                                                <div style='width:@((item.PositiveSentiment * 6) > 25 ? 25 : (item.PositiveSentiment * 6))px;'>
+                                                                    @item.PositiveSentiment
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="viewcontentdetail">
+                                                    <div class="viewshortdetail">
+                                                        <div class="klout" title="Klout Score" id="lblKloutScore_@item.ID">@string.Format("{0:n0}", twitterModel.KlOutScore)</div>
+                                                    </div>
+                                                    <div class="viewshortdetail">
+                                                        <div class="followers" title="Followers @fFollowers" id="lblActorFollowers_@item.ID">@sFollowers</div>
+                                                    </div>
+                                                    <div class="viewshortdetail">
+                                                        <div class="following" title="Following @fFriends" id="lblActorFriends_@item.ID">@sFriends</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="FeedsActionBarRightDiv minWidth52IE8">
+                                                <div class="detailIcon">
+                                                    <!--Padding on the right-->
+                                                    <div align="center" class="margintop2">
+                                                    </div>
+                                                </div>
+                                                <div class="detailIcon">
+                                                    <!--Padding on the right-->
+                                                    <div align="center" class="margintop2">
+                                                    </div>
+                                                </div>
+                                                <div class="detailIcon">
+                                                    <!--Padding on the right-->
+                                                    <div align="center" class="margintop2">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                                    break;
+
+                                                case IQMedia.Shared.Utility.CommonFunctions.CategoryType.NM:
+                                                case IQMedia.Shared.Utility.CommonFunctions.CategoryType.LN:
+
+                                                    IQAgent_NewsResultsModel newsMediaModel = item.MediaData as IQAgent_NewsResultsModel;
+
+                                                    if (Model.UseRollup && newsMediaModel._ParentID > 0)
+                                                    {
+                                                        continue;
+                                                    }
+                                        
+
+                                        
+                                                    if (newsMediaModel.Compete_Audience.HasValue && newsMediaModel.Compete_Audience > 0)
+                                                    {
+                                                        fLocalAudience = string.Format("{0:N0}", newsMediaModel.Compete_Audience);
+
+                                                        if (newsMediaModel.Compete_Audience >= Billion)
+                                                        {
+                                                            sLocalAudience = string.Format("{0:F1} bil", newsMediaModel.Compete_Audience / BillionD);
+                                                        }
+                                                        else if (newsMediaModel.Compete_Audience >= Million)
+                                                        {
+                                                            sLocalAudience = string.Format("{0:F1} mil", newsMediaModel.Compete_Audience / MillionD);
+                                                        }
+                                                        else
+                                                        {
+                                                            sLocalAudience = fLocalAudience;
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        sLocalAudience = "NA";
+                                                    }
+
+                                                    if (newsMediaModel.IQAdShareValue.HasValue && newsMediaModel.IQAdShareValue > 0)
+                                                    {
+                                                        fLocalMediaValue = string.Format("{0:N2}", newsMediaModel.IQAdShareValue);
+
+                                                        if (newsMediaModel.IQAdShareValue >= BillionD)
+                                                        {
+                                                            sLocalMediaValue = string.Format("{0:F1} bil", newsMediaModel.IQAdShareValue / BillionD);
+                                                        }
+                                                        else if (newsMediaModel.IQAdShareValue >= MillionD)
+                                                        {
+                                                            sLocalMediaValue = string.Format("{0:F1} mil", newsMediaModel.IQAdShareValue / MillionD);
+                                                        }
+                                                        else
+                                                        {
+                                                            sLocalMediaValue = fLocalMediaValue;
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        sLocalMediaValue = "NA";
+                                                    }
+                                                               
+                                    <div id="divMedia_@item.ID" class="media">
+                                        <div class="MediaDate">
+                                            <div class="post-date">
+                                                <span class="month">@Month</span>
+                                                <div>
+                                                    <span class="today">@Day</span>
+                                                </div>
+                                                <span class="timeWithTimeZone">@Time @(sessionInformation.IsLogIn ? sessionInformation.TimeZone : string.Empty)</span>
+                                            </div>
+                                        </div>
+                                        <div class="MediaTypeLogo" align="center">
+                                            <img src="~/images/MediaIcon/25onlinenews.png" alt="news" title="@CommonFunctions.GetEnumDescription(CommonFunctions.CategoryType.NM)" />
+                                        </div>
+                                        <div class="FeedsContentNone">
+                                        @{
+                                            string nmTitle = string.Empty;
+
+                                            if (newsMediaModel.Title.Trim().Length > 65)
+                                            {
+                                                nmTitle = newsMediaModel.Title.Trim().Substring(0, 62) + "...";
+                                            }
+                                            else
+                                            {
+                                                nmTitle = newsMediaModel.Title.Trim();
+                                            }
+                                        }
+                                        <div class="media-heading float-left">           
+                                            <a target="_blank" title="@newsMediaModel.Title.Trim()" href="@(newsMediaModel.IQLicense > 0 ? Url.Action("Index", "Article", new { au = IQMedia.Shared.Utility.CommonFunctions.EncryptLicenseStringAES(sessionInformation.CustomerKey + "¶IQAgent Report¶" + newsMediaModel.Url + "&u1=cliq40&u2=" + sessionInformation.ClientID + "¶" + newsMediaModel.IQLicense) }) : newsMediaModel.Url)">
+                                                @nmTitle
+                                            </a>
+                                        </div>
+                                        <div class="subheading float-left margintop1" >
+                                            @item.timeDifference
+                                        </div>
+                                        <div class="clear float-left media-body">
+                                            @Html.Raw(newsMediaModel.HighlightingText)
+                                        </div>
+                                    </div>
+                                        <div class="clear post-divider"></div>
+                                        <div class="clear margintop2 marginbottom2">
+                                            <div class="FeedsActionBarLeftDiv">
+                                                <div class="viewmore">
+                                                    <div class="margintop2"> 
+                                                    </div>
+                                                </div>
+                                                <div id="divLocationNM_@item.ID" class="viewlocation">
+                                                    <div class="">
+                                                        @{
+                                                                  if (!string.IsNullOrWhiteSpace(newsMediaModel.Publication))
+                                                                  {
+                                                                <div class="location-tag" title="@newsMediaModel.Publication">
+                                                                    @if (newsMediaModel.Publication.Trim().Length > 23)
+                                                                    {
+                                                                        @(newsMediaModel.Publication.Trim().Substring(0, 21) + "...")
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        @newsMediaModel.Publication.Trim()
+                                                                    }
+                                                                </div>   
+                                                                  }
+                                                                  else
+                                                                  { 
+                                                                <div class="margintop2"> 
+                                                                </div>
+                                                                  }  
+                                                        }
+                                                    </div>
+                                                </div>
+                                                <div id="divSentimentNM_@item.ID" class="viewsentiment" title="Sentiment">
+                                                    <div class="sentimentLeftFloat sentiment-tag">
+                                                        <div class="divSentimentMain sentimentFont">
+                                                            <div class="divSentimentNeg">
+                                                                <div style='width:@((item.NegativeSentiment * 6) > 25 ? 25 : (item.NegativeSentiment * 6))px;'>
+                                                                    @item.NegativeSentiment
+                                                                </div>
+                                                            </div>
+                                                            <div class="divSentimentPos">
+                                                                <div style='width:@((item.PositiveSentiment * 6) > 25 ? 25 : (item.PositiveSentiment * 6))px;'>
+                                                                    @item.PositiveSentiment
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="viewcontentdetail">
+                                                    <div class="viewshortdetail" title="Local Audience @fLocalAudience">
+                                                        <div class="view">
+                                                            @sLocalAudience
+                                                            @if (!string.IsNullOrWhiteSpace(newsMediaModel.Compete_Result) && newsMediaModel.Compete_Result.ToUpper() == "A")
+                                                            {
+                                                                <img title="Powered by Compete" style="width: 14px;  vertical-align: inherit;" src="~/Images/compete.png" alt="Compete Image" />
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                    <div class="viewshortdetail">
+                                                        <div class="price" title="Local Media Value @fLocalMediaValue">
+                                                            @sLocalMediaValue
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="FeedsActionBarRightDiv minWidth52IE8">
+                                                <div class="detailIcon">
+                                                    <!--Padding for save article-->
+                                                    <div align="center" class="margintop2">
+                                                    </div></div>
+                                                <div class="detailIcon">
+                                                    <a id="lnkSaveNM_@item.ID" class="cursorPointer viewArticle" title="View Article" href="@(newsMediaModel.IQLicense > 0 ? Url.Action("Index", "Article", new { au = IQMedia.Shared.Utility.CommonFunctions.EncryptLicenseStringAES(sessionInformation.CustomerKey + "¶IQAgent Report¶" + newsMediaModel.Url + "&u1=cliq40&u2=" + sessionInformation.ClientID + "¶" + newsMediaModel.IQLicense) }) : newsMediaModel.Url))" target="_blank" ></a>
+                                                </div>
+                                                <div class="detailIcon">
+                                                    <!--Padding on the right-->
+                                                    <div align="center" class="margintop2">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        @if (Model.UseRollup && request.MediaResults.Where(r => r.CategoryType == categoryType.ToString() && ((IQAgent_NewsResultsModel)r.MediaData)._ParentID == item.ID).Count() > 0)
+                                        {
+                                            <div class="clear MediaChildContent">
+                                                @foreach (var childMediaResults in request.MediaResults.Where(r => r.CategoryType == categoryType.ToString() && ((IQAgent_NewsResultsModel)r.MediaData)._ParentID == item.ID))
+                                                {
+                                                    var childNM = (IQAgent_NewsResultsModel)childMediaResults.MediaData;
+                                                    
+                                                    string sChildAudience = string.Empty;
+                                                    string fChildAudience = string.Empty;
+                                                    string sChildMediaValue = string.Empty;
+                                                    string fChildMediaValue = string.Empty;
+
+                                                    if (childNM.Compete_Audience.HasValue && childNM.Compete_Audience > 0)
+                                                    {
+                                                        fChildAudience = string.Format("{0:N0}", childNM.Compete_Audience);
+
+                                                        if (childNM.Compete_Audience >= Billion)
+                                                        {
+                                                            sChildAudience = string.Format("{0:F1} bil", childNM.Compete_Audience / BillionD);
+                                                        }
+                                                        else if (childNM.Compete_Audience >= Million)
+                                                        {
+                                                            sChildAudience = string.Format("{0:F1} mil", childNM.Compete_Audience / MillionD);
+                                                        }
+                                                        else
+                                                        {
+                                                            sChildAudience = fChildAudience;
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        sChildAudience = "NA";
+                                                    }
+
+                                                    if (childNM.IQAdShareValue.HasValue && childNM.IQAdShareValue > 0)
+                                                    {
+                                                        fChildMediaValue = string.Format("{0:N2}", childNM.IQAdShareValue);
+
+                                                        if (childNM.IQAdShareValue >= BillionD)
+                                                        {
+                                                            sChildMediaValue = string.Format("{0:F1} bil", childNM.IQAdShareValue / BillionD);
+                                                        }
+                                                        else if (childNM.IQAdShareValue >= MillionD)
+                                                        {
+                                                            sChildMediaValue = string.Format("{0:F1} mil", childNM.IQAdShareValue / MillionD);
+                                                        }
+                                                        else
+                                                        {
+                                                            sChildMediaValue = fChildMediaValue;
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        sChildMediaValue = "NA";
+                                                    }
+                                                    
+                                                <div class="clear post-divider-dark" style="width:94%; margin-left:2%;"></div>
+                                                <div class="" id="divMedia_@childMediaResults.ID">
+                                                    <div class="clear margintop2 marginbottom2">
+                                                        <div class="FeedsActionBarLeftDiv">
+                                                            <div class="viewmore">
+                                                                <div class="margintop2"> 
+                                                                </div>
+                                                            </div>
+                                                            <div id="lblCompete_@childNM.ID" class="viewlocation">
+                                                                <div class="">
+                                                                    @if (!string.IsNullOrWhiteSpace(childNM.Publication))
+                                                                    {
+                                                                        <div class="location-tag" title="@childNM.Publication">
+                                                                            @if (childNM.Publication.Trim().Length > 23)
+                                                                            {
+                                                                                @(childNM.Publication.Trim().Substring(0, 21) + "...")
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                @childNM.Publication.Trim()
+                                                                            }
+                                                                        </div>   
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <div align="center" class="margintop2">
+                                                                        </div>
+                                                                    }
+                                                                </div>
+                                                            </div>
+                                                            <div class="viewsentiment" title="@childMediaResults.MediaDateTime.ToString("MM/dd/yyyy hh:mm tt")">
+                                                                <div class="">
+                                                                    @childMediaResults.MediaDateTime.ToString("hh:mm tt")
+                                                                </div>
+                                                            </div>
+                                                            <div class="viewcontentdetail">
+                                                                <div class="viewshortdetail" title="Local Audience @fChildAudience">
+                                                                    <div class="view">
+                                                                        @sChildAudience
+                                                                        @if (!string.IsNullOrWhiteSpace(childNM.Compete_Result) && childNM.Compete_Result.ToUpper() == "A")
+                                                                        {
+                                                                            <img title="Powered by Compete" style="width: 14px;  vertical-align: inherit;" src="~/Images/compete.png" alt="Compete Image" />
+                                                                        }
+                                                                    </div>
+                                                                </div>
+                                                                <div class="viewshortdetail">
+                                                                    <div class="price" title="Local Media Value @fChildMediaValue">
+                                                                        @sChildMediaValue
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="FeedsActionBarRightDiv minWidth52IE8">
+                                                            <div class="detailIcon">
+                                                                <!--Padding on the right-->
+                                                                <div class="margintop2"> 
+                                                                </div>
+                                                            </div>
+                                                            <div class="detailIcon">
+                                                                <!--Padding on the right-->
+                                                                 <div class="margintop2"> 
+                                                                </div>
+                                                            </div>
+                                                            <div class="detailIcon">
+                                                                <!--Padding on the right-->
+                                                                <div align="right" class="margintop2">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                }
+                                            </div>
+                                        }
+                                    </div>
+                                    
+                                                    break;
+
+                                                case IQMedia.Shared.Utility.CommonFunctions.CategoryType.SocialMedia:
+
+                                                    IQAgent_SMResultsModel socialMediaModel = item.MediaData as IQAgent_SMResultsModel;
+                                
+                                    <div class="media" id="divMedia_@item.ID">
+                                        <div class="MediaDate">
+                                            <div class="post-date">
+                                                <span class="month">@Month</span>
+                                                <div>
+                                                    <span class="today">@Day</span>
+                                                </div>
+                                                <span class="timeWithTimeZone">@Time @(sessionInformation.IsLogIn ? sessionInformation.TimeZone : string.Empty)</span>
+                                            </div>
+                                        </div>
+                                        <div class="MediaTypeLogo" align="center">
+                                                <img src="~/images/MediaIcon/25social.png" title="@CommonFunctions.GetEnumDescription(CommonFunctions.CategoryType.SocialMedia)">
+                                        </div>
+                                        <div class="FeedsContentNone">
+                                            @{
+                                                string smTitle = string.Empty;
+
+                                                if (socialMediaModel.Description.Trim().Length > 65)
+                                                {
+                                                    smTitle = socialMediaModel.Description.Trim().Substring(0, 62) + "...";
+                                                }
+                                                else
+                                                {
+                                                    smTitle = socialMediaModel.Description.Trim();
+                                                }
+                                            }
+                                            <div class="float-left media-heading">
+                                                <a target="_blank" href="@socialMediaModel.Link" title="@socialMediaModel.Description.Trim()">@smTitle</a>
+                                            </div>
+                                            <div class="subheading float-left margintop1" >
+                                                @item.timeDifference
+                                            </div>
+                                            <div class="clear float-left media-body">
+                                                @Html.Raw(socialMediaModel.HighlightingText)
+                                            </div>
+                                        </div>
+                                        <div class="clear post-divider"></div>
+                                        <div class="clear margintop2 marginbottom2">
+                                            <div class="FeedsActionBarLeftDiv">
+                                                <div class="viewmore">
+                                                    <div class="margintop2"> 
+                                                    </div>
+                                                </div>
+                                                <div id="divLocationSM_@item.ID" class="viewlocation">
+                                                    <div class="">
+                                                        @if (!string.IsNullOrWhiteSpace(socialMediaModel.HomeLink))
+                                                        {
+                                                            <div class="location-tag" title="@socialMediaModel.HomeLink">
+                                                                @if (socialMediaModel.HomeLink.Trim().Length > 23)
+                                                                {
+                                                                        @(socialMediaModel.HomeLink.Trim().Substring(0, 21) + "...")
+                                                                }
+                                                                else
+                                                                {
+                                                                        @socialMediaModel.HomeLink.Trim()
+                                                                }
+                                                            </div>   
+                                                        }
+                                                        else
+                                                        { 
+                                                            <div class="margintop2"> 
+                                                            </div>
+                                                        }  
+                                                    </div>
+                                                </div>
+                                                <div id="divSentimentSM_@item.ID" class="viewsentiment" title="Sentiment">                
+                                                    <div class="sentimentLeftFloat sentiment-tag">
+                                                        <div class="divSentimentMain sentimentFont">
+                                                            <div class="divSentimentNeg">
+                                                                <div style='width:@((item.NegativeSentiment * 6) > 25 ? 25 : (item.NegativeSentiment * 6))px;'>@item.NegativeSentiment</div>
+                                                            </div>
+                                                            <div class="divSentimentPos">
+                                                                <div style='width:@((item.PositiveSentiment * 6) > 25 ? 25 : (item.PositiveSentiment * 6))px;'>@item.PositiveSentiment</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="viewcontentdetail">
+                                                    <div class="viewshortdetail">
+                                                    </div>
+                                                    <div class="viewshortdetail">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="FeedsActionBarRightDiv minWidth52IE8">
+                                                <div class="detailIcon">
+                                                    <!--Padding on the right-->
+                                                    <div align="center" class="margintop2">
+                                                    </div>
+                                                </div>
+                                                <div class="detailIcon">
+                                                    <a class="cursorPointer viewArticle" title="View Article" href="@socialMediaModel.Link" target="_blank" id="lnkSaveSM_@item.ID"></a>
+                                                </div>
+                                                <div class="detailIcon">
+                                                    <!--Padding on the right-->
+                                                    <div align="center" class="margintop2">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                                    break;
+
+                                                case IQMedia.Shared.Utility.CommonFunctions.CategoryType.Forum:
+
+                                                    IQAgent_SMResultsModel forumModel = item.MediaData as IQAgent_SMResultsModel;
+
+                                    <div class="media" id="divMedia_@item.ID">
+                                        <div class="MediaDate">
+                                            <div class="post-date">
+                                                <span class="month">@Month</span>
+                                                <div>
+                                                    <span class="today">@Day</span>
+                                                </div>
+                                                <span class="timeWithTimeZone">@Time @(sessionInformation.IsLogIn ? sessionInformation.TimeZone : string.Empty)</span>
+                                            </div>
+                                        </div>
+                                        <div class="MediaTypeLogo" align="center">
+                                                <img src="~/images/MediaIcon/25forum.png" alt="forum" title="@CommonFunctions.GetEnumDescription(CommonFunctions.CategoryType.Forum)">
+                                        </div>
+                                        <div class="FeedsContentNone">
+                                            @{
+                                                                                                        string frmTitle = string.Empty;
+
+                                                                                                        if (forumModel.Description.Trim().Length > 65)
+                                                                                                        {
+                                                                                                            frmTitle = forumModel.Description.Trim().Substring(0, 62) + "...";
+                                                                                                        }
+                                                                                                        else
+                                                                                                        {
+                                                                                                            frmTitle = forumModel.Description.Trim();
+                                                                                                        }
+                                            }
+                                            <div class="float-left media-heading">
+                                                <a target="_blank" href="@forumModel.Link" title="@forumModel.Description.Trim()">@frmTitle</a>
+                                            </div>
+                                            <div class="subheading float-left margintop1" >
+                                                @item.timeDifference
+                                            </div>
+                                            <div class="clear float-left media-body">
+                                                @Html.Raw(forumModel.HighlightingText)
+                                            </div>
+                                        </div>
+                                        <div class="clear post-divider"></div>
+                                        <div class="clear margintop2 marginbottom2">
+                                            <div class="FeedsActionBarLeftDiv">
+                                                <div class="viewmore">
+                                                    <div class="margintop2"> 
+                                                    </div>
+                                                </div>
+                                                <div id="divLocationFrm_@item.ID" class="viewlocation">
+                                                    <div class="">
+                                                        @if (!string.IsNullOrWhiteSpace(forumModel.HomeLink))
+                                                        {
+                                                            <div class="location-tag" title="@forumModel.HomeLink">
+                                                                @if (forumModel.HomeLink.Trim().Length > 23)
+                                                                {
+                                                                        @(forumModel.HomeLink.Trim().Substring(0, 21) + "...")
+                                                                }
+                                                                else
+                                                                {
+                                                                        @forumModel.HomeLink.Trim()
+                                                                }
+                                                            </div>   
+                                                        }
+                                                        else
+                                                        { 
+                                                            <div class="margintop2"> 
+                                                            </div>
+                                                        }  
+                                                    </div>
+                                                </div>
+                                                <div id="divSentimentFrm_@item.ID" class="viewsentiment" title="Sentiment">                
+                                                    <div class="sentimentLeftFloat sentiment-tag">
+                                                        <div class="divSentimentMain sentimentFont">
+                                                            <div class="divSentimentNeg">
+                                                                <div style='width:@((item.NegativeSentiment * 6) > 25 ? 25 : (item.NegativeSentiment * 6))px;'>@item.NegativeSentiment</div>
+                                                            </div>
+                                                            <div class="divSentimentPos">
+                                                                <div style='width:@((item.PositiveSentiment * 6) > 25 ? 25 : (item.PositiveSentiment * 6))px;'>@item.PositiveSentiment</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="viewcontentdetail">
+                                                    <div class="viewshortdetail">
+                                                    </div>
+                                                    <div class="viewshortdetail">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="FeedsActionBarRightDiv minWidth52IE8">
+                                                <div class="detailIcon">
+                                                    <!--Padding on the right-->
+                                                    <div align="center" class="margintop2">
+                                                    </div>
+                                                </div>
+                                                <div class="detailIcon">
+                                                    <a class="cursorPointer viewArticle" title="View Article" href="@forumModel.Link" target="_blank" id="lnkSaveForum_@item.ID"></a>
+                                                </div>
+                                                <div class="detailIcon">
+                                                    <!--Padding on the right-->
+                                                    <div align="center" class="margintop2">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                                    break;
+
+                                                case IQMedia.Shared.Utility.CommonFunctions.CategoryType.Blog:
+
+                                                    IQAgent_SMResultsModel blogModel = item.MediaData as IQAgent_SMResultsModel;
+                                        
+                                                    if (blogModel.Compete_Audience.HasValue && blogModel.Compete_Audience > 0)
+                                                    {
+                                                        fLocalAudience = string.Format("{0:N0}", blogModel.Compete_Audience);
+
+                                                        if (blogModel.Compete_Audience >= Billion)
+                                                        {
+                                                            sLocalAudience = string.Format("{0:F1} bil", blogModel.Compete_Audience / BillionD);
+                                                        }
+                                                        else if (blogModel.Compete_Audience >= Million)
+                                                        {
+                                                            sLocalAudience = string.Format("{0:F1} mil", blogModel.Compete_Audience / MillionD);
+                                                        }
+                                                        else
+                                                        {
+                                                            sLocalAudience = fLocalAudience;
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        sLocalAudience = "NA";
+                                                    }
+
+                                                    if (blogModel.IQAdShareValue.HasValue && blogModel.IQAdShareValue > 0)
+                                                    {
+                                                        fLocalMediaValue = string.Format("{0:N2}", blogModel.IQAdShareValue);
+
+                                                        if (blogModel.IQAdShareValue >= BillionD)
+                                                        {
+                                                            sLocalMediaValue = string.Format("{0:F1} bil", blogModel.IQAdShareValue / BillionD);
+                                                        }
+                                                        else if (blogModel.IQAdShareValue >= MillionD)
+                                                        {
+                                                            sLocalMediaValue = string.Format("{0:F1} mil", blogModel.IQAdShareValue / MillionD);
+                                                        }
+                                                        else
+                                                        {
+                                                            sLocalMediaValue = fLocalMediaValue;
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        sLocalMediaValue = "NA";
+                                                    }
+                                     
+                                    <div class="media" id="divMedia_@item.ID">
+                                        <div class="MediaDate">
+                                            <div class="post-date">
+                                                <span class="month">@Month</span>
+                                                <div>
+                                                    <span class="today">@Day</span>
+                                                </div>
+                                                <span class="timeWithTimeZone">@Time @(sessionInformation.IsLogIn ? sessionInformation.TimeZone : string.Empty)</span>
+                                            </div>
+                                        </div>
+                                        <div class="MediaTypeLogo" align="center">
+                                                <img src="~/images/MediaIcon/25blog.png" alt="blog" title="@CommonFunctions.GetEnumDescription(CommonFunctions.CategoryType.Blog)">
+                                        </div>
+                                        <div class="FeedsContentNone">
+                                            @{
+                                                string blogTitle = string.Empty;
+                                                
+                                                if (blogModel.Description.Trim().Length > 65)
+                                                {
+                                                    blogTitle = blogModel.Description.Trim().Substring(0, 62) + "...";
+                                                }
+                                                else
+                                                {
+                                                    blogTitle = blogModel.Description.Trim();
+                                                }                                                
+                                            }
+                                            <div class="float-left media-heading">
+                                                <a target="_blank" href="@blogModel.Link" title="@blogModel.Description.Trim()">@blogTitle</a>
+                                            </div>
+                                            <div class="subheading float-left margintop1" >
+                                                @item.timeDifference
+                                            </div>
+                                            <div class="clear float-left media-body">
+                                                @Html.Raw(blogModel.HighlightingText)
+                                            </div>
+                                        </div>
+                                        <div class="clear post-divider"></div>
+                                        <div class="clear margintop2 marginbottom2">
+                                            <div class="FeedsActionBarLeftDiv">
+                                                <div class="viewmore">
+                                                    <div class="margintop2"> 
+                                                    </div>
+                                                </div>
+                                                <div id="divLocationBlog_@item.ID" class="viewlocation">
+                                                    <div class="">
+                                                        @if (!string.IsNullOrWhiteSpace(blogModel.HomeLink))
+                                                        {
+                                                            <div class="location-tag" title="@blogModel.HomeLink">
+                                                                @if (blogModel.HomeLink.Trim().Length > 23)
+                                                                {
+                                                                        @(blogModel.HomeLink.Trim().Substring(0, 21) + "...")
+                                                                }
+                                                                else
+                                                                {
+                                                                        @blogModel.HomeLink.Trim()
+                                                                }
+                                                            </div>   
+                                                        }
+                                                        else
+                                                        { 
+                                                            <div class="margintop2"> 
+                                                            </div>
+                                                        }  
+                                                    </div>
+                                                </div>
+                                                <div id="divSentimentBlog_@item.ID" class="viewsentiment" title="Sentiment">                
+                                                    <div class="sentimentLeftFloat sentiment-tag">
+                                                        <div class="divSentimentMain sentimentFont">
+                                                            <div class="divSentimentNeg">
+                                                                <div style='width:@((item.NegativeSentiment * 6) > 25 ? 25 : (item.NegativeSentiment * 6))px;'>@item.NegativeSentiment</div>
+                                                            </div>
+                                                            <div class="divSentimentPos">
+                                                                <div style='width:@((item.PositiveSentiment * 6) > 25 ? 25 : (item.PositiveSentiment * 6))px;'>@item.PositiveSentiment</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="viewcontentdetail">
+                                                    <div class="viewshortdetail">
+                                                        <div class="view" title="Local Audience @fLocalAudience">
+                                                            @sLocalAudience
+                                                            @if (!string.IsNullOrWhiteSpace(blogModel.Compete_Result) && blogModel.Compete_Result.ToUpper() == "A")
+                                                            {
+                                                                <img title="Powered by Compete" style="width: 14px" src="~/Images/compete.png" alt="Compete Image" />
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                    <div class="viewshortdetail">
+                                                        <div class="price" title="Local Media Value @fLocalMediaValue">
+                                                            @sLocalMediaValue
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="FeedsActionBarRightDiv minWidth52IE8">
+                                                <div class="detailIcon">
+                                                    <!--Padding on the right-->
+                                                    <div align="center" class="margintop2">
+                                                    </div>
+                                                </div>
+                                                <div class="detailIcon">
+                                                    <a class="cursorPointer viewArticle" title="View Article" href="@blogModel.Link" target="_blank" id="lnkSaveBlog_@item.ID"></a>
+                                                </div>
+                                                <div class="detailIcon">
+                                                    <!--Padding on the right-->
+                                                    <div align="center" class="margintop2">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                                    break;
+
+                                                case IQMedia.Shared.Utility.CommonFunctions.CategoryType.Radio:
+
+                                                    IQAgent_TVEyesResultsModel tvEyesModel = item.MediaData as IQAgent_TVEyesResultsModel;
+
+                                    <div class="media" id="divMedia_@item.ID">
+                                        <div class="MediaDate">
+                                            <div class="post-date">
+                                                <span class="month">@Month</span>
+                                                <div>
+                                                    <span class="today">@Day</span>
+                                                </div>
+                                                <span class="timeWithTimeZone">@Time @(sessionInformation.IsLogIn ? sessionInformation.TimeZone : string.Empty)</span>
+                                            </div>
+                                        </div>
+                                        <div class="MediaTypeLogo">
+                                                <img src="/images/MediaIcon/25x25_radio.png" title="@CommonFunctions.GetEnumDescription(CommonFunctions.CategoryType.Radio)" />
+                                        </div>
+                                        <div class="float-right FeedsVideoSpacer">
+                                            <div class="float-left FeedsVideo positionRelative">
+                                            @if (!string.IsNullOrWhiteSpace(tvEyesModel.TranscriptUrl))
+                                            { 
+                                                <a onclick="LoadTMPopup('@tvEyesModel.TranscriptUrl.Replace("\'", "\\\'")')" class="cursorPointer">
+                                                    <img class="media-object" src="/images/video.png" alt="" />
+                                                </a>
+                                            }
+                                            </div>
+                                            <div class="float-right tvFeedsCheck">
+                                                <input type="checkbox" value="@item.ID:@item.MediaType" id="chkdivResults_@item.ID" onclick="CheckUncheckMasterCheckBox(this.id,'ulMediaResults','chkInputAll');" />
+                                            </div>
+                                            <div class="clearfix">
+                                            </div>
+                                        </div>
+                                        <div class="FeedsContentVideo">
+                                            @{
+                                                                                                                     string tmTitle = string.Empty;
+
+                                                                                                                     if (tvEyesModel.Title.Trim().Length > 65)
+                                                                                                                     {
+                                                                                                                         tmTitle = tvEyesModel.Title.Trim().Substring(0, 62) + "...";
+                                                                                                                     }
+                                                                                                                     else
+                                                                                                                     {
+                                                                                                                         tmTitle = tvEyesModel.Title.Trim();
+                                                                                                                     }
+                                            }
+                                            <div class="float-left media-heading" title="@tvEyesModel.Title">
+                                                @tmTitle
+                                            </div>
+                                            <div class="subheading float-left margintop1" >
+                                                @item.timeDifference
+                                            </div>
+                                            <div class="clear float-left media-body">
+                                                <span style="color:#73897F">@tvEyesModel.StationID - </span>
+                                                @Html.Raw(tvEyesModel.HighlightingText)
+                                            </div>
+                                        </div>
+                                        <div class="clear post-divider"></div>
+                                        <div class="clear margintop2 marginbottom2">
+                                            <div class="FeedsActionBarLeftDiv">
+                                                <div class="viewmore">
+                                                    <div align="center" class="margintop2">
+                                                    </div>
+                                                </div>
+                                                <div id="divLocationTM_@item.ID" class="viewlocation">
+                                                    <div class="">
+                                                        @if (!string.IsNullOrWhiteSpace(tvEyesModel.Market))
+                                                        {
+                                                            <div class="location-tag" title="@tvEyesModel.Market">
+                                                                @if (tvEyesModel.Market.Trim().Length > 23)
+                                                                {
+                                                                        @(tvEyesModel.Market.Trim().Substring(0, 21) + "...")
+                                                                }
+                                                                else
+                                                                {
+                                                                        @tvEyesModel.Market.Trim()
+                                                                }
+                                                            </div>   
+                                                        }
+                                                    </div>
+                                                </div>
+                                                <div id="divSentimentTM_@item.ID" class="viewsentiment" title="Sentiment">
+                                                    <div class="float-right sentimentLeftFloat">
+                                                        <div class="divSentimentMain sentimentFont">
+                                                            <div class="divSentimentNeg">
+                                                                <div style='width:@((item.NegativeSentiment * 6) > 25 ? 25 : (item.NegativeSentiment * 6))px;'>
+                                                                    @item.NegativeSentiment
+                                                                </div>
+                                                            </div>
+                                                            <div class="divSentimentPos">
+                                                                <div style='width:@((item.PositiveSentiment * 6) > 25 ? 25 : (item.PositiveSentiment * 6))px;'>
+                                                                    @item.PositiveSentiment
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="viewcontentdetail">
+                                                @if (!string.IsNullOrEmpty(tvEyesModel.DMARank))
+                                                {
+                                                    <div class="marketrank pull-left" title="Market Rank @tvEyesModel.DMARank">
+                                                        <span>@tvEyesModel.DMARank</span>
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <div align="center" class="margintop2"></div>
+                                                }
+                                                </div>
+                                            </div>
+                                            <div class="FeedsActionBarRightDiv minWidth52IE8">
+                                                <div class="detailIcon">
+                                                    <!--Padding on the right-->
+                                                    <div align="center" class="margintop2">
+                                                    </div>
+                                                </div>
+                                                <div class="detailIcon">
+                                                    <!--Padding View Article-->
+                                                    <div align="center" class="margintop2">
+                                                    </div>
+                                                </div>
+                                                <div class="detailIcon">
+                                                    <!--Padding on the right-->
+                                                    <div align="center" class="margintop2">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>  
+
+                                                    break;
+
+                                                case IQMedia.Shared.Utility.CommonFunctions.CategoryType.PM:
+
+                                                    IQAgent_BLPMResultsModel iQAgent_BLPMResultsModel = (IQAgent_BLPMResultsModel)item.MediaData;
+                                                    string PMBasePath = Convert.ToString(System.Configuration.ConfigurationManager.AppSettings["IQArchieve_PMBaseUrl"]);
+                                                    string sCirculation = string.Empty;
+                                                    string fCirculation = string.Format("{0:N0}", iQAgent_BLPMResultsModel.Circulation);
+
+                                                    if (iQAgent_BLPMResultsModel.Circulation >= Billion)
+                                                    {
+                                                        sCirculation = string.Format("{0:F1} bil", iQAgent_BLPMResultsModel.Circulation / BillionD);
+                                                    }
+                                                    else if (iQAgent_BLPMResultsModel.Circulation >= Million)
+                                                    {
+                                                        sCirculation = string.Format("{0:F1} mil", iQAgent_BLPMResultsModel.Circulation / MillionD);
+                                                    }
+                                                    else
+                                                    {
+                                                        sCirculation = fCirculation;
+                                                    }
+                                                    
+                                    <div class="media" id="divMedia_@item.ID">
+                                        <div class="MediaDate">
+                                            <div class="post-date">
+                                                <span class="month">@item.MediaDateTime.ToString("MMM", System.Globalization.CultureInfo.InvariantCulture)</span>
+                                                <div>
+                                                    <span class="today">@item.MediaDateTime.Day</span>
+                                                </div>
+                                                <span class="timeWithTimeZone">@item.MediaDateTime.ToString("hh:mm tt") @(sessionInformation.IsLogIn ? sessionInformation.TimeZone : string.Empty)</span>
+                                            </div>
+                                        </div>
+                                        <div class="MediaTypeLogo" align="center">
+                                            <img src="/images/MediaIcon/25x25_publicationScanned.png" title="@CommonFunctions.GetEnumDescription(CommonFunctions.CategoryType.PM)" />
+                                        </div>
+                                        <div class="FeedsContentNone">
+                                            @{
+                                                string pmTitle = string.Empty;
+
+                                                if (Html.Raw(iQAgent_BLPMResultsModel.Title).ToString().Trim().Length > 65)
+                                                {
+                                                    pmTitle = Html.Raw(iQAgent_BLPMResultsModel.Title).ToString().Trim().Substring(0, 62) + "...";
+                                                }
+                                                else
+                                                {
+                                                    pmTitle = Html.Raw(iQAgent_BLPMResultsModel.Title).ToString().Trim();
+                                                }
+                                            }
+                                            <div class="float-left media-heading">
+                                                <a target="_blank" href="@(PMBasePath + iQAgent_BLPMResultsModel.FileLocation.Replace(@"\", @"/"))" title="@Html.Raw(iQAgent_BLPMResultsModel.Title)">@pmTitle</a>
+                                            </div>
+                                            <div class="subheading float-left margintop1">
+                                                @item.timeDifference
+                                            </div>
+                                            <div class="clear float-left media-body">
+                                                @Html.Raw(iQAgent_BLPMResultsModel.HighlightingText.Length > 300 ? iQAgent_BLPMResultsModel.HighlightingText.Substring(0, 300) : iQAgent_BLPMResultsModel.HighlightingText)
+                                            </div>
+                                        </div>
+                                        <div class="clear post-divider"></div>
+                                        <div class="clear margintop2 marginbottom2">
+                                            <div class="FeedsActionBarLeftDiv">
+                                                <div class="viewmore">
+                                                    <div align="center" class="margintop2">
+                                                    </div>
+                                                </div>
+                                                <div id="divLocationPM_@item.ID" class="viewlocation">
+                                                    <div class="">
+                                                        @if (!string.IsNullOrWhiteSpace(iQAgent_BLPMResultsModel.Pub_Name))
+                                                        {
+                                                            <div class="location-tag" title="@iQAgent_BLPMResultsModel.Pub_Name">
+                                                            @{
+                                                            if (iQAgent_BLPMResultsModel.Pub_Name.Trim().Length > 23)
+                                                            {
+                                                                        @(iQAgent_BLPMResultsModel.Pub_Name.Trim().Substring(0, 21) + "...")
+                                                            }
+                                                            else
+                                                            {
+                                                                        @iQAgent_BLPMResultsModel.Pub_Name.Trim()
+                                                            }
+                                                            }
+                                                            </div>   
+                                                        }
+                                                        else
+                                                        {
+                                                            <div align="center" class="margintop2">
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                </div>
+                                                <div id="" class="viewsentiment">
+                                                    <!--Sentiment Filler-->
+                                                    <div align="center" class="margintop2">
+                                                    </div>
+                                                </div> 
+                                                <div class="viewcontentdetail">
+                                                    <div class="circulation pull-left" title="Circulation @fCirculation">
+                                                        <span>@sCirculation</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="FeedsActionBarRightDiv minWidth52IE8">
+                                                <div class="detailIcon">
+                                                    <!--Padding Save Article-->
+                                                    <div align="center" class="margintop2">
+                                                    </div>
+                                                </div>
+                                                <div class="detailIcon">
+                                                    <!--Padding on the right-->
+                                                    <div align="center" class="margintop2">
+                                                    </div>
+                                                </div>
+                                                <div class="detailIcon">
+                                                    <!--Padding on the right-->
+                                                    <div align="center" class="margintop2">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                    
+                                                    break;
+
+                                                case IQMedia.Shared.Utility.CommonFunctions.CategoryType.PQ:
+
+                                                    IQAgent_PQResultsModel pqModel = (IQAgent_PQResultsModel)item.MediaData;
+                                
+                                    <div class="media" id="divMedia_@item.ID">
+                                        <div class="MediaDate">
+                                            <div class="post-date">
+                                                <span class="month">@Month</span>
+                                                <div>
+                                                    <span class="today">@Day</span>
+                                                </div>
+                                                <span class="timeWithTimeZone">&nbsp;</span>
+                                            </div>
+                                        </div>
+                                        <div class="MediaTypeLogo" align="center">
+                                            <img src="~/images/MediaIcon/25x25_publicationText.png" alt="Publications (text)" title="@CommonFunctions.GetEnumDescription(CommonFunctions.CategoryType.PQ)" />
+                                        </div>
+                                        <div class="FeedsContentNone">
+                                            @{
+                                                string pqTitle = string.Empty;
+
+                                                if (Html.Raw(pqModel.Title).ToString().Trim().Length > 65)
+                                                {
+                                                    pqTitle = Html.Raw(pqModel.Title).ToString().Trim().Substring(0, 62) + "...";
+                                                }
+                                                else
+                                                {
+                                                    pqTitle = Html.Raw(pqModel.Title).ToString().Trim();
+                                                }
+                                            }
+                                            <div class="float-left media-heading">
+                                                <a target="_blank" href="@(string.Format(System.Configuration.ConfigurationManager.AppSettings["PQArticleUrl"], pqModel.EncryptedID))" class="cursorPointer" title="@Html.Raw(pqModel.Title)">@pqTitle</a>
+                                            </div>
+                                            <div class="subheading float-left margintop1" >
+                                                @item.timeDifference
+                                            </div>
+                                            <div class="clear float-left media-body">
+                                                @Html.Raw(pqModel.HighlightingText)
+                                            </div>
+                                        </div>
+                                        <div class="clear post-divider"></div>
+                                        <div class="clear margintop2 marginbottom2">
+                                            <div class="FeedsActionBarLeftDiv">
+                                                <div class="viewmore">
+                                                    <!--Padding on the right-->
+                                                    <div align="center" class="margintop2">
+                                                    </div>
+                                                </div>
+                                                <div id="divLocationTM_@item.ID" class="viewlocation">
+                                                    <div class="">
+                                                        @if (!string.IsNullOrWhiteSpace(pqModel.Publication))
+                                                        {
+                                                            var Journal = pqModel.Publication.Trim();
+                                                            <div class="location-tag" title="@Journal">
+                                                                @if (Journal.Length > 23)
+                                                                {
+                                                                    @(Journal.Substring(0, 21) + "...")
+                                                                }
+                                                                else
+                                                                {
+                                                                    @(Journal)
+                                                                }
+                                                            </div>   
+                                                        }
+                                                        else
+                                                        {
+                                                            <div align="center" class="margintop2">
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                </div>
+                                                <div style="width: 12%" id="divSentimentSM_@item.ID" class="viewsentiment" title="Sentiment">
+                                                    <div class="sentimentLeftFloat sentiment-tag">
+                                                        <div class="divSentimentMain sentimentFont">
+                                                            <div class="divSentimentNeg">
+                                                                <div style='width:@((item.NegativeSentiment * 6) > 25 ? 25 : (item.NegativeSentiment * 6))px;'>
+                                                                    @item.NegativeSentiment</div>
+                                                            </div>
+                                                            <div class="divSentimentPos">
+                                                                <div style='width:@((item.PositiveSentiment * 6) > 25 ? 25 : (item.PositiveSentiment * 6))px;'>
+                                                                    @item.PositiveSentiment</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="FeedsActionBarRightDiv minWidth52IE8">
+                                                <div class="detailIcon">
+                                                    <!--Padding on the right-->
+                                                    <div align="center" class="margintop2">
+                                                    </div>
+                                                </div>
+                                                <div class="detailIcon">
+                                                    <a class="cursorPointer viewArticle" alt="View"  title="View Article" target="_blank" id="aShowPQ_@item.ID" href="@(string.Format(System.Configuration.ConfigurationManager.AppSettings["PQArticleUrl"], pqModel.EncryptedID))"></a>
+                                                </div>
+                                                <div class="detailIcon">
+                                                    <!--Padding on the right-->
+                                                    <div align="center" class="margintop2">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>                
+
+                                                    break;
+
+                                                case CommonFunctions.CategoryType.FB:
+                                                case CommonFunctions.CategoryType.IG:
+                                                    IQAgent_SMResultsModel fbModel = item.MediaData as IQAgent_SMResultsModel;
+                                                    string imgName = categoryType == CommonFunctions.CategoryType.FB ? "25facebook.png" : "instagram.png";
+                                                    string imgTooltip = categoryType == CommonFunctions.CategoryType.FB ? CommonFunctions.GetEnumDescription(CommonFunctions.CategoryType.FB) : CommonFunctions.GetEnumDescription(CommonFunctions.CategoryType.IG);
+                                                    string contentClass = categoryType == CommonFunctions.CategoryType.IG ? "FeedsContentVideo" : "FeedsContentNone";
+                                                    string videoSpacer = categoryType == CommonFunctions.CategoryType.IG ? "FeedsVideoSpacer" : string.Empty;
+
+                                                    string fLikes = string.Format("{0:N0}", fbModel.ArticleStats.Likes);
+                                                    string sLikes = string.Empty;
+                                                    string fSource = string.Empty;
+                                                    string sSource = string.Empty;
+                                                    
+                                                    if (fbModel.ArticleStats.Likes >= Billion)
+                                                    {
+                                                        sLikes = string.Format("{0:F1} bil", fbModel.ArticleStats.Likes / BillionD);
+                                                    }
+                                                    else if (fbModel.ArticleStats.Likes >= Million)
+                                                    {
+                                                        sLikes = string.Format("{0:F1} mil", fbModel.ArticleStats.Likes / MillionD);
+                                                    }
+                                                    else
+                                                    {
+                                                        sLikes = fLikes;
+                                                    }
+
+                                                    string fComments = string.Format("{0:N0}", fbModel.ArticleStats.Comments);
+                                                    string sComments = string.Empty;
+
+                                                    if (fbModel.ArticleStats.Comments >= Billion)
+                                                    {
+                                                        sComments = string.Format("{0:F1} bil", fbModel.ArticleStats.Comments / BillionD);
+                                                    }
+                                                    else if (fbModel.ArticleStats.Comments >= Million)
+                                                    {
+                                                        sComments = string.Format("{0:F1} mil", fbModel.ArticleStats.Comments / MillionD);
+                                                    }
+                                                    else
+                                                    {
+                                                        sComments = fComments;
+                                                    }
+
+                                                    string fShares = string.Format("{0:N0}", fbModel.ArticleStats.Shares);
+                                                    string sShares = string.Empty;
+
+                                                    if (fbModel.ArticleStats.Shares >= Billion)
+                                                    {
+                                                        sShares = string.Format("{0:F1} bil", fbModel.ArticleStats.Shares / BillionD);
+                                                    }
+                                                    else if (fbModel.ArticleStats.Shares >= Million)
+                                                    {
+                                                        sShares = string.Format("{0:F1} mil", fbModel.ArticleStats.Shares / MillionD);
+                                                    }
+                                                    else
+                                                    {
+                                                        sShares = fShares;
+                                                    }
+
+                                                    if (!string.IsNullOrWhiteSpace(fbModel.HomeLink))
+                                                    {
+                                                        fSource = fbModel.HomeLink.Trim();
+
+                                                        if (fSource.Length > 23)
+                                                        {
+                                                            sSource = fSource.Substring(0, 21) + "...";
+                                                        }
+                                                        else
+                                                        {
+                                                            sSource = fSource;
+                                                        }
+                                                    }
+
+                                    <div id="divMedia_@item.ID" class="media">
+                                        <div class="MediaDate">
+                                            <div class="post-date">
+                                                <span class="month">@Month</span>
+                                                <div>
+                                                    <span class="today">@Day</span>
+                                                </div>
+                                                <span class="timeWithTimeZone">@Time @sessionInformation.TimeZone</span>
+                                            </div>
+                                        </div>
+                                        <div class="MediaTypeLogo">
+                                            <img src="~/images/MediaIcon/@imgName" title="@imgTooltip" alt="" />
+                                        </div>
+                                    @if (categoryType == CommonFunctions.CategoryType.IG)
+                                    {
+                                        <div class="float-right @videoSpacer">
+                                            <div class="FeedsVideo positionRelative float-left">
+                                                <img class="instagramIMG" src="@fbModel.ThumbUrl" />
+                                            </div>
+                                        </div>
+                                    }
+                                        <div class="@contentClass">
+                                        @{
+                                            string fbTitle = string.Empty;
+
+                                            if (Html.Raw(fbModel.Description).ToString().Trim().Length > 65)
+                                            {
+                                                fbTitle = Html.Raw(fbModel.Description).ToString().Trim().Substring(0, 62) + "...";
+                                            }
+                                            else
+                                            {
+                                                fbTitle = Html.Raw(fbModel.Description).ToString().Trim();
+                                            }
+                                        }
+                                            <div class="media-heading float-left" title="@Html.Raw(fbModel)">
+                                                <a href="@fbModel.Link" target="_blank">
+                                                    <span id="spnTitle_@item.ID">@fbTitle</span>
+                                                </a>
+                                            </div>
+                                            <div class="subheading float-left margintop1">
+                                                @item.timeDifference
+                                            </div>
+                                            <div class="clear float-left media-body">
+                                                @Html.Raw(fbModel.HighlightingText)
+                                            </div>
+                                        </div>
+                                        <div class="clear post-divider"></div>
+                                        <div class="clear margintop2 marginbottom2">
+                                            <div class="FeedsActionBarLeftDiv">
+                                                <div class="viewmore"></div>
+                                                <div class="viewlocation">
+                                                    @if (!string.IsNullOrWhiteSpace(fSource))
+                                                    {
+                                                        <div class="location-tag" title="@fSource">
+                                                            @sSource
+                                                        </div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="margintop2"></div>
+                                                    }
+                                                </div>
+                                                <div class="viewsentiment" title="Sentiment">
+                                                    <div class="sentimentLeftFloat sentiment-tag">
+                                                        <div class="divSentimentMain sentimentFont">
+                                                            <div class="divSentimentMain">
+                                                                <div class="divSentimentNeg">
+                                                                    <div style='width:@((item.NegativeSentiment * 6) > 25 ? 25 : (item.NegativeSentiment * 6))px;'>
+                                                                        @item.NegativeSentiment
+                                                                    </div>
+                                                                </div>
+                                                                <div class="divSentimentPos">
+                                                                    <div style='width:@((item.PositiveSentiment * 6) > 25 ? 25 : (item.PositiveSentiment * 6))px;'>
+                                                                        @item.PositiveSentiment
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                @if (fbModel.ArticleStats != null)
+                                                {
+                                                    <div class="viewcontentdetail">
+                                                        <div class="viewshortdetail">
+                                                            <div class="likes" title="Likes @fLikes">
+                                                                @sLikes
+                                                            </div>
+                                                        </div>
+                                                        <div class="viewshortdetail">
+                                                            <div class="comments" title="Comments @fComments">
+                                                                @sComments
+                                                            </div>
+                                                        </div>
+                                                        @if (categoryType == CommonFunctions.CategoryType.FB)
+                                                        {
+                                                            <div class="viewshortdetail">
+                                                                <div class="shares" title="Shares @fShares">
+                                                                    @sShares
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                }
+                                            </div>
+                                            <div class="FeedsActionBarRightDiv minWidth52IE8">
+                                                <div class="detailIcon">
+                                                    <!--Padding Save Article-->
+                                                    <div align="center" class="margintop2">
+                                                    </div>
+                                                </div>
+                                                <div class="detailIcon">
+                                                    <a class="cursorPointer viewArticle" alt="View"  title="View Article" target="_blank" href="@fbModel.Link"></a>
+                                                </div>
+                                                <div class="detailIcon">
+                                                    <!--Padding on the right-->
+                                                    <div align="center" class="margintop2">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                                    break;
+                                            }
+                                        }
+                                <br />
+                                    }
+                                }
+
+                            }
+                        </div>
+                    </div>
+
+                    }
+                    catch (Exception exception)
+                    {
+                        IQMedia.WebApplication.Utility.CommonFunctions.WriteException(exception);
+                    <div style="color: #ff0000; padding: 25px;">
+                        An error occurred, please try again
+                    </div>
+                    }
+                }
+                else
+                {
+                    <div style="color: #ff0000; padding: 25px;">
+                        @if (ViewBag.IsInvalidID)
+                        {
+                            <text> Invalid/Missing ID </text>
+                        }
+                        @if (ViewBag.IsError)
+                        {
+                            <text> An error occurred, please try again </text>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    @Html.Partial("~/Views/Shared/_Footer.cshtml")
+</body>
+<!-- Le javascript
+    ================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="~/Scripts/Bootstrap/bootstrap-modal.js?v=1.0" type="text/javascript"></script>
+<script language="javascript" type="text/javascript">
+
+    function ShowLoading() {
+        var loadingHTML = '<div id="divLoading" class="loadingdiv"><span>Loading<img src=\'../images/1.gif\' /></span></div>';
+        $(document.body).append(loadingHTML);
+        $("#divLoading").fadeIn(500);
+    }
+    function HideLoading() {
+        $("#divLoading").remove();
+    }
+    function EnableDisableButton(status) {
+        if (status) {
+            $("#btnDownloadPDF").removeAttr("disabled");
+            $("#btnDownloadCSV").removeAttr("disabled");
+        }
+        else {
+            $("#btnDownloadPDF").prop("disabled", "disabled");
+            $("#btnDownloadCSV").prop("disabled", "disabled");
+        }
+    }
+
+
+    function DownloadPDFIQAgentReport(reportguid) {
+
+        var jsonPostData = { p_ReportGuid: reportguid }
+
+        EnableDisableButton(false);
+        $.ajax({
+            url: "/Report/GenerateReportPDF/",
+            contentType: "application/json; charset=utf-8",
+            type: "post",
+            dataType: "json",
+            data: JSON.stringify(jsonPostData),
+            success: function (result) {
+                if (result.isSuccess) {
+                    window.location = "/Report/DownloadPDFFile/";
+                }
+                else {
+                    ShowNotification("Some error occurred while downloading file. Try again later");
+                }
+                EnableDisableButton(true);
+            },
+            error: function (a, b, c) {
+                EnableDisableButton(true);
+                ShowNotification("Some error occurred while processing request...");
+            }
+        });
+    }
+
+    function DownloadCSVIQAgentReport(reportguid) {
+
+        var jsonPostData = { p_ReportGuid: reportguid }
+        EnableDisableButton(false);
+        $.ajax({
+            url: "/Report/GenerateReportCSV/",
+            contentType: "application/json; charset=utf-8",
+            type: "post",
+            dataType: "json",
+            data: JSON.stringify(jsonPostData),
+            success: function (result) {
+                EnableDisableButton(true);
+                if (result.isSuccess) {
+                    window.location = "/Report/DownloadCSVFile/";
+                }
+                else {
+                    ShowNotification("Some error occurred while downloading file. Try again later");
+                }
+            },
+            error: function (a, b, c) {
+                EnableDisableButton(true);
+                ShowNotification("Some error occurred while processing request...");
+            }
+        });
+    }
+</script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        if (screen.height >= 768) {
+            $('#divResults').css({ 'height': documentHeight - 250 });
+        }
+    });
+
+
+    $(window).resize(function () {
+        if (screen.height >= 768) {
+            $('#divResults').css({ 'height': documentHeight - 250 });
+        }
+    });
+        
+</script>
+</html>

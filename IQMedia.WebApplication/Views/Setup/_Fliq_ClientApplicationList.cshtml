@@ -1,0 +1,109 @@
+﻿@model List<IQMedia.Model.fliQ_ClientApplicationModel>
+<style type="text/css">
+    .topResult
+    {
+        font-size: 11px;
+        border: 1px solid #D8D8D8;
+    }
+    
+    .topResult tr th
+    {
+        padding: 4px;
+        white-space: nowrap;
+    }
+</style>
+<div class="span10 float-left" style="padding-bottom: 10px;">
+    <div style="padding-top: 5px;" class="span2 float-left">
+        Search
+    </div>
+    <div class="span5 float-left">
+        <input type="text" id="txtFliq_ClientApplication" name="txtFliq_ClientApplication" class="txtwidth90per"
+            placeholder="Search Application" />
+    </div>
+    <div style="padding-bottom: 10px;" class="float-left">
+        <input type="button" style="margin: 0px;" class="button" onclick="SearchFliq_ClientApplication();"
+            value="Search" id="btnSearchFliq_ClientApplication" />
+        <input type="button" style="margin: 0px;" class="button" onclick="ClearSearchFliq_ClientApplication();"
+            value="Clear Search" id="btnClearSearchFliq_ClientApplication" />
+    </div>
+</div>
+<div style="clear: both;">
+</div>
+@if (Model != null && Model.Count > 0)
+{
+    <div id="divFliq_ClientApplicationPreviousNext" class="nextprevdiv">
+        <span id="lblFliq_ClientApplicationRecords" style="float: left; padding: 5px 10px 0 0;">
+        </span><a href="#" onclick="GetClientApplication(false);" id="btnFliq_ClientApplicationPreviousPage"
+            class="nextprevbtn">
+            <img src="../../Images/prev.png" /></a> <a href="#" onclick="GetClientApplication(true);"
+                id="btnFliq_ClientApplicationNextPage" class="nextprevbtn">
+                <img src="../../Images/next.png" /></a>
+    </div>
+    <div id="divFliq_ClientApplication_ScrollContent" class="clear">
+        <div class="float-left width100p" style="padding-right: 15px; margin-bottom: 10px;">
+            <table class="topResult" width="100%" cellpadding="0" cellspacing="0" style="margin-top: 15px;">
+                @{ bool IsHeader = false; }
+                @foreach (IQMedia.Model.fliQ_ClientApplicationModel item in Model)
+                {
+                    if (!IsHeader)
+                    {
+                    <tr>
+                        @{IsHeader = true; }
+                        <th style="text-align: left;">
+                            Application Name
+                        </th>
+                        <th style="text-align: left;">
+                            App Download Location
+                        </th>
+                        <th style="text-align: left;">
+                            Default Category
+                        </th>
+                        <th style="text-align: right;">
+                            Max Video Duration<br />
+                            (Secs)
+                        </th>
+                        <th style="text-align: left;">
+                            Is Category Enabled?
+                        </th>
+                        <th style="text-align: left;">
+                            Is Active
+                        </th>
+                    </tr>
+                    }
+                    <tr>
+                        <td style="text-align: left;">
+                            @item.ApplicationDescription
+                        </td>
+                        <td style="text-align: left;">
+                            @item.DownloadPath
+                        </td>
+                        <td style="text-align: left;">
+                            @item.CategoryName
+                        </td>
+                        <td style="text-align: right;">
+                            @item.MaxVideoDuration
+                        </td>
+                        <td style="text-align: left;">
+                            @item.IsCategoryEnable
+                        </td>
+                        <td style="text-align: left;">
+                            @item.IsActive
+                        </td>
+                    </tr> 
+                }
+            </table>
+        </div>
+    </div>
+}
+else
+{
+    <table width="100%" style="text-align: center;">
+        <tr>
+            <td>
+                <span style="background: none repeat scroll 0 0 #F2F2F2; border: 1px solid #DCDCDC;
+                    margin-bottom: 10px; margin-right: 10px; padding: 3px 10px 3px 6px; position: relative;
+                    width: 300px !important;">No Results found</span>
+            </td>
+        </tr>
+    </table>
+}

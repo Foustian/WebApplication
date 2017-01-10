@@ -1,0 +1,212 @@
+﻿@{
+    ViewBag.Title = "iQ media Discovery Lite";
+    Layout = "~/Views/Shared/_IQMediaMasterInner.cshtml";
+}
+@{
+    
+    IQMedia.Model.ActiveUser sessionInformation = IQMedia.WebApplication.Utility.ActiveUserMgr.GetActiveUser();
+}
+@*<script src="../../Scripts/FusionCharts.js?v=1.0" type="text/javascript"></script>
+<script src="../../Scripts/Col2D1.js?v=1.0" type="text/javascript"></script>*@
+<script src="~/Scripts/highcharts.js?v=1.1" type="text/javascript"></script>
+<script src="~/Scripts/DiscoveryLite.js?v=1.9" type="text/javascript"></script>
+<style type="text/css">
+        .pieChartChks 
+        {
+            padding-top:59px;
+        }
+        
+        .pieChartChks li
+        {
+            padding-bottom:3px;
+        }
+    
+        .pieChartChks input
+        {
+            margin-top:-2px;
+            margin-right:3px
+        }
+        
+        .hiddenPieChart
+        {
+            height:0px;
+            overflow:hidden;
+        }
+</style>
+<div class="container container_custom">
+    <div class="row-fluid" id="divRowFluid">
+        @if (ViewBag.IsSuccess)
+        {
+            <div class="span3 minheight500 borderRight" id="divQuickFeedFinder">
+                <div class="well sidebar-nav">
+                    <h5>
+                        Discovery
+                    </h5>
+                    <ul id="ulSearchTerm" class="searchTermUL">
+                    </ul>
+                    <div>
+                        <div onclick="AddNewSearchTermTextBox();" class="cursorPointer maxWidth140 float-left"
+                            id="divAddItem">
+                            <img id="imgAddItem" src="../../Images/Plus.png" alt="" class="marginRight10" />Add Search Term</div>
+                        <div class="float-right displayNone" id="divDiscoveryClearAll">
+                            <a data-original-title="" onclick="ClearSearch();" id="aClearSearch" class="cursorPointer">
+                                <img src="../../Images/clear.png" alt="Clear" id="imgClearSearch" class="float-left marginRight9"><span>Clear
+                                    All</span></a></div>
+                    </div>
+                    <ul aria-labelledby="drop2" role="menu" class="dropdown-menu sideMenu" id="ulNarrowResult">
+                        <li role="presentation" class="cursorPointer"><a tabindex="-1" role="menuitem"></a>
+                        </li>
+                    </ul>
+                    <br />
+                    <br />
+                    <div class="clear">
+                    </div>
+                    <h5>
+                        Date Range</h5>
+                    <input type="text" id="dpFrom" readonly="readonly" class="date" /><img class="ui-datepicker-trigger"
+                        src="../images/calender.png" alt="..." title="...">
+                    <input type="text" id="dpTo" readonly="readonly" class="date" /><img class="ui-datepicker-trigger"
+                        src="../images/calender.png" alt="..." title="...">
+                    <br />
+                    <br />
+                    <h5>
+                        Narrow Result</h5>
+                    <div class="navbar minHeight120">
+                        <ul role="navigation" class="nav floatNone sideMenuUl width100p">
+                            <li class="dropdown nmedium"><a data-toggle="dropdown" class="dropdown-toggle" role="button"
+                                id="A1" href="#">Medium<span class="spnArrow">&nbsp;</span></a>
+                                <ul aria-labelledby="drop2" role="menu" class="dropdown-menu sideMenu" id="ulMedium">
+                                    <li role="presentation"><a tabindex="-1" role="menuitem">No Filter Available</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown market"><a data-toggle="dropdown" class="dropdown-toggle" role="button"
+                                id="A1" href="#">TV Market<span class="spnArrow">&nbsp;</span></a>
+                                <ul aria-labelledby="drop2" role="menu" class="dropdown-menu sideMenu" id="ulTVMarket">
+                                    <li role="presentation"><a tabindex="-1" role="menuitem">No Filter Available</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                    <br />
+                   @* <div id="divSavedSearch" class="paddingBottom10">
+                        <!--<img alt="" id="imgSaveSearchLoading" class="marginRight10" src="../../Images/Loading_1.gif" />-->
+                        <div class="discoverySavedSearchHeader">
+                            <h5>
+                                Saved Search</h5>
+                        </div>
+                        <div class="float-right">
+                            <span class="float-left" style="padding: 5px 10px 0 0;" id="spnSavedSearchRecordDetail">
+                                0 of 0</span>
+                        </div>
+                        <br />
+                        <br />                        
+                    </div>
+                    <div class="clear" align="right">
+                        <a onclick="ShowSaveSearchDiscovery();" id="aSaveSearch" class="cursorPointer">
+                            <img src="../../Images/Save_Floppy.png" alt="Save Search" id="imgSaveSearch" class="marginRight9" /><span>Save
+                                New Search</span></a></div>*@
+                </div>
+            </div>
+            <div class="span9 span9-custom borderWidth0imp">
+                <div class="row-fluid row-custom noBorder">
+                    @*<div class="float-right">
+                    <img id="imgChartResult" width="43" height="27" src="../../Images/Result.png" onclick="ToggleChartResult();"
+                        class="cursorPointer" style="height: 27px;" />
+                </div>*@
+                    <div id="divActiveFilter" class="row-fluid filter">
+                    </div>
+                    <div id="divChartMain">
+                        <div id="divChartActionHeader" class="float-right marginLeft10 bottomBorderColor width100p DiscoveryChartHeaderMainDiv">
+                            <div id="divHeader" class="pull-left DiscoveryHeader">
+                                <b>Discovery Overview</b></div>
+                            <div class="float-right dashboardHeader" id="divDashboardUtility">
+                                <div class="float-left displayNone" id="divDiscoveryUtility">
+                                    <img src="../../Images/Email.png" alt="Email" title="Email" class="cursorPointer"
+                                        onclick="ShowDashboardEmailPopup();" />
+                                    <img src="../../Images/pdf.png" alt="Save as PDF" title="Save as PDF" class="cursorPointer" onclick="GenerateDashboardPDF();" /><span
+                                        style="color: #3C3C3E;">|</span>
+                                </div>
+                                <img src="../../Images/Result.png" alt="" title="Switch To Results" onclick="ToggleChartResult();" class="cursorPointer float-right"
+                                    id="imgResult" />
+                            </div>
+                        </div>
+                        @*<div class="pull-left paddingLeft20p dashboardHeader displayNone" id="divDiscoveryUtility">
+                        <a href="#" onclick="ShowDashboardEmailPopup();">Email</a>|<a href="javascript:void();"
+                            onclick="GenerateDashboardPDF();">Save as PDF</a></div>*@
+                        <div class="float-right" id="divChartTotal">
+                        </div>
+                        <div id="divNoDataChart" class="clear">
+                        </div>
+                        <div id="divColumnChart" class="float-left NoDataDiv">
+                        </div>
+                        <div id="divLineChart" class="float-left">
+                        </div>
+                        <div id="divPieChartSearchTerm" class="clear width100p" style="display:none;">
+                            <div id="divPieChartStatic" class="float-left" style="margin-left:140px;">
+                            </div>
+                            <div id="divPieChartStaticPDF" class="float_left hiddenPieChart" style="margin-left:140px;">
+                            </div>
+                            <div id="divPieChartDynamic" class="float-left">
+                            </div>
+                            <div id="divPieChartDynamicPDF" class="float_left hiddenPieChart">
+                            </div>
+                            <div id="divPieChartChks" class="float-left pieChartChks">
+                                <ul>
+                                    @if (sessionInformation.Isv4TV)
+                                    {
+                                        <li><input type="checkbox" id="chkTV" name="chkPieChartMedium" value="TV" checked="checked" />@IQMedia.Shared.Utility.CommonFunctions.GetEnumDescription(IQMedia.Shared.Utility.CommonFunctions.CategoryType.TV)</li>
+                                    }
+                                    @if (sessionInformation.Isv4NM)
+                                    {
+                                        <li><input type="checkbox" id="chkNM" name="chkPieChartMedium" value="NM" checked="checked" />@IQMedia.Shared.Utility.CommonFunctions.GetEnumDescription(IQMedia.Shared.Utility.CommonFunctions.CategoryType.NM)</li>
+                                    }
+                                    @if (sessionInformation.Isv4TW)
+                                    {
+                                        <li><input type="checkbox" id="chkTW" name="chkPieChartMedium" value="TW" checked="checked" />@IQMedia.Shared.Utility.CommonFunctions.GetEnumDescription(IQMedia.Shared.Utility.CommonFunctions.CategoryType.TW)</li>
+                                    }
+                                    @if (sessionInformation.Isv4SM)
+                                    {
+                                        <li><input type="checkbox" id="chkBlog" name="chkPieChartMedium" value="Blog" />@IQMedia.Shared.Utility.CommonFunctions.GetEnumDescription(IQMedia.Shared.Utility.CommonFunctions.CategoryType.Blog)</li>
+                                        <li><input type="checkbox" id="chkForum" name="chkPieChartMedium" value="Forum" />@IQMedia.Shared.Utility.CommonFunctions.GetEnumDescription(IQMedia.Shared.Utility.CommonFunctions.CategoryType.Forum)</li>
+                                        <li><input type="checkbox" id="chkSocialMedia" name="chkPieChartMedium" value="SocialMedia" />@IQMedia.Shared.Utility.CommonFunctions.GetEnumDescription(IQMedia.Shared.Utility.CommonFunctions.CategoryType.SocialMedia)</li>
+                                    }
+                                    @if (sessionInformation.Isv4PQ)
+                                    {
+                                        <li><input type="checkbox" id="chkPQ" name="chkPieChartMedium" value="PQ" checked="checked" />@IQMedia.Shared.Utility.CommonFunctions.GetEnumDescription(IQMedia.Shared.Utility.CommonFunctions.CategoryType.PQ)</li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                        <div id="divPieChartMedium" class="paddingTop30 float-left width100p">
+                            <div id="divPieChartHeader" class="discoveryTabParent displayNone">
+                            </div>
+                            <div id="divPieChartData" class="clear paddingTop20" style="display: none;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="mainerrorDiv">@IQMedia.WebApplication.Config.ConfigSettings.Settings.PageLoadErrorMessage</div>
+        }
+    </div>
+</div>
+<div id="divPieChartText" style="position:absolute; left:0px; top:0px;"></div>
+<div id="divMessagePopup" class="modal fade hide resizable modalPopupDiv">
+    <div class="closemodalpopup">
+        <img id="imgMessagePopup" src="~/images/close-icon.png" alt="close" class="popup-top-close"
+            onclick="CancelMessagePopup();" /></div>
+    <div style="padding: 20px;">
+        <div class="modalpopheadertitle">
+            Discovery Lite</div>
+        <div class="divconfirmationpop-content" id="divMessageContent">
+        </div>
+        <div class="divconfirmationpop-buttons">
+            <button type="button" button-type="ok" id="btnMessageOk" onclick="CancelMessagePopup()"
+                class="button">
+                OK</button>
+        </div>
+    </div>
+</div>

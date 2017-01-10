@@ -1,0 +1,48 @@
+﻿@model IQMedia.Model.CustomCategoryModel
+<form class="form-horizontal">
+<div style="padding-bottom: 5px; border-bottom: 1px solid #dadada; margin: 1px 15px 1px 15px;
+    font-weight: bold;">
+    @if (Model.CategoryKey > 0)
+    {
+        <text>Update Category</text>
+    }
+    else
+    {
+        <text>Create Category</text>
+    }
+</div>
+<br />
+<input type="hidden" id="hdCustomCategoryKey" value="@Model.CategoryKey" />
+<div class="control-group">
+    <label class="control-label" for="txtTitle">
+        Category Name</label>
+    <div class="controls">
+        @Html.TextBox("txtCategoryName", Model.CategoryName, new { @placeholder = "Category Name", @style = "width:500px;" })
+        <span class="help-inline" id="spanCategoryName" style="color: #FF0000; display: none;">
+        </span>
+    </div>
+</div>
+<div class="control-group">
+    <label class="control-label" for="txtDescription">
+        Category Description</label>
+    <div class="controls">
+        @Html.TextArea("txtCategoryDescription", Model.CategoryDescription, 4, 50, new { placeholder = "Category Description", style = "width:500px;" })
+    </div>
+</div>
+<div class="control-group">
+    <div class="controls">
+        <button type="button" id="btnCancel" onclick="CancelCustomCategoryAddEditPopup();" class="cancelButton">
+            Cancel</button>
+        <button type="button" id="btnUpdate" onclick="SaveCustomCategory();" class="button">
+            @if (Model.CategoryKey > 0)
+            {
+                <text>Update</text>
+            }
+            else
+            {
+                <text>Create</text>
+            }
+        </button>
+    </div>
+</div>
+</form>

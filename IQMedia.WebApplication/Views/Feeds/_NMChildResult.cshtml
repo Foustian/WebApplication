@@ -1,0 +1,414 @@
+﻿@using IQMedia.Model;
+@using IQMedia.Shared.Utility;
+@using IQMedia.WebApplication.Models.TempData;
+@using IQCommon.Model;
+@model IQAgent_MediaResultsModel
+@if (Model != null)
+{
+    ActiveUser sessioninfo = IQMedia.WebApplication.Utility.ActiveUserMgr.GetActiveUser();
+    FeedsTempData feedsTempData = ((IQMedia.WebApplication.Controllers.FeedsController)this.ViewContext.Controller).GetTempData();
+    IQAgent_NewsResultsModel iQAgent_NewsResultsModel = (IQAgent_NewsResultsModel)Model.MediaData;
+    IQ_MediaTypeModel objMediaType = sessioninfo.MediaTypes.FirstOrDefault(s => s.SubMediaType == Model.CategoryType && s.TypeLevel == 2);
+    int wordsBeforeSpan = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["HighlightWordsBeforeSpan"]);
+    int wordsAfterSpan = Convert.ToInt32(System.Configuration.ConfigurationManager.AppSettings["HighlightWordsAfterSpan"]);
+    string separator = "...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;...";
+    string highlightKeyword = "span";
+
+    string maxNegSentmtWidth = string.Empty;
+    string maxPosSentmtWidth = string.Empty;
+    bool useProminenceMediaValue = feedsTempData.UseProminenceMediaValue == true;
+
+    Decimal? localAdShare = null;
+    Decimal? childLocalAdShare = null;
+    string sLocalAudience = string.Empty;
+    string fLocalAudience = string.Empty;
+    string sLocalMediaValue = string.Empty;
+    string fLocalMediaValue = string.Empty;
+
+    int Billion = 1000000000;
+    decimal BillionD = 1000000000;
+    int Million = 1000000;
+    decimal MillionD = 1000000;
+
+    string highlightedNewsText = string.Empty;
+    string HighlightedNewsOutput = string.Empty;
+    string highlightedOriginalText = string.Empty;
+
+    if (iQAgent_NewsResultsModel.HighlightedNewsOutput != null && iQAgent_NewsResultsModel.HighlightedNewsOutput.Highlights != null)
+    {
+        highlightedOriginalText = string.Join(" ", iQAgent_NewsResultsModel.HighlightedNewsOutput.Highlights.Select(c => c));
+        HighlightedNewsOutput = IQMedia.Shared.Utility.CommonFunctions.GetWordsAround(highlightedOriginalText, highlightKeyword, wordsBeforeSpan, wordsAfterSpan, separator);
+
+        if (string.IsNullOrWhiteSpace(HighlightedNewsOutput))
+        {
+            HighlightedNewsOutput = highlightedOriginalText;
+        }
+    }
+    if (HighlightedNewsOutput.Length > 300)
+    {
+        highlightedNewsText = HighlightedNewsOutput.Substring(0, 300);
+        highlightedNewsText = System.Text.RegularExpressions.Regex.Replace(highlightedNewsText, "(</span(?!>)|</spa(?!n>)|</sp(?!an>)|</s(?!pan>)|</(?!span>))\\Z", "</span>");
+    }
+    else
+    {
+        highlightedNewsText = HighlightedNewsOutput;
+    }
+
+    highlightedNewsText = CommonFunctions.ProcessHighlightingText(HighlightedNewsOutput, highlightedNewsText);
+
+    maxNegSentmtWidth = string.Empty;
+    if ((Model.NegativeSentiment * 6) > 25)
+    {
+        maxNegSentmtWidth = "25px";
+    }
+    else
+    {
+        maxNegSentmtWidth = Convert.ToString(Model.NegativeSentiment * 6) + "px";
+    }
+
+    if ((Model.PositiveSentiment * 6) > 25)
+    {
+        maxPosSentmtWidth = "25px";
+    }
+    else
+    {
+        maxPosSentmtWidth = Convert.ToString(Model.PositiveSentiment * 6) + "px";
+    }
+
+    if (iQAgent_NewsResultsModel.Compete_Audience.HasValue && iQAgent_NewsResultsModel.Compete_Audience > 0)
+    {
+        fLocalAudience = string.Format("{0:N0}", iQAgent_NewsResultsModel.Compete_Audience);
+
+        if (iQAgent_NewsResultsModel.Compete_Audience >= Billion)
+        {
+            sLocalAudience = string.Format("{0:F1} bil", iQAgent_NewsResultsModel.Compete_Audience / BillionD);
+        }
+        else if (iQAgent_NewsResultsModel.Compete_Audience >= Million)
+        {
+            sLocalAudience = string.Format("{0:F1} mil", iQAgent_NewsResultsModel.Compete_Audience / MillionD);
+        }
+        else
+        {
+            sLocalAudience = fLocalAudience;
+        }
+    }
+    else
+    {
+        sLocalAudience = "NA";
+    }
+
+    if (iQAgent_NewsResultsModel.IQAdShareValue.HasValue && Decimal.Compare(Convert.ToDecimal(iQAgent_NewsResultsModel.IQAdShareValue), 0M) != 0 && (useProminenceMediaValue == false || (iQAgent_NewsResultsModel.IQProminenceMultiplier != null && Decimal.Compare(Convert.ToDecimal(iQAgent_NewsResultsModel.IQProminenceMultiplier), 0M) != 0)))
+    {
+        localAdShare = useProminenceMediaValue ? (iQAgent_NewsResultsModel.IQAdShareValue.Value * iQAgent_NewsResultsModel.IQProminenceMultiplier) : iQAgent_NewsResultsModel.IQAdShareValue.Value;
+        fLocalMediaValue = string.Format("{0:N2}", localAdShare);
+
+        if (localAdShare >= BillionD)
+        {
+            sLocalMediaValue = string.Format("{0:F1} bil", localAdShare / BillionD);
+        }
+        else if (localAdShare >= MillionD)
+        {
+            sLocalMediaValue = string.Format("{0:F1} mil", localAdShare / MillionD);
+        }
+        else
+        {
+            sLocalMediaValue = fLocalMediaValue;
+        }
+    }
+    else
+    {
+        sLocalMediaValue = "NA";
+    }
+    
+    <div class="MediaDate">
+        <div class="post-date">
+            <span class="month">@Model.MediaDateTime.ToString("MMM", System.Globalization.CultureInfo.InvariantCulture)</span>
+            <div>
+                <span class="today">@Model.MediaDateTime.Day</span>
+            </div>
+            <span class="timeWithTimeZone">@Model.MediaDateTime.ToString("hh:mm tt") @sessioninfo.TimeZone</span>
+        </div>
+    </div>
+    <div class="MediaTypeLogo" align="center">
+        <img src="@objMediaType.MediaIconPath" title="@objMediaType.DisplayName" />
+    </div>
+    <div class="pull-right">
+        <input type="checkbox" onclick="CheckUncheckMasterCheckBox(this.id,'ulMediaResults','chkInputAll');" value="@Model.ID:@Model.MediaType" id="chkdivResults_@Model.ID" />
+        <input type="hidden" value="0" id="hdnParentID_@Model.ID" />
+    </div>
+    <div class="FeedsContentNone">
+        @{
+    string nmTitle = string.Empty;
+
+    if (iQAgent_NewsResultsModel.Title.Trim().Length > 65)
+    {
+        nmTitle = iQAgent_NewsResultsModel.Title.Trim().Substring(0, 62) + "...";
+    }
+    else
+    {
+        nmTitle = iQAgent_NewsResultsModel.Title.Trim();
+    }
+        }
+        <div class="media-heading float-left">           
+            @if (iQAgent_NewsResultsModel.IQLicense == 3)
+            {
+                <img src="../images/MediaIcon/LexisNexis_Small.png" title="LexisNexis(R)" alt="LexisNexis(R)" class="lexisNexisImg" />
+            }
+            <a target="_blank" title="@iQAgent_NewsResultsModel.Title.Trim()" href="@(iQAgent_NewsResultsModel.IQLicense > 0 ? Url.Action("Index", "Article", new { au = IQMedia.Shared.Utility.CommonFunctions.EncryptLicenseStringAES(sessioninfo.CustomerKey + "¶Feeds¶" + iQAgent_NewsResultsModel.Url + "&u1=cliq40&u2=" + sessioninfo.ClientID + "¶" + iQAgent_NewsResultsModel.IQLicense) }) : iQAgent_NewsResultsModel.Url)">
+                @nmTitle
+            </a>
+        </div>
+        <div class="subheading float-left margintop1" >
+            @Model.timeDifference
+        </div>
+        <div class="clear float-left media-body">
+            @Html.Raw(highlightedNewsText)
+        </div>
+    </div>
+    <div class="clear post-divider"></div>
+    <div class="clear margintop2 marginbottom2">
+        <div class="FeedsActionBarLeftDiv">
+            <div class="viewmore">
+                <a href="javascript:void(0);"  title="View More" onclick="ShowChild('@Model.ID', '@Model.CategoryType');">
+                    <img alt="" id="expand_@Model.ID" src="../images/collapse.png" />
+                </a>
+            </div>
+            <div id="divLocationSM_@Model.ID" class="viewlocation">
+                <div class="">
+                    @{
+            if (!string.IsNullOrWhiteSpace(iQAgent_NewsResultsModel.Publication))
+            {
+                            <div id="lblCompete_@Model.ID" class="location-tag" title="@iQAgent_NewsResultsModel.Publication">
+                                @{
+                if (iQAgent_NewsResultsModel.Publication.Trim().Length > 23)
+                {
+                                        @(iQAgent_NewsResultsModel.Publication.Trim().Substring(0, 21) + "...")
+                }
+                else
+                {
+                                        @iQAgent_NewsResultsModel.Publication.Trim()
+                }
+                                }
+                            </div>   
+            }
+            else
+            {
+                            <div align="center" class="margintop2"></div>
+            }
+                    }
+                </div>
+            </div>
+            <div id="divSentimentSM_@Model.ID" class="viewsentiment" title="Sentiment">
+                <div class="sentimentLeftFloat sentiment-tag">
+                    <div class="divSentimentMain sentimentFont">
+                        <div class="divSentimentNeg">
+                            <div style='width:@maxNegSentmtWidth'>
+                                @Model.NegativeSentiment
+                            </div>
+                        </div>
+                        <div class="divSentimentPos">
+                            <div style='width:@maxPosSentmtWidth'>
+                                @Model.PositiveSentiment
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @if (sessioninfo.IsCompeteData)
+            {
+                <div class="viewcontentdetail">
+                    <div class="viewshortdetail">
+                        <div class="view" title="Local Audience @fLocalAudience">
+                            @sLocalAudience
+                            @if (!string.IsNullOrWhiteSpace(iQAgent_NewsResultsModel.Compete_Result) && iQAgent_NewsResultsModel.Compete_Result.ToUpper() == "A")
+                            {
+                                <img title="Powered by Compete" class="competeIcon" src="../Images/compete.png" alt="Compete Image" />
+                            }
+                            else
+                            {
+                                <div align="center" class="margintop2"></div>
+                            }
+                        </div>
+                    </div>
+                    <div class="viewshortdetail">
+                        <div class="price" title="Local Media Value @fLocalMediaValue">
+                            @sLocalMediaValue
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="FeedsActionBarRightDiv minWidth52IE8">
+            <div class="detailIcon">
+                <a class="cursorPointer saveMedia saveArticle" title="Save Article" onclick="ShowSaveArticle(@Model.ID,this.id);return false;" target="_blank" id="aSaveNM_@Model.ID"></a>
+            </div>
+            <div class="detailIcon">
+                <a class="cursorPointer viewArticle" title="View Article" href="@(iQAgent_NewsResultsModel.IQLicense > 0 ? Url.Action("Index", "Article", new { au = IQMedia.Shared.Utility.CommonFunctions.EncryptLicenseStringAES(sessioninfo.CustomerKey + "¶Feeds¶" + iQAgent_NewsResultsModel.Url + "&u1=cliq40&u2=" + sessioninfo.ClientID + "¶" + iQAgent_NewsResultsModel.IQLicense) }) : iQAgent_NewsResultsModel.Url)" target="_blank" id="aShowNews_@Model.ID" ></a>
+            </div>
+            <div class="detailIcon">
+                <!--Padding on the right-->
+                <div align="center" class="margintop2"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="clear MediaChildContent" id="divChildMedia_@Model.ID">
+        @foreach (IQAgent_MediaResultsModel childItem in iQAgent_NewsResultsModel.ChildResults)
+        {
+            IQAgent_NewsResultsModel iQAgent_ChildNewsResultsModel = (IQAgent_NewsResultsModel)childItem.MediaData;
+            string sChildAudience = string.Empty;
+            string fChildAudience = string.Empty;
+            string sChildMediaValue = string.Empty;
+            string fChildMediaValue = string.Empty;
+
+            maxNegSentmtWidth = string.Empty;
+            if ((Model.NegativeSentiment * 6) > 25)
+            {
+                maxNegSentmtWidth = "25px";
+            }
+            else
+            {
+                maxNegSentmtWidth = Convert.ToString(Model.NegativeSentiment * 6) + "px";
+            }
+
+            if ((Model.PositiveSentiment * 6) > 25)
+            {
+                maxPosSentmtWidth = "25px";
+            }
+            else
+            {
+                maxPosSentmtWidth = Convert.ToString(Model.PositiveSentiment * 6) + "px";
+            }
+                
+            <div class="clear post-divider-dark" style="width:94%; margin-left:2%;"></div>
+            <div id="divMedia_@childItem.ID">
+                <div class="clear margintop2 marginbottom2">
+                    <div class="FeedsActionBarLeftDiv">
+                        <div class="viewmore">
+                            <div align="center" class="margintop2">
+                                @if (iQAgent_ChildNewsResultsModel.IQLicense == 3)
+                                {
+                                    <img src="../images/MediaIcon/LexisNexis_Small.png" title="LexisNexis(R)" alt="LexisNexis(R)" class="lexisNexisImg" />
+                                }
+                            </div>
+                        </div>
+                        <div class="viewlocation">
+                            <div class="">
+                                @{
+                                    if (!string.IsNullOrWhiteSpace(iQAgent_ChildNewsResultsModel.Publication))
+                                    {
+                                        <div id="lblCompete_@childItem.ID" class="location-tag" title="@iQAgent_ChildNewsResultsModel.Publication">
+                                            @{
+                                                if (iQAgent_ChildNewsResultsModel.Publication.Trim().Length > 23)
+                                                {
+                                                    @(iQAgent_ChildNewsResultsModel.Publication.Trim().Substring(0, 21) + "...")
+                                                }
+                                                else
+                                                {
+                                                    @iQAgent_ChildNewsResultsModel.Publication.Trim()
+                                                }
+                                            }
+                                        </div>   
+                                    }
+                                    else
+                                    {
+                                        <div align="center" class="margintop2"></div>
+                                    }
+                                }
+                            </div>
+                        </div>
+                        <div class="viewsentiment" title="@childItem.MediaDateTime.ToString("MM/dd/yyyy hh:mm tt") @sessioninfo.TimeZone">
+                            <div class="">
+                                @childItem.MediaDateTime.ToString("hh:mm tt") @sessioninfo.TimeZone
+                            </div>
+                        </div>
+                        @if (sessioninfo.IsCompeteData)
+                        {
+                            if (iQAgent_ChildNewsResultsModel.Compete_Audience.HasValue && iQAgent_ChildNewsResultsModel.Compete_Audience > 0)
+                            {
+                                fChildAudience = string.Format("{0:N0}", iQAgent_ChildNewsResultsModel.Compete_Audience);
+
+                                if (iQAgent_ChildNewsResultsModel.Compete_Audience >= Billion)
+                                {
+                                    sChildAudience = string.Format("{0:F1} bil", iQAgent_ChildNewsResultsModel.Compete_Audience / BillionD);
+                                }
+                                else if (iQAgent_ChildNewsResultsModel.Compete_Audience >= Million)
+                                {
+                                    sChildAudience = string.Format("{0:F1} mil", iQAgent_ChildNewsResultsModel.Compete_Audience / MillionD);
+                                }
+                                else
+                                {
+                                    sChildAudience = fChildAudience;
+                                }
+                            }
+                            else
+                            {
+                                sChildAudience = "NA";
+                            }
+
+                            if (iQAgent_ChildNewsResultsModel.IQAdShareValue.HasValue && Decimal.Compare(Convert.ToDecimal(iQAgent_ChildNewsResultsModel.IQAdShareValue), 0M) != 0 && (useProminenceMediaValue == false || (iQAgent_ChildNewsResultsModel.IQProminenceMultiplier != null && Decimal.Compare(Convert.ToDecimal(iQAgent_ChildNewsResultsModel.IQProminenceMultiplier), 0M) != 0)))
+                            {
+                                childLocalAdShare = useProminenceMediaValue ? (iQAgent_ChildNewsResultsModel.IQAdShareValue.Value * iQAgent_ChildNewsResultsModel.IQProminenceMultiplier) : iQAgent_ChildNewsResultsModel.IQAdShareValue.Value;
+                                fChildMediaValue = string.Format("{0:N2}", childLocalAdShare);
+
+                                if (childLocalAdShare >= BillionD)
+                                {
+                                    sChildMediaValue = string.Format("{0:F1} bil", childLocalAdShare / BillionD);
+                                }
+                                else if (childLocalAdShare >= MillionD)
+                                {
+                                    sChildMediaValue = string.Format("{0:F1} mil", childLocalAdShare / MillionD);
+                                }
+                                else
+                                {
+                                    sChildMediaValue = fChildMediaValue;
+                                }
+                            }
+                            else
+                            {
+                                sChildMediaValue = "NA";
+                            }
+                    
+                            <div class="viewcontentdetail">
+                                <div class="viewshortdetail">
+                                    <div class="view" title="Local Audience @fChildAudience">
+                                        @sChildAudience
+                                        @if (!string.IsNullOrWhiteSpace(iQAgent_ChildNewsResultsModel.Compete_Result) && iQAgent_ChildNewsResultsModel.Compete_Result.ToUpper() == "A")
+                                        {
+                                            <img title="Powered by Compete" class="competeIcon" src="../Images/compete.png" alt="Compete Image" />
+                                        }
+                                        else
+                                        {
+                                            <div align="center" class="margintop2"></div>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="viewshortdetail">
+                                    <div class="price" title="Local Media Value @fChildMediaValue">
+                                        @sChildMediaValue
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <div class="FeedsActionBarRightDiv minWidth52IE8">
+                        <div class="detailIcon">
+                            <a class="cursorPointer saveMedia saveArticle" title="Save Article" onclick="ShowSaveArticle(@Model.ID,this.id);return false;" target="_blank" id="aSaveNM_@Model.ID"></a>
+                        </div>
+                        <div class="detailIcon">
+                            <a class="cursorPointer viewArticle" title="View Article" href="@(iQAgent_ChildNewsResultsModel.IQLicense > 0 ? Url.Action("Index", "Article", new { au = IQMedia.Shared.Utility.CommonFunctions.EncryptLicenseStringAES(sessioninfo.CustomerKey + "¶Feeds¶" + iQAgent_ChildNewsResultsModel.Url + "&u1=cliq40&u2=" + sessioninfo.ClientID + "¶" + iQAgent_ChildNewsResultsModel.IQLicense) }) : iQAgent_ChildNewsResultsModel.Url)" target="_blank" id="aShowNews_@Model.ID" ></a>
+                        </div>
+                        <div class="detailIcon">
+                            <!--Padding on the right-->
+                            <div align="right" class="margintop2">
+                                <input type="checkbox" style="margin-top:0;" value="@childItem.ID:@childItem.MediaType" onclick="CheckUncheckMasterCheckBox(this.id,'ulMediaResults','chkInputAll');" id="chkdivChildResults_@childItem.ID"  />
+                            </div>
+                            <input type="hidden" value="@iQAgent_ChildNewsResultsModel._ParentID" id="hdnParentID_@childItem.ID" />
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

@@ -1,0 +1,29 @@
+﻿.timeshiftpg 
+{
+    border:1px solid #d8d8d8;
+}
+
+.timeshiftpg tr th, .timeshiftpg tr td 
+{
+    border-bottom:1px solid #d8d8d8;
+    padding:5px;
+} 
+
+.timeshiftpg tr th 
+{
+    background:#f4f4f4;
+    padding:7px;
+}
+.nextprevbtn
+{
+    display:none; 
+    float:left;
+    border-right:1px solid #d8d8d8;
+    border-left:1px solid #d8d8d8;
+}
+.nextprevdiv
+{
+    float:right;
+    padding-bottom:10px;
+    
+}        

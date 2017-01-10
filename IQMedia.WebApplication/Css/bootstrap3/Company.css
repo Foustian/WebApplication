@@ -1,0 +1,238 @@
+.company-banner {
+    background: url(../../Images/home_new/Company/company-had-bg.png) repeat-x center top rgba(0, 0, 0, 0);
+	
+}
+.company-iq {
+    background: url(../../Images/home_new/Careers/career-iq.png) no-repeat right top 47px rgba(0, 0, 0, 0);
+	min-height:166px;
+	vertical-align:middle
+}
+
+.hd-right-text{ color:#ee2375; font:38px/44px 'open_sansregular'; letter-spacing:1px; display:block; text-align:right; margin-top:62px; margin-bottom:40px;}
+
+.Black-box {
+    background: none repeat scroll 0 0 #000A35;
+    padding: 3px;
+    text-align: center;
+}
+.WhiteTitle{ font:22px/28px 'open_sansregular'; color: #fff; padding-top:3px;  padding-bottom: 3px; }
+.padding-small { padding-top:30px; padding-bottom:50px;}
+
+/*---28-1-15*/
+.CompanyBlueText{ color:#67b5ea; font:18px/26px 'open_sanssemibold'; }
+.CompanyGrayText{ color:#1d1d1d; font:16px/26px 'open_sansregular'; }
+
+
+.RoundMain{ text-align:inherit; position:relative; min-height:inherit; margin-bottom:25px; }
+.NTBBox{ position:relative; top:inherit; right:inherit; max-width:inherit; color:#1d1d1d; font:11px/16px 'open_sansregular'; display:block; }
+.NTBBox .NTBleft{ width:inherit; float:none; display:block; text-align:center;}
+.NTBBox .NTBleft img{ width:150px; display:inline-block;}
+.NTBBox .NTBright{ display:block; margin-left:inherit; text-align:center; opacity:0}
+.NTBBox h3{ margin-top:6px; margin-bottom:3px; color:#1d1d1d; font:16px/19px 'open_sanssemibold'; }
+.NTBYear{ color:#dcdcdc; position:relative; left:inherit; top:inherit; font:italic 26px/28px 'open_sansregular'; display:block; text-align:center; padding-right:5px;}
+
+.BMIBox{ position:relative; top:inherit; left:inherit; max-width:inherit; color:#1d1d1d; font:11px/16px 'open_sansregular'; display:block; margin-top:25px;  }
+.BMIBox .BMIright{ width:inherit; float:none; display:block; text-align:center;}
+.BMIBox .BMIright img{ width:150px; display:inline-block;}
+.BMIBox .BMIleft{ display:block; margin-right:inherit;  margin-left:inherit; text-align:center;opacity:0;}
+.BMIBox h3{ margin-top:6px; margin-bottom:3px; color:#1d1d1d; font:16px/19px 'open_sanssemibold'; }
+.BMIYear{ color:#dcdcdc; position:relative; right:inherit; top:inherit; font:italic 26px/28px 'open_sansregular'; display:block; text-align:center; padding-right:5px; }
+.BMITooltip{position: absolute; right: -90px;  top: -126px;}
+ 
+.INVBox{ position:relative; top:inherit; right:inherit; max-width:inherit; color:#1d1d1d; font:11px/16px 'open_sansregular'; display:inherit; margin-top:25px;   }
+.INVBox .INVleft{ width:inherit; float:none; display:block; text-align:center;}
+.INVBox .INVleft img{ width:150px; display:inline-block;}
+.INVBox .INVright{ display:block; margin-left:inherit; text-align:center;opacity:0;}
+.INVBox h3{ margin-top:6px; margin-bottom:3px; color:#1d1d1d; font:16px/19px 'open_sanssemibold'; }
+.INVYear{ color:#dcdcdc; position:relative; left:inherit; top:inherit; font:italic 26px/28px 'open_sansregular';  display:block; text-align:center; padding-right:5px; }
+
+.GSBox{ position:relative; top:inherit; left:inherit; max-width:inherit; color:#1d1d1d; font:11px/16px 'open_sansregular'; display:inherit; margin-top:25px;   }
+.GSBox .GSleft{ width:inherit; float:none; display:block; text-align:center;}
+.GSBox .GSleft img{ width:150px; display:inline-block;}
+.GSBox .GSright{ display:block; margin-left:inherit; margin-top:3px; text-align:center;opacity:0;}
+.GSBox h3{ margin-top:6px; margin-bottom:3px; color:#1d1d1d; font:16px/19px 'open_sanssemibold'; }
+.GSYear{ color:#dcdcdc; position:relative; left:inherit; top:inherit; font:italic 26px/28px 'open_sansregular';  display:block; text-align:center; padding-right:5px;}
+ 
+.MUOBox{ position:relative; top:inherit; right:inherit; max-width:inherit; color:#1d1d1d; font:11px/16px 'open_sansregular'; display:inherit; margin-top:25px;  }
+.MUOBox .MUOleft{ width:inherit; float:none; display:block; text-align:center;}
+.MUOBox .MUOleft img{ width:150px; display:inline-block;}
+.MUOBox .MUOright{ display:block; margin-left:inherit; margin-top:3px; text-align:center;opacity:0;}
+.MUOBox h3{ margin-top:6px; margin-bottom:3px; color:#1d1d1d; font:16px/19px 'open_sanssemibold'; }
+.MUOYear{ color:#dcdcdc; position:relative; left:inherit; top:inherit; font:italic 26px/28px 'open_sansregular';  display:block; text-align:center; padding-right:5px;}
+
+.GROWBox{ position:relative; top:inherit; left:inherit; max-width:inherit; color:#1d1d1d; font:11px/16px 'open_sansregular'; display:inherit; margin-top:25px;   }
+.GROWBox .GROWleft{ width:inherit; float:none; display:block; text-align:center;}
+.GROWBox .GROWleft img{ width:150px; display:inline-block;}
+.GROWBox .GROWright{ display:block; margin-left:inherit; margin-top:3px; text-align:center;opacity:0;}
+.GROWBox h3{ margin-top:6px; margin-bottom:3px; color:#1d1d1d; font:16px/19px 'open_sanssemibold'; }
+.GROWYear{ color:#dcdcdc; position:relative; left:inherit; top:inherit; font:italic 26px/28px 'open_sansregular'; display:block; text-align:center; padding-right:5px;}
+.GROWTooltip{position: absolute; right: -186px;  top: -79px;}
+
+
+@media (min-width: 200px) and (max-width: 640px) {
+	.company-iq {min-height:136px; background: url(../../Images/home_new/Careers/career-iq.png) no-repeat right top 10px rgba(0, 0, 0, 0);}
+	.company-in-width{ padding-left:0px; padding-right:0px;}
+	.hd-right-text{ font:25px/30px 'open_sansregular';  text-align:center; margin-top:10px;}
+	.company-lr0 { padding-left: 0px; padding-right: 0px;}
+	.Company-round-link {text-align: center; margin-top: 10px;}
+
+
+}
+@media (min-width: 640px) {
+	/*--28-01-15----*/
+.RoundMain{ text-align:center; position:relative; min-height:inherit; margin-bottom:30px;}
+.NTBBox{ position:relative; top:inherit; right:inherit; max-width:90%; display:inline-block; margin-top:30px; }
+.NTBBox .NTBleft{ width:125px; float:left; display:inherit; text-align:center;}
+.NTBBox .NTBleft img{ width:120px; display:inherit;}
+.NTBBox .NTBright{ display:block; margin-left:150px; text-align:left;opacity:0;}
+.NTBBox h3{ margin-top:0px; margin-bottom:0px; }
+
+.BMIBox{ position:relative; top:inherit; left:inherit; max-width:90%; display:inline-block; margin-top:20px;  }
+.BMIBox .BMIright{ width:125px; float:left; display:inherit; text-align:center;}
+.BMIBox .BMIright img{ width:120px; display:inherit;}
+.BMIBox .BMIleft{ display:block; margin-right:inherit; margin-left:150px; text-align:left;opacity:0;}
+.BMIBox h3{ margin-top:0px; margin-bottom:0px; }
+ 
+.INVBox{ position:relative; top:inherit; right:inherit; max-width:90%; display:inline-block; margin-top:20px;  }
+.INVBox .INVleft{ width:125px; float:left; display:inherit; text-align:center;}
+.INVBox .INVleft img{ width:120px; display:inherit;}
+.INVBox .INVright{ display:block; margin-left:150px; text-align:left;opacity:0;}
+.INVBox h3{ margin-top:0px; margin-bottom:0px; }
+
+.GSBox{ position:relative; top:inherit; left:inherit; max-width:90%; display:inline-block; margin-top:20px;  }
+.GSBox .GSleft{ width:125px; float:left; display:inherit; text-align:center;}
+.GSBox .GSleft img{ width:120px; display:inherit;}
+.GSBox .GSright{ display:block; margin-left:150px; margin-top:0px; text-align:left;opacity:0;}
+.GSBox h3{ margin-top:0px; margin-bottom:0px; }
+ 
+.MUOBox{ position:relative; top:inherit; right:inherit; max-width:90%; display:inline-block; margin-top:20px;  }
+.MUOBox .MUOleft{ width:125px; float:left; display:inherit; text-align:center;}
+.MUOBox .MUOleft img{ width:120px; display:inherit;}
+.MUOBox .MUOright{ display:block; margin-left:150px; margin-top:0px; text-align:left;opacity:0;}
+.MUOBox h3{ margin-top:0px; margin-bottom:0px;}
+
+.GROWBox{ position:relative; top:inherit; left:inherit; max-width:90%; display:inline-block; margin-top:20px;  }
+.GROWBox .GROWleft{ width:125px; float:left; display:inherit; text-align:center;}
+.GROWBox .GROWleft img{ width:120px; display:inherit;}
+.GROWBox .GROWright{ display:block; margin-left:150px; margin-top:0px; text-align:left;opacity:0;}
+.GROWBox h3{ margin-top:0px; margin-bottom:0px;}
+
+.NTBYear{ position:relative; left:inherit; padding-left:34px; top:inherit; display:block; text-align:left;}
+.BMIYear{ position:relative;left:inherit; padding-left:34px; right:inherit; top:inherit; display:block; text-align:left;}
+.INVYear{ position:relative; left:inherit; padding-left:34px; top:inherit; display:block; text-align:left;}
+.GSYear{ position:relative; left:inherit; padding-left:34px; top:inherit; display:block; text-align:left;}
+.MUOYear{ position:relative; left:inherit; padding-left:34px; top:inherit; display:block; text-align:left;}
+.GROWYear{ position:relative; left:inherit; padding-left:34px; top:inherit; display:block; text-align:left;}
+}
+
+@media (min-width: 768px) {
+	.hd-right-text{ font:30px/34px 'open_sansregular';}
+	.company-iq {background: url(../../Images/home_new/Careers/career-iq.png) no-repeat right top 31px rgba(0, 0, 0, 0);}
+	.Company-round-link {margin-top:70px;}
+	.company-lr0 { padding-left: 0px; padding-right: 0px;}
+	.company-in-width{ padding-left:0px; padding-right:0px;}
+}
+
+@media (min-width: 992px) {
+	.hd-right-text{  font:37px/44px 'open_sansregular';}
+	.company-iq { background: url(../../Images/home_new/Careers/career-iq.png) no-repeat right top 47px rgba(0, 0, 0, 0);}
+	.Company-round-link {margin-top: 80px;}
+	.company-in-width{ padding-left:0px; padding-right:0px;}
+	/*
+	.company-in-width{padding-left:18px\0; padding-right:18px\0; }
+. ie10 .company-in-width{padding-left:18px; padding-right:18px; }
+*/
+/*--28-01-15----*/
+.RoundMain{ text-align:inherit; position:relative; min-height:1111px;}
+.NTBBox{ position:absolute; top:30px; right:20px; max-width:415px; display:inherit;  margin-top:inherit; }
+.NTBBox .NTBleft{ width:154px; float:left; display:inherit; text-align:center;}
+.NTBBox .NTBleft img{ width:160px; display:inherit;}
+.NTBBox .NTBright{ display:block; margin-left:168px; text-align:left;opacity:0;}
+.NTBBox h3{ margin-top:0px; margin-bottom:0px; }
+
+.BMIBox{ position:absolute; top:150px; left:20px; max-width:387px; display:inherit; margin-top:inherit;  }
+.BMIBox .BMIright{ width:141px; float:right; display:inherit; text-align:center;}
+.BMIBox .BMIright img{ width:139px; display:inherit;}
+.BMIBox .BMIleft{ display:block; margin-right:149px;  margin-left:inherit; text-align:right;opacity:0;}
+.BMIBox h3{ margin-top:0px; margin-bottom:0px; }
+ 
+.INVBox{ position:absolute; top:300px; right:20px; max-width:366px; display:inherit; margin-top:inherit;  }
+.INVBox .INVleft{ width:125px; float:left; display:inherit; text-align:center;}
+.INVBox .INVleft img{ width:120px; display:inherit;}
+.INVBox .INVright{ display:block; margin-left:128px; text-align:left;opacity:0;}
+.INVBox h3{ margin-top:0px; margin-bottom:0px; }
+
+.GSBox{ position:absolute; top:515px; left:20px; max-width:350px; display:inherit; margin-top:inherit;  }
+.GSBox .GSleft{ width:130px; float:left; display:inherit; text-align:center;}
+.GSBox .GSleft img{ width:125px; display:inherit;}
+.GSBox .GSright{ display:block; margin-left:131px; margin-top:62px; text-align:left;opacity:0;}
+.GSBox h3{ margin-top:0px; margin-bottom:0px; }
+ 
+.MUOBox{ position:absolute; top:545px; right:89px; max-width:395px; display:inherit; margin-top:inherit;  }
+.MUOBox .MUOleft{ width:163px; float:left; display:inherit; text-align:center;}
+.MUOBox .MUOleft img{ width:160px; display:inherit;}
+.MUOBox .MUOright{ display:block; margin-left:168px; margin-top:20px; text-align:left;opacity:0;}
+.MUOBox h3{ margin-top:0px; margin-bottom:0px;}
+
+.GROWBox{ position:absolute; top:790px; left:20px; max-width:490px; display:inherit; margin-top:inherit;  }
+.GROWBox .GROWleft{ width:130px; float:left; display:inherit; text-align:center;}
+.GROWBox .GROWleft img{ width:195px; display:inherit;}
+.GROWBox .GROWright{ display:block; margin-left:202px; margin-top:88px; text-align:left;opacity:0;}
+.GROWBox h3{ margin-top:0px; margin-bottom:0px;}
+
+.NTBYear{ position:absolute; left:-47px; top:0px; display:inherit; text-align:inherit;  padding-left:inherit;}
+.BMIYear{ position:absolute; right:-39px; top:-9px; display:inherit; text-align:right;  padding-left:inherit;}
+.INVYear{ position:absolute; left:84px; top:-27px; display:inherit; text-align:inherit;  padding-left:inherit;}
+.GSYear{ position:absolute; left:-20px; top:-27px; display:inherit; text-align:inherit;  padding-left:inherit;}
+.MUOYear{ position:absolute; left:172px; top:-14px; display:inherit; text-align:inherit;  padding-left:inherit;}
+.GROWYear{ position:absolute; left:210px; top:59px; display:inherit; text-align:inherit;  padding-left:inherit;}
+
+}
+@media (min-width: 1200px) {
+/*--28-01-15----*/
+.RoundMain{ text-align:inherit; position:relative; min-height:1111px;}
+.NTBBox{ position:absolute; top:30px; right:20px; max-width:452px; display:inherit;  margin-top:inherit; }
+.NTBBox .NTBleft{ width:200px; float:left; display:inherit; text-align:center;}
+.NTBBox .NTBleft img{ width:185px; display:inherit;}
+.NTBBox .NTBright{ display:block; margin-left:200px; text-align:left;opacity:0;}
+.NTBBox h3{ margin-top:0px; margin-bottom:0px; }
+
+.BMIBox{ position:absolute; top:150px; left:20px; max-width:414px; display:inherit; margin-top:inherit;  }
+.BMIBox .BMIright{ width:152px; float:right; display:inherit; text-align:center;}
+.BMIBox .BMIright img{ width:160px; display:inherit;}
+.BMIBox .BMIleft{ display:block; margin-right:168px;  margin-left:inherit; text-align:right;opacity:0;}
+.BMIBox h3{ margin-top:0px; margin-bottom:0px; }
+ 
+.INVBox{ position:absolute; top:300px; right:20px; max-width:385px; display:inherit; margin-top:inherit;  }
+.INVBox .INVleft{ width:152px; float:left; display:inherit; text-align:center;}
+.INVBox .INVleft img{ width:145px; display:inherit;}
+.INVBox .INVright{ display:block; margin-left:161px; text-align:left;opacity:0;}
+.INVBox h3{ margin-top:0px; margin-bottom:0px; }
+
+.GSBox{ position:absolute; top:515px; left:20px; max-width:350px; display:inherit; margin-top:inherit;  }
+.GSBox .GSleft{ width:130px; float:left; display:inherit; text-align:center;}
+.GSBox .GSleft img{ width:125px; display:inherit;}
+.GSBox .GSright{ display:block; margin-left:142px; margin-top:70px; text-align:left;opacity:0;}
+.GSBox h3{ margin-top:0px; margin-bottom:0px; }
+ 
+.MUOBox{ position:absolute; top:545px; right:145px; max-width:465px; display:inherit; margin-top:inherit;  }
+.MUOBox .MUOleft{ width:188px; float:left; display:inherit; text-align:center;}
+.MUOBox .MUOleft img{ width:185px; display:inherit;}
+.MUOBox .MUOright{ display:block; margin-left:202px; margin-top:30px; text-align:left;opacity:0;}
+.MUOBox h3{ margin-top:0px; margin-bottom:0px;}
+
+.GROWBox{ position:absolute; top:820px; left:20px; max-width:490px; display:inherit; margin-top:inherit;  }
+.GROWBox .GROWleft{ width:130px; float:left; display:inherit; text-align:center;}
+.GROWBox .GROWleft img{ width:225px; display:inherit;}
+.GROWBox .GROWright{ display:block; margin-left:241px; margin-top:107px; text-align:left;opacity:0;}
+.GROWBox h3{ margin-top:0px; margin-bottom:0px;}
+
+.NTBYear{ position:absolute; left:-40px; padding-left:inherit; top:8px; display:inherit; text-align:left;}
+.BMIYear{ position:absolute; right:-70px; padding-left:inherit; top:25px; display:inherit; text-align:right;}
+.INVYear{ position:absolute; left:100px; padding-left:inherit; top:-27px; display:inherit; text-align:left;}
+.GSYear{ position:absolute; left:-71px; padding-left:inherit; top:56px; display:inherit; text-align:inherit;}
+.MUOYear{ position:absolute; left:203px; padding-left:inherit; top:-4px; display:inherit; text-align:inherit;}
+.GROWYear{ position:absolute; left:242px; padding-left:inherit; top:75px; display:inherit; text-align:inherit;}
+
+}
+

@@ -1,0 +1,9 @@
+.iv-f{text-align:center;}
+
+.iv-f-img{height:134px;}
+
+.iv-f-img > span{height:100%; vertical-align:bottom; display:inline-block;}
+
+.iv-f-img > img{vertical-align:bottom;}
+
+.iv-f-lbl{margin-top:10px;font-size:25px;}

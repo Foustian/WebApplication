@@ -1,0 +1,102 @@
+﻿@model List<IQMedia.Model.IQClient_UGCMapModel>
+
+<style type="text/css">
+    .topResult
+    {
+        font-size: 11px;
+        border: 1px solid #D8D8D8;
+    }
+    
+    .topResult tr th
+    {
+        padding: 4px;
+    }
+    
+    .topResult tr th, .topResult tr td
+    {
+        padding: 5px 2px;
+    }
+</style>
+<div style="clear: both;">
+</div>
+@if (Model != null && Model.Count > 0)
+{
+    <div id="divClient_UGCMap_ScrollContent" >
+        <div class="float-left" style="padding-right: 15px;margin-bottom:10px;width:100%;">
+            <table class="topResult" width="100%" cellpadding="0" cellspacing="0" style="margin-top: 15px;">
+                @{ bool IsHeader = false; }
+                @foreach (IQMedia.Model.IQClient_UGCMapModel item in Model)
+                {
+                    if (!IsHeader)
+                    {
+                    <tr>
+                        @{IsHeader = true; }
+                        <th style="text-align: center; width: 5%">
+                        </th>
+                        <th style="text-align: left;">
+                            Client Name
+                        </th>
+                        <th style="text-align: left;">
+                            Source ID
+                        </th>
+                        <th style="text-align: left;">
+                            Title
+                        </th>
+                        <th style="text-align: left;">
+                            Broadcast Type
+                        </th>
+                        <th style="text-align: left;">
+                            Broadcast Location
+                        </th>
+                        <th style="text-align: left;">
+                            Auto Clip Status
+                        </th>
+                        <th style="text-align: right;">
+                            Is Active
+                        </th>
+                    </tr>
+                    }
+                    <tr>
+                        <td style="text-align: center;">
+                            <a href="javascript:void(0);" onclick="EditClientUGCSettings(@item.IQClient_UGCMapKey)" >
+                                Edit</a>
+                        </td>
+                        <td style="text-align: left;">
+                            @item.ClientName
+                        </td>
+                        <td style="text-align: left;">
+                            @item.SourceID
+                        </td>
+                        <td style="text-align: left;">
+                            @item.Title
+                        </td>
+                        <td style="text-align: left;">
+                            @item.BroadcastType
+                        </td>
+                        <td style="text-align: left;">
+                            @item.BroadcastLocation
+                        </td>
+                        <td style="text-align: left;">
+                            @item.AutoClip_Status
+                        </td>
+                        <td style="text-align: right;">
+                            @item.IsActive
+                        </td>
+                    </tr> 
+                }
+            </table>
+        </div>
+    </div>
+}
+else
+{
+    <table width="100%" style="text-align: center;">
+        <tr>
+            <td>
+                <span style="background: none repeat scroll 0 0 #F2F2F2; border: 1px solid #DCDCDC;
+                    margin-bottom: 10px; margin-right: 10px; padding: 3px 10px 3px 6px; position: relative;
+                    width: 300px !important;">No Results found</span>
+            </td>
+        </tr>
+    </table>
+}

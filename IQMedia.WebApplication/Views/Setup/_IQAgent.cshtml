@@ -1,0 +1,72 @@
+﻿@model List<IQMedia.Model.IQAgent_SearchRequestModel>
+<script language="javascript" type="text/javascript">
+    $("#divSetupIQAgentSearchRequestList_ScrollContent").css("height", documentHeight - 150);
+    $("#divSetupIQAgentSearchRequestList_ScrollContent").mCustomScrollbar({
+        advanced: {
+            updateOnContentResize: true,
+            autoScrollOnFocus: false
+        }
+    });
+</script>
+<style type="text/css">
+    .suspended
+    {
+        opacity:0.5;
+    }
+</style>
+<div style="margin-top: 10px; margin-bottom: 20px; text-align: right">
+    <a href="javascript:void(0);" style="margin-right: 10px;" onclick="ShowIQAgentSetupAddEditPopup(0);">
+        Create Agent</a>
+</div>
+<div id="divSetupIQAgentSearchRequestList_ScrollContent">
+    <div style="padding-right: 15px;">
+        @foreach (IQMedia.Model.IQAgent_SearchRequestModel item in Model)
+        {
+            <div class="media" id="divIQAgentSearchRequest_@item.ID">
+                <div id="divName_@(item.ID)" class='pull-left maxWidth85 @(item.IsActive==2?"suspended":"")'>
+                    <div>
+                        <h4 class="media-heading">
+                            <a href="javascript:void(0);" onclick="ShowIQAgentSetupAddEditPopup('@item.ID')">@item.QueryName</a></h4>
+                    </div>
+                </div>
+                <div class="pull-right">
+                </div>
+                <div class="clear">
+                    <div id="divInfo_@(item.ID)" class='pull-left marginright35 marginRight0 @(item.IsActive==2?"suspended":"")'>
+                        @* <div class="pull-left marginleft62 ">
+                    &nbsp;</div>*@
+                        <div class="pull-left marginright35">
+                            Version: @item.Query_Version
+                        </div>
+                        <div class="pull-left">
+                            Last Modified: @( item.ModifiedDate.HasValue ? item.ModifiedDate.Value.ToString("MMM dd, yyyy hh:mm:ss tt") : string.Empty)
+                        </div>
+                    </div>
+                    <div class="pull-right minWidth52IE8">
+                        <div>
+                            <a id="aNotif_@(item.ID)" href="javascript:void(0);" onclick="DisplayIQNotificationSettings('@item.ID')" title="Notification" class='@(item.IsActive==2?"displayNone":"")'>
+                                <img src="~/Images/help_icon.png" alt="Notification" /></a>
+                            <a id="aEdit_@(item.ID)" href="javascript:void(0);" onclick="ShowIQAgentSetupAddEditPopup('@item.ID')" title="Edit" class='@(item.IsActive==2?"displayNone":"")'>
+                                <img src="~/Images/edit_icon.png" alt="Edit" /></a>
+                            @if (!item.IsRestrictedMedia)
+                            {
+                                <a href="javascript:void(0);" onclick="DeleteIQAgent(@item.ID,'@item.QueryName.Replace("'", "\\\'")')" title="Delete">
+                                    <img src="~/Images/delete_icon.png" alt="Delete" /></a>
+                            }
+                            @if (!item.IsRestrictedMedia && item.IsActive==1)
+                            {
+                                <a href="javascript:void(0);" onclick="SuspendAgent(@item.ID,'@item.QueryName.Replace("'", "\\\'")',this)" title="Suspend">
+                                    <img src="~/Images/suspend.png" alt="Suspend" /></a>
+                            }
+                            @if (!item.IsRestrictedMedia && item.IsActive==2)
+                            {
+                                <a href="javascript:void(0);" onclick="ResumeSuspendedAgent(@item.ID,'@item.QueryName.Replace("'", "\\\'")',this)" title="Resume">
+                                    <img src="~/Images/unsuspend.png" alt="Resume" /></a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

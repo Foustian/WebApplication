@@ -1,0 +1,207 @@
+﻿@using IQMedia.Model;
+@using IQMedia.Shared.Utility;
+@model IQAgent_MediaResultsModel
+@if (Model != null)
+{
+    ActiveUser sessioninfo = IQMedia.WebApplication.Utility.ActiveUserMgr.GetActiveUser();
+    IQAgent_SMResultsModel SMModel = (IQAgent_SMResultsModel)Model.MediaData;
+    string highlightedSMText = string.Empty;
+    string HighlightedSMOutput = string.Empty;
+    string highlightedSMOriginalText = string.Empty;
+    string smTitle = string.Empty;
+    bool useProminenceMediaValue = Convert.ToBoolean(ViewData["UseProminenceMediaValue"]);
+
+    int Billion = 1000000000;
+    decimal BillionD = 1000000000;
+    int Million = 1000000;
+    decimal MillionD = 1000000;
+    string fLikes = string.Empty;
+    string sLikes = string.Empty;
+    string fComments = string.Empty;
+    string sComments = string.Empty;
+    string fShares = string.Empty;
+    string sShares = string.Empty;
+
+    if (SMModel.HighlightedSMOutput != null && SMModel.HighlightedSMOutput.Highlights != null)
+    {
+        highlightedSMOriginalText = string.Join(" ", SMModel.HighlightedSMOutput.Highlights.Select(c => c));
+        HighlightedSMOutput = IQMedia.Shared.Utility.CommonFunctions.GetWordsAround(highlightedSMOriginalText, ViewData["HighlightKeyword"].ToString(), Convert.ToInt32(ViewData["WordsBeforeSpan"]), Convert.ToInt32(ViewData["WordsAfterSpan"]), ViewData["Separator"].ToString());
+
+        if (string.IsNullOrWhiteSpace(HighlightedSMOutput))
+        {
+            HighlightedSMOutput = highlightedSMOriginalText;
+        }
+    }
+
+    if (HighlightedSMOutput.Length > 300)
+    {
+        highlightedSMText = HighlightedSMOutput.Substring(0, 300);
+        highlightedSMText = System.Text.RegularExpressions.Regex.Replace(highlightedSMText, "(</span(?!>)|</s(?!pan>)|</sp(?!an>)|</spa(?!n>)|</(?!span>))\\Z", "</span>");
+    }
+    else
+    {
+        highlightedSMText = HighlightedSMOutput;
+    }
+
+    if (SMModel.Description.Trim().Length > 65)
+    {
+        smTitle = SMModel.Description.Trim().Substring(0, 62) + "...";
+    }
+    else
+    {
+        smTitle = SMModel.Description.Trim();
+    }
+
+    highlightedSMText = CommonFunctions.ProcessHighlightingText(HighlightedSMOutput, highlightedSMText).Trim();
+
+    if (SMModel.ArticleStats != null)
+    {
+        fLikes = string.Format("{0:N0}", SMModel.ArticleStats.Likes);
+        if (SMModel.ArticleStats.Likes >= Billion)
+        {
+            sLikes = string.Format("{0:F1} bil", SMModel.ArticleStats.Likes / BillionD);
+        }
+        else if (SMModel.ArticleStats.Likes >= Million)
+        {
+            sLikes = string.Format("{0:F1} mil", SMModel.ArticleStats.Likes / MillionD);
+        }
+        else
+        {
+            sLikes = fLikes;
+        }
+
+        fComments = string.Format("{0:N0}", SMModel.ArticleStats.Comments);
+        if (SMModel.ArticleStats.Comments >= Billion)
+        {
+            sComments = string.Format("{0:F1} bil", SMModel.ArticleStats.Comments / BillionD);
+        }
+        else if (SMModel.ArticleStats.Comments >= Million)
+        {
+            sComments = string.Format("{0:F1} mil", SMModel.ArticleStats.Comments / MillionD);
+        }
+        else
+        {
+            sComments = fComments;
+        }
+
+        fShares = string.Format("{0:N0}", SMModel.ArticleStats.Shares);
+        if (SMModel.ArticleStats.Shares >= Billion)
+        {
+            sShares = string.Format("{0:F1} bil", SMModel.ArticleStats.Shares / BillionD);
+        }
+        else if (SMModel.ArticleStats.Shares >= Million)
+        {
+            sShares = string.Format("{0:F1} mil", SMModel.ArticleStats.Shares / MillionD);
+        }
+        else
+        {
+            sShares = fShares;
+        }
+    }
+
+    <div class="media" id="divMedia_@Model.ID">
+        <div class="MediaDate">
+            <div class="post-date">
+                <span class="month">@Model.MediaDateTime.ToString("MMM", System.Globalization.CultureInfo.InvariantCulture)</span>
+                <div>
+                    <span class="today">@Model.MediaDateTime.Day</span>
+                </div>
+                <span class="timeWithTimeZone">@Model.MediaDateTime.ToString("hh:mm tt") @sessioninfo.TimeZone</span>
+            </div>
+        </div>
+        <div class="MediaTypeLogo" align="center">
+            <img src="@ViewData["MediaIconPath"]" title="@ViewData["MediaTypeDescription"]">
+        </div>
+        <div class="float-right">
+            <div class="float-right">
+                <input type="checkbox" onclick="CheckUncheckMasterCheckBox(this.id,'ulMediaResults','chkInputAll');" value="@Model.ID:@Model.MediaType" id="chkdivResults_@Model.ID" />
+                <input type="hidden" value="0" id="hdnParentID_@Model.ID" />
+            </div>
+        </div>
+        <div class="FeedsContentNone">
+            <div class="float-left media-heading">
+                <a target="_blank" href="@SMModel.Link" title="@SMModel.Description.Trim()">@smTitle</a>
+            </div>
+            <div class="subheading float-left margintop1">
+                @Model.timeDifference
+            </div>
+            <div class="clear float-left media-body">
+                @Html.Raw(highlightedSMText)
+            </div>
+        </div>
+        <div class="clear post-divider"></div>
+        <div class="clear margintop2 marginbottom2">
+            <div class="FeedsActionBarLeftDiv">
+                <div class="viewmore"></div>
+                <div id="divLocationSM_@Model.ID" class="viewlocation">
+                    <div class="">
+                        @if (!string.IsNullOrWhiteSpace(SMModel.HomeLink))
+                        {
+                            <div class="location-tag" title="@SMModel.HomeLink">
+                                @{
+                                    if (SMModel.HomeLink.Trim().Length > 23)
+                                    {
+                                        @(SMModel.HomeLink.Trim().Substring(0, 21) + "...")
+                                    }
+                                    else
+                                    {
+                                        @SMModel.HomeLink.Trim()
+                                    }
+                                }
+                            </div>   
+                        }
+                        else
+                        { 
+                            <div class="margintop2"></div>
+                        }
+                    </div>
+                </div>
+                <div id="divSentimentSM_@Model.ID" class="viewsentiment" title="Sentiment">                
+                    <div class="sentimentLeftFloat sentiment-tag">
+                        <div class="divSentimentMain sentimentFont">
+                            <div class="divSentimentNeg">
+                                <div style='width:@ViewData["maxNegativeSentimentWidth"]'>@Model.NegativeSentiment</div>
+                            </div>
+                            <div class="divSentimentPos">
+                                <div style='width:@ViewData["maxPositiveSentimentWidth"]'>@Model.PositiveSentiment</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @if (SMModel.ArticleStats != null)
+                {       
+                    <div class="viewcontentdetail">
+                        <div class="viewshortdetail">
+                            <div class="likes pull-left" title="Likes @fLikes">
+                                @sLikes
+                            </div>
+                        </div>
+                        <div class="viewshortdetail">
+                            <div class="comments pull-left" title="Comments @fComments">
+                                @sComments
+                            </div>
+                        </div>
+                        <div class="viewshortdetail">
+                            <div class="shares pull-left" title="Shares @fShares">
+                                @sShares
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="FeedsActionBarRightDiv minWidth52IE8">
+                <div class="detailIcon">
+                    <a class="cursorPointer saveMedia saveArticle" title="Save Article" onclick="ShowSaveArticle(@Model.ID,this.id);return false;" target="_blank" id="aSaveSM_@Model.ID"></a>
+                </div>
+                <div class="detailIcon">
+                    <a class="cursorPointer viewArticle" title="View Article" href="@SMModel.Link" target="_blank" id="aShowNews_@Model.ID"></a>
+                </div>
+                <div class="detailIcon">
+                    <!--Padding on the right-->
+                    <div align="center" class="margintop2">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

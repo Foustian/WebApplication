@@ -1,0 +1,174 @@
+﻿.gridster * {
+  margin:0;
+  padding:0;
+}
+
+ul {
+  list-style-type: none;
+}
+
+
+.controls {
+    margin-bottom: 20px;
+}
+
+/*/
+/* gridster
+/*/
+
+.gridster ul {
+    background-color: #EFEFEF;
+}
+
+.gridster li {
+    font-size: 1em;
+    font-weight: bold;
+    text-align: center;
+    line-height: 100%;
+}
+
+
+.gridster {
+    margin: 0 auto;
+
+    opacity: .8;
+
+    -webkit-transition: opacity .6s;
+    -moz-transition: opacity .6s;
+    -o-transition: opacity .6s;
+    -ms-transition: opacity .6s;
+    transition: opacity .6s;
+}
+
+.gridster .gs-w {
+    background: #FFFFFF;
+    cursor: pointer;
+}
+
+.gridster .gs-w .content {
+    width:100%;
+    height:100%;
+    background:url("../images/plus-icon.png") no-repeat;
+    background-position:center;
+}
+
+.gridster .player {
+    background: #BBB;
+}
+
+
+.gridster .preview-holder {
+    border: none!important;
+    background: red!important;
+}
+
+.CancelIcon {
+	width:15px;
+	cursor:pointer;
+	position:absolute;
+	right:2px;
+	top:2px;
+	z-index:1;
+}
+
+
+.row-custom .dropdown-menu
+{
+    width: 190px !important;
+}
+/* css for timepicker */
+#ui-datepicker-div
+{
+    z-index: 1050 !important;
+}
+.ui-timepicker-div .ui-widget-header
+{
+    margin-bottom: 8px;
+}
+.ui-timepicker-div dl
+{
+    text-align: left;
+}
+.ui-timepicker-div dl dt
+{
+    height: 33px;
+    margin-bottom: -25px;
+}
+.ui-timepicker-div dl dd
+{
+    margin: 0 10px 10px 65px;
+}
+.ui-timepicker-div td
+{
+    font-size: 90%;
+}
+.ui-tpicker-grid-label
+{
+    background: none;
+    border: none;
+    margin: 0;
+    padding: 0;
+}
+    
+.ui-timepicker-rtl
+{
+    direction: rtl;
+}
+.ui-timepicker-rtl dl
+{
+    text-align: right;
+}
+.ui-timepicker-rtl dl dd
+{
+    margin: 0 65px 10px 10px;
+}
+    
+.ui-progressbar
+{
+    position: relative;
+}
+.progress-label
+{
+    position: absolute;
+    left: 50%;
+    top: 4px;
+    font-weight: bold;
+    text-shadow: 1px 1px 0 #fff;
+}
+    
+.popover-content
+{
+    padding: 0px;
+}
+
+.center-align-control
+{
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto !important;
+    max-height:100%;
+    width:auto;
+}
+
+.gridster .div-player {
+    width:100%;
+    height:100%;
+}
+
+.contol-content input
+{
+    height:100%;
+    box-sizing:border-box;
+    width:100%;
+}
+
+.contol-content
+{
+    height:100%;
+    box-sizing:border-box;
+    width:100%;
+}
+

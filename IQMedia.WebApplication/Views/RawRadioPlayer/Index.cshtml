@@ -1,0 +1,89 @@
+﻿@model Dictionary<string, string>
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>iQ Radio Player</title>@*<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" />*@
+    @*<link href="~/Css/jquery-ui.css" rel="stylesheet" type="text/css" />*@
+    <link href="~/Css/bootstrap.css" rel="stylesheet" type="text/css" />
+    <link href="~/Css/bootstrap-responsive.css" rel="stylesheet" type="text/css" />
+    <link href="~/Css/feed.css?v=3.2" rel="stylesheet" type="text/css" />
+    <link href="~/Css/Fonts.css" rel="stylesheet" type="text/css" />
+    @*<link href="../../Css/bootstrap-responsive.css" rel="stylesheet" type="text/css" />*@
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js?v=1.0"></script>
+    <![endif]-->
+    <script src="~/Scripts/jquery-1.9.1.min.js?v=1.0" type="text/javascript"></script>
+    <link href="~/css/jquery.mCustomScrollbar.css?v=1.0" rel="stylesheet" type="text/css" />
+    <!-- Customizable CSS -->
+    @*<link href="~/css/MasterInner.css" rel="stylesheet" type="text/css" />*@
+    <style type="text/css">
+        body
+        {
+            font-family: 'Open Sans';
+            padding-top: 40px;
+        }
+    </style>
+</head>
+<body id="mainBody">
+    <div class="navbar navbar-inverse navbar-fixed-top" style="background-color: #fff;">
+        <!-- from desinger-->
+        <div class="container">
+        </div>
+        <!-- from desinger-->
+        <div class="navbar-inner navbar-custome">
+            <div class="container">
+                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span
+                    class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+                </a><a class="brand iqmedia-logo" href="#">
+                    <img src="~/images/iq-media.png?v=1.3" width="155" height="45" alt="IQ Media" /></a>
+                <div class="nav-collapse collapse">
+                </div>
+                <!--/.nav-collapse -->
+            </div>
+        </div>
+    </div>
+    <div class="container container_custom">
+        <div class="row-fluid" id="divRowFluid">
+            <div style="min-height: 500px; padding: 25px;">
+                <div style="padding-bottom: 5px; border-bottom: solid 1px #dadada; font-size: 18px;">
+                    iQ Radio Player
+                </div>
+                <br />
+                @if (ViewBag.IsErrorOccurred == false)
+                {
+                    if (Model.ContainsKey("PlayerUrl") && !string.IsNullOrEmpty(Model["PlayerUrl"]))
+                    {
+                    <div class="fluidMedia">
+                        <iframe id="iFrameFeedsTM" src="@Model["PlayerUrl"]" frameborder="0"></iframe>
+                    </div>
+
+                    }
+                    else
+                    {
+                    <div style="color: #ff0000; padding: 10px 10px 10px 10px;">
+                        Some error occured while playing radio media.
+                    </div>
+                    }
+                }
+                else
+                {
+                    <div style="color: #ff0000; padding: 10px 10px 10px 10px;">
+                        Some error occured while playing radio media.
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    @Html.Partial("~/Views/Shared/_Footer.cshtml")
+</body>
+<!-- Le javascript
+    ================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+@*<script src="~/Scripts/jquery-ui-1.9.2.custom.min.js?v=1.0" type="text/javascript"></script>*@
+@*<script src="../../Scripts/jquery-ui.min.js?v=1.0" type="text/javascript"></script>*@
+</html>

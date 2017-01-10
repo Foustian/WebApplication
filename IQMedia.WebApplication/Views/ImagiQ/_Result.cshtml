@@ -1,0 +1,112 @@
+﻿@using IQMedia.Model;
+@model List<IQAgent_TVResultsModel>
+@if (Model != null && Model.Count > 0)
+{
+    string sortColumn = Convert.ToString(TempData["SortColumn"]);
+    bool isAsc = Convert.ToBoolean(TempData["IsAsc"]);
+    ActiveUser sessionInformation = IQMedia.WebApplication.Utility.ActiveUserMgr.GetActiveUser();
+    <table width="100%" class="timeshiftpg">
+        <tr>
+            <th style="text-align: center; width: 8%;">
+                Station
+            </th>
+            <th style="text-align: left; width: 38%;">
+                Program
+            </th>
+            <th style="text-align: left; width: 21%;">
+                Market
+            </th>
+            <th style="text-align: right; width: 21%;">
+                Date Time 
+            </th>
+            <th style="text-align: right; width: 5%;">
+                Hits
+            </th>
+            @*<th style="text-align: right; width: 10%;">
+                Audience
+            </th>
+            <th style="text-align: right; width: 16%;">
+                iQ media Value
+            </th>*@
+            <th style="text-align: center; width: 7%;">
+                Play
+            </th>
+        </tr>
+        @foreach (IQAgent_TVResultsModel item in Model)
+        {
+            var imgurl = "../../StationLogoImages/" + item.StationID + ".jpg";
+           
+            <tr>
+                <td style="text-align: center;">
+                    <img src="@imgurl" alt="" />
+                </td>
+                <td style="text-align: left;">
+                    @item.Title120
+                </td>
+                <td style="text-align: left;">
+                    @item.Market
+                </td>
+                <td style="text-align: right;">
+                    @item.Date.ToString("MM/dd/yyyy hh:mm tt") @item.TimeZone
+                </td>
+                <td style="text-align: right;">
+                    @item.Hits
+                </td>
+                @*@if (!string.IsNullOrEmpty(Convert.ToString(item.AUDIENCE)))
+                {
+                    <td style="text-align: right;">
+                        @string.Format("{0:N0}", item.AUDIENCE)
+                    </td>
+                }
+                else
+                {
+                    <td style="text-align: right;">
+                        @item.AUDIENCE
+                    </td>
+                }
+                @if (!string.IsNullOrEmpty(Convert.ToString(item.SQAD_SHAREVALUE)))
+                {
+                    if (item.IsActualNielsen)
+                    {
+                    <td style="text-align: right;">
+                        @string.Format("{0:N}", item.SQAD_SHAREVALUE) (A)
+                    </td>
+                    }
+                    else
+                    {
+                    <td style="text-align: right;">
+                        @string.Format("{0:N}", item.SQAD_SHAREVALUE) (E)
+                    </td>
+                    }
+
+                }
+                else
+                {
+                    <td style="text-align: right;">
+                        @item.SQAD_SHAREVALUE
+                    </td>
+
+                }*@
+                <td style="text-align: center;">
+                    <a style="cursor:pointer;" onclick="LoadChartNPlayer('@item.RL_VideoGUID','@item.IQ_CC_Key','');" href="javascript:void(0);">
+                    <img src="../../Images/play.jpg" alt="" />
+                   </a>
+                </td>
+            </tr> 
+        }
+    </table>
+
+}
+else
+{
+    <table width="100%" style="text-align: center;">
+        <tr>
+            <td>
+                <span style="background: none repeat scroll 0 0 #F2F2F2; border: 1px solid #DCDCDC;
+                    margin-bottom: 10px; margin-right: 10px; padding: 3px 10px 3px 6px; position: relative;
+                    width: 300px !important;">No Results found</span>
+            </td>
+        </tr>
+    </table>
+    
+}

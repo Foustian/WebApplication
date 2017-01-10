@@ -1,0 +1,250 @@
+﻿@using IQMedia.Model;
+@using IQMedia.Shared.Utility;
+@model Dictionary<string, object>
+@{
+    IQMedia.Model.ActiveUser sessionInformation = IQMedia.WebApplication.Utility.ActiveUserMgr.GetActiveUser();
+    string dates = string.Empty;
+    IQMedia.Model.IQArchive_FilterModel filter = null;
+
+    if (ViewBag.IsSuccess)
+    {
+        if (Model != null && Model["Filter"] != null)
+        {
+            filter = Model["Filter"] as IQMedia.Model.IQArchive_FilterModel;
+            dates = string.Join("', '", @filter.Dates.Select(f => Convert.ToDateTime(f).ToString("MM/dd/yyyy")).ToArray());
+        }
+    }
+    
+}
+@if (ViewBag.IsSuccess)
+{
+    <script language="javascript" type="text/javascript">
+        var disabledDays = ['@Html.Raw(dates)'];
+        var Isv4LibraryRollup = @(ViewBag.v4LibraryRollup.ToString().ToLower());
+        var IsShowTimeSync = @System.Configuration.ConfigurationManager.AppSettings["IsShowArchiveTimeSync"];
+    </script>
+}
+
+<link rel="stylesheet" type="text/css" href="~/Css/Gallary.css">
+<div class="row-fluid" id="divRowFluid">
+    <div class="span3 minheight500" id="divQuickIQArchieveFinder">
+        <div class="well sidebar-nav">
+            <h5 id="h5Library" onclick="CollapseExpandLeftSection(4);" class="libraryheader-active">
+                Library</h5>
+            <div id="divQuickLibraryGallarySection" style="padding-left: 10px;">
+                <input type="text" class="keywordTetBox" placeholder="Quick library finder" id="GallarytxtKeyword" /><img
+                    id="imgGallaryKeyword" title="Search" src="../../images/magnifier.png" alt="search"
+                    class="imgsearch" />
+                <input type="text" id="dpGallaryFrom" readonly="readonly" class="date" />
+                <input type="text" id="dpGallaryTo" readonly="readonly" class="date" />
+                <br />
+                <br />
+                <h5>
+                    Narrow Results</h5>
+                <div class="navbar">
+                    <ul role="navigation" class="nav floatNone sideMenuUl width100p">
+                        <li class="dropdown ndate"><a data-toggle="dropdown" class="dropdown-toggle" role="button"
+                            href="#" id="drop1">Date<span class="spnArrow">&nbsp;</span></a>
+                            <ul id="ulGallaryCalender" aria-labelledby="drop1" role="menu" class="dropdown-menu sideMenu ulCalenderFilter">
+                                <li role="presentation">
+                                    <div id="divGallaryCalender">
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="ncategory"><a data-toggle="dropdown" class="dropdown-toggle" role="button"
+                            id="liGallaryCategoryFilter" href="#">Category<span class="spnArrow">&nbsp;</span></a>
+                            <ul aria-labelledby="drop2" role="menu" class="nav nav-stacked nav-dropdpwn" id="ulGallaryCategory"
+                                style="display: none;">
+                                @{
+                                    <li role="presentation" id="liGallaryCategorySearch" style="padding: 0px;">
+                                        <ul class="sideMenu sub-submenu" aria-labelledby="drop2" role="menu">
+                                            <li role="presentation" style="text-align: right">
+                                                <div>
+                                                    <div class="fleft margintop5">
+                                                        <input type="radio" onclick="SetGallarySelectionType(false)" value="AND" id="rdGallaryAnd" style="margin-top: -3px"
+                                                            name="rdGallerySelectionType" />
+                                                        AND
+                                                        <input type="radio" onclick="SetGallarySelectionType(false)" value="OR" id="rdGallaryOr" style="margin-top: -3px"
+                                                            name="rdGallerySelectionType" checked="checked" />
+                                                        OR
+                                                    </div>
+                                                    <div>
+                                                        <input type="button" value="Done" id="btnGallarySearchCategory" class="button" style="margin: 0px;
+                                                            padding: 2px; min-width: 40px;" onclick="SearchGallaryCategory();">
+                                                        <input type="button" value="Cancel" id="btnCancelSearchCategory" class="button" style="margin: 0px;
+                                                            padding: 2px; min-width: 40px;" onclick="SetGallarySelectionType(true);">
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    if (filter != null)
+                                    {
+                                    <li role="presentation" style="padding: 0px;">
+                                        <ul class="sideMenu sub-submenu" aria-labelledby="drop2" role="menu" id="ulGallaryCategoryList">
+                                            @foreach (IQMedia.Model.IQArchive_Filter item in filter.Categories)
+                                            {
+                                                if (!string.IsNullOrEmpty(item.CategoryGUID))
+                                                {
+                                                <li role="presentation"><a href="javascript:void(0)" onclick="SetGallaryCategory(this,'@item.CategoryGUID','@item.CategoryName.Replace("\'", "\\\'")');" tabindex="-1" role="menuitem">
+                                                    @(item.CategoryName + " (" + item.RecordCountFormatted + ")")
+                                                </a></li>
+                                                }
+                                            }
+                                        </ul>
+                                        @{
+                                            var json = CommonFunctions.SearializeJson(filter.Categories);
+                                            <script type="text/javascript">
+                                                    _CurrentCategoryFilter = @Html.Raw(json);
+                                            </script>
+                                        }
+                                    </li>
+                                    }
+                                    else
+                                    {
+                                          <ul class="sideMenu sub-submenu" aria-labelledby="drop2" role="menu" id="ulGallaryCategoryList">
+                                                <li role="presentation"><a tabindex="-1" role="menuitem">No Filter Available</a></li>
+                                            </ul>
+                                    }
+                                }
+                            </ul>
+                        </li>
+                        <li class="dropdown ncustomers"><a data-toggle="dropdown" class="dropdown-toggle"
+                            role="button" id="liCustomerFilter" href="#">Created By<span class="spnArrow">&nbsp;</span></a>
+                            <ul aria-labelledby="drop2" role="menu" class="dropdown-menu sideMenu" id="ulGallaryCustomers">
+                                @{
+                                    if (filter != null)
+                                    {
+                                        foreach (IQMedia.Model.IQArchive_Filter item in filter.Customers)
+                                        {
+                                            if (!string.IsNullOrEmpty(item.CustomerKey))
+                                            {
+                                    <li onclick="SetGallaryCustomer('@item.CustomerKey','@item.CustomerName.Replace("\'", "\\\'")');" role="presentation">
+                                        <a href="#" tabindex="-1" role="menuitem">
+                                            @(item.CustomerName + " (" + item.RecordCountFormatted + ")")
+                                        </a></li>
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                    <li role="presentation"><a tabindex="-1" role="menuitem">No Filter Available</a></li>
+                                    }
+                                }
+                            </ul>
+                        </li>
+                    </ul>
+                    <div style="clear: both;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--/span-->
+    <div class="span9 span9-custom">
+        <!--/row-->
+        <div id="divGallaryMessage" class="notificationdiv">
+            <span id="spnNotification"></span>
+        </div>
+        <div id="divContent" style="clear: both;">
+            <div id="divGallaryResultContent" style="display: block;">
+                <div class="row-fluid row-custom">
+                    <!--/span-->
+                    <div class="btn-group">
+                        <a class="btn dropdown-toggle no-background" data-toggle="dropdown" href="#" id="aGallarySortDirection">
+                            Most Recent (Created Date)&nbsp;&nbsp;<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li class="cursorPointer"><a onclick="SortGallaryDirection('MediaDate',false);">Most Recent
+                                (Media Date)</a></li>
+                            <li class="cursorPointer"><a onclick="SortGallaryDirection('MediaDate',true);">Oldest First
+                                (Media Date)</a></li>
+                            <li class="cursorPointer"><a onclick="SortGallaryDirection('CreatedDate',false);">Most Recent
+                                (Created Date)</a></li>
+                            <li class="cursorPointer"><a onclick="SortGallaryDirection('CreatedDate',true);">Older First
+                                (Created Date)</a></li>
+                        </ul>
+                    </div>
+                    <div class="btn-group">
+                        <a class="btn dropdown-toggle no-background" data-toggle="dropdown" href="#" id="aGallaryDuration">
+                            All&nbsp;&nbsp;<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li class="cursorPointer"><a onclick="GetGallaryResultOnDuration(0);">All</a></li>
+                            <li class="cursorPointer"><a onclick="GetGallaryResultOnDuration(1);">Last 24 Hours</a></li>
+                            <li class="cursorPointer"><a onclick="GetGallaryResultOnDuration(2);">Last Week</a></li>
+                            <li class="cursorPointer"><a onclick="GetGallaryResultOnDuration(3);">Last Month</a></li>
+                            <li class="cursorPointer"><a onclick="GetGallaryResultOnDuration(4);">Last 3 Months</a></li>
+                            <li class="cursorPointer"><a onclick="GetGallaryResultOnDuration(5);">Custom</a></li>
+                        </ul>
+                    </div>
+                    <button onclick="SetClipSelection();" class="button float-right margin0" value="Login" type="button">Select</button>
+                    <button onclick="CancelLibraryPopup();" class="cancelButton float-right" value="Login" type="button" style="margin:0 5px 0px 0px;">Cancel</button>
+                </div>
+                <h4 id="h4ResultTitle">
+                    Library Results</h4>
+                <div id="divGallaryActiveFilter" class="row-fluid filter">
+                </div>
+                <div id="divGallaryRecordCount" style="font-weight: bold; text-align: right; vertical-align: middle;
+                    padding: 5px 10px 0px 0;">
+                    <span id="spanGallaryRecordsLabel"><span id="spanGallaryCurrentRecords">@string.Format("{0:n0}", Convert.ToInt64(TempData["FromRecordTilesID"]))
+                        @(ViewBag.v4LibraryRollup ? "(" + string.Format("{0:n0}", Convert.ToInt64(TempData["FromRecordTilesIDDisplay"])) + ")" : string.Empty)</span>
+                        of <span id="spanGallaryTotalRecords">@string.Format("{0:n0}", Convert.ToInt64(TempData["TilesTotalResults"]))
+                            @(ViewBag.v4LibraryRollup ? "(" + string.Format("{0:n0}", Convert.ToInt64(TempData["TilesTotalResultsDisplay"])) + ")" : string.Empty)</span></span>
+                    <span style="margin-left: 10px; float: right;"><a onclick="RefreshTVResults();" title="Refresh" href="javascript:void(0);">
+                        Refresh </a></span>
+                </div>
+                <div id="divGallaryResultScrollContent" class="mainContent">
+                    <div class="row-fluid posts" id="ulIQArchieveGallaryResults">
+                        @{ 
+                            if (Model != null && Model["Result"] != null)
+                            {
+                                Html.RenderPartial("~/Views/Gallery/_LibraryGalleryResults.cshtml", Model["Result"]);
+                            }
+                        }
+                    </div>
+                    <div align="center" id="divShowGallaryResult">
+                        <img src="../../images/Loading_1.gif" class="marginRight10 visibilityHidden offset2"
+                            id="imgMoreGallaryResultLoading" alt="" />
+                        @{                  
+                            if (Convert.ToInt64(TempData["FromRecordTilesID"]) < Convert.ToInt64(TempData["TilesTotalResults"]))
+                            {
+                            <input type="button" id="btnShowMoreGallaryResults" class="loadmore" onclick="GetMoreGallaryResults();"
+                                value="Show More Results" />
+                            }
+                            else
+                            {
+                            <input type="button" id="btnShowMoreGallaryResults" class="loadmore" value="No More Results" />
+                            }
+                        }
+                        @{
+                            if (System.Configuration.ConfigurationManager.AppSettings["IQArchievePageSizeOptions"] != null && System.Configuration.ConfigurationManager.AppSettings["IQArchievePageSizeOptions"].Split(',').Count() > 0 && Convert.ToInt64(TempData["TilesTotalResults"]) > 0)
+                            {
+                                List<string> _PageSizeArray = System.Configuration.ConfigurationManager.AppSettings["IQArchievePageSizeOptions"].Split(',').ToList();
+                                
+                            <a id="aGallaryPageSize" class="btn dropdown-toggle no-background margintop10 marginRight10 float-right"
+                                onclick="showGallaryPopupOver()" data-toggle="dropdown fleft" href="#">@ViewBag.DefaultArchivePageSize
+                                Items Per Page&nbsp;&nbsp;<span class="caret"></span></a>
+                            <div id="divGallaryPageSizeDropDown" class="displayNone">
+                                <ul class="dropdown-popover" style="width: auto;">
+                                    @{
+                                if (!_PageSizeArray.Contains(ViewBag.DefaultArchivePageSize.ToString()))
+                                {
+                                    _PageSizeArray.Add(ViewBag.DefaultArchivePageSize.ToString());
+                                }
+                                    }
+                                    @for (int i = 0; i < _PageSizeArray.Count(); i++)
+                                    {
+                                        <li><a class="cursorPointer" onclick="SelectGalleryPageSize(@_PageSizeArray[i]);">@_PageSizeArray[i]</a></li>
+                                    }
+                                </ul>
+                            </div>
+                                  
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--/span-->
+</div>

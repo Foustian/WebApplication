@@ -1,0 +1,42 @@
+﻿.ir-hiw
+{
+    padding:20px;
+}
+
+.ir-hiw > img
+{
+    display:none;
+}
+
+.ir-hiw > div p
+{
+    text-align:center;    
+}
+
+@media (min-width: 768px) 
+{
+    .ir-hiw
+    {
+        position:relative;
+        padding:0px;    
+    }
+    
+    .ir-hiw > div p
+    {
+        width: 75%; display: inline-block; float: right; margin-right: 12.5%; 
+    }
+    
+    .ir-hiw > div
+    {
+        position:absolute;
+        bottom:0px;
+        color: #ffffff;        
+        width:100%;
+    }
+    
+    .ir-hiw > img
+    {
+        display:block;
+    }
+    
+}

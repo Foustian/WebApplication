@@ -1,0 +1,70 @@
+﻿@using System.Linq
+@using IQMedia.Model
+@model ProQuestModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>iq media Publications (Text) Article</title>
+    <link href="~/Css/Fonts.css" rel="stylesheet" type="text/css" />
+    <link href="~/Css/bootstrap.css" rel="stylesheet" type="text/css" />
+    <link href="~/Css/bootstrap-responsive.css" rel="stylesheet" type="text/css" />
+    <style>
+        .container_custom{ margin-top: 88px;}        
+        .pq-pub { font-family:'OpenSans-Bold';}
+        .pq-header { padding-bottom:15px; border-bottom:1px solid #666666;}
+        .pq-header h2 { margin:7px 0px; font-weight:normal; font-size:30px;}
+        .pq-content { font-size:16px; line-height:28px; margin-top:20px; border-bottom:1px solid #666666;}
+        .pq-copyright { text-align:center; margin:10px 0px;}
+        .pq-author { color:#666666;}
+        .pq-date{ color:#666666;}
+    </style>
+
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top" style="background-color: #fff;">
+        <!-- from desinger-->
+        <div class="container">
+        </div>
+        <!-- from desinger-->
+        <div class="navbar-inner navbar-custome" style="padding:0 5%; box-sizing:border-box;">
+            <div class="container">
+                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span
+                    class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+                </a><a class="brand iqmedia-logo" href="#">
+                    <img src="~/images/home_new/logo.png" alt="IQ Media" /></a>
+                <div class="nav-collapse collapse">
+                </div>
+                <!--/.nav-collapse -->
+            </div>
+        </div>
+    </div>
+    @if (ViewBag.IsSuccess == true && Model != null)
+    {
+        <div class="container container_custom">
+        <div class="row-fluid" id="divRowFluid" style="padding:0 5%; box-sizing:border-box;">
+            <div class="pq-header">
+                <span class="pq-pub">@Model.Publication</span> | <span class="pq-date">@Model.MediaDate.ToShortDateString()</span>
+                <h2>@Model.Title</h2>
+                <div class="pq-author">
+                    @(Model.Authors!= null ? "By " + String.Join(", ",Model.Authors) : "")
+                </div>
+            </div>            
+            <div class="pq-content">
+                @Html.Raw(Model.Content)
+            </div>
+            <div class="pq-copyright">
+                @Model.Copyright
+            </div>
+        </div>
+    </div>
+        }
+    else
+    {
+        <div class="container container_custom">An error occurred, please try again later.</div>
+    }
+</body>
+</html>

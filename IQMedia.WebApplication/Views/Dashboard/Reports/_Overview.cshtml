@@ -1,0 +1,409 @@
+﻿@using IQMedia.Shared.Utility;
+<div class="clear">
+    <div id="divOverviewHeader" style="display:flex;justify-content:space-around;">
+        <div id="divHeaderBrands" style="display:inline-block;">
+            <div>
+                <span id="overviewBrands" style="font-size:24px;">27</span>
+            </div>
+            <div style="font-size:smaller;text-align:center;">BRANDS</div>
+        </div>
+        @*<div id="divHeaderSpots" style="display:inline-block;">
+            <div>
+                <span id="overviewSpots">321</span>
+            </div>
+            <div>SPOTS</div>
+        </div>*@
+        <div id="divHeaderAirings" style="display:inline-block;">
+            <div>
+                <span id="overviewAirings" style="font-size:24px;">126,321</span>
+            </div>
+            <div style="font-size:smaller;text-align:center;">AIRINGS</div>
+        </div>
+        <div id="divHeaderSpend" style="display:inline-block;">
+            <div>
+                <span id="overviewTVSpend" style="font-size:24px;">$33,16,321</span>
+            </div>
+            <div style="font-size:smaller;text-align:center;">EST. TV SPEND</div>
+        </div>
+        <div id="divHeaderAudience" style="display:inline-block;">
+            <div>
+                <span id="overviewAudience" style="font-size:24px;">126,321</span>
+            </div>
+            <div style="font-size:smaller;text-align:center;">TOTAL AUDIENCE</div>
+        </div>
+    </div>
+    <br />
+    <div id="divCharts">
+        <div id="divChartLineAirings" style="width:100%;display:flex;justify-content:center;height:325px;">
+            <div style="width:47%;display:inline-block;">
+                <div class="cohortReportsChartHeader">
+                    <div style="flex-grow:1;">
+                        <div class="cohortReportsChartHeaderBorderDiv"></div>
+                    </div>
+                    <span class="cohortReportsChartHeaderSpan">AIRINGS</span>
+                    <div style="flex-grow:1;">
+                        <div class="cohortReportsChartHeaderBorderDiv"></div>
+                    </div>
+                </div>
+                @*<div id="divChartOptions0" class="pull-right">
+                    <div id="divChart0Hour" class="floatLeft SearchType leftSideBorderRadius">
+                        Hour
+                    </div>
+                    <div id="divChart0Day" class="floatLeft SearchType activeDuration">
+                        Day
+                    </div>
+                    <div id="divChart0Month" class="pull-right SearchType rightSideBorderRadius">
+                        Month
+                    </div>
+                </div>*@
+                <div id="divLineChartAiring" class="cohortReportsChartDiv">
+
+                </div>
+            </div>
+            <div class="cohortReportsCentralDiv"></div>
+            <div style="width:47%;display:inline-block;">
+                <div class="cohortReportsChartHeader">
+                    <div style="flex-grow:1;">
+                        <div class="cohortReportsChartHeaderBorderDiv"></div>
+                    </div>
+                    <span class="cohortReportsChartHeaderSpan">AIRINGS</span>
+                    <div style="flex-grow:1;">
+                        <div class="cohortReportsChartHeaderBorderDiv"></div>
+                    </div>
+                </div>
+                <div id="divPieChartAiring" class="cohortReportsChartDiv" style="margin-left:5px;">
+                </div>
+            </div>
+        </div>
+        <div id="divChartLineShare" style="width:100%;display:flex;justify-content:center;height:325px;">
+            <div style="width:47%;display:inline-block;">
+                <div class="cohortReportsChartHeader">
+                    <div style="flex-grow:1;">
+                        <div class="cohortReportsChartHeaderBorderDiv"></div>
+                    </div>
+                    <span class="cohortReportsChartHeaderSpan">TIME</span>
+                    <div style="flex-grow:1;">
+                        <div class="cohortReportsChartHeaderBorderDiv"></div>
+                    </div>
+                </div>
+                <div id="divAreaChartShare" class="cohortReportsChartDiv">
+
+                </div>
+            </div>
+            <div class="cohortReportsCentralDiv"></div>
+            <div style="width:47%;display:inline-block;">
+                <div class="cohortReportsChartHeader">
+                    <div style="flex-grow:1;">
+                        <div class="cohortReportsChartHeaderBorderDiv"></div>
+                    </div>
+                    <span class="cohortReportsChartHeaderSpan">SHARE</span>
+                    <div style="flex-grow:1;">
+                        <div class="cohortReportsChartHeaderBorderDiv"></div>
+                    </div>
+                </div>
+                <div id="divPieChartShare" class="cohortReportsChartDiv" style="margin-left:5px;">
+                </div>
+            </div>
+        </div>
+        <div id="divChartLineAdSpend" style="width:100%;display:flex;justify-content:center;height:325px;">
+            <div style="width:47%;display:inline-block;">
+                <div class="cohortReportsChartHeader">
+                    <div style="flex-grow:1;">
+                        <div class="cohortReportsChartHeaderBorderDiv"></div>
+                    </div>
+                    <span class="cohortReportsChartHeaderSpan">AD SPEND</span>
+                    <div style="flex-grow:1;">
+                        <div class="cohortReportsChartHeaderBorderDiv"></div>
+                    </div>
+                </div>
+                @*<div id="divChartOptions2" class="pull-right">
+                    <div id="divChart2Hour" class="floatLeft SearchType leftSideBorderRadius">
+                        Hour
+                    </div>
+                    <div id="divChart2Day" class="floatLeft SearchType activeDuration">
+                        Day
+                    </div>
+                    <div id="divChart2Month" class="pull-right SearchType rightSideBorderRadius">
+                        Month
+                    </div>
+                </div>*@
+                <div id="divLineChartAdSpend" class="cohortReportsChartDiv">
+                </div>
+            </div>
+            <div class="cohortReportsCentralDiv"></div>
+            <div style="width:47%;display:inline-block;">
+                <div class="cohortReportsChartHeader">
+                    <div style="flex-grow:1;">
+                        <div class="cohortReportsChartHeaderBorderDiv"></div>
+                    </div>
+                    <span class="cohortReportsChartHeaderSpan">AD SPEND</span>
+                    <div style="flex-grow:1;">
+                        <div class="cohortReportsChartHeaderBorderDiv"></div>
+                    </div>
+                </div>
+                <div id="divPieChartAdSpend" class="cohortReportsChartDiv" style="margin-left:5px;">
+                    
+                </div>
+            </div>
+        </div>
+        <br />
+        <div id="divChartLineDemographics" style="width:100%;display:flex;justify-content:center;height:325px;">
+            <div style="width:47%;display:inline-block;">
+                <div class="cohortReportsChartHeader">
+                    <div style="flex-grow:1;">
+                        <div class="cohortReportsChartHeaderBorderDiv"></div>
+                    </div>
+                    <span class="cohortReportsChartHeaderSpan">GENDER</span>
+                    <div style="flex-grow:1;">
+                        <div class="cohortReportsChartHeaderBorderDiv"></div>
+                    </div>
+                </div>
+                <div id="divPieChartGender" class="cohortReportsChartDiv">
+                </div>
+            </div>
+            <div class="cohortReportsCentralDiv"></div>
+            <div style="width:47%;display:inline-block;">
+                <div class="cohortReportsChartHeader">
+                    <div style="flex-grow:1;">
+                        <div class="cohortReportsChartHeaderBorderDiv"></div>
+                    </div>
+                    <span class="cohortReportsChartHeaderSpan">AGE</span>
+                    <div style="flex-grow:1;">
+                        <div class="cohortReportsChartHeaderBorderDiv"></div>
+                    </div>
+                </div>
+                <div id="divPieChartAge" class="cohortReportsChartDiv" style="margin-left:5px;">
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+    @*<div id="divTopTVHits" style="display:flex;justify-content:space-between;height:100px;">
+        <div style="display:inline-block;border:1px solid black;width:15%;">
+            <span>Top Hit 0</span>
+            <span id="topHit0"></span>
+            <img id="topThumb0" class="media-object" csrc="" />
+        </div>
+        <div style="display:inline-block;border:1px solid black;width:15%">
+            <span>Top Hit 1</span>
+            <span id="topHit1"></span>
+            <img id="topThumb1" class="media-object" csrc="" />
+        </div>
+        <div style="display:inline-block;border:1px solid black;width:15%;">
+            <span>Top Hit 2</span>
+            <span id="topHit2"></span>
+            <img id="topThumb2" class="media-object" csrc="" />
+        </div>
+        <div style="display:inline-block;border:1px solid black;width:15%;">
+            <span>Top Hit 3</span>
+            <span id="topHit3"></span>
+            <img id="topThumb3" class="media-object" csrc="" />
+        </div>
+        <div style="display:inline-block;border:1px solid black;width:15%;">
+            <span>Top Hit 4</span>
+            <span id="topHit4"></span>
+            <img id="topThumb4" class="media-object" csrc="" />
+        </div>
+    </div>
+    <br />*@
+    <div id="divSummaryTables" style="">
+        <div id="divTableLine0" style="width:100%;display:flex;justify-content:center;height:250px;">
+            <div style="width:450px;">
+                <div id="marketTableContainer">
+                    <div class="cohortReportsChartHeader">
+                        <div style="flex-grow: 1;">
+                            <div class="cohortReportsChartHeaderBorderDiv">
+                            </div>
+                        </div>
+                        <span class="cohortReportsChartHeaderSpan">MARKETS</span>
+                        <div style="flex-grow: 1;">
+                            <div class="cohortReportsChartHeaderBorderDiv">
+                            </div>
+                        </div>
+                    </div>
+                    <div id="divMarketTable" style="display:flex;justify-content:center;">
+                    </div>
+                </div>
+            </div>
+            <div class="cohortReportsCentralDiv"></div>
+            <div style="width:450px;">
+                <div id="networkTableContainer">
+                    <div class="cohortReportsChartHeader">
+                        <div style="flex-grow: 1;">
+                            <div class="cohortReportsChartHeaderBorderDiv">
+                            </div>
+                        </div>
+                        <span class="cohortReportsChartHeaderSpan">NETWORKS</span>
+                        <div style="flex-grow: 1;">
+                            <div class="cohortReportsChartHeaderBorderDiv">
+                            </div>
+                        </div>
+                    </div>
+                    <div id="divNetworkTable" style="display:flex;justify-content:center;">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="divTableLine1" style="width:100%;display:flex;justify-content:center;height:250px;">
+            <div style="width:450px;">
+                <div id="stationTableContainer">
+                    <div class="cohortReportsChartHeader">
+                        <div style="flex-grow: 1;">
+                            <div class="cohortReportsChartHeaderBorderDiv">
+                            </div>
+                        </div>
+                        <span class="cohortReportsChartHeaderSpan">STATIONS</span>
+                        <div style="flex-grow: 1;">
+                            <div class="cohortReportsChartHeaderBorderDiv">
+                            </div>
+                        </div>
+                    </div>
+                    <div id="divStationTable" style="display:flex;justify-content:center;">
+                    </div>
+                </div>
+            </div>
+            <div class="cohortReportsCentralDiv" style="height:auto;"></div>
+            <div style="width:450px;">
+                <div id="programTableContainer">
+                    <div class="cohortReportsChartHeader">
+                        <div style="flex-grow: 1;">
+                            <div class="cohortReportsChartHeaderBorderDiv">
+                            </div>
+                        </div>
+                        <span class="cohortReportsChartHeaderSpan">PROGRAMS</span>
+                        <div style="flex-grow: 1;">
+                            <div class="cohortReportsChartHeaderBorderDiv">
+                            </div>
+                        </div>
+                    </div>
+                    <div id="divProgramTable" style="display:flex;justify-content:center;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*<div id="divSummaryTables" style="display:flex;flex-wrap:wrap;justify-content:center;">
+        <div id="marketTableContainer" style="width:450px;height:250px;">
+            <div class="cohortReportsChartHeader">
+                <div style="flex-grow: 1;">
+                    <div class="cohortReportsChartHeaderBorderDiv">
+                    </div>
+                </div>
+                <span class="cohortReportsChartHeaderSpan">MARKETS</span>
+                <div style="flex-grow: 1;">
+                    <div class="cohortReportsChartHeaderBorderDiv">
+                    </div>
+                </div>
+            </div>
+            <div id="divMarketTable" style="display:flex;justify-content:center;">
+            </div>
+        </div>
+        <div class="cohortReportsCentralDiv" style="height:auto"></div>
+        <div id="networkTableContainer" style="width:450px;height:250px;">
+            <div class="cohortReportsChartHeader">
+                <div style="flex-grow: 1;">
+                    <div class="cohortReportsChartHeaderBorderDiv">
+                    </div>
+                </div>
+                <span class="cohortReportsChartHeaderSpan">NETWORKS</span>
+                <div style="flex-grow: 1;">
+                    <div class="cohortReportsChartHeaderBorderDiv">
+                    </div>
+                </div>
+            </div>
+            <div id="divNetworkTable" style="display:flex;justify-content:center;">
+            </div>
+        </div>
+        <div id="stationTableContainer" style="width:450px;height:250px;">
+            <div class="cohortReportsChartHeader">
+                <div style="flex-grow: 1;">
+                    <div class="cohortReportsChartHeaderBorderDiv">
+                    </div>
+                </div>
+                <span class="cohortReportsChartHeaderSpan">STATIONS</span>
+                <div style="flex-grow: 1;">
+                    <div class="cohortReportsChartHeaderBorderDiv">
+                    </div>
+                </div>
+            </div>
+            <div id="divStationTable" style="display:flex;justify-content:center;">
+            </div>
+        </div>
+        <div class="cohortReportsCentralDiv" style="height:auto;margin-top:0px;"></div>
+        <div id="programTableContainer" style="width:450px;height:250px;">
+            <div class="cohortReportsChartHeader">
+                <div style="flex-grow: 1;">
+                    <div class="cohortReportsChartHeaderBorderDiv">
+                    </div>
+                </div>
+                <span class="cohortReportsChartHeaderSpan">PROGRAMS</span>
+                <div style="flex-grow: 1;">
+                    <div class="cohortReportsChartHeaderBorderDiv">
+                    </div>
+                </div>
+            </div>
+            <div id="divProgramTable" style="display:flex;justify-content:center;">
+            </div>
+        </div>
+    </div>*@
+    <br />
+    @*<div id="divEarnedHighlights">
+        <div id="earnedHeader" style="text-align:center;">
+            <span>Earned Highlights</span>
+        </div>
+        <br />
+        <div id="earnedHighlights" class="cohortEarnedHighlights">
+            <div id="earnedTotalNM">
+                <div style="text-align:center;">
+                    <span id="earnedNM" style="font-size:24px;">27,000,000</span>
+                </div>
+                <div style="font-size:smaller;text-align:center;">Total Online News</div>
+            </div>
+            <div id="earnedTotalBL">
+                <div style="text-align:center;">
+                    <span id="earnedBL" style="font-size:24px;">27,000,000</span>
+                </div>
+                <div style="font-size:smaller;text-align:center;">Total Blog</div>
+            </div>
+            <div id="earnedTotalPrint">
+                <div style="text-align:center;">
+                    <span id="earnedPR" style="font-size:24px;">27,000,000</span>
+                </div>
+                <div style="font-size:smaller;text-align:center;">Total Print</div>
+            </div>
+        </div>
+        <br />
+        <div id="topEarnedLists" style="width:100%;display:flex;justify-content:space-between;">
+            <div id="divTopCohortTweets" style="width: 47%;">
+                <div class="cohortReportsChartHeader">
+                    <div style="flex-grow: 1">
+                        <div class="cohortReportsChartHeaderBorderDiv">
+                        </div>
+                    </div>
+                    <span class="cohortReportsChartHeaderSpan">TWEETS</span>
+                    <div style="flex-grow: 1">
+                        <div class="cohortReportsChartHeaderBorderDiv">
+                        </div>
+                    </div>
+                </div>
+                <div id="divTweetList">
+                </div>
+            </div>
+            <div id="divTopEarnedNews" style="width: 47%;">
+                <div class="cohortReportsChartHeader">
+                    <div style="flex-grow: 1">
+                        <div class="cohortReportsChartHeaderBorderDiv">
+                        </div>
+                    </div>
+                    <span class="cohortReportsChartHeaderSpan">NEWS</span>
+                    <div style="flex-grow: 1">
+                        <div class="cohortReportsChartHeaderBorderDiv">
+                        </div>
+                    </div>
+                </div>
+                <div id="divNewsList">
+                </div>
+            </div>
+        </div>*@
+    </div>
+</div>

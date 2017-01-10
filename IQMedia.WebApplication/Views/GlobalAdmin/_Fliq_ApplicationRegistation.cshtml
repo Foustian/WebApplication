@@ -1,0 +1,84 @@
+﻿@using IQMedia.Model;
+@model fliQ_ApplicationModel
+@{
+    
+    IQMedia.Model.ActiveUser sessionInformation = IQMedia.WebApplication.Utility.ActiveUserMgr.GetActiveUser();
+}
+<script src="~/Scripts/jquery.form.js?v=1.0" type="text/javascript"></script>
+<script language="javascript" type="text/javascript">
+    $("#divFliq_ApplicationRegistration_ScrollContent").css("height", documentHeight - 250);
+    $("#divFliq_ApplicationRegistration_ScrollContent").mCustomScrollbar({
+        advanced: {
+            updateOnContentResize: true,
+            autoScrollOnFocus: true
+        }
+    });
+</script>
+<div style="clear: both;">
+</div>
+<div id="divFliq_ApplicationRegistration_ScrollContent">
+    @using (Html.BeginForm("Fliq_ApplicationRegistration", "FliqCustomer", FormMethod.Post, new { @class = "form-horizontal", @id = "frmFliq_Application" }))
+    {
+        <div style="padding-right: 15px;">
+            <div class="sidebar-nav" style="margin-top: 7px;">
+                <h5>
+                    Fliq Application Setup Page</h5>
+            </div>
+            <br />
+            <div class="control-group">
+                <label for="Application" class="control-label">
+                    Application Name</label>
+                <div class="controls">
+                    <input type="hidden" id="ID" name="ID" value="@Model.ID" />
+                    <input type="text" name="Application" id="Application" value="@Model.Application" />
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanApplication"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="Version" class="control-label">
+                    Version</label>
+                <div class="controls">
+                    <input type="text" name="Version" id="Version" value="@Model.Version" />
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanVersion"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="Path" class="control-label">
+                    Path</label>
+                <div class="controls">
+                    <input type="text" name="Path" id="Path" value="@Model.Path" />
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanPath"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="Description" class="control-label">
+                    Description</label>
+                <div class="controls">
+                    <input type="text" name="Description" id="Description" value="@Model.Description" />
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanDescription"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="IsActive" class="control-label">
+                    Is Active</label>
+                <div class="controls">
+                    <input type="checkbox" name="IsActive" id="IsActive" checked="@(Model.IsActive.HasValue ? Model.IsActive.Value : true)" value="true" />
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">
+                    &nbsp;</label>
+                <div class="controls">
+                    <input type="button" id="btnCancelFliq_ApplicationRegistration" name="btnCancelFliq_ApplicationRegistration"
+                        value="Cancel" onclick="CancelFliq_ApplicationRegistration();" class="button" style="margin: 0px;" />
+                    <input type="button" onclick="SaveFliq_Application()" id="btnSubmitFliq_ApplicationRegistration"
+                        name="btnSubmitFliq_ApplicationRegistration" value="Submit" class="button" style="margin: 0px;" />
+                </div>
+            </div>
+        </div>
+    }
+</div>

@@ -1,0 +1,234 @@
+@charset "utf-8";
+/* CSS Document */
+
+a:focus { outline:0px!impotant; outline-offset: 0px;}
+
+a:hover, a:focus{ text-decoration: none;}
+.career-banner {
+    background: url(../../Images/home_new/green-bg-head.png) repeat-x center top rgba(0, 0, 0, 0);
+    border-bottom: 0 none !important;
+    padding: 10px 0;
+	
+}
+.career-iq {
+    background: url(../../Images/home_new/Careers/career-iq.png) no-repeat right top 47px rgba(0, 0, 0, 0);
+	min-height:166px;
+	vertical-align:middle
+}
+
+
+.hd-right-text{ color:#53BDEC; font:38px/44px 'open_sansregular'; letter-spacing:1px; display:block; text-align:right; margin-top:62px; margin-bottom:40px;}
+
+.Career-round-link a {
+	margin:2px 1px;
+	width:55px;
+	height:55px;
+	display:inline-block;
+	background:url(../../Images/home_new/Careers/career-icon.png) no-repeat left top;
+	background-size:386px 110px;
+	overflow:hidden;
+}
+
+.Career-round-link a.chart{
+	background-position:0px top;
+}
+.Career-round-link a.chart:hover{
+	background-position:0px -55px;
+}
+.Career-round-link a.chart.active{
+	background-position:0px -55px;
+}
+
+.Career-round-link a.call{
+	background-position:-55px top;
+}
+.Career-round-link a.call:hover{
+	background-position:-55px -55px;
+}
+.Career-round-link a.call.active{
+	background-position:-55px -55px;
+}
+
+.Career-round-link a.comp{
+	background-position:-109px top;
+}
+.Career-round-link a.comp:hover{
+	background-position:-109px -55px;
+}
+.Career-round-link a.comp.active{
+	background-position:-109px -55px;
+}
+
+.Career-round-link a.port{
+	background-position:-163px top;
+}
+.Career-round-link a.port:hover{
+	background-position:-163px -55px;
+}
+.Career-round-link a.port.active{
+	background-position:-163px -55px;
+}
+
+.Career-round-link a.user{
+	background-position:-217px top;
+}
+.Career-round-link a.user:hover{
+	background-position:-217px -55px;
+}
+.Career-round-link a.user.active{
+	background-position:-217px -55px;
+}
+
+.WhiteTitle{ font:22px/28px 'open_sansregular'; color: #fff; padding-top:3px;  padding-bottom: 3px; }
+
+.TitleGreen{ font:22px/28px 'open_sansregular'; color: #C1D72E; }
+.carWelcomeTxt{ display: block; clear: both; margin-top: 6px; }
+.carWelcomeTxt .carLeftImg{ margin-bottom: 10px;}
+
+.carWelcomeTxt p{ font-size: 14px;}
+.carWelcomeTxt p.p14 { font:13px/18px'open_sanssemibold'!important; text-align: justify;}
+.carWelcomeTxt p.p14{font-weight: bolder; font-size: 13px\0; }
+. ie10 .carWelcomeTxt p.p14{
+{font-weight: bolder;font-size: 13px;} /* Only works in IE10 */
+}
+
+
+.carWelcomeTxt .p12 { font:12px/15px'open_sansregular'; text-align: justify;}
+.JoinBtn a { background:#444444; color: #C1D72E; border-radius: 10px; text-transform: uppercase; padding:8px 0px; display: block; text-align: center; margin-top: 9px;}
+.JoinBtn a:hover {color: #fff; text-decoration: none;}
+
+
+.JoinTxt h4{  margin-bottom: 4px; font-size: 19px; }
+.red-txt{ text-decoration: none; color:#EE2375;}
+.BlueBigTitle{ display: block;  text-align: center; font:30px/34px 'open_sansregular'; color: #53BDEC; padding-top:0px;  padding-bottom: 3px;}
+
+ul.wwralist{ list-style: none; margin: 15px 0 0 0; padding: 0px; overflow: hidden; }
+ul.wwralist li { width: 100%; float: left; display: inline-block; background: #fff; margin-top: 5px; margin-bottom: 5px; margin-left: 0px; margin-right: 0px; vertical-align: top;}
+ul.wwralist li:first-child{ margin-left: 0px;}
+ul.wwralist li:last-child{ margin-right: 0px;}
+
+ul.wwralist li .imgmain{display: block; text-align: center; margin-bottom: 8px;}
+ul.wwralist li .ListTxt{ display: block; font:10px/15px 'open_sansregular'; color: #000; margin-left: 29px; text-align: left;}
+ul.wwralist li .ListTxt span{ margin-bottom: 3px; display: block; font:10px/15px 'open_sanssemibold';}
+ul.wwralist li .ListTxt p{ font:10px/15px 'open_sansregular'; color: #000; margin-bottom: 5px; }
+ul.wwralist li .name{ color: #000; font:12px/18px 'open_sanssemibold'; text-align: left; }
+.BlueBtn a { background:#53BDEC; color: #fff; border-radius: 10px; text-transform: uppercase; padding:8px 15px; display: inline-block; text-align: center; margin-top: 9px;}
+.BlueBtn a:hover {color: #fff; text-decoration: none;}
+
+.bottom-img-main{ display: block; margin-top: 0px; clear: both;}
+.bottom-img-main img{ width: 100%;}
+.imgFirstPart{ width: 34.8%;display: inline-block; vertical-align: top;}
+.imgSecondPart{ width: 39.8%;display: inline-block; vertical-align: top;}
+.imgSecondPart .one{ width: 47.7%;display: inline-block; vertical-align: top;}
+.imgSecondPart .two{ width: 52.3%;display: inline-block; vertical-align: top;}
+.imgThirdPart{ width: 25.4%;display: inline-block; vertical-align: top;}
+
+
+
+@media (min-width: 200px) and (max-width: 640px) {
+	.career-iq {min-height:136px; background: url(../../Images/home_new/Careers/career-iq.png) no-repeat right top 10px rgba(0, 0, 0, 0);}
+	.career-in-width{ padding-left:0px; padding-right:0px;}
+	.hd-right-text{ font:25px/30px 'open_sansregular';  text-align:center; margin-top:10px;}
+	.career-lr0 { padding-left: 0px; padding-right: 0px;}
+	.Career-round-link {text-align: center; margin-top: 10px;}
+	
+	ul.wwralist li .imgmain{text-align: center; margin-bottom: 8px;}
+	ul.wwralist li .ListTxt{ display: block; font:11px/15px 'open_sansregular'; margin-left: 0px; text-align: center;}
+	ul.wwralist li .ListTxt span{ margin-bottom: 3px; display: block;}
+	ul.wwralist li .ListTxt p{ font:11px/15px 'open_sansregular';}
+	ul.wwralist li .name{ color: #000; font:14px/18px 'open_sansregular'; text-align: center; }
+	
+	.imgFirstPart{ width: 100%;display: inline-block;}
+.imgSecondPart{ width: 100%;display: inline-block;}
+.imgSecondPart .one{ width: 100%;display: inline-block;}
+.imgSecondPart .two{ width: 100%;display: inline-block;}
+.imgThirdPart{ width: 100%;display: inline-block;}
+
+	
+	
+}
+@media (min-width: 640px) and (max-width: 767px) {
+	ul.wwralist { text-align: center;}
+	ul.wwralist li { width: 45%; margin-left: 13px; margin-right: 13px; float: none; min-height: 388px; }
+	ul.wwralist li:first-child{ margin-left: 13px;}
+	ul.wwralist li:last-child{ margin-right: 13px;}
+	
+
+ul.wwralist li .ListTxt{ margin-left: 41px; text-align: left;}
+ul.wwralist li .name{ text-align: left; }
+	
+	
+	
+}
+@media (min-width: 768px) {
+	.hd-right-text{ font:30px/34px 'open_sansregular';}
+	.career-iq {background: url(../../Images/home_new/Careers/career-iq.png) no-repeat right top 31px rgba(0, 0, 0, 0);}
+	.Career-round-link {margin-top: 70px;}
+	.career-lr0 { padding-left: 0px; padding-right: 0px;}
+	.career-in-width{ padding-left:0px; padding-right:0px;}
+	
+	.carWelcomeTxt .carLeftImg{ display: inline-block; float: none; width:100%; margin-bottom: 10px;}	
+	.carWelcomeTxt .carRightTxt { margin-left:0; }
+	.carLeftImg img{margin:0 auto;}
+	.JoinBtn { display: inherit; float: none; width: auto;}
+	.JoinTxt { margin-left: 0; }
+	ul.wwralist { text-align: center;}
+	ul.wwralist li { width: 45%; margin-left: 13px; margin-right: 13px; float: none; min-height: 370px;}
+	ul.wwralist li:first-child{ margin-left: 13px;}
+ul.wwralist li:last-child{ margin-right: 13px;}
+	
+	
+}
+@media (min-width: 992px) {
+	.hd-right-text{ color:#C1D72E; font:37px/44px 'open_sansregular';}
+	.career-iq { background: url(../../Images/home_new/Careers/career-iq.png) no-repeat right top 47px rgba(0, 0, 0, 0);}
+	.Career-round-link {margin-top: 80px;}
+	.career-in-width{ padding-left:0px; padding-right:0px;}
+	
+	.career-in-width{padding-left:18px\0; padding-right:18px\0; }
+. ie10 .career-in-width{padding-left:18px; padding-right:18px; }
+	
+	
+	.carWelcomeTxt .carLeftImg{ display: inline-block; float: left; width: 342px;}
+.carWelcomeTxt .carRightTxt { margin-left: 357px; }
+.JoinBtn { display: inline-block; float: left; width: 165px;}
+.JoinTxt { margin-left: 175px; }
+	.BlueBigTitle{ font:38px/45px 'open_sansregular'; padding-top:15px;}
+	ul.wwralist li { width: 29.1%; margin-left: 13px; margin-right: 13px;}
+	ul.wwralist li:first-child{ margin-left: 13px;}
+ul.wwralist li:last-child{ margin-right: 13px;}
+ul.wwralist li .ListTxt{margin-left: 16px;}
+
+	
+}
+@media (min-width: 1100px) {
+	.hd-right-text{ font:40px/44px 'open_sansregular';}
+	.johnRightTxt { margin-left: 360px; }
+	
+	ul.wwralist li { width: 18.1%; margin-left: 13px; margin-right: 13px; float: left;}
+	ul.wwralist li:first-child{ margin-left: 0px;}
+	ul.wwralist li:last-child{ margin-right: 0px;}
+	ul.wwralist li .ListTxt{margin-left: 25px;}
+
+}
+
+.c-team
+{font-size:14px;}
+
+.c-team p
+{font-size:14px; padding:0px 10px; text-align:left;}
+
+.c-name{color:#c7d36a;font-size:14px;margin-top:20px;}
+
+.c-desg{font-size:14px;}
+
+.c-que{font-family:'lato-italic';font-size:14px;}
+
+.c-team .row ul
+{ text-align:center;}
+
+.c-team .row li
+{width:225px; display:inline-block;vertical-align:top;}
+
+.c-team h3
+{ text-align:left; padding:0px 10px;margin-bottom:10px;}

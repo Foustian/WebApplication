@@ -1,0 +1,58 @@
+﻿<div id="divClipPlayer" style="width: 100%; padding-top: 56.25%; position: relative;">
+    <img src="~/images/video-player/buffering.gif" alt="Loading..." id="imgLoading" style="position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0; margin: auto; display: none; z-index: 2000;" />
+    <div class="vid-controls-background">
+    </div>
+    <div class="vid-controls-holder">
+        <div class="vid-time-bar">
+            <div class="vid-progress-bar">
+                <div class="vid-play-bar">
+                </div>
+                <div class="vid-slider-time">
+                </div>
+            </div>
+        </div>
+        <div class="vid-controls-play">
+        <div class="vid-controls-left">
+            <div style="padding-left: 15px; padding-top: 0px; line-height:21px;">
+                <span class="vid-time-current"></span><span class="vid-time-separator">/ </span>
+                <span class="vid-time-duration"></span>
+            </div>
+            <div id="divVidPlay">
+                <img src="~/images/video-player/ifrm/play.png" id="imgVidPlay" alt="Play" />
+                <img src="~/images/video-player/ifrm/pause.png" id="imgVidPause" alt="Pause" style="display: none;" />
+            </div>
+            @if (!Model.ContainsKey("FSCR") || Model["FSCR"] != "0")
+            {
+            <div id="divVidFscr" onclick="SetFullScreen();">
+                <img src="~/images/video-player/ifrm/fscr.png" alt="Full Screen" />
+            </div>
+            }
+            <div id="divVidVol">
+                <div id="divVidVolImg" style="float: left; padding-right: 7px;">
+                    <img src="~/images/video-player/ifrm/vol.png" alt="Vol" id="imgVidVol" />
+                    <img src="~/images/video-player/ifrm/vol-mute.png" style="display: none;" alt="Mute"
+                        id="imgVidVolMute" />
+                </div>
+                <div id="divVidVolSlider" style="width: 70px; border: none; border-radius: 0; float: left;
+                    margin-top: 7px; display: none;">
+                </div>
+            </div>
+        </div>
+        <div class="vid-controls-right">
+            <div id="divVidRW2" style="padding-left:15px;">
+                <img src="~/images/video-player/ifrm/rw2.png" alt="Rewind2" />
+            </div>
+            <div id="divVidRW">
+                <img src="~/images/video-player/ifrm/rw.png" alt="Rewind" />
+            </div>
+            <div id="divVidFF">
+                <img src="~/images/video-player/ifrm/ff.png" alt="FastForward" />
+            </div>
+            <div id="divVidFF2">
+                <img src="~/images/video-player/ifrm/ff2.png" alt="FastForward2" />
+            </div>
+        </div>
+        </div>
+    </div>
+</div>

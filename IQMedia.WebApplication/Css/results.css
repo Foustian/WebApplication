@@ -1,0 +1,23 @@
+﻿.r-list
+{
+    padding-top:0px;
+    padding-right:0px;
+    padding-left:0px;
+    height:100%;
+}
+
+.r-list h1
+{
+    margin:0;
+    padding-left:15px;
+    line-height:80px;
+    color:#fff;
+    text-decoration:none;
+}
+
+.r-title
+{
+    padding-right:0px;    
+}
+
+.r-title-img{text-align:right;}

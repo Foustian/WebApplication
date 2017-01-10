@@ -1,0 +1,58 @@
+﻿@{
+    ViewBag.Title = "iQ media Consulting";
+    Layout = "~/Views/Shared/_IQMediaMasterStaticPages.cshtml";
+}
+@section HeaderImage
+{
+    <img src="~/Images/staticBanner/Services.jpg" alt="Consulting" />
+}
+@section Content
+{
+    <div class="span4">
+        @Html.Partial("~/Views/Services/_Left.cshtml")
+    </div>
+    <div class="span14 span14pad">
+        <p>
+            <span class="staticPageHeader">Tailored PR, Communications, and Marketing Insights</span></p>
+        <p>
+            metriQs is a customized capture, measurement and reporting service that empowers
+            public relations, communications, and marketing professionals to both understand
+            and demonstrate the value of an organization&#8217;s publicity.</p>
+        <p>
+            metriQs leverages cliQ – the largest US broadcast TV, online news and social content
+            portal in the world. We mine data on brand performance and transform media content
+            into valuable reports that cover brand awareness, competitive intelligence, target
+            audience reach and publicity values.
+        </p>
+        <p>
+            With this unprecedented access to both real-time and archived broadcast and online
+            media, executives use metriQs to effectively plan high-level business strategies
+            for media and marketing.</p>
+        <p>
+            Big insights come from big data. metriQs takes advantage of a unique platform
+            that exceeds all capabilities available in the industry today. We make it easy for
+            media teams that garner lots of media coverage to detect brand, industry and competitive
+            trends by distilling the information into custom reports tailored to each client.
+        </p>
+        <p>
+            metriQs enables senior public relations and communications executives to quantify
+            the business value of outreach programs, and serves as an indispensible tool to
+            help guide overall corporate strategy.</p>
+        <p>
+            iQ media&#8217;s quantitative marketing experts consult with in-house communications
+            and marketing teams as well as public relations and advertising agencies to create
+            individualized data blueprints of impact measurement, coverage trend analysis, and
+            competitive intelligence.
+        </p>
+        <p>
+            Tailored report packages provide actionable insights for senior management and include
+            highly customized data analyses with overlays of financials, sales, and relevant
+            KPIs.</p>
+    </div>
+    <script type="text/javascript" language="javascript">
+
+        $(document).ready(function () {
+            SetHighligtedLi('ulServiceNavigation', 'liConsulting');
+        });    
+    </script>
+}

@@ -1,0 +1,60 @@
+﻿@{
+    var usMapID = 2;
+    var canadaMapID = 3;
+
+    <div id="divPrimaryContentMain" style="width:100%;">
+        <div id="primaryContentSideNav" class="pull-left" style="border:solid 1px #e9e9e9; padding-top:5px;">
+            <ul id="primaryChartNav" class="nav nav-stacked primaryNav" style="display:inline-block; width:20px;">
+                <li>
+                    <a id="primaryChartNav7" name="primaryChartNav" class="daytimeChart primaryNavIcon cursorPointer" isDaytime="true" href="javascript:ChangeChartType(7); void(0);">&nbsp;</a> <!-- Only visible on Daytime/Daypart tab, where it should be at the top -->
+                    @*<a id="primaryChartNav9" name="primaryChartNav" class="daypartChart primaryNavIcon" isDaypart="true" href="javascript:GetChart(9); void(0);">&nbsp;</a> <!-- Only visible on Daypart tab, where it should be at the top -->*@
+                    <a id="primaryChartNav1" name="primaryChartNav" class="lineChart primaryNavIcon cursorPointer" href="javascript:ChangeChartType(1); void(0);">&nbsp;</a> <!-- If href changes, must also change LoadSelectedChart in Analytics.js -->
+                    <a id="primaryChartNav2" name="primaryChartNav" class="mapChart primaryNavIcon cursorPointer" href="javascript:ChangeChartType(2); void(0);">&nbsp;</a>
+                    <a id="primaryChartNav4" name="primaryChartNav" class="pieChart primaryNavIcon cursorPointer" isDaytime="true" isDaypart="true" href="javascript:ChangeChartType(4); void(0);">&nbsp;</a>
+                    <a id="primaryChartNav5" name="primaryChartNav" class="barChart primaryNavIcon cursorPointer" isDaytime="true" isDaypart="true" href="javascript:ChangeChartType(5); void(0);">&nbsp;</a>
+                    <a id="primaryChartNav6" name="primaryChartNav" class="columnChart primaryNavIcon cursorPointer" isDaytime="true" isDaypart="true" href="javascript:ChangeChartType(6); void(0);">&nbsp;</a>
+                    <a id="primaryChartNav8" name="primaryChartNav" class="growthChart primaryNavIcon cursorPointer" href="javascript:ChangeChartType(8); void(0);">&nbsp;</a>
+                </li>
+            </ul>
+            <ul id="primaryOverlayNav" class="nav nav-stacked primaryNav" style="vertical-align:bottom; display:inline-block; width:20px;">
+                <li>
+                    <a id="primaryOverlayNav1" name="primaryOverlayNav" class="googleOverlay primaryNavIcon cursorPointer" href="javascript:ToggleOverlayData(1); void(0);">&nbsp;</a>
+                    <a id="primaryOverlayNav2" name="primaryOverlayNav" class="audienceOverlay primaryNavIcon cursorPointer" href="javascript:ToggleOverlayData(2); void(0);">&nbsp;</a>
+                    <a id="primaryOverlayNav3" name="primaryOverlayNav" class="mediaValueOverlay primaryNavIcon cursorPointer" href="javascript:ToggleOverlayData(3); void(0);">&nbsp;</a>
+                </li>
+            </ul>
+        </div>
+        <div style="display:-webkit-flex;display:flex;justify-content:center;align-items:center;">
+            <div id="divPrimaryChart" class="divPrimaryChartSpecificClass" style="width:90%; height:400px;">
+            </div>
+            <div id="divSecondaryChart" style="width:90%;height:400px;"></div>
+            <div onmouseover="hideToolTipDiv();" onmouseout="hideToolTip();" id="mapToolTip" class="mapTooltip">
+            </div>
+
+            <!-- In order for the overlays to work properly, their data needs to be rendered as a chart -->
+            <div id="divOverlayChart" style="display:none;"></div>
+        </div>
+        <div id="divBottomChartNav" class="row-fluid row-custom clearBorders">
+            <div class="container" style="width:auto">
+                <div class="navbar" style="margin-bottom:auto">
+                    <ul id="mapShortNav" class="nav navbar-nav cursorPointer font14Pt" style="float:right;">
+                        <li id="liMap@(usMapID)" style="padding:0">
+                            <a href="javascript:ChangeChartType(2); void(0);" class="aBottomNav">usa</a>
+                        </li>
+                        <li id="liMap@(canadaMapID)" style="padding:0">
+                            <a href="javascript:ChangeChartType(3); void(0);" class="aBottomNav">canada</a>
+                        </li>
+                    </ul>
+                    <ul id="demoShortNav" class="nav navbar-nav cursorPointer font14Pt" style="float:right;">
+                        <li id="liGender" style="padding:0px;" eleVal="gender" onclick="SwitchDemoSubTab(this);">
+                            <a class="aBottomNav" href="#">gender</a>
+                        </li>
+                        <li id="liAge" style="padding:0px;" eleVal="age" onclick="SwitchDemoSubTab(this);">
+                            <a class="aBottomNav" href="#">age</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+}

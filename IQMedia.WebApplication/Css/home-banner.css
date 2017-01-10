@@ -1,0 +1,224 @@
+.lSAction > a{ top:34%;}
+.lSAction > a { width: 32px; height: 32px; background-image: url(../images/controls2.png);}
+.lSAction > .lSNext { background-position: -32px 0;}
+ul {list-style: none outside none; padding-left: 0;}
+.content-slider li {text-align: center; color: #FFF; width:100%; position:relative;}
+.content-slider li img{width:100%;height:auto;position:relative;}
+.content-slider h3 { margin: 0;	padding: 70px 0;}
+.content-slider a{margin-top:10px;}
+.HomeBanner {width: 100%;}
+.FontItalic{ font-style:italic!important;}
+.lSSlideOuter .lSPager.lSpg{ display:none;}
+.lightSlider { margin-bottom:0px;}
+/*======HomeFirstImage=======*/
+.FirsthomeImg .pinkbg{ height: 85px; padding: 7px 10px 5px; background:rgba(44, 44, 44, 0.7); position:absolute;top:0;right:0;bottom:0;left:0;width:100%;margin:auto;}
+.FirsthomeImg .pinkbg span{ color: #ffffff; font: 18px/20px 'NixieOne-Regular'; display:block; clear:both;}
+.FirsthomeImg .pinkbg label{ font-weight: normal;}
+.FirsthomeImg .pinkbg h1{  color: #fff; font: 15px/18px "avenir_65medium"; margin: 5px 0px; display:block; clear:both;}
+.btnMain{ display:block; margin-top:12px; }
+a.greenbtn:hover{ background:#b5d000;}
+a.greenbtn{ display:inline-block; padding:5px 8px; background:#c0d62e; border-radius:5px; color:#fff; font: 12px/15px "open_sansregular"; text-decoration:none; }
+a.pinkbtn:hover{ background:#da1c69;} 
+a.pinkbtn{ display:inline-block; padding:5px 8px; background:#ee2375; border-radius:5px; color:#fff; font: 12px/15px "open_sansregular"; text-decoration:none; }
+
+.clAction a{top:0;bottom:0;margin-top:auto;margin-bottom:auto;}
+
+
+/*===Blue Row Icon====*/
+.iconBlueBg{ background:#69b7ea;}
+.iconPinkBg{ background:#ED2375;}
+.iconGreenBg{ background:#b6dc2a;}
+.Blue-box { text-align:center; padding:3px;	position:absolute; 	bottom:0px; left:0px; right:0px;}
+.Blue-box .first { margin-left:-16px; }
+.Blue-box img {	width:27px; }
+.Blue-box img.first{ width:56px; height:42px; }
+
+
+/*======HomeSecondImage=======*/
+.SecondhomeImg .Blackbg{ height: 85px; padding: 7px 10px 5px; background:url(../images/BlackBg.png) repeat left top;}
+.SecondhomeImg .Blackbg span{ color: #444444; font:18px/20px 'open_sansitalic'; display:block; clear:both;}
+.SecondhomeImg .Blackbg span img{ width:95px;}
+.SecondhomeImg .Blackbg h1{  color: #fff; font: 15px/18px "NixieOne-Regular"; margin: 5px 0px; display:block; clear:both;}
+a.Bluebtn:hover{ background:#63aee0; }
+
+/*======HomeCodieImage=======*/
+
+.CodiehomeImg .Blackbg{ height: 85px; padding: 7px 10px 5px; background:url(../images/BlackBg.png) repeat left top;}
+.CodiehomeImg .Blackbg span{ color: #fff; font: 14px/15px "avenir_65medium"; margin-top: 0px; display:block; clear:both;}
+.CodiehomeImg .Blackbg img{height:40%; width:auto;}
+.CodiehomeImg .Blackbg span img{ width:95px;}
+.CodiehomeImg .Blackbg h1{  color: #fff; font: 11px/13px "NixieOne-Regular"; margin: 5px 0px; display:block; clear:both;}
+a.Bluebtn{ display:inline-block; padding:5px 8px; background:#53bdec; border-radius:5px; color:#fff; font: 12px/15px "open_sansregular"; text-decoration:none; }
+
+/*======HomeThirdImage=======*/
+.ThirdhomeImg .Blackbg{  height: 85px; padding: 7px 10px 5px; background:url(../images/BlackBg.png) repeat left top;}
+.ThirdhomeImg .Blackbg span{ color: #444444; font: 18px/20px 'open_sansitalic'; display:block; clear:both;}
+.ThirdhomeImg .Blackbg span img{ width:95px;}
+.ThirdhomeImg .Blackbg h1{  color: #fff; font: 15px/18px "NixieOne-Regular"; margin: 5px 0px; display:block; clear:both;}
+
+/*======HomeFourthImage=======*/
+.FourthhomeImg .Blackbg{ height: 85px; padding: 7px 10px 5px; background:url(../images/BlackBg.png) repeat left top;}
+.FourthhomeImg .Blackbg span{ color: #444444; font: 18px/20px 'open_sansitalic'; display:block; clear:both;}
+.FourthhomeImg .Blackbg span img{ width:95px;}
+.FourthhomeImg .Blackbg h1{  color: #fff; font: 15px/18px "NixieOne-Regular"; margin: 5px 0px; display:block; clear:both;}
+.Fourthpinkbg{ padding: 6px 10px 6px; background:url(../images/pink-bg.png) repeat left top;}
+.Fourthpinkbg .lefttxt{ display:inline-block; color: #fff; font: 21px/23px "open_sansregular"; }
+.Fourthpinkbg .lefttxt img{ width:125px; margin-right:0px;}
+.Fourthpinkbg .righttxt{ display:inline-block; color: #fff; font: 21px/23px "open_sansregular";  margin-left:0px; }
+
+.Blackbg {position:absolute;top:0;right:0;bottom:0;left:0;margin:auto;width:100%;}
+.clAction{height:83px;}
+
+@media (max-width: 640px) 
+{
+    a.greenbtn{margin-top:0px;}
+    a.pinkbtn{margin-top:0px;}
+    a.Bluebtn{margin-top:0px;}
+	}
+@media (min-width: 768px) {	
+.lSAction > a { width: 57px; height: 55px; background-image: url(../images/controls.png); }
+.lSAction > .lSNext { background-position: -57px 0; }
+.lSAction > a{ top:35%;}
+
+
+/*======HomeFirstImage=======*/
+.FirsthomeImg .pinkbg{ height: 137px;}
+.FirsthomeImg .pinkbg span{ font: 30px 'avenir_65medium';}
+.FirsthomeImg .pinkbg label{ font-weight: normal;}
+.FirsthomeImg .pinkbg h1{  color: #fff; font: 15px "NixieOne-Regular"; margin-top: 6px;}
+.btnMain{ margin-top:10px; }
+a.greenbtn{ padding:5px 8px; font: 15px/20px "open_sansregular";  }
+a.pinkbtn{ padding:5px 8px; font: 15px/20px "open_sansregular";  }
+/*===Blue Row Icon====*/
+.Blue-box .first {margin-left:inherit;}
+.Blue-box img {	width:auto;}
+.Blue-box img.first{width:auto;	height:auto;}
+
+
+/*======HomeSecondImage=======*/
+.SecondhomeImg .Blackbg{height: 137px; padding-bottom: 8px; padding-top: 12px;}
+.SecondhomeImg .Blackbg span{ font: 37px/40px 'open_sansitalic';}
+.SecondhomeImg .Blackbg span img{ width:134px;}
+.SecondhomeImg .Blackbg h1{  color: #fff; font: 27px/28px "NixieOne-Regular"; margin-top: 6px;}
+
+/*======HomeCodieImage=======*/
+
+.CodiehomeImg .Blackbg{height: 137px;}
+.CodiehomeImg .Blackbg span{ font: 30px/35px 'avenir_65medium'; margin-top:0px;}
+.CodiehomeImg .Blackbg .font-small{ font: 15px 'avenir_65medium';}
+.CodiehomeImg .Blackbg span img{ width:134px;}
+.CodiehomeImg .Blackbg h1{  color: #fff; font: 20px/22px "NixieOne-Regular"; margin: 6px 0px;}
+a.Bluebtn{ padding:5px 8px; font: 15px/20px "open_sansregular"; }
+
+/*======HomeThirdImage=======*/
+.ThirdhomeImg .Blackbg{height: 137px;  padding-bottom: 8px; padding-top: 12px;}
+.ThirdhomeImg .Blackbg span{ font: 37px/40px 'open_sansitalic';}
+.ThirdhomeImg .Blackbg span img{ width:134px;}
+.ThirdhomeImg .Blackbg h1{  color: #fff; font: 27px/28px "NixieOne-Regular"; margin-top: 6px;}
+
+/*======HomeFourthImage=======*/
+.FourthhomeImg .Blackbg{height: 137px;  padding-bottom: 8px; padding-top: 12px;}
+.FourthhomeImg .Blackbg span{ font: italic 37px/40px 'open_sansregular';}
+.FourthhomeImg .Blackbg span img{ width:180px;}
+.FourthhomeImg .Blackbg h1{  color: #fff; font: 27px/28px "NixieOne-Regular"; margin-top: 6px;}
+
+.clAction{height:137px;}
+}
+@media (min-width: 992px) {
+.lSAction > a{ top:39%;}
+
+/*======HomeFirstImage=======*/
+.FirsthomeImg .pinkbg{ height: 162px;}
+.FirsthomeImg .pinkbg span{ font: 30px 'avenir_65medium';}
+.FirsthomeImg .pinkbg label{ font-weight: normal;}
+.FirsthomeImg .pinkbg h1{  color: #fff; font: 25px "NixieOne-Regular"; margin-top: 6px;}
+.btnMain{ margin-top:20px; }
+a.greenbtn{ padding:4px 10px; font: 18px/22px "open_sansregular";  }  
+a.pinkbtn{ padding:4px 10px; font: 18px/22px "open_sansregular";  }
+
+
+
+/*======HomeSecondImage=======*/
+.SecondhomeImg .Blackbg{height: 162px; padding-bottom: 16px;  padding-top: 17px;}
+.SecondhomeImg .Blackbg span{ font: 41px/48px 'open_sansitalic';}
+.SecondhomeImg .Blackbg span img{ width:154px;}
+.SecondhomeImg .Blackbg h1{  color: #fff; font: 33px/40px "NixieOne-Regular"; margin-top: 6px;}
+
+/*======HomeCodieImage=======*/
+.CodiehomeImg .Blackbg{height: 162px;}
+.CodiehomeImg .Blackbg span{ font: 40px/45px 'avenir_65medium';}
+.CodiehomeImg .Blackbg .font-small{ font: 20px 'avenir_65medium';}
+.CodiehomeImg .Blackbg span img{ width:154px;}
+.CodiehomeImg .Blackbg h1{  color: #fff; font: 25px "NixieOne-Regular"; margin-top: 6px;}
+a.Bluebtn{  padding:4px 10px; font: 18px/22px "open_sansregular"; }
+
+/*======HomeThirdImage=======*/
+.ThirdhomeImg .Blackbg{height: 162px; padding-bottom: 16px;  padding-top: 17px;}
+.ThirdhomeImg .Blackbg span{ font: 41px/48px 'open_sansitalic';}
+.ThirdhomeImg .Blackbg span img{ width:154px;}
+.ThirdhomeImg .Blackbg h1{  color: #fff; font: 33px/40px "NixieOne-Regular"; margin-top: 6px;}
+
+/*======HomeFourthImage=======*/
+.FourthhomeImg .Blackbg{height: 162px; padding-bottom: 16px;  padding-top: 17px;}
+.FourthhomeImg .Blackbg span{ font: 41px/48px 'open_sansitalic';}
+.FourthhomeImg .Blackbg span img{ width:228px;}
+.FourthhomeImg .Blackbg h1{  color: #fff; font: 35px/41px "NixieOne-Regular"; margin-top: 6px;}
+.Fourthpinkbg .lefttxt{ display:inline-block; color: #fff; font: 23px/24px "open_sansregular"; }
+.Fourthpinkbg .lefttxt img{ width:250px; margin-right:50px;}
+.Fourthpinkbg .righttxt{ display:inline-block; color: #fff; font: 23px/24px "open_sansregular";  margin-left:50px; }
+
+.clAction{height:162px;}
+	
+}
+@media (min-width: 1100px) {
+.lSAction > a{ top:40%;}
+
+/*======HomeFirstImage=======*/
+.FirsthomeImg .pinkbg{ height: 207px;}
+.FirsthomeImg .pinkbg span{ opacity: 71%; font: 60px 'avenir_65medium';}
+.FirsthomeImg .pinkbg label{ font-weight: normal;}
+.FirsthomeImg .pinkbg h1{  color: #fff; font:28px "NixieOne-Regular"; margin-top: 3px; margin-bottom:3px;}
+.btnMain{ margin-top:23px; }
+a.greenbtn{ padding:4px 17px; font: 22px/38px "open_sansregular"; } 
+a.pinkbtn{ padding:4px 17px; font: 22px/38px "open_sansregular"; }
+
+
+
+
+/*======HomeSecondImage=======*/
+.SecondhomeImg .Blackbg{height: 207px; padding-bottom: 18px; padding-top: 28px;}
+.SecondhomeImg .Blackbg span{ font: 55px/60px 'open_sansitalic';}
+.SecondhomeImg .Blackbg span img{ width:auto;}
+.SecondhomeImg .Blackbg h1{  color: #fff; font: 40px/46px "NixieOne-Regular"; margin-top: 6px;}
+a.Bluebtn{ padding:4px 17px; font: 22px/38px "open_sansregular"; }
+
+/*======HomeCodieImage=======*/
+.CodiehomeImg .Blackbg{height: 207px;}
+.CodiehomeImg .Blackbg span{ opacity: 71%; font: 60px/65px 'avenir_65medium'; margin-top:0px;}
+.CodiehomeImg .Blackbg img{height:96px; width:auto;}
+.CodiehomeImg .Blackbg .font-small{ opacity: 71%; font: 25px 'avenir_65medium';}
+.CodiehomeImg .Blackbg span img{ width:auto;}
+.CodiehomeImg .Blackbg h1{  color: #fff; font: 28px "NixieOne-Regular"; margin-top: 6px;}
+.CodiehomeImg a.Bluebtn{margin-top:0px;}
+
+/*======HomeThirdImage=======*/
+.ThirdhomeImg .Blackbg{height: 207px; padding-bottom: 18px; padding-top: 28px;}
+.ThirdhomeImg .Blackbg span{ font: 55px/60px 'open_sansitalic';}
+.ThirdhomeImg .Blackbg span img{ width:auto;}
+.ThirdhomeImg .Blackbg h1{  color: #fff; font:40px/46px "NixieOne-Regular"; margin-top: 6px;}
+
+/*======HomeFourthImage=======*/
+.FourthhomeImg .Blackbg{height: 207px; padding-bottom: 18px; padding-top: 28px;}
+.FourthhomeImg .Blackbg span{ font: 55px/60px 'open_sansitalic';}
+.FourthhomeImg .Blackbg span img{ width:auto;}
+.FourthhomeImg .Blackbg h1{  color: #fff; font:40px/46px "NixieOne-Regular"; margin-top: 6px;}
+
+.Fourthpinkbg .lefttxt{ display:inline-block; color: #fff; font: 23px/24px "open_sansregular"; }
+.Fourthpinkbg .lefttxt img{ width:250px; margin-right:50px;}
+.Fourthpinkbg .righttxt{ display:inline-block; color: #fff; font: 23px/24px "open_sansregular";  margin-left:50px; }
+
+.clAction{height:207px;}
+}
+
+.Pink{ color:#ED2375 !important;}
+.Blue{ color:#69b7ea !important;}

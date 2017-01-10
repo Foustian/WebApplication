@@ -1,0 +1,2067 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{84797604-3515-4B8C-BD84-AEC99D30B9E2}</ProjectGuid>
+    <ProjectTypeGuids>{E3E379DF-F4C6-4180-9B81-6769533ABE47};{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>IQMedia.WebApplication</RootNamespace>
+    <AssemblyName>IQMedia.WebApplication</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <MvcBuildViews>false</MvcBuildViews>
+    <UseIISExpress>false</UseIISExpress>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Alachisoft.NCache.Runtime">
+      <HintPath>..\IQMedia.Ref\Alachisoft.NCache.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Alachisoft.NCache.Web">
+      <HintPath>..\IQMedia.Ref\Alachisoft.NCache.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="AnalyticsSearch">
+      <HintPath>..\..\..\AnalyticsSearch\AnalyticsSearch\bin\Debug\AnalyticsSearch.dll</HintPath>
+    </Reference>
+    <Reference Include="Antlr3.Runtime">
+      <HintPath>..\packages\WebGrease.1.1.0\lib\Antlr3.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="HiQPdf, Version=9.21.0.0, Culture=neutral, PublicKeyToken=acd8b62594985b24, processorArchitecture=MSIL">
+      <HintPath>packages\hiqpdf.9.21\lib\net40\HiQPdf.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="HtmlAgilityPack">
+      <HintPath>packages\HtmlAgilityPack.1.4.6\lib\Net40\HtmlAgilityPack.dll</HintPath>
+    </Reference>
+    <Reference Include="IQMedia.Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\IQMedia.Ref\IQMedia.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="IQMedia.Domain, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\IQMedia.Ref\IQMedia.Domain.dll</HintPath>
+    </Reference>
+    <Reference Include="IQMedia.Logic">
+      <HintPath>..\IQMedia.Ref\IQMedia.Logic.dll</HintPath>
+    </Reference>
+    <Reference Include="IQMedia.Web.Common, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\IQMedia.Ref\IQMedia.Web.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="JWT, Version=1.3.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\JWT.1.3.4\lib\3.5\JWT.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\IQMediaGroup.ReferenceAssembies\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>packages\Newtonsoft.Json.8.0.3\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Optimization">
+      <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.1.0-Beta1\lib\net40\System.Web.Optimization.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.Net.Http.2.0.20710.0\lib\net40\System.Net.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.Formatting, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.4.0.20710.0\lib\net40\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.WebRequest">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.Net.Http.2.0.20710.0\lib\net40\System.Net.Http.WebRequest.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Helpers, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.20710.0\lib\net40\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.4.0.20710.0\lib\net40\System.Web.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http.WebHost, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.4.0.20710.0\lib\net40\System.Web.Http.WebHost.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.4.0.20710.0\lib\net40\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.Razor.2.0.20710.0\lib\net40\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.20710.0\lib\net40\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.20710.0\lib\net40\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.20710.0\lib\net40\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="WebGrease">
+      <HintPath>..\packages\WebGrease.1.1.0\lib\WebGrease.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Controllers\AnalyticsController.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Controllers\ConnectController.cs" />
+    <Compile Include="Controllers\SignInAdminController.cs" />
+    <Compile Include="Utility\ActiveUserMgr.cs" />
+    <Content Include="App_Code\EndRequestModule.cs" />
+    <Compile Include="App_Start\BundleConfig.cs" />
+    <Compile Include="Config\ConfigSettings.cs" />
+    <Compile Include="Config\Sections\MessageSettings.cs" />
+    <Compile Include="Config\Sections\SolrUrlSettings.cs" />
+    <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\DarkSiteController.cs" />
+    <Compile Include="Controllers\LNArticleController.cs" />
+    <Compile Include="Controllers\MCMediaTemplateController.cs" />
+    <Compile Include="Controllers\NoCacheAttribute.cs" />
+    <Compile Include="Controllers\NotFoundController.cs" />
+    <Compile Include="Controllers\AboutUs_OldController.cs" />
+    <Compile Include="Controllers\AboutUsController.cs" />
+    <Compile Include="Controllers\ImageRecognitionController.cs" />
+    <Compile Include="Controllers\InfoAlertController.cs" />
+    <Compile Include="Controllers\ReportingController.cs" />
+    <Compile Include="Controllers\ApiController.cs" />
+    <Compile Include="Controllers\ArticleController.cs" />
+    <Compile Include="Controllers\BasicPlayerController.cs" />
+    <Compile Include="Controllers\CareersController.cs" />
+    <Compile Include="Controllers\CheckAuthentication.cs" />
+    <Compile Include="Controllers\CheckForDownloadRights.cs" />
+    <Compile Include="Controllers\ClipPlayerController.cs" />
+    <Compile Include="Controllers\ClipRadioPlayerController.cs" />
+    <Compile Include="Controllers\MediaIntelligenceController.cs" />
+    <Compile Include="Controllers\CommonController.cs" />
+    <Compile Include="Controllers\CompanyController.cs" />
+    <Compile Include="Controllers\ContactUsController.cs" />
+    <Compile Include="Controllers\CopyrightAbusePolicyController.cs" />
+    <Compile Include="Controllers\OrganicVideoController.cs" />
+    <Compile Include="Controllers\FoundersClubController.cs" />
+    <Compile Include="Controllers\GalleryController.cs" />
+    <Compile Include="Controllers\IQNotificationController.cs" />
+    <Compile Include="Controllers\FliqCustomerController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\ISVCController.cs" />
+    <Compile Include="Controllers\JobStatusController.cs" />
+    <Compile Include="Controllers\ProQuestController.cs" />
+    <Compile Include="Controllers\ImpactVisualizationController.cs" />
+    <Compile Include="Controllers\QVCController.cs" />
+    <Compile Include="Controllers\LogAction.cs" />
+    <Compile Include="Controllers\PrivacyController.cs" />
+    <Compile Include="Controllers\RawRadioPlayerController.cs" />
+    <Compile Include="Controllers\RequestDemoController.cs" />
+    <Compile Include="Controllers\ResultsController.cs" />
+    <Compile Include="Controllers\SecurityController.cs" />
+    <Compile Include="Controllers\SonyMediaController.cs" />
+    <Compile Include="Controllers\ImagiQController.cs" />
+    <Compile Include="Controllers\DiscoveryLiteController.cs" />
+    <Compile Include="Controllers\CustomersController.cs" />
+    <Compile Include="Controllers\DashboardController.cs" />
+    <Compile Include="Controllers\DiscoveryController.cs" />
+    <Compile Include="Controllers\DownloadController.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
+    <Compile Include="Controllers\FeedsController.cs" />
+    <Compile Include="Controllers\GlobalAdminController.cs" />
+    <Compile Include="Controllers\GroupController.cs" />
+    <Compile Include="Controllers\IFrameMicrositeController.cs" />
+    <Compile Include="Controllers\IframeRawMediaController.cs" />
+    <Compile Include="Controllers\IframeServiceRawMediaController.cs" />
+    <Compile Include="Controllers\IndustriesController.cs" />
+    <Compile Include="Controllers\ClientCustomImageController.cs" />
+    <Compile Include="Controllers\LegalController.cs" />
+    <Compile Include="Controllers\LibraryController.cs" />
+    <Compile Include="Controllers\ProPrepController.cs" />
+    <Compile Include="Controllers\RawMediaPlayerController.cs" />
+    <Compile Include="Controllers\ReportController.cs" />
+    <Compile Include="Controllers\ServicesController.cs" />
+    <Compile Include="Controllers\SignInController.cs" />
+    <Compile Include="Controllers\LogOutController.cs" />
+    <Compile Include="Controllers\ProductsController.cs" />
+    <Compile Include="Controllers\ResourcesController.cs" />
+    <Compile Include="Controllers\SetupController.cs" />
+    <Compile Include="Controllers\SoftwareController.cs" />
+    <Compile Include="Controllers\SubscriptionAgreementController.cs" />
+    <Compile Include="Controllers\SubscriptionController.cs" />
+    <Compile Include="Controllers\TAdsController.cs" />
+    <Compile Include="Controllers\TechnicalInformationController.cs" />
+    <Compile Include="Controllers\TestController.cs" />
+    <Compile Include="Controllers\TimeshiftController.cs" />
+    <Compile Include="Controllers\UnderMaintenanceController.cs" />
+    <Compile Include="Controllers\_HomeController.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Models\SearchResults.cs" />
+    <Compile Include="Models\DiscoveryResultPageTrack.cs" />
+    <Compile Include="Models\GlobalAdminTempData.cs" />
+    <Compile Include="Models\IFrameMicrositeData.cs" />
+    <Compile Include="Models\MediaChartJsonResponse.cs" />
+    <Compile Include="Models\TempData\TempDataModel.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utility\CommonFunctions.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="App_Start\WebApiConfig.cs" />
+    <Content Include="Images\Analytics\40x40_daypartchart.png" />
+    <Content Include="Images\Analytics\40x40_daypartchart_inactive.png" />
+    <Content Include="Images\Analytics\linechart_inactive.png" />
+    <Content Include="Images\Analytics\linechart.png" />
+    <Content Include="Images\brand.png" />
+    <Content Include="Images\cloud-upload.png" />
+    <Content Include="Images\company.png" />
+    <Content Include="Images\connect-icon.png" />
+    <Content Include="Images\Dashboard\setup.png" />
+    <Content Include="Images\email_new.png" />
+    <Content Include="Images\excel.png" />
+    <Content Include="Images\holdingcompany.png" />
+    <Content Include="Images\industry.png" />
+    <Content Include="Images\isread.png" />
+    <Content Include="Images\klout.png" />
+    <Content Include="Images\home_new\logo_new_white.png" />
+    <Content Include="Images\home_new\Resources.png" />
+    <Content Include="Images\home_new\visitpage_btn.png" />
+    <Content Include="Images\market-icon.png" />
+    <Content Include="Images\MediaIcon\client-specific.png" />
+    <Content Include="Images\MediaIcon\email_white.png" />
+    <Content Include="Images\MediaIcon\facebook_white.png" />
+    <Content Include="Images\MediaIcon\instagram_white.png" />
+    <Content Include="Images\MediaIcon\linkedin_white.png" />
+    <Content Include="Images\MediaIcon\twitter_white.png" />
+    <Content Include="Images\MediaIcon\default_thumbnail_image.png" />
+    <Content Include="Images\MediaIcon\excel.png" />
+    <Content Include="Images\MediaIcon\image.png" />
+    <Content Include="Images\MediaIcon\pdf.png" />
+    <Content Include="Images\MediaIcon\radio.png" />
+    <Content Include="Images\MediaIcon\word.png" />
+    <Content Include="Images\paidearned.png" />
+    <Content Include="Content\EmailDisclaimer.txt" />
+    <Content Include="Content\RsetPwdTemplate.txt" />
+    <Content Include="Content\EmailPolicy.txt" />
+    <Content Include="Content\Fusioncharts\SparkLine.swf" />
+    <Content Include="Content\policy.txt" />
+    <Content Include="Css\AboutUS.css" />
+    <Content Include="Css\analytics.css" />
+    <Content Include="Css\analytiq.css" />
+    <Content Include="Css\api.css" />
+    <Content Include="Css\bootstrap-responsive.css" />
+    <Content Include="Css\bootstrap.css" />
+    <Content Include="Css\bootstrap3\aboutus.css" />
+    <Content Include="Css\bootstrap3\bootstrap-theme.css" />
+    <Content Include="Css\bootstrap3\bootstrap.css" />
+    <Content Include="Css\career.css" />
+    <Content Include="Css\bootstrap3\Company.css" />
+    <Content Include="Css\bootstrap3\fonts\avenir-medium-webfont.svg" />
+    <Content Include="Css\bootstrap3\fonts\fonts.css" />
+    <Content Include="Css\bootstrap3\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Css\bootstrap3\fonts\opensans-bold-webfont.svg" />
+    <Content Include="Css\bootstrap3\fonts\opensans-extrabold-demo.html" />
+    <Content Include="Css\bootstrap3\fonts\opensans-extrabold-webfont.svg" />
+    <Content Include="Css\bootstrap3\fonts\opensans-italic_0-webfont.svg" />
+    <Content Include="Css\bootstrap3\fonts\opensans-light-webfont.svg" />
+    <Content Include="Css\bootstrap3\fonts\opensans-regular-webfont.svg" />
+    <Content Include="Css\bootstrap3\fonts\opensans-semibold-demo.html" />
+    <Content Include="Css\bootstrap3\fonts\opensans-semibold-webfont.svg" />
+    <Content Include="Css\bootstrap3\FounderClub.css" />
+    <Content Include="Css\bootstrap3\result.css" />
+    <Content Include="Css\bootstrap3\signin.css" />
+    <Content Include="Css\bootstrap3\style.css" />
+    <Content Include="Css\Chosen\chosen-sprite%402x.png" />
+    <Content Include="Css\Chosen\chosen-sprite.png" />
+    <Content Include="Css\Chosen\chosen.css" />
+    <Content Include="Css\cliq.css" />
+    <Content Include="Css\colorbox.css" />
+    <Content Include="Css\common.css" />
+    <Content Include="Css\tads-video-player.css" />
+    <Content Include="Css\TAds.css" />
+    <Content Include="Css\DarkSite.css" />
+    <Content Include="Css\fliq.css" />
+    <Content Include="Css\footer.css" />
+    <Content Include="Css\home-banner.css" />
+    <Content Include="Css\imgareaselect-animated.css" />
+    <Content Include="Css\imgrecog.css" />
+    <Content Include="Css\jquery-te-1.4.0.css" />
+    <Content Include="Css\jquery.gridster.css" />
+    <Content Include="Css\jquery.mCustomScrollbar.custom.css" />
+    <Content Include="Css\jstree-style.css" />
+    <Content Include="Css\kantar.css" />
+    <Content Include="Css\kantor-video-player.css" />
+    <Content Include="Css\Dashboard.css" />
+    <Content Include="Css\docs.css" />
+    <Content Include="Css\feed.css" />
+    <Content Include="Css\Fonts.css" />
+    <Content Include="Css\fonts\avenir-medium-webfont.svg" />
+    <Content Include="Css\fonts\merriweather-light-webfont.svg" />
+    <Content Include="Css\fonts\opensans-bold-webfont.svg" />
+    <Content Include="Css\fonts\opensans-regular-webfont.svg" />
+    <Content Include="Css\fonts\opensans-semibold-webfont.svg" />
+    <Content Include="Css\fonts\Quicksand_Bold-webfont.svg" />
+    <Content Include="Css\fonts\quicksand_bold-webfont_regular.svg" />
+    <Content Include="Css\fonts\Quicksand_Bold_Oblique-webfont.svg" />
+    <Content Include="Css\fonts\Quicksand_Book-webfont.svg" />
+    <Content Include="Css\fonts\Quicksand_Book_Oblique-webfont.svg" />
+    <Content Include="Css\fonts\Quicksand_Dash-webfont.svg" />
+    <Content Include="Css\fonts\Quicksand_Light-webfont.svg" />
+    <Content Include="Css\fonts\Quicksand_Light_Oblique-webfont.svg" />
+    <Content Include="Css\fonts\stylesheet.css" />
+    <Content Include="Css\home.css" />
+    <Content Include="Css\IFrameMicrosite.css" />
+    <Content Include="Css\images\ui-bg_diagonals-small_50_262626_40x40.png" />
+    <Content Include="Css\images\ui-bg_flat_0_303030_40x100.png" />
+    <Content Include="Css\images\ui-bg_flat_0_4c4c4c_40x100.png" />
+    <Content Include="Css\images\ui-bg_flat_0_aaaaaa_40x100.png" />
+    <Content Include="Css\images\ui-bg_flat_75_ffffff_40x100.png" />
+    <Content Include="Css\images\ui-bg_glass_40_0a0a0a_1x400.png" />
+    <Content Include="Css\images\ui-bg_glass_55_f1fbe5_1x400.png" />
+    <Content Include="Css\images\ui-bg_glass_55_fbf9ee_1x400.png" />
+    <Content Include="Css\images\ui-bg_glass_60_000000_1x400.png" />
+    <Content Include="Css\images\ui-bg_glass_65_ffffff_1x400.png" />
+    <Content Include="Css\images\ui-bg_glass_75_dadada_1x400.png" />
+    <Content Include="Css\images\ui-bg_glass_75_e6e6e6_1x400.png" />
+    <Content Include="Css\images\ui-bg_gloss-wave_55_000000_500x100.png" />
+    <Content Include="Css\images\ui-bg_gloss-wave_85_9fda58_500x100.png" />
+    <Content Include="Css\images\ui-bg_gloss-wave_95_f6ecd5_500x100.png" />
+    <Content Include="Css\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
+    <Content Include="Css\images\ui-icons_000000_256x240.png" />
+    <Content Include="Css\images\ui-icons_1f1f1f_256x240.png" />
+    <Content Include="Css\images\ui-icons_222222_256x240.png" />
+    <Content Include="Css\images\ui-icons_228ef1_256x240.png" />
+    <Content Include="Css\images\ui-icons_454545_256x240.png" />
+    <Content Include="Css\images\ui-icons_9fda58_256x240.png" />
+    <Content Include="Css\images\ui-icons_b8ec79_256x240.png" />
+    <Content Include="Css\images\ui-icons_cd0a0a_256x240.png" />
+    <Content Include="Css\images\ui-icons_ffffff_256x240.png" />
+    <Content Include="Css\jquery-ui-1.8.16.custom.css" />
+    <Content Include="Css\jquery-ui-1.9.2.custom.min.css" />
+    <Content Include="Css\jquery-ui.css" />
+    <Content Include="Css\jquery.mCustomScrollbar.css" />
+    <Content Include="Css\lightbox.min.css" />
+    <Content Include="Css\lightSlider.css" />
+    <Content Include="Css\LogIn.css" />
+    <Content Include="Css\MasterInner.css" />
+    <Content Include="Css\multi-select.css" />
+    <Content Include="Css\optiq.css" />
+    <Content Include="Css\Player\PlayerIfrmSvc.css" />
+    <Content Include="Css\results.css" />
+    <Content Include="Css\Static\bootstrap.css" />
+    <Content Include="Css\Sticker.css" />
+    <Content Include="Css\style.min.css" />
+    <Content Include="Css\style_v2.css" />
+    <Content Include="Css\superfish.css" />
+    <Content Include="Css\Gallary.css" />
+    <Content Include="Css\Timeshift.css" />
+    <Content Include="Css\video-player.css" />
+    <Content Include="Error.html" />
+    <Content Include="Global.asax" />
+    <Content Include="HighChart-Test.htm" />
+    <Content Include="Images\1.gif" />
+    <Content Include="Images\abarCirculation.png" />
+    <Content Include="Images\abarMarketRank.png" />
+    <Content Include="Images\abarNotSelected.png" />
+    <Content Include="Images\abarSelected.png" />
+    <Content Include="Images\analytics-icon.png" />
+    <Content Include="Images\Analytics\40x40_audience.png" />
+    <Content Include="Images\Analytics\40x40_audience_inactive.png" />
+    <Content Include="Images\Analytics\40x40_barchart.png" />
+    <Content Include="Images\Analytics\40x40_barchart_inactive.png" />
+    <Content Include="Images\Analytics\40x40_columnchart.png" />
+    <Content Include="Images\Analytics\40x40_columnchart_inactive.png" />
+    <Content Include="Images\Analytics\40x40_daytimechart.png" />
+    <Content Include="Images\Analytics\40x40_daytimechart_inactive.png" />
+    <Content Include="Images\Analytics\40x40_globe.png" />
+    <Content Include="Images\Analytics\40x40_globe_inactive.png" />
+    <Content Include="Images\Analytics\40x40_google.png" />
+    <Content Include="Images\Analytics\40x40_google_inactive.png" />
+    <Content Include="Images\Analytics\40x40_growth.png" />
+    <Content Include="Images\Analytics\40x40_growth_inactive.png" />
+    <Content Include="Images\Analytics\40x40_linechart.png" />
+    <Content Include="Images\Analytics\40x40_linechart_inactive.png" />
+    <Content Include="Images\Analytics\40x40_mediavalue.png" />
+    <Content Include="Images\Analytics\40x40_mediavalue_inactive.png" />
+    <Content Include="Images\Analytics\40x40_piechart.png" />
+    <Content Include="Images\Analytics\40x40_piechart_inactive.png" />
+    <Content Include="Images\close.png" />
+    <Content Include="Images\home_new\Footer\instagram.png" />
+    <Content Include="Images\home_new\green_iQ.jpg" />
+    <Content Include="Images\home_new\greyoverlay_platform.jpg" />
+    <Content Include="Images\home_new\iQ_logo.png" />
+    <Content Include="Images\MediaIcon\25x25_publicationScanned.png" />
+    <Content Include="Images\MediaIcon\25x25_publicationText.png" />
+    <Content Include="Images\MediaIcon\25x25_radio.png" />
+    <Content Include="Images\32px.png" />
+    <Content Include="Images\40px.png" />
+    <Content Include="Images\abarDelete.png" />
+    <Content Include="Images\abarDownload.png" />
+    <Content Include="Images\abarEdit.png" />
+    <Content Include="Images\abarLocalAudience.png" />
+    <Content Include="Images\abarLocation.png" />
+    <Content Include="Images\abarNationalAudience.png" />
+    <Content Include="Images\abarSave.png" />
+    <Content Include="Images\abarSentiment.png" />
+    <Content Include="Images\abarViewArticle.png" />
+    <Content Include="Images\abarViewStats.png" />
+    <Content Include="Images\about-banner.png" />
+    <Content Include="Images\active-user.png" />
+    <Content Include="Images\AdsLogo.png" />
+    <Content Include="Images\ana-graph-h.png" />
+    <Content Include="Images\ana-graph.png" />
+    <Content Include="Images\ana-ipad01.png" />
+    <Content Include="Images\ana-ipad02.png" />
+    <Content Include="Images\ana-ipad03.png" />
+    <Content Include="Images\ana-lamp-h.png" />
+    <Content Include="Images\ana-lamp.png" />
+    <Content Include="Images\ana-serch-h.png" />
+    <Content Include="Images\ana-serch.png" />
+    <Content Include="Images\Analytiq-hed-icon.png" />
+    <Content Include="Images\Api-hed-icon.png" />
+    <Content Include="Images\Api-main-img.png" />
+    <Content Include="Images\Api_fact_1.png" />
+    <Content Include="Images\Api_fact_2.png" />
+    <Content Include="Images\Api_fact_3.png" />
+    <Content Include="Images\apl.png" />
+    <Content Include="Images\arrow-plain.png" />
+    <Content Include="Images\Big_Data.png" />
+    <Content Include="Images\BlackBg.png" />
+    <Content Include="Images\blue-check.png" />
+    <Content Include="Images\blue-location.png" />
+    <Content Include="Images\boeing.png" />
+    <Content Include="Images\book-bg.png" />
+    <Content Include="Images\border-anim-h.gif" />
+    <Content Include="Images\border-anim-v.gif" />
+    <Content Include="Images\bottom-arrow.png" />
+    <Content Include="Images\canada.png" />
+    <Content Include="Images\career-iq.png" />
+    <Content Include="Images\chart-16.png" />
+    <Content Include="Images\cl-dashboard-icon-hover.png" />
+    <Content Include="Images\cl-dashboard-icon.png" />
+    <Content Include="Images\cl-discovery-icon-hover.png" />
+    <Content Include="Images\cl-discovery-icon.png" />
+    <Content Include="Images\cl-feeds-icon-hover.png" />
+    <Content Include="Images\cl-feeds-icon.png" />
+    <Content Include="Images\cl-icon01.png" />
+    <Content Include="Images\cl-icon02.png" />
+    <Content Include="Images\cl-icon03.png" />
+    <Content Include="Images\cl-icon04.png" />
+    <Content Include="Images\cl-icon05.png" />
+    <Content Include="Images\cl-library-icon-hover.png" />
+    <Content Include="Images\cl-library-icon.png" />
+    <Content Include="Images\cl-timeshift-icon-hover.png" />
+    <Content Include="Images\cl-timeshift-icon.png" />
+    <Content Include="Images\cliq-hed-icon.png" />
+    <Content Include="Images\CliqDashboard_sm.png" />
+    <Content Include="Images\CliqDiscovery_sm.png" />
+    <Content Include="Images\CliqFeeds_sm.png" />
+    <Content Include="Images\CliqLibrary_sm.png" />
+    <Content Include="Images\CliqLogo.png" />
+    <Content Include="Images\CliqTimeshift_sm.png" />
+    <Content Include="Images\cliq_home.jpg" />
+    <Content Include="Images\cliq_main.png" />
+    <Content Include="Images\Colorbox\controls.png" />
+    <Content Include="Images\Colorbox\loading.gif" />
+    <Content Include="Images\completed.png" />
+    <Content Include="Images\control.png" />
+    <Content Include="Images\controls2.png" />
+    <Content Include="Images\controls_home.png" />
+    <Content Include="Images\country.png" />
+    <Content Include="Images\crying.png" />
+    <Content Include="Images\dashboard_sm.jpg" />
+    <Content Include="Images\discoverylite-icon.png" />
+    <Content Include="Images\discovery_sm.jpg" />
+    <Content Include="Images\empower.png" />
+    <Content Include="Images\engage.png" />
+    <Content Include="Images\failed.png" />
+    <Content Include="Images\fb-comment.png" />
+    <Content Include="Images\fb-like.png" />
+    <Content Include="Images\fb-share.png" />
+    <Content Include="Images\feeds_sm.jpg" />
+    <Content Include="Images\FontName.png" />
+    <Content Include="Images\FontSize.png" />
+    <Content Include="Images\globaladmin-icon.png" />
+    <Content Include="Images\globe_list.png" />
+    <Content Include="Images\help.png" />
+    <Content Include="Images\home_new\AboutUS\email_icon.png" />
+    <Content Include="Images\home_new\AboutUS\linkedin_icon.png" />
+    <Content Include="Images\home_new\AboutUS\story_6.png" />
+    <Content Include="Images\home_new\Careers\amarra.png" />
+    <Content Include="Images\home_new\Careers\juliet.png" />
+    <Content Include="Images\home_new\DarkSite\arrow.png" />
+    <Content Include="Images\home_new\DarkSite\customers.jpg" />
+    <Content Include="Images\home_new\DarkSite\darksite_header.jpg" />
+    <Content Include="Images\home_new\DarkSite\img1.png" />
+    <Content Include="Images\home_new\Footer\youtube.png" />
+    <Content Include="Images\home_new\logo_white.png" />
+    <Content Include="Images\home_new\mercedes.png" />
+    <Content Include="Images\home_new\miami.png" />
+    <Content Include="Images\home_new\NotFound\bubble.png" />
+    <Content Include="Images\home_new\NotFound\green_bubble.png" />
+    <Content Include="Images\home_new\NotFound\grey_square.png" />
+    <Content Include="Images\home_new\NotFound\tater.png" />
+    <Content Include="Images\home_new\AboutUS\hiring.png" />
+    <Content Include="Images\home_new\AboutUS\jeff.png" />
+    <Content Include="Images\home_new\AboutUS\john.png" />
+    <Content Include="Images\home_new\AboutUS\kye.png" />
+    <Content Include="Images\home_new\AboutUS\lakshmi.png" />
+    <Content Include="Images\home_new\AboutUS\story_1.png" />
+    <Content Include="Images\home_new\AboutUS\story_2.png" />
+    <Content Include="Images\home_new\AboutUS\story_3.png" />
+    <Content Include="Images\home_new\AboutUS\story_4.png" />
+    <Content Include="Images\home_new\AboutUS\story_5.png" />
+    <Content Include="Images\home_new\AboutUS\story_6%281%29.png" />
+    <Content Include="Images\home_new\AboutUS\tom.png" />
+    <Content Include="Images\home_new\Api\api_header.png" />
+    <Content Include="Images\home_new\Api\Api_hiw.png" />
+    <Content Include="Images\home_new\arrow.png" />
+    <Content Include="Images\home_new\arrow_bottom.png" />
+    <Content Include="Images\home_new\arrow_white.png" />
+    <Content Include="Images\home_new\blog.png" />
+    <Content Include="Images\home_new\blogpost.png" />
+    <Content Include="Images\home_new\blue-bg-head.png" />
+    <Content Include="Images\home_new\blue_arrow.png" />
+    <Content Include="Images\home_new\Careers\careers_header.png" />
+    <Content Include="Images\home_new\Careers\checks.png" />
+    <Content Include="Images\home_new\Careers\dc.jpg" />
+    <Content Include="Images\home_new\Careers\derek.png" />
+    <Content Include="Images\home_new\Careers\erica1.png" />
+    <Content Include="Images\home_new\Careers\girls_ac.png" />
+    <Content Include="Images\home_new\Careers\jack.png" />
+    <Content Include="Images\home_new\Careers\jared.png" />
+    <Content Include="Images\home_new\Careers\kristin.png" />
+    <Content Include="Images\home_new\Careers\lunch_2.png" />
+    <Content Include="Images\home_new\Careers\nick.png" />
+    <Content Include="Images\home_new\Careers\nyc.jpg" />
+    <Content Include="Images\home_new\Careers\philabundance.png" />
+    <Content Include="Images\home_new\Careers\toysfortots.png" />
+    <Content Include="Images\home_new\casestudy.png" />
+    <Content Include="Images\home_new\compete.png" />
+    <Content Include="Images\home_new\Copyright\copyright_header.png" />
+    <Content Include="Images\home_new\demobtn.png" />
+    <Content Include="Images\home_new\demobtn2.png" />
+    <Content Include="Images\home_new\ebook.png" />
+    <Content Include="Images\home_new\Footer\facebook.png" />
+    <Content Include="Images\home_new\Footer\google.png" />
+    <Content Include="Images\home_new\Footer\linkedin.png" />
+    <Content Include="Images\home_new\Footer\twitter.png" />
+    <Content Include="Images\home_new\FounderClub\drew.png" />
+    <Content Include="Images\home_new\FounderClub\erica.png" />
+    <Content Include="Images\home_new\green-bg-head.png" />
+    <Content Include="Images\home_new\green_arrow.png" />
+    <Content Include="Images\home_new\guide.png" />
+    <Content Include="Images\home_new\hiring_banner.png" />
+    <Content Include="Images\home_new\home_header.png" />
+    <Content Include="Images\home_new\ImgRecog\ir_header.png" />
+    <Content Include="Images\home_new\ImgRecog\ir_hiw.png" />
+    <Content Include="Images\home_new\ImpactV\iv_adv.png" />
+    <Content Include="Images\home_new\ImpactV\iv_broad.png" />
+    <Content Include="Images\home_new\ImpactV\iv_graph.png" />
+    <Content Include="Images\home_new\ImpactV\iv_header.png" />
+    <Content Include="Images\home_new\ImpactV\iv_mkt.png" />
+    <Content Include="Images\home_new\ImpactV\iv_player.png" />
+    <Content Include="Images\home_new\ImpactV\iv_pr.png" />
+    <Content Include="Images\home_new\iq-watermark.png" />
+    <Content Include="Images\home_new\AboutUS\aboutus_header.png" />
+    <Content Include="Images\home_new\learn.png" />
+    <Content Include="Images\home_new\Legal-copyright-head-round.png" />
+    <Content Include="Images\home_new\MI\codie_logo.png" />
+    <Content Include="Images\home_new\MI\edmunds.png" />
+    <Content Include="Images\home_new\MI\mi_adv.png" />
+    <Content Include="Images\home_new\MI\mi_broad.png" />
+    <Content Include="Images\home_new\MI\mi_desk.png" />
+    <Content Include="Images\home_new\MI\mi_desk2.png" />
+    <Content Include="Images\home_new\MI\mi_header.png" />
+    <Content Include="Images\home_new\MI\mi_laptop.png" />
+    <Content Include="Images\home_new\MI\mi_mkt.png" />
+    <Content Include="Images\home_new\MI\mi_pr.png" />
+    <Content Include="Images\home_new\Optiq\optiq-01.png" />
+    <Content Include="Images\home_new\Optiq\optiq-02.png" />
+    <Content Include="Images\home_new\Optiq\optiq-03.png" />
+    <Content Include="Images\home_new\Optiq\optiq-04.png" />
+    <Content Include="Images\home_new\Optiq\optiq-a01.png" />
+    <Content Include="Images\home_new\Optiq\optiq-a02.png" />
+    <Content Include="Images\home_new\Optiq\optiq-a03.png" />
+    <Content Include="Images\home_new\Optiq\optiq-a04.png" />
+    <Content Include="Images\home_new\Optiq\optiq-hed-icon.png" />
+    <Content Include="Images\home_new\Optiq\optiq-laptop-B.png" />
+    <Content Include="Images\home_new\Optiq\optiq-laptop.png" />
+    <Content Include="Images\home_new\Optiq\optiq-laptop02.png" />
+    <Content Include="Images\home_new\Optiq\optiq_main.png" />
+    <Content Include="Images\home_new\orange_arrow.png" />
+    <Content Include="Images\home_new\OV\constituents.png" />
+    <Content Include="Images\home_new\OV\employees.png" />
+    <Content Include="Images\home_new\OV\fans.png" />
+    <Content Include="Images\home_new\OV\journalist.png" />
+    <Content Include="Images\home_new\OV\ov_header.png" />
+    <Content Include="Images\home_new\OV\ov_img.png" />
+    <Content Include="Images\home_new\OV\ov_iphone.png" />
+    <Content Include="Images\home_new\peso.png" />
+    <Content Include="Images\home_new\pink-bg-head.png" />
+    <Content Include="Images\home_new\prepare.png" />
+    <Content Include="Images\home_new\Privacy\privacy_header.png" />
+    <Content Include="Images\home_new\purple_arrow.png" />
+    <Content Include="Images\home_new\Reporting\event_demographics.jpg" />
+    <Content Include="Images\home_new\Reporting\mediadigital_trends.jpg" />
+    <Content Include="Images\home_new\Reporting\monthly_hightlights.jpg" />
+    <Content Include="Images\home_new\Reporting\quarterly_highlights.jpg" />
+    <Content Include="Images\home_new\Reporting\reporting_header.png" />
+    <Content Include="Images\home_new\Reporting\rpt_charts.png" />
+    <Content Include="Images\home_new\Reporting\rpt_monitor.png" />
+    <Content Include="Images\home_new\Results\adv.png" />
+    <Content Include="Images\home_new\Results\broad.png" />
+    <Content Include="Images\home_new\Results\mkt.png" />
+    <Content Include="Images\home_new\Results\pr.png" />
+    <Content Include="Images\home_new\Results\results_header.png" />
+    <Content Include="Images\home_new\Security\security_header.png" />
+    <Content Include="Images\home_new\video_placeholder.jpg" />
+    <Content Include="Images\home_new\whitepaper.png" />
+    <Content Include="Images\impact-icon.png" />
+    <Content Include="Images\institution.png" />
+    <Content Include="Images\laptop.png" />
+    <Content Include="Images\library_sm.jpg" />
+    <Content Include="Images\logo-icon.png" />
+    <Content Include="Images\mcmedia-active.png" />
+    <Content Include="Images\mcmedia-inactive.png" />
+    <Content Include="Images\MediaIcon\25blog.png" />
+    <Content Include="Images\MediaIcon\25facebook.png" />
+    <Content Include="Images\MediaIcon\25forum.png" />
+    <Content Include="Images\MediaIcon\25onlinenews.png" />
+    <Content Include="Images\MediaIcon\25publication.png" />
+    <Content Include="Images\MediaIcon\25social.png" />
+    <Content Include="Images\MediaIcon\25twitter.png" />
+    <Content Include="Images\MediaIcon\Dribbble_share.png" />
+    <Content Include="Images\MediaIcon\facebook.png" />
+    <Content Include="Images\MediaIcon\facebook_share.png" />
+    <Content Include="Images\fact_1.png" />
+    <Content Include="Images\fact_2.png" />
+    <Content Include="Images\fact_3.png" />
+    <Content Include="Images\fact_4.png" />
+    <Content Include="Images\fact_5.png" />
+    <Content Include="Images\fl-icon01.png" />
+    <Content Include="Images\fl-icon02.png" />
+    <Content Include="Images\fl-icon03.png" />
+    <Content Include="Images\fl-icon04.png" />
+    <Content Include="Images\fl-icon05.png" />
+    <Content Include="Images\fliq-hed-icon.png" />
+    <Content Include="Images\fliqimg.jpg" />
+    <Content Include="Images\fliqlogo.png" />
+    <Content Include="Images\fliq_main.png" />
+    <Content Include="Images\gallery-active.png" />
+    <Content Include="Images\gallery-inactive.png" />
+    <Content Include="Images\MediaIcon\google-plus_share.png" />
+    <Content Include="Images\green-had.png" />
+    <Content Include="Images\green-location.png" />
+    <Content Include="Images\home_new\Careers\BethanyFagan.png" />
+    <Content Include="Images\home_new\Careers\BobWassell.png" />
+    <Content Include="Images\home_new\Careers\career-had-bg.png" />
+    <Content Include="Images\home_new\Careers\career-hd.png" />
+    <Content Include="Images\category.png" />
+    <Content Include="Images\Chart-hover.png" />
+    <Content Include="Images\Chart.png" />
+    <Content Include="Images\Chat_Black.png" />
+    <Content Include="Images\cl.gif" />
+    <Content Include="Images\clear.png" />
+    <Content Include="Images\cliq-book.png" />
+    <Content Include="Images\cloud-active.png" />
+    <Content Include="Images\cloud-inactive.png" />
+    <Content Include="Images\cloud.png" />
+    <Content Include="Images\collapse.png" />
+    <Content Include="Images\Content_Marketing_Arsenal.png" />
+    <Content Include="Images\controls.png" />
+    <Content Include="Images\Customers\Brian_Bowsher_Miami.png" />
+    <Content Include="Images\Customers\Chris_Yandle_Miami.png" />
+    <Content Include="Images\Customers\customer-info-bg.png" />
+    <Content Include="Images\Customers\Larry_Dougherty_Temple.png" />
+    <Content Include="Images\Customers\Matthew_Streit_Heritage_Foundation.png" />
+    <Content Include="Images\Customers\Michael_Danylak_Republican_National_Committee.png" />
+    <Content Include="Images\Customers\Scott_Tattar_LevLane.png" />
+    <Content Include="Images\Data_Driven_Insights.png" />
+    <Content Include="Images\Default.png" />
+    <Content Include="Images\DefaultEmail.png" />
+    <Content Include="Images\delete_icon.png" />
+    <Content Include="Images\Down.png" />
+    <Content Include="Images\edit_icon.png" />
+    <Content Include="Images\ex.gif" />
+    <Content Include="Images\expand.png" />
+    <Content Include="Images\Fast-Forward.png" />
+    <Content Include="Images\Fast-Rewind.png" />
+    <Content Include="Images\file.png" />
+    <Content Include="Images\Flexible_Delivery.png" />
+    <Content Include="Images\folder.png" />
+    <Content Include="Images\followers.png" />
+    <Content Include="Images\following.png" />
+    <Content Include="Images\full_screen.png" />
+    <Content Include="Images\handle.png" />
+    <Content Include="Images\help_icon.png" />
+    <Content Include="Images\home\home-img08.png" />
+    <Content Include="Images\home\home-img09.png" />
+    <Content Include="Images\home_new\Acc.png" />
+    <Content Include="Images\home_new\Advertising.png" />
+    <Content Include="Images\home_new\agencies-logo01.jpg" />
+    <Content Include="Images\home_new\agencies-logo02.jpg" />
+    <Content Include="Images\home_new\agencies-logo03.jpg" />
+    <Content Include="Images\home_new\agencies-logo04.jpg" />
+    <Content Include="Images\home_new\agencies-logo05.jpg" />
+    <Content Include="Images\home_new\agencies-logo06.jpg" />
+    <Content Include="Images\home_new\analytiQs.png" />
+    <Content Include="Images\home_new\associations-logo01.jpg" />
+    <Content Include="Images\home_new\associations-logo02.jpg" />
+    <Content Include="Images\home_new\associations-logo03.jpg" />
+    <Content Include="Images\home_new\associations-logo04.jpg" />
+    <Content Include="Images\home_new\associations-logo05.jpg" />
+    <Content Include="Images\home_new\associations-logo06.jpg" />
+    <Content Include="Images\home_new\Careers\career-iq.png" />
+    <Content Include="Images\home_new\Careers\DonHamrahi.png" />
+    <Content Include="Images\home_new\Careers\erica.jpg" />
+    <Content Include="Images\home_new\Careers\facebook.jpg" />
+    <Content Include="Images\home_new\Careers\fooze.jpg" />
+    <Content Include="Images\home_new\Careers\GIRLS.jpg" />
+    <Content Include="Images\home_new\Careers\google-plus.jpg" />
+    <Content Include="Images\home_new\Careers\halloween.png" />
+    <Content Include="Images\home_new\Careers\haven_grls.jpg" />
+    <Content Include="Images\home_new\Careers\JillianDotson.png" />
+    <Content Include="Images\home_new\Careers\LEADGEN.jpg" />
+    <Content Include="Images\home_new\Careers\linkedin.jpg" />
+    <Content Include="Images\home_new\Careers\lunch.jpg" />
+    <Content Include="Images\home_new\Careers\meeting.jpeg" />
+    <Content Include="Images\home_new\Careers\paypal.jpg" />
+    <Content Include="Images\home_new\Careers\ScottBaran.png" />
+    <Content Include="Images\home_new\Careers\sxsw.jpg" />
+    <Content Include="Images\home_new\Careers\twitter.jpg" />
+    <Content Include="Images\home_new\cliq-img03.png" />
+    <Content Include="Images\home_new\cliq-img05.png" />
+    <Content Include="Images\home_new\cliq-laptop-inset.png" />
+    <Content Include="Images\home_new\cliq.png" />
+    <Content Include="Images\home_new\company-banner.png" />
+    <Content Include="Images\home_new\Company\25years.png" />
+    <Content Include="Images\home_new\Company\company-had-bg.png" />
+    <Content Include="Images\home_new\Company\company-hd.png" />
+    <Content Include="Images\home_new\Company\conshy.png" />
+    <Content Include="Images\home_new\Company\doylestown.png" />
+    <Content Include="Images\home_new\Company\garage.png" />
+    <Content Include="Images\home_new\Company\gmh.png" />
+    <Content Include="Images\home_new\Company\goodbye_bubble.png" />
+    <Content Include="Images\home_new\Company\hello_bubble.png" />
+    <Content Include="Images\home_new\Company\philabundance.png" />
+    <Content Include="Images\home_new\consumer-logo01.jpg" />
+    <Content Include="Images\home_new\consumer-logo02.jpg" />
+    <Content Include="Images\home_new\consumer-logo03.jpg" />
+    <Content Include="Images\home_new\consumer-logo04.jpg" />
+    <Content Include="Images\home_new\consumer-logo05.jpg" />
+    <Content Include="Images\home_new\consumer-logo06.jpg" />
+    <Content Include="Images\home_new\Control.png" />
+    <Content Include="Images\home_new\Custom.png" />
+    <Content Include="Images\home_new\dcdmv.jpg" />
+    <Content Include="Images\home_new\Digital-Media.png" />
+    <Content Include="Images\home_new\education-logo01.jpg" />
+    <Content Include="Images\home_new\education-logo02.jpg" />
+    <Content Include="Images\home_new\education-logo03.jpg" />
+    <Content Include="Images\home_new\education-logo04.jpg" />
+    <Content Include="Images\home_new\education-logo05.jpg" />
+    <Content Include="Images\home_new\education-logo06.jpg" />
+    <Content Include="Images\home_new\empower.png" />
+    <Content Include="Images\home_new\Engage.png" />
+    <Content Include="Images\home_new\Engaging.png" />
+    <Content Include="Images\home_new\Eternal.png" />
+    <Content Include="Images\home_new\facebook.jpg" />
+    <Content Include="Images\home_new\fh.jpg" />
+    <Content Include="Images\home_new\fliq.png" />
+    <Content Include="Images\home_new\FounderClub\body-bg - Copy.png" />
+    <Content Include="Images\home_new\FounderClub\body-bg.png" />
+    <Content Include="Images\home_new\FounderClub\BuddyAnderson.png" />
+    <Content Include="Images\home_new\FounderClub\DavidZion.png" />
+    <Content Include="Images\home_new\FounderClub\JackWyrick.png" />
+    <Content Include="Images\home_new\FounderClub\JohnDurham.png" />
+    <Content Include="Images\home_new\FounderClub\Lakshmi.png" />
+    <Content Include="Images\home_new\FounderClub\left-top-img - Copy.png" />
+    <Content Include="Images\home_new\FounderClub\left-top-img.png" />
+    <Content Include="Images\home_new\FounderClub\logo.png" />
+    <Content Include="Images\home_new\FounderClub\TCBY01.png" />
+    <Content Include="Images\home_new\FounderClub\TCBY02.png" />
+    <Content Include="Images\home_new\FounderClub\TCBY03.png" />
+    <Content Include="Images\home_new\FounderClub\three-round-img.png" />
+    <Content Include="Images\home_new\goodbye-media-background.png" />
+    <Content Include="Images\home_new\google-plus.jpg" />
+    <Content Include="Images\home_new\healthcare-logo01.jpg" />
+    <Content Include="Images\home_new\healthcare-logo02.jpg" />
+    <Content Include="Images\home_new\healthcare-logo03.jpg" />
+    <Content Include="Images\home_new\healthcare-logo04.jpg" />
+    <Content Include="Images\home_new\healthcare-logo05.jpg" />
+    <Content Include="Images\home_new\healthcare-logo06.jpg" />
+    <Content Include="Images\home_new\icon-first.png" />
+    <Content Include="Images\home_new\icon-five.png" />
+    <Content Include="Images\home_new\icon-four.png" />
+    <Content Include="Images\home_new\icon-legg-mason.png" />
+    <Content Include="Images\home_new\icon-puma.png" />
+    <Content Include="Images\home_new\icon-second.png" />
+    <Content Include="Images\home_new\icon-three-big.png" />
+    <Content Include="Images\home_new\icon-three.png" />
+    <Content Include="Images\home_new\Jeff.jpg" />
+    <Content Include="Images\home_new\jeff_circle.png" />
+    <Content Include="Images\home_new\john.jpg" />
+    <Content Include="Images\home_new\john_circle.png" />
+    <Content Include="Images\home_new\Ketchum.jpg" />
+    <Content Include="Images\home_new\kye.jpg" />
+    <Content Include="Images\home_new\kye2.png" />
+    <Content Include="Images\home_new\Lakshmi.jpg" />
+    <Content Include="Images\home_new\lakshmi2.png" />
+    <Content Include="Images\home_new\leadership-banner.png" />
+    <Content Include="Images\home_new\leadership.jpg" />
+    <Content Include="Images\home_new\Legal.jpg" />
+    <Content Include="Images\home_new\linkedin.jpg" />
+    <Content Include="Images\home_new\local-logo01.jpg" />
+    <Content Include="Images\home_new\local-logo02.jpg" />
+    <Content Include="Images\home_new\local-logo03.jpg" />
+    <Content Include="Images\home_new\local-logo04.jpg" />
+    <Content Include="Images\home_new\local-logo05.jpg" />
+    <Content Include="Images\home_new\local-logo06.jpg" />
+    <Content Include="Images\home_new\logo.png" />
+    <Content Include="Images\home_new\Marketing.png" />
+    <Content Include="Images\home_new\mobile.png" />
+    <Content Include="Images\home_new\nei.jpg" />
+    <Content Include="Images\home_new\nwf.jpg" />
+    <Content Include="Images\home_new\paypal.jpg" />
+    <Content Include="Images\home_new\phillies.jpg" />
+    <Content Include="Images\home_new\pro-sports-logo01.jpg" />
+    <Content Include="Images\home_new\pro-sports-logo02.jpg" />
+    <Content Include="Images\home_new\pro-sports-logo03.jpg" />
+    <Content Include="Images\home_new\pro-sports-logo04.jpg" />
+    <Content Include="Images\home_new\pro-sports-logo05.jpg" />
+    <Content Include="Images\home_new\pro-sports-logo06.jpg" />
+    <Content Include="Images\home_new\Public-Relations.png" />
+    <Content Include="Images\home_new\result.png" />
+    <Content Include="Images\home_new\Smarter.png" />
+    <Content Include="Images\home_new\solutin-for-marketers.png" />
+    <Content Include="Images\home_new\sprites.png" />
+    <Content Include="Images\home_new\spurs.jpg" />
+    <Content Include="Images\home_new\tigercomm.png" />
+    <Content Include="Images\home_new\Tom.jpg" />
+    <Content Include="Images\home_new\tom2.png" />
+    <Content Include="Images\home_new\top-shadow.jpg" />
+    <Content Include="Images\home_new\twitter.jpg" />
+    <Content Include="Images\home_new\unseen-insights.png" />
+    <Content Include="Images\icon-first.png" />
+    <Content Include="Images\icon-five.png" />
+    <Content Include="Images\icon-four.png" />
+    <Content Include="Images\icon-legg-mason.png" />
+    <Content Include="Images\icon-puma.png" />
+    <Content Include="Images\icon-second.png" />
+    <Content Include="Images\Inline_Media_Workspace.png" />
+    <Content Include="Images\jquery-te.png" />
+    <Content Include="Images\main_home.jpg" />
+    <Content Include="Images\mcdonalds.png" />
+    <Content Include="Images\MediaIcon\Email_share.png" />
+    <Content Include="Images\MediaIcon\instagram.png" />
+    <Content Include="Images\MediaIcon\LexisNexis.png" />
+    <Content Include="Images\MediaIcon\LexisNexis_Small.png" />
+    <Content Include="Images\MediaIcon\link.png" />
+    <Content Include="Images\MediaIcon\print-media_T.png" />
+    <Content Include="Images\MediaIcon\Tumblr_Share.png" />
+    <Content Include="Images\MediaIcon\twitter_share.png" />
+    <Content Include="Images\MediaIcon\WordPress_Share.png" />
+    <Content Include="Images\mobile.png" />
+    <Content Include="Images\move.png" />
+    <Content Include="Images\new_way.png" />
+    <Content Include="Images\Ok.png" />
+    <Content Include="Images\OkGreen.png" />
+    <Content Include="Images\opt-icon01.png" />
+    <Content Include="Images\opt-icon02.png" />
+    <Content Include="Images\opt-icon03.png" />
+    <Content Include="Images\opt-icon04.png" />
+    <Content Include="Images\opt-icon05.png" />
+    <Content Include="Images\optiqimg.jpg" />
+    <Content Include="Images\optiqLogo.png" />
+    <Content Include="Images\panorama.png" />
+    <Content Include="Images\pause-btn.png" />
+    <Content Include="Images\pdf_new.png" />
+    <Content Include="Images\phonograph.png" />
+    <Content Include="Images\pink-bg.png" />
+    <Content Include="Images\pink-had.png" />
+    <Content Include="Images\pink-location.png" />
+    <Content Include="Images\pink-repeat-y.jpg" />
+    <Content Include="Images\play-btn.png" />
+    <Content Include="Images\plus-icon.png" />
+    <Content Include="Images\Plus_grey.png" />
+    <Content Include="Images\pnc.png" />
+    <Content Include="Images\prominence-icon.png" />
+    <Content Include="Images\publish.png" />
+    <Content Include="Images\question_icon.png" />
+    <Content Include="Images\queued.png" />
+    <Content Include="Images\recognition-icon.png" />
+    <Content Include="Images\region.png" />
+    <Content Include="Images\registration-client.png" />
+    <Content Include="Images\registration-customer.png" />
+    <Content Include="Images\ReportHeader\07402737-1190-4e16-91f5-404cecf1fade\Default.png" />
+    <Content Include="Images\Responsively_Organized.png" />
+    <Content Include="Images\SearchTermLogo.png" />
+    <Content Include="Images\seen_heard.png" />
+    <Content Include="Images\sentiment_heart.png" />
+    <Content Include="Images\Setup\agentnotifications.png" />
+    <Content Include="Images\Setup\campaignsetup.png" />
+    <Content Include="Images\Setup\custom-image.png" />
+    <Content Include="Images\Setup\custom-settings.png" />
+    <Content Include="Images\Setup\customsetup.png" />
+    <Content Include="Images\Setup\fliq1.png" />
+    <Content Include="Images\Setup\fliq2.png" />
+    <Content Include="Images\Setup\fliq_status.png" />
+    <Content Include="Images\Setup\googlesignin.png" />
+    <Content Include="Images\Setup\iqagent-setup.png" />
+    <Content Include="Images\Setup\jobstatus.png" />
+    <Content Include="Images\Setup\PwdChange.png" />
+    <Content Include="Images\Setup\reportfile.png" />
+    <Content Include="Images\southwest.png" />
+    <Content Include="Images\StaticBanner\cliq4.png" />
+    <Content Include="Images\StaticBanner\customers.png" />
+    <Content Include="Images\Dashboard\multiple-line-active.png" />
+    <Content Include="Images\Dashboard\multiple-line-normal.png" />
+    <Content Include="Images\Dashboard\single-line-active.png" />
+    <Content Include="Images\Dashboard\single-line-normal.png" />
+    <Content Include="Images\download-btn.png" />
+    <Content Include="Images\down_ms.png" />
+    <Content Include="Images\edit.png" />
+    <Content Include="Images\Email.png" />
+    <Content Include="Images\EmailNotificationBanner.png" />
+    <Content Include="Images\Envelope.png" />
+    <Content Include="Images\FileFolderIcons\blue-file.png" />
+    <Content Include="Images\FileFolderIcons\blue-file2.png" />
+    <Content Include="Images\FileFolderIcons\blue-folder.png" />
+    <Content Include="Images\FileFolderIcons\green-file.png" />
+    <Content Include="Images\FileFolderIcons\green-folder.png" />
+    <Content Include="Images\FileFolderIcons\pink-folder.png" />
+    <Content Include="Images\Header\company.png" />
+    <Content Include="Images\Header\Contact.png" />
+    <Content Include="Images\Header\hi.png" />
+    <Content Include="Images\hiden.png" />
+    <Content Include="Images\iphone.png" />
+    <Content Include="Images\IQAgent\addicon.png" />
+    <Content Include="Images\IQAgent\watchicon.png" />
+    <Content Include="Images\learn-more.png" />
+    <Content Include="Images\StaticBanner\leggmason.png" />
+    <Content Include="Images\StaticBanner\Legg_Mason_Badge.jpg" />
+    <Content Include="Images\libraryheader-active.png" />
+    <Content Include="Images\libraryheader-inactive.png" />
+    <Content Include="Images\Location.png" />
+    <Content Include="Images\logo.png" />
+    <Content Include="Images\MediaIcon\Overview.png" />
+    <Content Include="Images\StaticBanner\miami-case.png" />
+    <Content Include="Images\StaticBanner\Miami_Badge.jpg" />
+    <Content Include="Images\StaticBanner\Overcoming_limits_badge.png" />
+    <Content Include="Images\pdf.png" />
+    <Content Include="Images\StaticBanner\ProPrep.jpg" />
+    <Content Include="Images\StaticBanner\prsa-badge.jpg" />
+    <Content Include="Images\radio-active.png" />
+    <Content Include="Images\radio-inactive.png" />
+    <Content Include="Images\reportheader-active.png" />
+    <Content Include="Images\reportheader-inactive.png" />
+    <Content Include="Images\request-btn.png" />
+    <Content Include="Images\Result-hover.png" />
+    <Content Include="Images\Result.png" />
+    <Content Include="Images\right-img01.png" />
+    <Content Include="Images\Save_Floppy.png" />
+    <Content Include="Images\Setup\categories.png" />
+    <Content Include="Images\show-hide-bg.png" />
+    <Content Include="Images\show.png" />
+    <Content Include="Images\sitemap.png" />
+    <Content Include="Images\StaticBanner\About.jpg" />
+    <Content Include="Images\StaticBanner\Contact.jpg" />
+    <Content Include="Images\StaticBanner\customers.jpg" />
+    <Content Include="Images\StaticBanner\iQV4banner.jpg" />
+    <Content Include="Images\StaticBanner\Legal.jpg" />
+    <Content Include="Images\StaticBanner\prsa-badge_resources.jpg" />
+    <Content Include="Images\StaticBanner\Resources.jpg" />
+    <Content Include="Images\StaticBanner\services.jpg" />
+    <Content Include="Images\StaticBanner\SMS_Video_Campaign.jpg" />
+    <Content Include="Images\StaticBanner\Software.jpg" />
+    <Content Include="Images\StaticBanner\Software.png" />
+    <Content Include="Images\StaticBanner\InTheNews.png" />
+    <Content Include="Images\StaticBanner\success-stories-badge.jpg" />
+    <Content Include="Images\StaticBanner\success-stories-badge.png" />
+    <Content Include="Images\StaticBanner\sxsw-badge.jpg" />
+    <Content Include="Images\Static\bottom-shadow.png" />
+    <Content Include="Images\Static\contact_header.png" />
+    <Content Include="Images\Static\create-img.png" />
+    <Content Include="Images\Static\demo_header.png" />
+    <Content Include="Images\Static\discover-img.png" />
+    <Content Include="Images\Static\engage-img.png" />
+    <Content Include="Images\Static\Engage-View.png" />
+    <Content Include="Images\Static\LearnMore.png" />
+    <Content Include="Images\Static\point-icon.png" />
+    <Content Include="Images\Static\Quote_End.png" />
+    <Content Include="Images\Static\Quote_Start.png" />
+    <Content Include="Images\Static\Sprite-Software.png" />
+    <Content Include="Images\StaticBanner\API-Access.png" />
+    <Content Include="Images\StaticBanner\consulting.png" />
+    <Content Include="Images\StaticBanner\cs-whitepapers.png" />
+    <Content Include="Images\StaticBanner\legal.png" />
+    <Content Include="Images\StaticBanner\management-team.png" />
+    <Content Include="Images\StaticBanner\news.png" />
+    <Content Include="Images\StaticBanner\product-literature.png" />
+    <Content Include="Images\StaticBanner\resources.png" />
+    <Content Include="Images\StaticBanner\services.png" />
+    <Content Include="Images\StaticBanner\support.png" />
+    <Content Include="Images\StaticBanner\training.png" />
+    <Content Include="Images\StaticBanner\customersBanner.png" />
+    <Content Include="Images\Static\chat-h.png" />
+    <Content Include="Images\Static\chat.png" />
+    <Content Include="Images\Static\edit-h.png" />
+    <Content Include="Images\Static\edit.png" />
+    <Content Include="Images\Static\mid-arrow.png" />
+    <Content Include="Images\Static\search-h.png" />
+    <Content Include="Images\Static\search.png" />
+    <Content Include="Images\Static\sticky-arrow.png" />
+    <Content Include="Images\station.png" />
+    <Content Include="Images\Setup\stop_icon.png" />
+    <Content Include="Images\suspend.png" />
+    <Content Include="Images\switch.png" />
+    <Content Include="Images\SXSW_logo.png" />
+    <Content Include="Images\tads-icon.png" />
+    <Content Include="Images\Telephone.png" />
+    <Content Include="Images\StaticBanner\Temple_badge.jpg" />
+    <Content Include="Images\throbber.gif" />
+    <Content Include="Images\thumbs-down.png" />
+    <Content Include="Images\thumbs-up.png" />
+    <Content Include="Images\timeshift-icon.png" />
+    <Content Include="Images\timeshift_sm.jpg" />
+    <Content Include="Images\top-black-bg.jpg" />
+    <Content Include="Images\TraffiqLogo.png" />
+    <Content Include="Images\tv-active.png" />
+    <Content Include="Images\tv-inactive.png" />
+    <Content Include="Images\unsuspend.png" />
+    <Content Include="Images\Up.png" />
+    <Content Include="Images\UploadIcon.png" />
+    <Content Include="Images\MediaIcon\video-ugc.png" />
+    <Content Include="Images\us-dollar.png" />
+    <Content Include="Images\us-map.png" />
+    <Content Include="Images\video-player\action.png" />
+    <Content Include="Images\video-player\camera.png" />
+    <Content Include="Images\video-player\caption-bg.png" />
+    <Content Include="Images\video-player\caption.jpg" />
+    <Content Include="Images\video-player\close.png" />
+    <Content Include="Images\video-player\cloud-save.png" />
+    <Content Include="Images\video-player\drag-left-white.png" />
+    <Content Include="Images\video-player\drag-left.png" />
+    <Content Include="Images\video-player\drag-right-black.png" />
+    <Content Include="Images\video-player\drag-right.png" />
+    <Content Include="Images\video-player\fbck.png" />
+    <Content Include="Images\video-player\ffwd.png" />
+    <Content Include="Images\video-player\ffwd_active.png" />
+    <Content Include="Images\video-player\fox.jpg" />
+    <Content Include="Images\video-player\frew.png" />
+    <Content Include="Images\video-player\frew_active.png" />
+    <Content Include="Images\video-player\FullScreen.png" />
+    <Content Include="Images\video-player\Fullscreen_active.png" />
+    <Content Include="Images\video-player\fwd.png" />
+    <Content Include="Images\video-player\fwd_active.png" />
+    <Content Include="Images\video-player\knob-green.png" />
+    <Content Include="Images\video-player\knob-red.png" />
+    <Content Include="Images\video-player\knob.png" />
+    <Content Include="Images\video-player\buffering.GIF" />
+    <Content Include="Images\video-player\mute.png" />
+    <Content Include="Images\video-player\mute_1.png" />
+    <Content Include="Images\video-player\Pause.png" />
+    <Content Include="Images\video-player\pause_active.png" />
+    <Content Include="Images\video-player\pause_f.png" />
+    <Content Include="Images\video-player\Play.png" />
+    <Content Include="Images\video-player\player-close.png" />
+    <Content Include="Images\video-player\player-controls-sprite.png" />
+    <Content Include="Images\video-player\play_active.png" />
+    <Content Include="Images\video-player\play_f.png" />
+    <Content Include="Images\video-player\preview-pause.png" />
+    <Content Include="Images\video-player\preview.png" />
+    <Content Include="Images\video-player\rank.png" />
+    <Content Include="Images\video-player\rew.png" />
+    <Content Include="Images\video-player\rew_active.png" />
+    <Content Include="Images\video-player\save.png" />
+    <Content Include="Images\video-player\thumb.png" />
+    <Content Include="Images\video-player\thumbnail.jpg" />
+    <Content Include="Images\video-player\value.png" />
+    <Content Include="Images\video-player\video.jpg" />
+    <Content Include="Images\video-player\views.png" />
+    <Content Include="Images\video-player\volume.png" />
+    <Content Include="Images\video-player\volume_0.png" />
+    <Content Include="Images\video-player\volume_1.png" />
+    <Content Include="Images\video-player\volume_2.png" />
+    <Content Include="Images\volume.png" />
+    <Content Include="Images\watch-in-action.png" />
+    <Content Include="Images\StaticBanner\WP03_Badge.jpg" />
+    <Content Include="Images\Web_Centric_Delivery.png" />
+    <Content Include="Images\_Chart.png" />
+    <Content Include="Images\customer.png" />
+    <Content Include="Images\Delete.png" />
+    <Content Include="Images\market.png" />
+    <Content Include="Images\MediaIcon\print-media.png" />
+    <Content Include="Images\MediaIcon\print-media_Old.png" />
+    <Content Include="Images\network-new.png" />
+    <Content Include="Images\next-hover.png" />
+    <Content Include="Images\next.png" />
+    <Content Include="Images\play.jpg" />
+    <Content Include="Images\Plus.png" />
+    <Content Include="Images\8.gif" />
+    <Content Include="Images\about-bottom-bg.png" />
+    <Content Include="Images\about-bottom-bg2.png" />
+    <Content Include="Images\about-mid-bg.png" />
+    <Content Include="Images\about-mid-bg2.png" />
+    <Content Include="Images\about-top-bg.png" />
+    <Content Include="Images\about-top-bg2.png" />
+    <Content Include="Images\about\about-img01.png" />
+    <Content Include="Images\about\about-img02.png" />
+    <Content Include="Images\about\about-img03.png" />
+    <Content Include="Images\about\about-img04.png" />
+    <Content Include="Images\about\about-img05.png" />
+    <Content Include="Images\about\about-img06.png" />
+    <Content Include="Images\about\about-img07.png" />
+    <Content Include="Images\about\ProPrep.png" />
+    <Content Include="Images\agent-icon.png" />
+    <Content Include="Images\arrow.png" />
+    <Content Include="Images\bg.jpg" />
+    <Content Include="Images\body-bg.jpg" />
+    <Content Include="Images\calender.png" />
+    <Content Include="Images\close-icon.png" />
+    <Content Include="Images\compete.png" />
+    <Content Include="Images\dashboard-icon.png" />
+    <Content Include="Images\date-icon.png" />
+    <Content Include="Images\discovery-icon.png" />
+    <Content Include="Images\dollar.png" />
+    <Content Include="Images\f.png" />
+    <Content Include="Images\feed-icon.png" />
+    <Content Include="Images\fliq-icon.png" />
+    <Content Include="Images\group-icon.png" />
+    <Content Include="Images\heroAccent.png" />
+    <Content Include="Images\home-icon.png" />
+    <Content Include="Images\home\banner01.png" />
+    <Content Include="Images\home\banner02.png" />
+    <Content Include="Images\home\Banner\1.png" />
+    <Content Include="Images\home\Banner\2.png" />
+    <Content Include="Images\home\home-img01.png" />
+    <Content Include="Images\home\home-img02.png" />
+    <Content Include="Images\home\home-img03.png" />
+    <Content Include="Images\home\home-img04.png" />
+    <Content Include="Images\home\home-img05.png" />
+    <Content Include="Images\home\home-img06.png" />
+    <Content Include="Images\home\home-img07.png" />
+    <Content Include="Images\home\IQ_SuccessButton_Miami.jpg" />
+    <Content Include="Images\home\IQ_SuccessButton_Miami202.jpg" />
+    <Content Include="Images\home\IQ_SuccessButton_Temple202.jpg" />
+    <Content Include="Images\home\SubBanner\1.png" />
+    <Content Include="Images\home\SubBanner\2.png" />
+    <Content Include="Images\home\Text\1.txt" />
+    <Content Include="Images\home\Text\2.txt" />
+    <Content Include="Images\in.png" />
+    <Content Include="Images\iq-media.png" />
+    <Content Include="Images\left_arrow_cc.gif" />
+    <Content Include="Images\library-icon.png" />
+    <Content Include="Images\Loading_1.gif" />
+    <Content Include="Images\login-bg.png" />
+    <Content Include="Images\Logo\News Logo.png" />
+    <Content Include="Images\logo_N.png" />
+    <Content Include="Images\magnifier.png" />
+    <Content Include="Images\mainlink-b.png" />
+    <Content Include="Images\mainlink-bg-hover.png" />
+    <Content Include="Images\mainlink-bg-hover_Old.png" />
+    <Content Include="Images\mainlink-bg.png" />
+    <Content Include="Images\mainlink-bg_old.png" />
+    <Content Include="Images\mainlink-hover.png" />
+    <Content Include="Images\mainlink2-hover.png" />
+    <Content Include="Images\mainlink2.png" />
+    <Content Include="Images\mCSB_buttons.png" />
+    <Content Include="Images\MediaIcon\blog.png" />
+    <Content Include="Images\MediaIcon\blog_.png" />
+    <Content Include="Images\MediaIcon\forum.png" />
+    <Content Include="Images\MediaIcon\network-icon.png" />
+    <Content Include="Images\MediaIcon\news.png" />
+    <Content Include="Images\MediaIcon\news_.png" />
+    <Content Include="Images\MediaIcon\social-media.png" />
+    <Content Include="Images\MediaIcon\twitter.png" />
+    <Content Include="Images\MediaIcon\twitter_.png" />
+    <Content Include="Images\medium-icon.png" />
+    <Content Include="Images\MgmtTeam\Jeff.png" />
+    <Content Include="Images\MgmtTeam\John.png" />
+    <Content Include="Images\MgmtTeam\kye.png" />
+    <Content Include="Images\MgmtTeam\Lakshmi.png" />
+    <Content Include="Images\MgmtTeam\Steve.png" />
+    <Content Include="Images\MgmtTeam\Tom.png" />
+    <Content Include="Images\nav-bg.jpg" />
+    <Content Include="Images\nav-border.jpg" />
+    <Content Include="Images\network-icon.png" />
+    <Content Include="Images\Play.png" />
+    <Content Include="Images\prev-hover.png" />
+    <Content Include="Images\prev.png" />
+    <Content Include="Images\Refresh.png" />
+    <Content Include="Images\_Result.png" />
+    <Content Include="Images\right_arrow_cc.gif" />
+    <Content Include="Images\save.png" />
+    <Content Include="Images\sentiment-icon.png" />
+    <Content Include="Images\setup-icon.png" />
+    <Content Include="Images\t.png" />
+    <Content Include="Images\time00.gif" />
+    <Content Include="Images\time10.gif" />
+    <Content Include="Images\time20.gif" />
+    <Content Include="Images\time30.gif" />
+    <Content Include="Images\time40.gif" />
+    <Content Include="Images\time50.gif" />
+    <Content Include="Images\trash.png" />
+    <Content Include="Images\video.png" />
+    <Content Include="Images\viewArticle.png" />
+    <Content Include="Images\view.png" />
+    <Content Include="index.htm" />
+    <Content Include="IQMedia_Player.swf" />
+    <Content Include="iQVideoPublishingAddendum\index.html" />
+    <Content Include="Scripts\CampaignSetup.js" />
+    <Content Include="Scripts\Account.js" />
+    <Content Include="Scripts\Analytics.js" />
+    <Content Include="Scripts\ArticleScript.js" />
+    <Content Include="Scripts\BasicPlayer.js" />
+    <Content Include="Scripts\bootstrap3\bootstrap.js" />
+    <Content Include="Scripts\Bootstrap\bootstrap-alert.js" />
+    <Content Include="Scripts\Bootstrap\bootstrap-button.js" />
+    <Content Include="Scripts\Bootstrap\bootstrap-carousel.js" />
+    <Content Include="Scripts\Bootstrap\bootstrap-collapse.js" />
+    <Content Include="Scripts\Bootstrap\bootstrap-dropdown.js" />
+    <Content Include="Scripts\Bootstrap\bootstrap-modal.js" />
+    <Content Include="Scripts\Bootstrap\bootstrap-popover.js" />
+    <Content Include="Scripts\Bootstrap\bootstrap-scrollspy.js" />
+    <Content Include="Scripts\Bootstrap\bootstrap-tab.js" />
+    <Content Include="Scripts\Bootstrap\bootstrap-tooltip.js" />
+    <Content Include="Scripts\Bootstrap\bootstrap-transition.js" />
+    <Content Include="Scripts\Bootstrap\bootstrap-typeahead.js" />
+    <Content Include="Scripts\Bootstrap\navbar-horizontal.js" />
+    <Content Include="Scripts\chosen.jquery.js" />
+    <Content Include="Scripts\chosen.jquery.min.js" />
+    <Content Include="Scripts\CKEditor\adapters\jquery.js" />
+    <Content Include="Scripts\CKEditor\build-config.js" />
+    <Content Include="Scripts\CKEditor\ckeditor.js" />
+    <Content Include="Scripts\CKEditor\config.js" />
+    <Content Include="Scripts\CKEditor\contents.css" />
+    <Content Include="Scripts\CKEditor\lang\en.js" />
+    <Content Include="Scripts\CKEditor\plugins\clipboard\dialogs\paste.js" />
+    <Content Include="Scripts\CKEditor\plugins\colordialog\dialogs\colordialog.js" />
+    <Content Include="Scripts\CKEditor\plugins\dialog\dialogDefinition.js" />
+    <Content Include="Scripts\CKEditor\plugins\icons.png" />
+    <Content Include="Scripts\CKEditor\plugins\icons_hidpi.png" />
+    <Content Include="Scripts\CKEditor\plugins\magicline\images\hidpi\icon-rtl.png" />
+    <Content Include="Scripts\CKEditor\plugins\magicline\images\hidpi\icon.png" />
+    <Content Include="Scripts\CKEditor\plugins\magicline\images\icon-rtl.png" />
+    <Content Include="Scripts\CKEditor\plugins\magicline\images\icon.png" />
+    <Content Include="Scripts\CKEditor\plugins\scayt\dialogs\options.js" />
+    <Content Include="Scripts\CKEditor\plugins\scayt\dialogs\toolbar.css" />
+    <Content Include="Scripts\CKEditor\plugins\tabletools\dialogs\tableCell.js" />
+    <Content Include="Scripts\CKEditor\plugins\table\dialogs\table.js" />
+    <Content Include="Scripts\CKEditor\plugins\wsc\dialogs\ciframe.html" />
+    <Content Include="Scripts\CKEditor\plugins\wsc\dialogs\tmpFrameset.html" />
+    <Content Include="Scripts\CKEditor\plugins\wsc\dialogs\wsc.css" />
+    <Content Include="Scripts\CKEditor\plugins\wsc\dialogs\wsc.js" />
+    <Content Include="Scripts\CKEditor\plugins\wsc\dialogs\wsc_ie.js" />
+    <Content Include="Scripts\CKEditor\skins\bootstrapck\dialog.css" />
+    <Content Include="Scripts\CKEditor\skins\bootstrapck\dialog_ie.css" />
+    <Content Include="Scripts\CKEditor\skins\bootstrapck\dialog_ie7.css" />
+    <Content Include="Scripts\CKEditor\skins\bootstrapck\dialog_ie8.css" />
+    <Content Include="Scripts\CKEditor\skins\bootstrapck\dialog_iequirks.css" />
+    <Content Include="Scripts\CKEditor\skins\bootstrapck\dialog_opera.css" />
+    <Content Include="Scripts\CKEditor\skins\bootstrapck\editor.css" />
+    <Content Include="Scripts\CKEditor\skins\bootstrapck\editor_gecko.css" />
+    <Content Include="Scripts\CKEditor\skins\bootstrapck\editor_ie.css" />
+    <Content Include="Scripts\CKEditor\skins\bootstrapck\editor_ie7.css" />
+    <Content Include="Scripts\CKEditor\skins\bootstrapck\editor_ie8.css" />
+    <Content Include="Scripts\CKEditor\skins\bootstrapck\editor_iequirks.css" />
+    <Content Include="Scripts\CKEditor\skins\bootstrapck\icons.png" />
+    <Content Include="Scripts\CKEditor\skins\bootstrapck\icons_hidpi.png" />
+    <Content Include="Scripts\CKEditor\skins\bootstrapck\images\arrow.png" />
+    <Content Include="Scripts\CKEditor\skins\bootstrapck\images\close.png" />
+    <Content Include="Scripts\CKEditor\skins\bootstrapck\images\hidpi\close.png" />
+    <Content Include="Scripts\CKEditor\skins\bootstrapck\images\hidpi\lock-open.png" />
+    <Content Include="Scripts\CKEditor\skins\bootstrapck\images\hidpi\lock.png" />
+    <Content Include="Scripts\CKEditor\skins\bootstrapck\images\hidpi\refresh.png" />
+    <Content Include="Scripts\CKEditor\skins\bootstrapck\images\lock-open.png" />
+    <Content Include="Scripts\CKEditor\skins\bootstrapck\images\lock.png" />
+    <Content Include="Scripts\CKEditor\skins\bootstrapck\images\refresh.png" />
+    <Content Include="Scripts\CKEditor\styles.js" />
+    <Content Include="Scripts\Client.js" />
+    <Content Include="Scripts\ClipPlayer.js" />
+    <Content Include="Scripts\Col2D1.js" />
+    <Content Include="Scripts\ConstantScript.js" />
+    <Content Include="Scripts\jsrender.min.js" />
+    <Content Include="Scripts\JSRenderViewsSupport.js" />
+    <Content Include="Scripts\jsviews.min.js" />
+    <Content Include="Scripts\fusioncharts-jquery-plugin.min.js" />
+    <Content Include="Scripts\highcharts.heatmap.js" />
+    <Content Include="Scripts\maps\fusioncharts.canada.js" />
+    <Content Include="Scripts\TAdsRadio.js" />
+    <Content Include="Scripts\TAdsVideoPlayer.js" />
+    <Content Include="Scripts\CustomCategory.js" />
+    <Content Include="Scripts\fusioncharts1.maps.js" />
+    <Content Include="Scripts\fusioncharts.js" />
+    <Content Include="Scripts\html5.js" />
+    <Content Include="Scripts\interact.min.js" />
+    <Content Include="Scripts\IQNotification.js" />
+    <Content Include="Scripts\JobStatus.js" />
+    <Content Include="Scripts\jquery-te-1.4.0.min.js" />
+    <Content Include="Scripts\jquery.colorbox.js" />
+    <Content Include="Scripts\jquery.gridster-responsive.js" />
+    <Content Include="Scripts\jquery.imgareaselect.js" />
+    <Content Include="Scripts\jquery.lightSlider.js" />
+    <Content Include="Scripts\jquery.multi-select.js" />
+    <Content Include="Scripts\jquery.placeholder.min.js" />
+    <Content Include="Scripts\json3.min.js" />
+    <Content Include="Scripts\LibraryMCMedia.js" />
+    <Content Include="Scripts\LibraryReportSort.js" />
+    <Content Include="Scripts\MapChart.js" />
+    <Content Include="Scripts\maps\fusioncharts.usa.js" />
+    <Content Include="Scripts\maps\fusioncharts.usadma.js" />
+    <Content Include="Scripts\ImagiQPlayer.js" />
+    <Content Include="Scripts\MobileVideoPlayer.js" />
+    <Content Include="Scripts\MutationObserver.js" />
+    <Content Include="Scripts\Player\PlayerClip.js" />
+    <Content Include="Scripts\Player\PlayerCommon.js" />
+    <Content Include="Scripts\Player\PlayerIfrmClip.js" />
+    <Content Include="Scripts\Player\PlayerIfrmSvc.js" />
+    <Content Include="Scripts\respond.min.js" />
+    <Content Include="Scripts\SetupFliq.js" />
+    <Content Include="Scripts\SonyMedia.js" />
+    <Content Include="Scripts\fliq_Application.js" />
+    <Content Include="Scripts\fliq_ClientApplication.js" />
+    <Content Include="Scripts\fliq_CustomerApplication.js" />
+    <Content Include="Scripts\jstree.js" />
+    <Content Include="Scripts\LibraryReportFolder.js" />
+    <Content Include="Scripts\fliq_Customer.js" />
+    <Content Include="Scripts\jstree.min.js" />
+    <Content Include="Scripts\KantorVideoPlayer.js" />
+    <Content Include="Scripts\enscroll.js" />
+    <Content Include="Scripts\QVC.js" />
+    <Content Include="Scripts\ReportFolder.js" />
+    <Content Include="Scripts\Gallery.js" />
+    <Content Include="Scripts\ImagiQ.js" />
+    <Content Include="Scripts\DiscoveryLite.js" />
+    <Content Include="Scripts\Customer.js" />
+    <Content Include="Scripts\Dashboard.js" />
+    <Content Include="Scripts\Discovery.js" />
+    <Content Include="Scripts\FeedsScript.js" />
+    <Content Include="Scripts\FusionCharts.HC.Charts.js" />
+    <Content Include="Scripts\FusionCharts.HC.js" />
+    <Content Include="Scripts\FusionCharts.HC.Widgets.js" />
+    <Content Include="Scripts\FusionCharts_old.js" />
+    <Content Include="Scripts\GlobalAdminScript.js" />
+    <Content Include="Scripts\GroupScript.js" />
+    <Content Include="Scripts\highcharts.js" />
+    <Content Include="Scripts\html5shiv.js" />
+    <Content Include="Scripts\IFrameMicrositeScript.js" />
+    <Content Include="Scripts\IQAgentSetup.js" />
+    <Content Include="Scripts\IQCommonStatic.js" />
+    <Content Include="Scripts\IQMediaCommon.js" />
+    <Content Include="Scripts\jquery-1.9.1.min.js" />
+    <Content Include="Scripts\jquery-ui-1.9.2.custom.min.js" />
+    <Content Include="Scripts\jquery-ui-timepicker-addon.js" />
+    <Content Include="Scripts\jquery-ui.min.js" />
+    <Content Include="Scripts\jquery.form.js" />
+    <Content Include="Scripts\jquery.mCustomScrollbar.concat.min.js" />
+    <Content Include="Scripts\jquery.placeholder.js" />
+    <Content Include="Scripts\jquery.rwdImageMaps.min.js" />
+    <Content Include="Scripts\jquery.sticky.js" />
+    <Content Include="Scripts\jquery.ui.rlightbox.min.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
+    <Content Include="Scripts\jquery.validate.min.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\Library.js" />
+    <Content Include="Scripts\LibraryEditRecord.js" />
+    <Content Include="Scripts\LibraryReport.js" />
+    <Content Include="Scripts\LibraryUGCContent.js" />
+    <Content Include="Scripts\MicrosoftAjax.js" />
+    <Content Include="Scripts\MicrosoftMvcAjax.js" />
+    <Content Include="Scripts\Navigation.js" />
+    <Content Include="Scripts\PlayerScript.js" />
+    <Content Include="Scripts\Radio.js" />
+    <Content Include="Scripts\ReportImage.js" />
+    <Content Include="Scripts\Setup.js" />
+    <Content Include="Scripts\TAds.js" />
+    <Content Include="Scripts\Timeshift.js" />
+    <Content Include="Scripts\UGCMapSettings.js" />
+    <Content Include="Scripts\VideoPlayer.js" />
+    <Content Include="Scripts\VideoPlayerChart.js" />
+    <Content Include="Scripts\weakmap.js" />
+    <Content Include="StationLogoImages\BBC.gif" />
+    <Content Include="StationLogoImages\BBTV.gif" />
+    <Content Include="StationLogoImages\BRAVO.gif" />
+    <Content Include="StationLogoImages\CN8.gif" />
+    <Content Include="StationLogoImages\CNBC.gif" />
+    <Content Include="StationLogoImages\CNN.gif" />
+    <Content Include="StationLogoImages\CSNCH.gif" />
+    <Content Include="StationLogoImages\CSTV.gif" />
+    <Content Include="StationLogoImages\DOBBS.gif" />
+    <Content Include="StationLogoImages\ENTTV.gif" />
+    <Content Include="StationLogoImages\ESPN.gif" />
+    <Content Include="StationLogoImages\ESPN2.gif" />
+    <Content Include="StationLogoImages\ESPNEWS.gif" />
+    <Content Include="StationLogoImages\EWTN.gif" />
+    <Content Include="StationLogoImages\FOXBN.gif" />
+    <Content Include="StationLogoImages\FOXNEWS.gif" />
+    <Content Include="StationLogoImages\FOXPT.gif" />
+    <Content Include="StationLogoImages\G4.gif" />
+    <Content Include="StationLogoImages\GBECK.gif" />
+    <Content Include="StationLogoImages\HDLN.gif" />
+    <Content Include="StationLogoImages\HOWARD101.gif" />
+    <Content Include="StationLogoImages\HUCK.gif" />
+    <Content Include="StationLogoImages\HUCKSF.gif" />
+    <Content Include="StationLogoImages\JAZEERA.gif" />
+    <Content Include="StationLogoImages\KABB.gif" />
+    <Content Include="StationLogoImages\KARE.gif" />
+    <Content Include="StationLogoImages\KCTV.gif" />
+    <Content Include="StationLogoImages\KDFW.gif" />
+    <Content Include="StationLogoImages\KDKA.gif" />
+    <Content Include="StationLogoImages\KDNL.gif" />
+    <Content Include="StationLogoImages\KDSM.gif" />
+    <Content Include="StationLogoImages\KENS.gif" />
+    <Content Include="StationLogoImages\KFXA.gif" />
+    <Content Include="StationLogoImages\KGAN.gif" />
+    <Content Include="StationLogoImages\KHOU.gif" />
+    <Content Include="StationLogoImages\KMBC.gif" />
+    <Content Include="StationLogoImages\KMEX.gif" />
+    <Content Include="StationLogoImages\KMJFM.gif" />
+    <Content Include="StationLogoImages\KMOV.gif" />
+    <Content Include="StationLogoImages\KPLR.gif" />
+    <Content Include="StationLogoImages\KPRC.gif" />
+    <Content Include="StationLogoImages\KRIV.gif" />
+    <Content Include="StationLogoImages\KSAT.gif" />
+    <Content Include="StationLogoImages\KSCAFM.gif" />
+    <Content Include="StationLogoImages\KSDK.gif" />
+    <Content Include="StationLogoImages\KSHB.gif" />
+    <Content Include="StationLogoImages\KSMO.gif" />
+    <Content Include="StationLogoImages\KSTP.gif" />
+    <Content Include="StationLogoImages\KSWBTV.gif" />
+    <Content Include="StationLogoImages\KTBC.gif" />
+    <Content Include="StationLogoImages\KTRK.gif" />
+    <Content Include="StationLogoImages\KTVI.gif" />
+    <Content Include="StationLogoImages\KTVT.gif" />
+    <Content Include="StationLogoImages\KXAS.gif" />
+    <Content Include="StationLogoImages\MEEHAN.gif" />
+    <Content Include="StationLogoImages\MSGTV.gif" />
+    <Content Include="StationLogoImages\MSNBC.gif" />
+    <Content Include="StationLogoImages\MTV.gif" />
+    <Content Include="StationLogoImages\NFL.gif" />
+    <Content Include="StationLogoImages\OLV.gif" />
+    <Content Include="StationLogoImages\QVCUS.gif" />
+    <Content Include="StationLogoImages\REDLASSO.gif" />
+    <Content Include="StationLogoImages\SAP.gif" />
+    <Content Include="StationLogoImages\TGYM.gif" />
+    <Content Include="StationLogoImages\TLC.gif" />
+    <Content Include="StationLogoImages\TYRA.gif" />
+    <Content Include="StationLogoImages\VCOPIOUS.gif" />
+    <Content Include="StationLogoImages\VH1.gif" />
+    <Content Include="StationLogoImages\VOW.gif" />
+    <Content Include="StationLogoImages\WABM.gif" />
+    <Content Include="StationLogoImages\WAGA.gif" />
+    <Content Include="StationLogoImages\WAMRFM.gif" />
+    <Content Include="StationLogoImages\WAVE.gif" />
+    <Content Include="StationLogoImages\WBAY.gif" />
+    <Content Include="StationLogoImages\WBNS.gif" />
+    <Content Include="StationLogoImages\WBRC.gif" />
+    <Content Include="StationLogoImages\WCCO.gif" />
+    <Content Include="StationLogoImages\WCMH.gif" />
+    <Content Include="StationLogoImages\WCPO.gif" />
+    <Content Include="StationLogoImages\WDAF.gif" />
+    <Content Include="StationLogoImages\WDRB.gif" />
+    <Content Include="StationLogoImages\WEATHER.gif" />
+    <Content Include="StationLogoImages\WENDY.gif" />
+    <Content Include="StationLogoImages\WESH.gif" />
+    <Content Include="StationLogoImages\WEWS.gif" />
+    <Content Include="StationLogoImages\WEYI.gif" />
+    <Content Include="StationLogoImages\WFAA.gif" />
+    <Content Include="StationLogoImages\WFED.gif" />
+    <Content Include="StationLogoImages\WFLA.gif" />
+    <Content Include="StationLogoImages\WFLX.gif" />
+    <Content Include="StationLogoImages\WFOR.gif" />
+    <Content Include="StationLogoImages\WFPA.gif" />
+    <Content Include="StationLogoImages\WFRV.gif" />
+    <Content Include="StationLogoImages\WFSB.gif" />
+    <Content Include="StationLogoImages\WFTS.gif" />
+    <Content Include="StationLogoImages\WFTV.gif" />
+    <Content Include="StationLogoImages\WFXT.gif" />
+    <Content Include="StationLogoImages\WGBA.gif" />
+    <Content Include="StationLogoImages\WGCL.gif" />
+    <Content Include="StationLogoImages\WHAS.gif" />
+    <Content Include="StationLogoImages\WHBQ.gif" />
+    <Content Include="StationLogoImages\WHNT.gif" />
+    <Content Include="StationLogoImages\WHO.gif" />
+    <Content Include="StationLogoImages\WHP.gif" />
+    <Content Include="StationLogoImages\WHTM.gif" />
+    <Content Include="StationLogoImages\WHYY.gif" />
+    <Content Include="StationLogoImages\WIAT.gif" />
+    <Content Include="StationLogoImages\WIOD.gif" />
+    <Content Include="StationLogoImages\WISH.gif" />
+    <Content Include="StationLogoImages\WJBK.gif" />
+    <Content Include="StationLogoImages\WJW.gif" />
+    <Content Include="StationLogoImages\WKEF.gif" />
+    <Content Include="StationLogoImages\WKMG.gif" />
+    <Content Include="StationLogoImages\WKRC.gif" />
+    <Content Include="StationLogoImages\WKRN.gif" />
+    <Content Include="StationLogoImages\WKYC.gif" />
+    <Content Include="StationLogoImages\WLKY.gif" />
+    <Content Include="StationLogoImages\WLTV.gif" />
+    <Content Include="StationLogoImages\WLUK.gif" />
+    <Content Include="StationLogoImages\WLWT.gif" />
+    <Content Include="StationLogoImages\WMC.gif" />
+    <Content Include="StationLogoImages\WMMR.gif" />
+    <Content Include="StationLogoImages\WMPT.gif" />
+    <Content Include="StationLogoImages\WMSN.gif" />
+    <Content Include="StationLogoImages\WNEM.gif" />
+    <Content Include="StationLogoImages\WNEP.gif" />
+    <Content Include="StationLogoImages\WOAI.gif" />
+    <Content Include="StationLogoImages\WOFL.gif" />
+    <Content Include="StationLogoImages\WPBF.gif" />
+    <Content Include="StationLogoImages\WPEC.gif" />
+    <Content Include="StationLogoImages\WPGH.gif" />
+    <Content Include="StationLogoImages\WPLG.gif" />
+    <Content Include="StationLogoImages\WPSG.gif" />
+    <Content Include="StationLogoImages\WPTV.gif" />
+    <Content Include="StationLogoImages\WPTY.gif" />
+    <Content Include="StationLogoImages\WPXI.gif" />
+    <Content Include="StationLogoImages\WQAD.gif" />
+    <Content Include="StationLogoImages\WREG.gif" />
+    <Content Include="StationLogoImages\WRGT.gif" />
+    <Content Include="StationLogoImages\WRLH.gif" />
+    <Content Include="StationLogoImages\WRTV.gif" />
+    <Content Include="StationLogoImages\WSB.gif" />
+    <Content Include="StationLogoImages\WSMH.gif" />
+    <Content Include="StationLogoImages\WSMV.gif" />
+    <Content Include="StationLogoImages\WSVN.gif" />
+    <Content Include="StationLogoImages\WSYM.gif" />
+    <Content Include="StationLogoImages\WSYT.gif" />
+    <Content Include="StationLogoImages\WSYX.gif" />
+    <Content Include="StationLogoImages\WTAE.gif" />
+    <Content Include="StationLogoImages\WTHR.gif" />
+    <Content Include="StationLogoImages\WTIC.gif" />
+    <Content Include="StationLogoImages\WTOP.gif" />
+    <Content Include="StationLogoImages\WTSP.gif" />
+    <Content Include="StationLogoImages\WTTE.gif" />
+    <Content Include="StationLogoImages\WTVF.gif" />
+    <Content Include="StationLogoImages\WTVJ.gif" />
+    <Content Include="StationLogoImages\WTVR.gif" />
+    <Content Include="StationLogoImages\WTVT.gif" />
+    <Content Include="StationLogoImages\WUVP.gif" />
+    <Content Include="StationLogoImages\WVTM.gif" />
+    <Content Include="StationLogoImages\WWOR.gif" />
+    <Content Include="StationLogoImages\WXIA.gif" />
+    <Content Include="StationLogoImages\WXIN.gif" />
+    <Content Include="StationLogoImages\WXNYFM.gif" />
+    <Content Include="StationLogoImages\WXTU.gif" />
+    <Content Include="StationLogoImages\WZFG.gif" />
+    <Content Include="StationLogoImages\WZTV.gif" />
+    <Content Include="StationLogoImages\XM116.gif" />
+    <Content Include="StationLogoImages\XM127.gif" />
+    <Content Include="StationLogoImages\XM143.gif" />
+    <Content Include="StationLogoImages\XM144.gif" />
+    <Content Include="StationLogoImages\XM146.gif" />
+    <Content Include="StationLogoImages\XM151.gif" />
+    <Content Include="StationLogoImages\XM155.gif" />
+    <Content Include="StationLogoImages\XM156.gif" />
+    <Content Include="StationLogoImages\XM164.gif" />
+    <Content Include="StationLogoImages\XM166.gif" />
+    <Content Include="StationLogoImages\XM171.gif" />
+    <Content Include="StationLogoImages\XM175.gif" />
+    <Content Include="StationLogoImages\XM202.gif" />
+    <Content Include="StationLogoImages\Z100.gif" />
+    <Content Include="SubscriptionAgreement\index.html" />
+    <Content Include="ThumbnailImage\noimage.jpg" />
+    <Content Include="VideoDownloader\index.html" />
+    <Content Include="Views\Account\ResetPwd2.cshtml">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Views\Web.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+    <Folder Include="New folder\" />
+    <Folder Include="TestUpload\" />
+    <Folder Include="Views\404\" />
+    <Folder Include="Views\Analytics\Overview\" />
+    <Folder Include="Views\ReportTemplate\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\IQCommon\IQCommon\IQCommon.csproj">
+      <Project>{6C491916-50C9-4E52-A355-596FDE89816B}</Project>
+      <Name>IQCommon</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\FeedsSearch\FeedsSearch.csproj">
+      <Project>{CB4A97E5-1C6F-4BF0-AEA4-B8D143CBD503}</Project>
+      <Name>FeedsSearch</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\IQRadioSearch\IQRadioSearch\IQRadioSearch.csproj">
+      <Project>{42C034CA-BFEA-4C5E-9B74-9415518C0FCC}</Project>
+      <Name>IQRadioSearch</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\PMGSearch\PMGSearch\PMGSearch.csproj">
+      <Project>{669A2777-33C6-4458-99D7-49A7466FE662}</Project>
+      <Name>PMGSearch</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Security\IQMedia.Security\IQMedia.Security.csproj">
+      <Project>{CE5163B5-A186-41FA-9BC7-CE88FF750F39}</Project>
+      <Name>IQMedia.Security</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Sentiment\Sentiment.csproj">
+      <Project>{2171FFA6-BDEC-4882-94F9-50FEE34F9ED9}</Project>
+      <Name>Sentiment</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Common\IQMedia.Shared\IQMedia.Shared.csproj">
+      <Project>{0B641996-1E4E-41D7-AB14-36295FAA3F4E}</Project>
+      <Name>IQMedia.Shared</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\IQMedia.Logic\IQMedia.Web.Logic.csproj">
+      <Project>{ED5B1FC9-8C04-4F5E-BDAA-60D8A7C227E3}</Project>
+      <Name>IQMedia.Web.Logic</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\IQMedia.Model\IQMedia.Model.csproj">
+      <Project>{27287047-85ED-43FF-9A0E-E61C7B5C6887}</Project>
+      <Name>IQMedia.Model</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Content\ISVCServices.json" />
+    <None Include="Css\bootstrap3\fonts\avenir-medium-webfont.eot" />
+    <None Include="Css\bootstrap3\fonts\avenir-medium-webfont.ttf" />
+    <None Include="Css\bootstrap3\fonts\avenir-medium-webfont.woff" />
+    <None Include="Css\bootstrap3\fonts\glyphicons-halflings-regular.eot" />
+    <None Include="Css\bootstrap3\fonts\glyphicons-halflings-regular.ttf" />
+    <None Include="Css\bootstrap3\fonts\glyphicons-halflings-regular.woff" />
+    <None Include="Css\bootstrap3\fonts\Lato-Black.ttf" />
+    <None Include="Css\bootstrap3\fonts\Lato-BlackItalic.ttf" />
+    <None Include="Css\bootstrap3\fonts\Lato-Bold.ttf" />
+    <None Include="Css\bootstrap3\fonts\Lato-BoldItalic.ttf" />
+    <None Include="Css\bootstrap3\fonts\Lato-Hairline.ttf" />
+    <None Include="Css\bootstrap3\fonts\Lato-HairlineItalic.ttf" />
+    <None Include="Css\bootstrap3\fonts\Lato-Heavy.ttf" />
+    <None Include="Css\bootstrap3\fonts\Lato-HeavyItalic.ttf" />
+    <None Include="Css\bootstrap3\fonts\Lato-Italic.ttf" />
+    <None Include="Css\bootstrap3\fonts\Lato-Light.ttf" />
+    <None Include="Css\bootstrap3\fonts\Lato-LightItalic.ttf" />
+    <None Include="Css\bootstrap3\fonts\Lato-Medium.ttf" />
+    <None Include="Css\bootstrap3\fonts\Lato-MediumItalic.ttf" />
+    <None Include="Css\bootstrap3\fonts\Lato-Regular.ttf" />
+    <None Include="Css\bootstrap3\fonts\Lato-Semibold.ttf" />
+    <None Include="Css\bootstrap3\fonts\Lato-SemiboldItalic.ttf" />
+    <None Include="Css\bootstrap3\fonts\Lato-Thin.ttf" />
+    <None Include="Css\bootstrap3\fonts\Lato-ThinItalic.ttf" />
+    <None Include="Css\bootstrap3\fonts\NixieOne-Regular.ttf" />
+    <None Include="Css\bootstrap3\fonts\opensans-bold-webfont.eot" />
+    <None Include="Css\bootstrap3\fonts\opensans-bold-webfont.ttf" />
+    <None Include="Css\bootstrap3\fonts\opensans-bold-webfont.woff" />
+    <None Include="Css\bootstrap3\fonts\opensans-extrabold-webfont.eot" />
+    <None Include="Css\bootstrap3\fonts\opensans-extrabold-webfont.ttf" />
+    <None Include="Css\bootstrap3\fonts\opensans-extrabold-webfont.woff" />
+    <None Include="Css\bootstrap3\fonts\opensans-italic_0-webfont.eot" />
+    <None Include="Css\bootstrap3\fonts\opensans-italic_0-webfont.ttf" />
+    <None Include="Css\bootstrap3\fonts\opensans-italic_0-webfont.woff" />
+    <None Include="Css\bootstrap3\fonts\opensans-italic_0-webfont.woff2" />
+    <None Include="Css\bootstrap3\fonts\opensans-light-webfont.eot" />
+    <None Include="Css\bootstrap3\fonts\opensans-light-webfont.ttf" />
+    <None Include="Css\bootstrap3\fonts\opensans-light-webfont.woff" />
+    <None Include="Css\bootstrap3\fonts\OpenSans-Light.ttf" />
+    <None Include="Css\bootstrap3\fonts\opensans-regular-webfont.eot" />
+    <None Include="Css\bootstrap3\fonts\opensans-regular-webfont.ttf" />
+    <None Include="Css\bootstrap3\fonts\opensans-regular-webfont.woff" />
+    <None Include="Css\bootstrap3\fonts\opensans-semibold-webfont.eot" />
+    <None Include="Css\bootstrap3\fonts\opensans-semibold-webfont.ttf" />
+    <None Include="Css\bootstrap3\fonts\opensans-semibold-webfont.woff" />
+    <None Include="Css\bootstrap3\fonts\Raleway-Regular.ttf" />
+    <None Include="Css\bootstrap3\fonts\RobotoSlab-Light.ttf" />
+    <None Include="Css\fonts\avenir-medium-webfont.eot" />
+    <None Include="Css\fonts\avenir-medium-webfont.ttf" />
+    <None Include="Css\fonts\avenir-medium-webfont.woff" />
+    <None Include="Css\fonts\Merriweather-Bold.woff" />
+    <None Include="Css\fonts\Merriweather-Heavy.woff" />
+    <None Include="Css\fonts\merriweather-light-webfont.eot" />
+    <None Include="Css\fonts\merriweather-light-webfont.ttf" />
+    <None Include="Css\fonts\merriweather-light-webfont.woff" />
+    <None Include="Css\fonts\Merriweather-Light.woff" />
+    <None Include="Css\fonts\Merriweather-Normal.woff" />
+    <None Include="Css\fonts\opensans-bold-webfont.eot" />
+    <None Include="Css\fonts\opensans-bold-webfont.ttf" />
+    <None Include="Css\fonts\opensans-bold-webfont.woff" />
+    <None Include="Css\fonts\OpenSans-Bold.woff" />
+    <None Include="Css\fonts\OpenSans-Light.woff" />
+    <None Include="Css\fonts\OpenSans-Normal.woff" />
+    <None Include="Css\fonts\opensans-regular-webfont.eot" />
+    <None Include="Css\fonts\opensans-regular-webfont.ttf" />
+    <None Include="Css\fonts\opensans-regular-webfont.woff" />
+    <None Include="Css\fonts\opensans-semibold-webfont.eot" />
+    <None Include="Css\fonts\opensans-semibold-webfont.ttf" />
+    <None Include="Css\fonts\opensans-semibold-webfont.woff" />
+    <None Include="Css\fonts\OpenSans-Semibold.woff" />
+    <None Include="Css\fonts\Quicksand-Bold.ttf" />
+    <None Include="Css\fonts\Quicksand-Light.ttf" />
+    <None Include="Css\fonts\Quicksand-Regular.ttf" />
+    <None Include="Css\fonts\Quicksand_Bold-webfont.eot" />
+    <None Include="Css\fonts\Quicksand_Bold-webfont.ttf" />
+    <None Include="Css\fonts\Quicksand_Bold-webfont.woff" />
+    <None Include="Css\fonts\quicksand_bold-webfont_regular.eot" />
+    <None Include="Css\fonts\quicksand_bold-webfont_regular.ttf" />
+    <None Include="Css\fonts\quicksand_bold-webfont_regular.woff" />
+    <None Include="Css\fonts\Quicksand_Bold_Oblique-webfont.eot" />
+    <None Include="Css\fonts\Quicksand_Bold_Oblique-webfont.ttf" />
+    <None Include="Css\fonts\Quicksand_Bold_Oblique-webfont.woff" />
+    <None Include="Css\fonts\Quicksand_Book-webfont.eot" />
+    <None Include="Css\fonts\Quicksand_Book-webfont.ttf" />
+    <None Include="Css\fonts\Quicksand_Book-webfont.woff" />
+    <None Include="Css\fonts\Quicksand_Book_Oblique-webfont.eot" />
+    <None Include="Css\fonts\Quicksand_Book_Oblique-webfont.ttf" />
+    <None Include="Css\fonts\Quicksand_Book_Oblique-webfont.woff" />
+    <None Include="Css\fonts\Quicksand_Dash-webfont.eot" />
+    <None Include="Css\fonts\Quicksand_Dash-webfont.ttf" />
+    <None Include="Css\fonts\Quicksand_Dash-webfont.woff" />
+    <None Include="Css\fonts\Quicksand_Light-webfont.eot" />
+    <None Include="Css\fonts\Quicksand_Light-webfont.ttf" />
+    <None Include="Css\fonts\Quicksand_Light-webfont.woff" />
+    <None Include="Css\fonts\Quicksand_Light_Oblique-webfont.eot" />
+    <None Include="Css\fonts\Quicksand_Light_Oblique-webfont.ttf" />
+    <None Include="Css\fonts\Quicksand_Light_Oblique-webfont.woff" />
+    <Content Include="Views\Shared\_IQMediaMaster.cshtml" />
+    <Content Include="Views\Industries\CollegiateAthleticPrograms.cshtml" />
+    <Content Include="Views\Industries\Index.cshtml" />
+    <Content Include="Views\Industries\PoliticalParties.cshtml" />
+    <Content Include="Views\Industries\ProfessionalSports.cshtml" />
+    <Content Include="Views\Industries\University.cshtml" />
+    <Content Include="Views\Shared\_Footer.cshtml" />
+    <Content Include="Views\Shared\_Navigation.cshtml" />
+    <Content Include="Views\Shared\_SocialMedia.cshtml" />
+    <Content Include="Views\Shared\_StaticRightSideContent.cshtml" />
+    <Content Include="Views\Products\BroadcastTV.cshtml" />
+    <Content Include="Views\Products\cliQ.cshtml" />
+    <Content Include="Views\Products\Index.cshtml" />
+    <Content Include="Views\Products\InlineMediaWorkspace.cshtml" />
+    <Content Include="Views\Products\myiQStatic.cshtml" />
+    <Content Include="Views\Products\OnlineNews.cshtml" />
+    <Content Include="Views\Products\OptimizedMediaCloud.cshtml" />
+    <Content Include="Views\Products\Products.cshtml" />
+    <Content Include="Views\Products\ProPrep.cshtml" />
+    <Content Include="Views\Products\SocialMedia.cshtml" />
+    <Content Include="Views\Products\Twitter.cshtml" />
+    <Content Include="Views\Products\UserGeneratedContent.cshtml" />
+    <None Include="pdf\14.20.1- iQmediaNewOfficeAnnouncement.pdf" />
+    <None Include="pdf\FairUse.pdf" />
+    <None Include="pdf\iQ media Promotes Kye Strance Press Release 2014.4.2.pdf" />
+    <None Include="pdf\PL1-cliQ-2-pages.pdf" />
+    <None Include="pdf\PL1-cliQ-4-pages.pdf" />
+    <None Include="pdf\PL2-Inline-Workspace.pdf" />
+    <None Include="pdf\PL2-Media-Cloud.pdf" />
+    <None Include="pdf\PL2-My-iQ.pdf" />
+    <None Include="pdf\Search.pdf" />
+    <None Include="pdf\SMS_Upgrade.pdf" />
+    <None Include="pdf\Success Stories_Miami Hurricanes.pdf" />
+    <None Include="pdf\Success Stories_Temple_01.pdf" />
+    <None Include="pdf\SuccessStory_LeggMason.pdf" />
+    <None Include="pdf\TigerComm_QA.pdf" />
+    <None Include="pdf\WP01-Overcoming-TMS-Limits.pdf" />
+    <Content Include="Views\SignIn\_SignIn.cshtml" />
+    <Content Include="Views\Shared\_IQMediaMasterInner.cshtml" />
+    <Content Include="Views\Feeds\Index.cshtml" />
+    <Content Include="Views\Test\Index.cshtml" />
+    <Content Include="Views\Test\Twitter.cshtml" />
+    <Content Include="Views\LogOut\_LogOut.cshtml" />
+    <Content Include="Views\Error\Unauthorized.cshtml" />
+    <Content Include="Views\Setup\_Setup.cshtml" />
+    <Content Include="Views\Setup\Index.cshtml" />
+    <Content Include="Views\LogOut\LogOut.cshtml" />
+    <Content Include="Views\Test\View2.cshtml" />
+    <Content Include="Views\Discovery\Index.cshtml" />
+    <Content Include="Views\Library\Index.cshtml" />
+    <Content Include="Views\Library\_Library.cshtml" />
+    <Content Include="Views\Download\TermsAndCondition.cshtml" />
+    <Content Include="Views\Download\NM.cshtml" />
+    <Content Include="Views\Timeshift\Index.cshtml" />
+    <Content Include="Views\Download\SM.cshtml" />
+    <Content Include="Views\Download\TV.cshtml" />
+    <Content Include="Views\Download\Index.cshtml" />
+    <Content Include="Views\Download\_DownloadMaster.cshtml" />
+    <Content Include="Views\Library\_IQArchiveEdit.cshtml" />
+    <Content Include="Views\Dashboard\Index.cshtml" />
+    <Content Include="Views\Dashboard\_Media.cshtml" />
+    <Content Include="Views\Dashboard\_Overview.cshtml" />
+    <Content Include="Views\ClipPlayer\Index.cshtml" />
+    <Content Include="Views\Shared\_Header.cshtml" />
+    <Content Include="Views\Shared\_FooterStatic.cshtml" />
+    <Content Include="Views\Shared\_SiteMap.cshtml" />
+    <Content Include="Views\SignIn\Index.cshtml" />
+    <Content Include="Views\Report\IQAgent.cshtml" />
+    <Content Include="Views\Report\_IQAgentOutsideReport-PDF.cshtml" />
+    <Content Include="Views\RawMediaPlayer\Index.cshtml" />
+    <Content Include="Views\Shared\_IQMediaMasterStaticPages.cshtml" />
+    <Content Include="Views\Test\Html5Upload.cshtml" />
+    <Content Include="Views\Customers\Index.cshtml" />
+    <Content Include="Views\GlobalAdmin\Index.cshtml" />
+    <Content Include="Views\Library\_IQUGCArchiveResults.cshtml" />
+    <Content Include="Views\Library\_IQUGCArchiveEdit.cshtml" />
+    <Content Include="Views\IFrameMicrosite\Index.cshtml" />
+    <Content Include="Views\Subscription\Index.cshtml" />
+    <None Include="Properties\PublishProfiles\Load1.pubxml" />
+    <Content Include="Views\ProPrep\Index.cshtml" />
+    <Content Include="Views\IframeRawMedia\Index.cshtml" />
+    <Content Include="Views\IframeServiceRawMedia\Index.cshtml" />
+    <Content Include="Views\Download\TVEyes.cshtml" />
+    <Content Include="Views\Group\Index.cshtml" />
+    <Content Include="Views\GlobalAdmin\_ClientRegistation.cshtml" />
+    <Content Include="Views\GlobalAdmin\_CustomerRegistation.cshtml" />
+    <Content Include="Views\UnderMaintenance\Index.cshtml" />
+    <Content Include="Views\TechnicalInformation\Index.cshtml" />
+    <Content Include="Views\Setup\_ClientCustomSettings.cshtml" />
+    <Content Include="Views\DiscoveryLite\Index.cshtml" />
+    <Content Include="Views\BasicPlayer\Index.cshtml" />
+    <Content Include="Views\ImagiQ\Index.cshtml" />
+    <Content Include="Views\QVC\Index.cshtml" />
+    <Content Include="Views\QVC\SignIn.cshtml" />
+    <Content Include="Views\QVC\_TVResults.cshtml" />
+    <Content Include="Views\ReportFolder\Index.cshtml" />
+    <Content Include="Views\GlobalAdmin\_Fliq_CustomerRegistation.cshtml" />
+    <Content Include="Views\RawRadioPlayer\Index.cshtml" />
+    <Content Include="Views\ClipRadioPlayer\Index.cshtml" />
+    <Content Include="Views\GlobalAdmin\_Fliq_ApplicationRegistation.cshtml" />
+    <Content Include="Views\GlobalAdmin\_Fliq_ClientApplicationRegistation.cshtml" />
+    <Content Include="Views\GlobalAdmin\_Fliq_CustomerApplicationRegistation.cshtml" />
+    <Content Include="Views\SonyMedia\Index.cshtml" />
+    <Content Include="Views\SonyMedia\SignIn.cshtml" />
+    <Content Include="Views\SonyMedia\_TVResults.cshtml" />
+    <Content Include="Views\Dashboard\_TopBroadcastDMA.cshtml" />
+    <Content Include="Views\Dashboard\_TopBroadcastStation.cshtml" />
+    <Content Include="Views\Dashboard\_TopOnlineNewsDMA.cshtml" />
+    <Content Include="Views\Dashboard\_TopOnlineNewsSites.cshtml" />
+    <Content Include="Views\Discovery\_Result.cshtml" />
+    <Content Include="Views\Discovery\_SavedSearch.cshtml" />
+    <Content Include="Views\Discovery\_TopResult.cshtml" />
+    <Content Include="Views\DiscoveryLite\_TopResult.cshtml" />
+    <Content Include="Views\Feeds\_Results.cshtml" />
+    <Content Include="Views\GlobalAdmin\_ClientList.cshtml" />
+    <Content Include="Views\GlobalAdmin\_CustomerList.cshtml" />
+    <Content Include="Views\GlobalAdmin\_Fliq_ApplicationList.cshtml" />
+    <Content Include="Views\GlobalAdmin\_Fliq_ClientApplicationList.cshtml" />
+    <Content Include="Views\GlobalAdmin\_Fliq_CustomerApplicationList.cshtml" />
+    <Content Include="Views\GlobalAdmin\_Fliq_CustomerList.cshtml" />
+    <Content Include="Views\GlobalAdmin\_Results.cshtml" />
+    <Content Include="Views\Group\_ClientList.cshtml" />
+    <Content Include="Views\IFrameMicrosite\_Results.cshtml" />
+    <Content Include="Views\Library\_Email.cshtml" />
+    <Content Include="Views\Library\_Report-Email.cshtml" />
+    <Content Include="Views\Library\_Report-PDF.cshtml" />
+    <Content Include="Views\Library\_SavedReportFolders.cshtml" />
+    <Content Include="Views\Library\_SavedReports.cshtml" />
+    <Content Include="Views\Library\_UGCFTPFileExplorer.cshtml" />
+    <Content Include="Views\Library\_DisplayReport.cshtml" />
+    <Content Include="Views\Setup\_ClientCustomImageList.cshtml" />
+    <Content Include="Views\Setup\_CustomCategoryAddEdit.cshtml" />
+    <Content Include="Views\Setup\_CustomCategoryList.cshtml" />
+    <Content Include="Views\Setup\_Fliq_ClientApplicationList.cshtml" />
+    <Content Include="Views\Setup\_Fliq_CustomerApplicationList.cshtml" />
+    <Content Include="Views\Setup\_Fliq_UGCUploadTrackingList.cshtml" />
+    <Content Include="Views\Setup\_IQAgent.cshtml" />
+    <Content Include="Views\Setup\_IQNotificationSettingsAddEdit.cshtml" />
+    <Content Include="Views\Setup\_IQNotificationSettingsList.cshtml" />
+    <Content Include="Views\Setup\_IQAgentSetupAddEdit.cshtml" />
+    <Content Include="Views\Setup\_IQNotificationSettings.cshtml" />
+    <Content Include="Views\Timeshift\_RadioResults.cshtml" />
+    <Content Include="Views\Timeshift\_Result.cshtml" />
+    <Content Include="Views\Timeshift\_SavedSearch.cshtml" />
+    <Content Include="Views\ImagiQ\_Result.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\AboutUs\Index.cshtml" />
+    <Content Include="Views\Shared\_FooterStatic_New.cshtml" />
+    <Content Include="Views\Shared\_Header_New.cshtml" />
+    <Content Include="Views\Shared\_IQMediaMasterStaticPages_New.cshtml" />
+    <Content Include="Views\Shared\_TopStatic_New.cshtml" />
+    <Content Include="Views\Results\Index.cshtml" />
+    <Content Include="Views\Company\Index.cshtml" />
+    <Content Include="Views\CopyrightAbusePolicy\Index.cshtml" />
+    <Content Include="Views\Privacy\Index.cshtml" />
+    <Content Include="Views\Security\Index.cshtml" />
+    <Content Include="Views\Report\DailyDigest.cshtml" />
+    <Content Include="Views\GlobalAdmin\_UGCSetup.cshtml" />
+    <Content Include="Views\GlobalAdmin\_ClientUGC_MapList.cshtml" />
+    <Content Include="Views\ISVC\Index.cshtml" />
+    <Content Include="Views\Careers\Index.cshtml" />
+    <Content Include="Views\Setup\_JobStatusResult.cshtml" />
+    <Content Include="Views\Setup\_JobStatus.cshtml" />
+    <Content Include="Views\Gallery\_LibraryGallery.cshtml" />
+    <Content Include="Views\Gallery\_GalleryResults.cshtml" />
+    <Content Include="Views\Library\_TopReferrerSites.cshtml" />
+    <Content Include="Views\Gallery\_LibraryGalleryResults.cshtml" />
+    <None Include="Scripts\CKEditor\plugins\scayt\LICENSE.md" />
+    <None Include="Scripts\CKEditor\plugins\scayt\README.md" />
+    <None Include="Scripts\CKEditor\plugins\wsc\LICENSE.md" />
+    <None Include="Scripts\CKEditor\plugins\wsc\README.md" />
+    <None Include="Scripts\CKEditor\skins\bootstrapck\readme.md" />
+    <Content Include="Views\Reporting\Index.cshtml" />
+    <Content Include="Views\Api\Index.cshtml" />
+    <Content Include="Views\MediaIntelligence\Index.cshtml" />
+    <Content Include="Views\OrganicVideo\Index.cshtml" />
+    <Content Include="Views\Gallery\Index.cshtml" />
+    <Content Include="Views\Library\ShareClip.cshtml" />
+    <Content Include="Views\RequestDemo\Index.cshtml" />
+    <Content Include="Views\IframeServiceRawMedia\RawMediaPlayer.cshtml" />
+    <Content Include="Views\ImpactVisualization\Index.cshtml" />
+    <Content Include="Views\ProQuest\Index.cshtml" />
+    <Content Include="Views\InfoAlert\Index.cshtml" />
+    <Content Include="Views\ImageRecognition\Index.cshtml" />
+    <Content Include="Views\Library\_MCMediaResults.cshtml" />
+    <Content Include="Views\NotFound\Index.cshtml" />
+    <Content Include="Views\Report\MCMediaRoom.cshtml" />
+    <Content Include="Views\DarkSite\Index.cshtml" />
+    <Content Include="Views\Discovery\_Topics.cshtml" />
+    <Content Include="Views\EmailTemplate\_EmailTemplate1.cshtml" />
+    <Content Include="Views\EmailTemplate\_EmailTemplate2.cshtml" />
+    <Content Include="Views\MCMediaTemplate\_MCMediaTemplate2_Results.cshtml" />
+    <Content Include="Views\MCMediaTemplate\MCMediaTemplate1.cshtml" />
+    <Content Include="Views\MCMediaTemplate\MCMediaTemplate2.cshtml" />
+    <Content Include="Views\LNArticle\Index.cshtml" />
+    <Content Include="Views\Setup\_GoogleSignIn.cshtml" />
+    <Content Include="Views\MCMediaTemplate\_MCMediaTemplate3_Results.cshtml" />
+    <Content Include="Views\MCMediaTemplate\MCMediaTemplate3.cshtml" />
+    <Content Include="Views\MCMediaTemplate\MCMediaTemplateDemo.cshtml" />
+    <Content Include="Views\MCMediaTemplate\_MCMediaTemplateDemo_Results.cshtml" />
+    <Content Include="Views\Library\ReportSort.cshtml" />
+    <Content Include="Views\ClipPlayer\_Player.cshtml" />
+    <Content Include="Views\ClipPlayer\_PlayerWOPage.cshtml" />
+    <Content Include="Views\Account\_ChangePwd.cshtml" />
+    <Content Include="Views\Account\ResetPwd.cshtml" />
+    <Content Include="Views\Dashboard\_TopBroadcastCountries.cshtml" />
+    <Content Include="Views\MCMediaTemplate\MCMediaTemplateTrivago.cshtml" />
+    <Content Include="Views\MCMediaTemplate\_MCMediaTemplateTrivago_Results.cshtml" />
+    <Content Include="Views\TAds\Index.cshtml" />
+    <Content Include="Views\TAds\_Result.cshtml" />
+    <Content Include="Views\Shared\Error.cshtml" />
+    <Content Include="Views\Home\_SignIn.cshtml" />
+    <Content Include="Views\Analytics\Index.cshtml" />
+    <Content Include="Views\Feeds\_BLPMResult.cshtml" />
+    <Content Include="Views\Feeds\_FBResult.cshtml" />
+    <Content Include="Views\Feeds\_IGResult.cshtml" />
+    <Content Include="Views\Feeds\_NMChildResult.cshtml" />
+    <Content Include="Views\Feeds\_NMResult.cshtml" />
+    <Content Include="Views\Feeds\_PQResult.cshtml" />
+    <Content Include="Views\Feeds\_RadioResult.cshtml" />
+    <Content Include="Views\Feeds\_SMResult.cshtml" />
+    <Content Include="Views\Feeds\_TVChildResult.cshtml" />
+    <Content Include="Views\Feeds\_TVResult.cshtml" />
+    <Content Include="Views\Feeds\_TWResult.cshtml" />
+    <Content Include="Views\Discovery\_TVResult.cshtml" />
+    <Content Include="Views\Discovery\_NMResult.cshtml" />
+    <Content Include="Views\Discovery\_BLResult.cshtml" />
+    <Content Include="Views\Discovery\_FOResult.cshtml" />
+    <Content Include="Views\Discovery\_PQResult.cshtml" />
+    <Content Include="Views\Analytics\_AnalyticsSecondary.cshtml" />
+    <Content Include="Views\Analytics\_AnalyticsPrimary.cshtml" />
+    <Content Include="Views\Analytics\Campaign\_CampaignFilter.cshtml" />
+    <Content Include="Views\Analytics\Amplification\_AmplificationFilter.cshtml" />
+    <Content Include="Views\Setup\_Campaign.cshtml" />
+    <Content Include="Views\ContactUs\Index.cshtml" />
+    <Content Include="Views\Setup\_InstagramSetup.cshtml" />
+    <Content Include="Views\Dashboard\ClientData\_Sony.cshtml" />
+    <Content Include="Views\Shared\_DashboardMediaSparkChart.cshtml" />
+    <Content Include="Views\SignInAdmin\Index.cshtml" />
+    <Content Include="Views\SignInAdmin\_SignIn.cshtml" />
+    <Content Include="Views\Connect\Index.cshtml" />
+    <Content Include="Views\GlobalAdmin\_Group.cshtml" />
+    <Content Include="Views\Dashboard\Reports\_Overview.cshtml" />
+    <Content Include="Views\EmailTemplate\_EmailTemplateDevry.cshtml" />
+    <Content Include="Views\TAds\_RadioResults.cshtml" />
+    <Content Include="Views\TAds\_SavedSearch.cshtml" />
+    <Content Include="Views\Feeds\_IQRadioResult.cshtml" />
+    <Content Include="Views\Download\Radio.cshtml" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
+    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
+  </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>False</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>50415</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost/</IISUrl>
+          <OverrideIISAppRootUrl>True</OverrideIISAppRootUrl>
+          <IISAppRootUrl>https://cfurst.iqmediacorp.com/SignIn</IISAppRootUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>True</UseCustomServer>
+          <CustomServerUrl>https://test.iqmediacorp.com/SignIn</CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target> -->
+</Project>

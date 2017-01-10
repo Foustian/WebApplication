@@ -1,0 +1,127 @@
+﻿@{
+    ViewBag.Title = "iQ media Engage";
+    Layout = "~/Views/Shared/_IQMediaMasterStaticPages.cshtml";
+}
+@section HeaderImage
+{
+    <img src="~/images/StaticBanner/Software.jpg" alt="Software banner" />
+}
+@section Content
+{
+    <div class="span4">
+        @Html.Partial("~/Views/Software/_Left.cshtml")
+    </div>
+    <div class="span14 span14pad">
+        <h2>
+            Engage by Leveraging the Power of Video</h2>
+        <div class="small-text">
+            <p>
+                How do you get engagement? Photos are liked two times more than text, but videos
+                are shared twelve times more than text. When your content marketing uses video,
+                your odds of wider reach skyrocket.</p>
+            <p>
+                cliQ empowers you to engage your audience where they are, not where they are going
+                to be. If they are mobile, that means delivering well-packaged video to smart phones
+                and tablets.</p>
+            <p>
+                cliQ has the tools – and they&#8217;re working. To date, over 150,000 video clips
+                hosted by cliQ have been streamed and shared worldwide. Our customers have transformed
+                media monitoring from a passive reporting activity into a proactive content marketing
+                powerhouse.</p>
+        </div>
+        <div class="small-text clearfix">
+            <div class="span10">
+                <h3>
+                    Web-Centric Communication</h3>
+                <p>
+                    <img alt="Engage" src="../images/static/point-icon.png" />
+                    Send video clips via email</p>
+                <p>
+                    <img alt="Engage" src="../images/static/point-icon.png" />
+                    Embed video on your website</p>
+                <p>
+                    <img alt="Engage" src="../images/static/point-icon.png" />
+                    One-click social sharing via Facebook, Twitter, and other portals</p>
+            </div>
+            <div class="span8">
+                <img src="../images/Web_Centric_Delivery.png" alt="Web-Centric Communication"></div>
+        </div>
+        <div class="small-text clearfix">
+            <div class="span8">
+                <img src="../images/Flexible_Delivery.png" alt="Flexibile Delivery"></div>
+            <div class="span10">
+                <h3>
+                    Flexibile Delivery</h3>
+                <p>
+                    <img alt="Engage" src="../images/static/point-icon.png" />
+                    iOS smartphones &amp; tablets</p>
+                <p>
+                    <img alt="Engage" src="../images/static/point-icon.png" />
+                    Android smartphones &amp; tablets</p>
+                <p>
+                    <img alt="Engage" src="../images/static/point-icon.png" />
+                    Browser playback on computers</p>
+            </div>
+        </div>
+        <div class="small-text clearfix">
+            <div class="span10">
+                <h3>
+                    Secure Hosting in the Cloud</h3>
+                <p>
+                    <img alt="Engage" src="../images/static/point-icon.png" />
+                    No need to download clips
+                </p>
+                <p>
+                    <img alt="Engage" src="../images/static/point-icon.png" />
+                    Over 150,000 clips shared to date</p>
+                <p>
+                    <img alt="Engage" src="../images/static/point-icon.png" />
+                    You control the content</p>
+            </div>
+            <div class="span8">
+                <div id="divplay" class="positionRelative" >
+                    <img border="0" src="~/images/static/Engage-View.png" alt="Engage Video View" id="img-video"
+                        style="width: 545px; height: 340px;" />
+                        <div class="PlayButton cursorPointer VideoPlayImageDiv" ><img id="ibtnPlay" src="../Images/Play.png"  alt="" onclick="javascript:SetPlayerObject('a4389ca1-5344-4643-bb43-e16f9b7104b0');return false;"  /></div>
+                </div>
+                <div id="divvideo" style="display: none;">
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" language="javascript">
+
+        $(document).ready(function () {
+            SetHighligtedLi('ulSoftwareNavigation', 'liEngage');
+        });
+
+        function SetPlayerObject(clipid) {
+
+            var control = document.getElementById("divvideo");
+            document.getElementById("divplay").style.display = "none";            
+            var playerlocaltion = "@System.Configuration.ConfigurationSettings.AppSettings["PlayerLocation"]";
+            var objecttag = "<object width=\"100%\" height=\"340\" " +
+	                                "data=\"" + playerlocaltion + "\" " +
+	                                "type=\"application/x-shockwave-flash\" " +
+	                                "name=\"HYETA\" id=\"HUY\">" +
+		                            "    <param value=\"" + playerlocaltion + "\" name=\"movie\">" +
+		                            "    <param value=\"true\" name=\"allowfullscreen\">" +
+		                            "    <param value=\"always\" name=\"allowscriptaccess\">" +
+		                            "    <param value=\"high\" name=\"quality\">" +
+		                            "    <param value=\"transparent\" name=\"wmode\">" +
+		                            "    <param value=\"IsRawMedia=false&amp;PageName=myIQ&amp;IsUGC=false&amp;embedId=" + clipid + "&amp;ServicesBaseURL=2&amp;PlayerFromLocal=false&amp;autoPlayback=true&amp;EB=false\" name=\"flashvars\">" +
+			                        "    <embed width=\"100%\" height=\"340\" " +
+                                    "        flashvars=\"IsRawMedia=false&amp;PageName=myIQ&amp;IsUGC=false&amp;embedId=" + clipid + "&amp;ServicesBaseURL=2&amp;PlayerFromLocal=false&amp;autoPlayback=true&amp;EB=false\" " +
+			                        "        wmode=\"transparent\" autoplayback=\"true\" " +
+			                        "        name=\"IQMedia\" allowfullscreen=\"always\" " +
+			                        "        allowscriptaccess=\"true\" type=\"application/x-shockwave-flash\" id=\"HUY\" " +
+                                    "        src=\"" + playerlocaltion + "\"" +
+                                    "    />" +
+                                "</object>";
+            control.innerHTML = objecttag;
+            control.style.display="block";
+            //alert(control.parentNode.innerHTML.replace(control,objecttag));
+        }
+    
+    </script>
+}

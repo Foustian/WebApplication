@@ -1,0 +1,146 @@
+﻿@using IQMedia.Model;
+@model List<IQMedia.Model.IQNotifationSettingsModel>
+@{
+    List<string> timeOfDay = System.Configuration.ConfigurationManager.AppSettings["TimeOfDay"].Split(new char[] { ',' }).ToList();
+    Dictionary<short, string> daysOfWeek = System.Configuration.ConfigurationManager.AppSettings["DaysOfWeek"].Split(',').ToDictionary(a => Convert.ToInt16(a.Split('|')[1]), b => b.Split('|')[0]);
+    var activeUser = IQMedia.WebApplication.Utility.ActiveUserMgr.GetActiveUser();
+}
+<style type="text/css">
+    .topResult
+    {
+        font-size: 11px;
+        border: 1px solid #D8D8D8;
+    }
+    
+    .topResult tr th
+    {
+        padding: 4px;
+        white-space:nowrap;
+    }
+    
+    .topResult tr th, .topResult tr td
+    {
+        padding: 5px 2px;
+    }
+    
+    .wordBreak
+    {
+       word-break: break-all;     
+    }
+    
+    .alignLeft
+    {
+       text-align: left;
+    }
+</style>
+<div class="margintop5 float-right" style="margin-bottom: 20px;">
+    <a onclick="EditIQNotification(0);" style="margin-right: 10px;" href="javascript:void(0);">
+        Add IQ Notification
+        <img alt="add" src="../../images/iqagent/addicon.png"></a>
+</div>
+<div style="clear: both;">
+</div>
+@if (Model != null && Model.Count > 0)
+{
+    <div id="divIQNotificationPreviousNext" class="nextprevdiv">
+        <span id="lblIQNotificationRecords" style="float: left; padding: 5px 10px 0 0;"></span>
+        <a href="javascript:;" onclick="GetIQNotification(false);" id="btnIQNotificationPreviousPage"
+            class="nextprevbtn">
+            <img src="../../Images/prev.png" /></a> <a href="javascript:;" onclick="GetIQNotification(true);"
+                id="btnIQNotificationNextPage" class="nextprevbtn">
+                <img src="../../Images/next.png" /></a>
+    </div>
+    <div id="divIQNotification_ScrollContent" class="clear">
+        <div class="float-left width100p" style="padding-right: 15px; margin-bottom: 10px;">
+            <table class="topResult" width="100%" cellpadding="0" cellspacing="0" style="margin-top: 15px;">
+                @{ bool IsHeader = false; }
+                @foreach (IQMedia.Model.IQNotifationSettingsModel item in Model)
+                {
+                    if (!IsHeader)
+                    {
+                    <tr>
+                        @{IsHeader = true; }
+                        <th style="text-align: center; width: 5%;">
+                        </th>
+                        <th style="text-align: center; width: 5%;">
+                        </th>
+                        <th style="width: 18%;" class="alignLeft">
+                            Email Address
+                        </th>
+                        <th style="width: 10%;" class="alignLeft">
+                            Frequency
+                        </th>
+                        <th style="width: 10%;" class="alignLeft">
+                            Day Of Week
+                        </th>
+                        <th style="width: 10%;" class="alignLeft">
+                            Time Of Day
+                        </th>
+                        <th style="width: 18%;" class="alignLeft">
+                            Media Types
+                        </th>
+                        <th style="width: 18%;" class="alignLeft">
+                            Selected IQAgents
+                        </th>
+                        <th style="width: 6%;" class="alignLeft">
+                            Rollup
+                        </th>
+                    </tr>
+                    }
+                    <tr>
+                        <td style="text-align: center;">
+                            <a href="javascript:void(0);" onclick="EditIQNotification(@item.IQNotificationKey)" >Edit</a>
+                        </td>
+                        <td style="text-align: center;">
+                            <a href="javascript:void(0);" onclick="DeleteIQNotification(@item.IQNotificationKey)" >Delete</a>
+                        </td>
+                        <td class="alignLeft wordBreak">
+                            @string.Join(";", item.Notification_Address)
+                        </td>
+                        <td class="alignLeft wordBreak">
+                            @item.Frequency
+                        </td>
+                        <td class="alignLeft wordBreak">
+                             @(item.Notification_Day == null ? string.Empty : daysOfWeek[item.Notification_Day.Value])
+                        </td>
+                        <td class="alignLeft wordBreak">
+                            @{
+                                DateTime dtout = new DateTime();
+                                bool istime = DateTime.TryParse(item.Notification_Time, out dtout);
+                            }
+                            @(istime ? dtout.ToShortTimeString() : string.Empty)
+                        </td>
+                         <td class="alignLeft wordBreak">
+                            @if (item.MediaTypeList != null && item.MediaTypeList.Count > 0)
+                            {
+                                <text>@string.Join(", ", IQCommon.CommonFunctions.GetAccessibleSubMediaType(item.MediaTypeList, activeUser.MediaTypes).Select(mt=>mt.DisplayName))</text>
+                            }
+                            else
+                            {
+                                <text>@string.Join(", ", IQCommon.CommonFunctions.GetAccessibleSubMediaType(activeUser.MediaTypes).Select(mt=>mt.DisplayName))</text>
+                            }
+                        </td>
+                        <td class="alignLeft wordBreak">
+                            @(!string.IsNullOrEmpty(item.SearchRequestNames) ? item.SearchRequestNames.Substring(1) : string.Empty)
+                        </td>
+                        <td class="alignLeft">
+                            @(item.UseRollup ? "Yes" : "No")
+                        </td>
+                    </tr> 
+                }
+            </table>
+        </div>
+    </div>
+}
+else
+{
+    <table width="100%" style="text-align: center;">
+        <tr>
+            <td>
+                <span style="background: none repeat scroll 0 0 #F2F2F2; border: 1px solid #DCDCDC;
+                    margin-bottom: 10px; margin-right: 10px; padding: 3px 10px 3px 6px; position: relative;
+                    width: 300px !important;">No Results found</span>
+            </td>
+        </tr>
+    </table>
+}

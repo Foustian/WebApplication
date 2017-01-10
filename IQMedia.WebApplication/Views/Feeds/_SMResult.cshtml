@@ -1,0 +1,229 @@
+﻿@using IQMedia.Model;
+@using IQMedia.Shared.Utility;
+@model IQAgent_MediaResultsModel
+@if (Model != null)
+{
+    ActiveUser sessioninfo = IQMedia.WebApplication.Utility.ActiveUserMgr.GetActiveUser();
+    IQAgent_SMResultsModel SMModel = (IQAgent_SMResultsModel)Model.MediaData;
+    string highlightedSMText = string.Empty;
+    string HighlightedSMOutput = string.Empty;
+    string highlightedSMOriginalText = string.Empty;
+    string iqAdShareValue = string.Empty;
+    string NielsenAudience = string.Empty;
+    string smTitle = string.Empty;
+    bool useProminenceMediaValue = Convert.ToBoolean(ViewData["UseProminenceMediaValue"]);
+    bool useAudience = Convert.ToBoolean(ViewData["UseAudience"]);
+    bool useMediaValue = Convert.ToBoolean(ViewData["UseMediaValue"]);
+
+    int Billion = 1000000000;
+    decimal BillionD = 1000000000;
+    int Million = 1000000;
+    decimal MillionD = 1000000;
+    Decimal? localAdShare = null;
+    string sLocalAudience = string.Empty;
+    string fLocalAudience = string.Empty;
+    string sLocalMediaValue = string.Empty;
+    string fLocalMediaValue = string.Empty;
+
+    if (SMModel.HighlightedSMOutput != null && SMModel.HighlightedSMOutput.Highlights != null)
+    {
+        highlightedSMOriginalText = string.Join(" ", SMModel.HighlightedSMOutput.Highlights.Select(c => c));
+        HighlightedSMOutput = IQMedia.Shared.Utility.CommonFunctions.GetWordsAround(highlightedSMOriginalText, ViewData["HighlightKeyword"].ToString(), Convert.ToInt32(ViewData["WordsBeforeSpan"]), Convert.ToInt32(ViewData["WordsAfterSpan"]), ViewData["Separator"].ToString());
+
+        if (string.IsNullOrWhiteSpace(HighlightedSMOutput))
+        {
+            HighlightedSMOutput = highlightedSMOriginalText;
+        }
+    }
+
+    if (HighlightedSMOutput.Length > 300)
+    {
+        highlightedSMText = HighlightedSMOutput.Substring(0, 300);
+        highlightedSMText = System.Text.RegularExpressions.Regex.Replace(highlightedSMText, "(</span(?!>)|</s(?!pan>)|</sp(?!an>)|</spa(?!n>)|</(?!span>))\\Z", "</span>");
+    }
+    else
+    {
+        highlightedSMText = HighlightedSMOutput;
+    }
+
+    if (SMModel.Description.Trim().Length > 65)
+    {
+        smTitle = SMModel.Description.Trim().Substring(0, 62) + "...";
+    }
+    else
+    {
+        smTitle = SMModel.Description.Trim();
+    }
+
+    highlightedSMText = CommonFunctions.ProcessHighlightingText(HighlightedSMOutput, highlightedSMText).Trim();
+
+    if (sessioninfo.IsCompeteData)
+    {
+        if (useAudience)
+        {
+            if (SMModel.Compete_Audience.HasValue && SMModel.Compete_Audience > 0)
+            {
+                fLocalAudience = string.Format("{0:N0}", SMModel.Compete_Audience);
+
+                if (SMModel.Compete_Audience >= Billion)
+                {
+                    sLocalAudience = string.Format("{0:F1} bil", SMModel.Compete_Audience / BillionD);
+                }
+                else if (SMModel.Compete_Audience >= Million)
+                {
+                    sLocalAudience = string.Format("{0:F1} mil", SMModel.Compete_Audience / MillionD);
+                }
+                else
+                {
+                    sLocalAudience = fLocalAudience;
+                }
+            }
+            else
+            {
+                sLocalAudience = "NA";
+            }
+        }
+
+        if (useMediaValue)
+        {
+            if (Decimal.Compare(Convert.ToDecimal(SMModel.IQAdShareValue), 0M) != 0 && SMModel.IQAdShareValue > 0)
+            {
+                localAdShare = useProminenceMediaValue ? (SMModel.IQAdShareValue.Value * SMModel.IQProminenceMultiplier) : SMModel.IQAdShareValue.Value;
+                fLocalMediaValue = string.Format("{0:N2}", localAdShare);
+
+                if (localAdShare >= BillionD)
+                {
+                    sLocalMediaValue = string.Format("{0:F1} bil", localAdShare / BillionD);
+                }
+                else if (localAdShare >= MillionD)
+                {
+                    sLocalMediaValue = string.Format("{0:F1} mil", localAdShare / MillionD);
+                }
+                else
+                {
+                    sLocalMediaValue = fLocalMediaValue;
+                }
+            }
+            else
+            {
+                sLocalMediaValue = "NA";
+            }
+        }
+    }
+
+    <div class="media" id="divMedia_@Model.ID">
+        <div class="MediaDate">
+            <div class="post-date">
+                <span class="month">@Model.MediaDateTime.ToString("MMM", System.Globalization.CultureInfo.InvariantCulture)</span>
+                <div>
+                    <span class="today">@Model.MediaDateTime.Day</span>
+                </div>
+                <span class="timeWithTimeZone">@Model.MediaDateTime.ToString("hh:mm tt") @sessioninfo.TimeZone</span>
+            </div>
+        </div>
+        <div class="MediaTypeLogo" align="center">
+            <img src="@ViewData["MediaIconPath"]" title="@ViewData["MediaTypeDescription"]">
+        </div>
+        <div class="float-right">
+            <div class="float-right">
+                <input type="checkbox" onclick="CheckUncheckMasterCheckBox(this.id,'ulMediaResults','chkInputAll');" value="@Model.ID:@Model.MediaType" id="chkdivResults_@Model.ID" />
+                <input type="hidden" value="0" id="hdnParentID_@Model.ID" />
+            </div>
+        </div>
+        <div class="FeedsContentNone">
+            <div class="float-left media-heading">
+                <a target="_blank" href="@SMModel.Link" title="@SMModel.Description.Trim()">@smTitle</a>
+            </div>
+            <div class="subheading float-left margintop1">
+                @Model.timeDifference
+            </div>
+            <div class="clear float-left media-body">
+                @Html.Raw(highlightedSMText)
+            </div>
+        </div>
+        <div class="clear post-divider"></div>
+        <div class="clear margintop2 marginbottom2">
+            <div class="FeedsActionBarLeftDiv">
+                <div class="viewmore"></div>
+                <div id="divLocationSM_@Model.ID" class="viewlocation">
+                    <div class="">
+                        @if (!string.IsNullOrWhiteSpace(SMModel.HomeLink))
+                        {
+                            <div id="lblCompete_@Model.ID" class="location-tag" title="@SMModel.HomeLink">
+                                @{
+                                    if (SMModel.HomeLink.Trim().Length > 23)
+                                    {
+                                        @(SMModel.HomeLink.Trim().Substring(0, 21) + "...")
+                                    }
+                                    else
+                                    {
+                                        @SMModel.HomeLink.Trim()
+                                    }
+                                }
+                            </div>   
+                        }
+                        else
+                        { 
+                            <div class="margintop2"></div>
+                        }
+                    </div>
+                </div>
+                <div id="divSentimentSM_@Model.ID" class="viewsentiment" title="Sentiment">                
+                    <div class="sentimentLeftFloat sentiment-tag">
+                        <div class="divSentimentMain sentimentFont">
+                            <div class="divSentimentNeg">
+                                <div style='width:@ViewData["maxNegativeSentimentWidth"]'>@Model.NegativeSentiment</div>
+                            </div>
+                            <div class="divSentimentPos">
+                                <div style='width:@ViewData["maxPositiveSentimentWidth"]'>@Model.PositiveSentiment</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @if (sessioninfo.IsCompeteData && ((useAudience && SMModel.Compete_Audience > 0) || (useMediaValue && Decimal.Compare(Convert.ToDecimal(SMModel.IQAdShareValue), 0M) != 0)))
+                {
+                    <div class="viewcontentdetail">
+                        @if (useAudience && SMModel.Compete_Audience > 0)
+                        {
+                            <div class="viewshortdetail">
+                                <div class="view" title="Local Audience @fLocalAudience">
+                                    @sLocalAudience 
+                                    @if (!string.IsNullOrWhiteSpace(SMModel.Compete_Result) && SMModel.Compete_Result.ToUpper() == "A")
+                                    {
+                                        <img class="competeIcon" title="Powered by Compete" src="~/Images/compete.png" />
+                                    }
+                                    else
+                                    {
+                                        <div align="center" class="margintop2">
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        }
+                        @if (useMediaValue && Decimal.Compare(Convert.ToDecimal(SMModel.IQAdShareValue), 0M) != 0)
+                        {
+                            <div class="viewshortdetail">
+                                <div class="price" title="Local Media Value @fLocalMediaValue">
+                                    @sLocalMediaValue
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+            <div class="FeedsActionBarRightDiv minWidth52IE8">
+                <div class="detailIcon">
+                    <a class="cursorPointer saveMedia saveArticle" title="Save Article" onclick="ShowSaveArticle(@Model.ID,this.id);return false;" target="_blank" id="aSaveSM_@Model.ID"></a>
+                </div>
+                <div class="detailIcon">
+                    <a class="cursorPointer viewArticle" title="View Article" href="@SMModel.Link" target="_blank" id="aShowNews_@Model.ID"></a>
+                </div>
+                <div class="detailIcon">
+                    <!--Padding on the right-->
+                    <div align="center" class="margintop2">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

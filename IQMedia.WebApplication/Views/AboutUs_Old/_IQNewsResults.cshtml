@@ -1,0 +1,30 @@
+﻿@using IQMedia.Model;
+@using IQMedia.Shared.Utility;
+@model List<IQNews_Model>
+@if (Model != null)
+{
+    foreach (IQNews_Model item in Model)
+    {
+
+    <div class="clear dlNewsInnerDiv width100p">
+        <div class="floatLeft">
+            <a target="_blank" href="@item.Url" >
+                <h3>
+                    @item.Headline</h3>
+            </a>
+        </div>
+        <div class="clear paddingbottom1p font12 color999999">
+            @item.ReleaseDate.Value.ToString("MMMM dd, yyyy")
+        </div>
+        <div class="newsSubHead clear">
+            @item.SubHead
+        </div>
+        <div class="clear">
+            @Html.Raw(item.Detail)
+        </div>
+        <div class="floatRight clear">
+            <a class="color0088CC" target="_blank" href="@item.Url"
+                >Read More....</a></div>
+    </div>
+    }
+}

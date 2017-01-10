@@ -1,0 +1,619 @@
+﻿@using IQMedia.Model;
+@using IQMedia.Shared.Utility;
+@model IQAgentReport_WithoutAuthentication
+@{ 
+    string BaseUrl = Request.Url.Scheme + "://" + Request.Url.Host + "/";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>iQ media IQAgent Report</title>@*<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" />*@
+    @*<link href="../../Css/jquery-ui.css" rel="stylesheet" type="text/css" />*@
+    <link href="../../Css/Fonts.css" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+       body {
+				font-family: 'Open Sans';
+				font-size: 14px;
+				line-height: 20px;
+			}
+		h4 
+		{
+           font-size: 17.5px;
+        }
+        .highlight
+        {
+            background-color: #8FD8D8;
+            color: blue;
+        }
+        .mediatitlediv
+        {
+            line-height: 25px;
+            background-color: #EAEAEA;
+            font-weight: bold;
+            font-size: 15px;
+            border: 1px solid #A0A0A0;
+            vertical-align: middle;
+            padding-left: 10px;
+        }
+        .media 
+        {
+	    border-bottom:1px solid #cccccc;
+	    padding:10px 0;
+            }
+        .pull-left {
+          float: left;
+        }
+		
+		.media .pull-left {
+			margin-right: 10px;
+		}
+        .post-date {
+	        background-color:#EEEEEE;	
+	        color:#fff;
+	        width:65px;
+	        height:auto;
+	        text-align:center;
+        }
+		.post-date div {
+			background-color: white;
+			margin-left: 5%;
+			padding-bottom: 3px;
+			padding-top: 3px;
+			text-align: center;
+			width: 90%;
+			z-index: 10;
+			}
+
+        .post-date .month {
+	        text-transform:uppercase;
+	        display:block;
+	        font-size:13px;
+	        font-weight:bold;
+	        padding:0px;
+	        background:#666666;
+        }
+
+        .post-date .today {
+	        font-size:22px;
+	        font-weight:600;
+	        display:block;
+	        color:#2B2B2B;
+        }
+        .post-date .time {
+	        font-weight:bold;
+	        font-size:11px;
+	        color:#2B2B2B;
+	        display:block;
+        }
+        .network {
+	        margin:10px 0 3px 0px;
+        }
+        .media-body {
+	        padding-right:6px;
+	        font-size:13px;
+	        font-family: 'Merriweather';
+        }
+
+        .maxWidth69p
+        {
+            max-width:69%;
+        }
+        .media-heading {
+	        font-family: 'Open Sans';	
+	        font-weight:600;
+	        margin-right:10px;
+			margin-top:0px;
+			margin-bottom:5px;
+        }
+		 .media-heading a
+        {
+            color:#333333;
+			font-weight: 600;
+			text-decoration:none;
+        }
+        .clearfix {
+          *zoom: 1;
+        }
+        .pull-right {
+          float: right;
+        }
+        .video-thumb {
+	        width:150px;
+        }
+        .width130
+        {
+            width: 130px;
+        }
+        .positionRelative
+        {
+            position: relative;
+        }
+        .maxwidth130
+        {
+            max-width:130px;
+        }
+        .clear
+        {
+            clear:both;
+            overflow:hidden;
+        }
+        .TVvideo-tags {
+	        float:left;
+	        margin-top:5px;
+        }
+        .margintop0
+        {
+            margin-top:0px;
+        }
+        .marginright35
+        {
+            margin-right:35px !important;
+        }
+        .marginleft62
+        {
+            margin-left:62px;
+        }
+        .view {
+	        background:url(@(BaseUrl + "images/view.png")) no-repeat left 2px;
+	        padding-left:20px;
+	        float:left;
+        }
+
+        .price {
+	        background:url(@(BaseUrl + "images/dollar.png")) no-repeat left 2px;
+	        padding-left:20px;
+        }
+        .marginright35
+        {
+            margin-right:35px !important;
+        }
+        .minWidth52IE8
+        {
+            min-width:52px\9;
+        }
+        .margintop-3
+        {
+            margin-top:-3px;
+        }
+        .TweetBodyDivIQP
+        {
+            width:79%;
+            vertical-align: top;
+        }
+        .borderBoxSizing
+        {
+            box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+        }
+        .TweetActorDisplayName
+        {
+            font-size:14px;    
+            max-width:45%;    
+        }
+
+        .TweetSubdivFont
+        {
+            font-size: 11px; color: #999999;
+        }
+
+        .PaddingTopBottom1p
+        {
+            padding: 1% 0%;
+        }
+        .borderWidth0
+        {
+            border-width: 0px;
+        }
+        .borderdiv
+        {
+            background-color : #F4F4F4;
+        }
+        .marginRight0
+        {
+            margin-right: 0px;
+        }
+        .margintop-3
+        {
+            margin-top:-3px;
+        }
+        .maxWidth85
+        {
+            max-width:85%;
+        }
+       
+        .newsMediadiv{
+	        margin-top:5px;
+        }
+        .video-tags {
+	        float:left;
+	     }
+        .marginleft25
+        {
+            margin-left:25px;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <div>
+            <img src="@(BaseUrl + "images/logo_N.png")" alt="iq Logo" />
+        </div>
+        <div style="padding-top: 10px; text-align: center;">
+            @if (string.IsNullOrEmpty(Model.CustomHeader))
+            {
+                <img src="@(BaseUrl + "images/EmailNotificationBanner.png")" alt="email notification banner" />
+            }
+            else
+            {
+                <img src="@System.Configuration.ConfigurationManager.AppSettings["UrlReportHeader"]/@Model.ClientGuid/@Model.CustomHeader" alt="Client Banner" />
+            }
+        </div>
+        <div>
+            <h4>@Model.ReportTitle</h4>
+        </div>
+        <div style="padding-right: 20px;">
+            @if (Model != null && Model.MediaResults != null && Model.MediaResults.Count > 0)
+            {
+                var subMediaTypes = Model.MediaResults.Select(c => c.CategoryType).Distinct();
+
+                foreach (string type in subMediaTypes)
+                {
+                    CommonFunctions.CategoryType categoryType = (CommonFunctions.CategoryType)Enum.Parse(typeof(CommonFunctions.CategoryType), type);
+
+                <div id="divMedia_@categoryType" class="mediatitlediv">@IQMedia.Shared.Utility.CommonFunctions.GetEnumDescription(categoryType)</div>
+                            
+                    foreach (IQAgent_MediaResultsModel item in Model.MediaResults.Where(r => r.CategoryType == type))
+                    {
+
+                        string Month = item.MediaDateTime != null ? item.MediaDateTime.ToString("MMM", System.Globalization.CultureInfo.InvariantCulture) : string.Empty;
+                        string Day = item.MediaDateTime != null ? item.MediaDateTime.Day.ToString() : string.Empty;
+                        string Time = item.MediaDateTime != null ? item.MediaDateTime.ToString("hh:mm tt") : string.Empty;
+
+                        switch (categoryType)
+                        {
+                            case IQMedia.Shared.Utility.CommonFunctions.CategoryType.TV:
+
+                                IQAgent_TVResultsModel TVModel = item.MediaData as IQAgent_TVResultsModel;
+                                string RawMediaPlayerUrl = System.Configuration.ConfigurationManager.AppSettings["IQAgentReportRawMediaPlayerUrl"];
+                                RawMediaPlayerUrl = string.Format(RawMediaPlayerUrl, TVModel.IQAgentResultUrl);
+                
+                <div id="divMedia_@item.ID" class="media">
+                    <div class="pull-left">
+                        <div class="pull-left">
+                            <div class="post-date">
+                                <span class="month">@Month</span><div>
+                                    <span class="today">@Day</span></div>
+                                <span class="time">@Time</span></div>
+                            <div align="center" class="network">
+                                <img src="@(BaseUrl + "images/MediaIcon/network-icon.png")" alt="tv" /></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="pull-left media-body maxWidth69p">
+                            <span class="media-heading">@TVModel.Title120</span>
+                            <div class="clearfix">
+                            </div>
+                            @Html.Raw(TVModel.higlightedCC)
+                        </div>
+                        <div class="pull-right">
+                            <div class="pull-left video-thumb width130">
+                                <div class="positionRelative">
+                                    <a class="cursorPointer maxwidth130" href="@RawMediaPlayerUrl" target="_blank" style="display:block;height:100%;">
+                                        @if (!string.IsNullOrWhiteSpace(TVModel.RawMediaThumbUrl))
+                                        {
+                                            <img src="@TVModel.RawMediaThumbUrl" class="maxwidth130" alt="play video" />
+                                        }
+                                        else
+                                        {
+                                            <img src="@(BaseUrl + "images/video.png")" class="maxwidth130" alt="play video" />
+                                        }
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="pull-right">
+                            </div>
+                        </div>
+                        <div class="clear borderdiv">
+                            <div class="TVvideo-tags margintop0 marginright35 marginleft62">
+                            </div>
+                            <div class="TVvideo-tags margintop0  marginright35 marginleft62">
+                            </div>
+                            <div class="marginright35 pull-right minWidth52IE8">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                                        break;
+
+                            case IQMedia.Shared.Utility.CommonFunctions.CategoryType.TW:
+
+                                        IQAgent_TwitterResultsModel twitterModel = item.MediaData as IQAgent_TwitterResultsModel;
+                        
+                <div id="divMedia_@item.ID" class="media">
+                    <div class="pull-left">
+                        <div class="post-date">
+                            <span class="month">@Month</span><div>
+                                <span class="today">@Day</span></div>
+                            <span class="time">@Time</span></div>
+                        <div align="center" class="network">
+                            <img src="@(BaseUrl + "images/MediaIcon/twitter.png")" alt="twitter"/>
+                        </div>
+                    </div>
+                    <div class="pull-left TweetBodyDivIQP borderBoxSizing">
+                        <div class="pull-left TweetActorDisplayName">
+                            <a id="aActorLink_" target="_blank"><span id="lblDisplayName_@item.ID">@twitterModel.Actor_DisplayName</span>
+                            </a>&nbsp;<span class="TweetSubdivFont">@@</span><span id="lblPrefferedUserName_@item.ID" class="TweetSubdivFont">@twitterModel.Actor_PreferredName</span><br />
+                        </div>
+                        <div class="clear PaddingTopBottom1p TweetBodyText">
+                            <div class="">
+                                <span id="lblTweetBody_@item.ID">@Html.Raw(twitterModel.Summary)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pull-right">
+                        <div class="pull-left">
+                            @if (IQMedia.Shared.Utility.CommonFunctions.Validate_url(twitterModel.Actor_Image))
+                            {
+                                <img id="imgActor_@item.ID" src="@twitterModel.Actor_Image" alt="actor image" class="borderWidth0" /><br />
+                            }
+                        </div>
+                    </div>
+                    <div class="clear borderdiv">
+                        <div class="marginleft62 pull-left marginright35 marginRight0">
+                            <div class="pull-left marginright35">
+                                Klout Score:&nbsp;<span>@twitterModel.KlOutScore</span></div>
+                            <div class="pull-left marginright35">
+                                Followers:&nbsp;<span>@twitterModel.Actor_FollowersCount</span></div>
+                            <div class="pull-left marginright35">
+                                Following:&nbsp;<span>@twitterModel.Actor_FriendsCount</span></div>
+                        </div>
+                        <div class="pull-right marginright35 margintop-3">
+                        </div>
+                    </div>
+                </div>
+                                                 break;
+
+
+                            case IQMedia.Shared.Utility.CommonFunctions.CategoryType.NM:
+
+                                                 IQAgent_NewsResultsModel newsMediaModel = item.MediaData as IQAgent_NewsResultsModel;
+                        
+                <div id="divMedia_@item.ID" class="media">
+                    <div class="pull-left">
+                        <div class="post-date">
+                            <span class="month">@Month</span><div>
+                                <span class="today">@Day</span></div>
+                            <span class="time">@Time</span></div>
+                        <div align="center" class="network">
+                            <img src="@(BaseUrl + "images/MediaIcon/News.png")" alt="news" /></div>
+                    </div>
+                    <div class="pull-left maxWidth85">
+                        <div>
+                            <span class="media-heading"><a href="@newsMediaModel.Url"
+                                                target="_blank">@newsMediaModel.Title</a></span>
+                        </div>
+                        <div class="newsMediadiv">
+                            @Html.Raw(newsMediaModel.HighlightingText)
+                        </div>
+                    </div>
+                    <div class="pull-right">
+                    </div>
+                    <div class="clear borderdiv">
+                        <div class="marginleft62 pull-left marginright35">
+                        </div>
+                        <div class="marginright35 pull-right minWidth52IE8">
+                            <div style="height: 16px;">
+                                <a id="lnkSaveNM_@item.ID" target="_blank" href="@newsMediaModel.Url" class="paddinLeft20 fleft">
+                                    <img title="View Article" alt="View" height="16" src="@(BaseUrl + "images/viewArticle.png")" />
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
+                                                                                      break;
+
+
+                            case IQMedia.Shared.Utility.CommonFunctions.CategoryType.SocialMedia:
+
+                                                                                      IQAgent_SMResultsModel socialMediaModel = item.MediaData as IQAgent_SMResultsModel;
+                        
+                <div id="divMedia_@item.ID" class="media">
+                    <div class="pull-left">
+                        <div class="post-date">
+                            <span class="month">@Month</span><div>
+                                <span class="today">@Day</span></div>
+                            <span class="time">@Time</span></div>
+                        <div align="center" class="network">
+                            <img src="@(BaseUrl + "images/MediaIcon/social-media.png")" alt="social media" /></div>
+                    </div>
+                    <div class="pull-left maxWidth85">
+                        <div>
+                            <span class="media-heading"><a href="@socialMediaModel.Link"
+                                                target="_blank">@socialMediaModel.Description</a></span>
+                        </div>
+                        <div class="newsMediadiv">
+                            @Html.Raw(socialMediaModel.HighlightingText)
+                        </div>
+                    </div>
+                    <div class="pull-right">
+                    </div>
+                    <div class="clear borderdiv">
+                        <div class="marginleft62 pull-left marginright35">
+                        </div>
+                        <div class="marginright35 pull-right minWidth52IE8">
+                            <div style="height: 16px;">
+                                <a id="lnkSaveSM_@item.ID" target="_blank" href="@socialMediaModel.Link" class="paddinLeft20 fleft">
+                                    <img title="View Article" alt="View" height="16" src="@(BaseUrl + "images/viewArticle.png")" />
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                                                                                      break;
+                            case IQMedia.Shared.Utility.CommonFunctions.CategoryType.Forum:
+
+                                                                                      IQAgent_SMResultsModel forumModel = item.MediaData as IQAgent_SMResultsModel;
+                        
+                <div id="divMedia_@item.ID" class="media">
+                    <div class="pull-left">
+                        <div class="post-date">
+                            <span class="month">@Month</span><div>
+                                <span class="today">@Day</span></div>
+                            <span class="time">@Time</span></div>
+                        <div align="center" class="network">
+                            <img src="@(BaseUrl + "images/MediaIcon/forum.png")" alt="forum" /></div>
+                    </div>
+                    <div class="pull-left maxWidth85">
+                        <div>
+                            <span class="media-heading"><a href="@forumModel.Link"
+                                                target="_blank">@forumModel.Description</a></span>
+                        </div>
+                        <div class="newsMediadiv">
+                            @Html.Raw(forumModel.HighlightingText)
+                        </div>
+                    </div>
+                    <div class="pull-right">
+                    </div>
+                    <div class="clear borderdiv">
+                        <div class="marginleft62 pull-left marginright35">
+                        </div>
+                        <div class="marginright35 pull-right minWidth52IE8">
+                            <div style="height: 16px;">
+                                <a id="lnkSaveForum_@item.ID" target="_blank" href="@forumModel.Link" class="paddinLeft20 fleft">
+                                    <img title="View Article" alt="View" height="16" src="@(BaseUrl + "images/viewArticle.png")" />
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                                                                                      break;
+
+                            case IQMedia.Shared.Utility.CommonFunctions.CategoryType.Blog:
+
+                                                                                      IQAgent_SMResultsModel blogModel = item.MediaData as IQAgent_SMResultsModel;
+                        
+                <div id="divMedia_@item.ID" class="media">
+                    <div class="pull-left">
+                        <div class="post-date">
+                            <span class="month">@Month</span><div>
+                                <span class="today">@Day</span></div>
+                            <span class="time">@Time</span></div>
+                        <div align="center" class="network">
+                            <img src="@(BaseUrl + "images/MediaIcon/blog.png")" alt="blog" /></div>
+                    </div>
+                    <div class="pull-left maxWidth85">
+                        <div>
+                            <span class="media-heading"><a href="@blogModel.Link"
+                                                target="_blank">@blogModel.Description</a></span>
+                        </div>
+                        <div class="newsMediadiv">
+                            @Html.Raw(blogModel.HighlightingText)
+                        </div>
+                    </div>
+                    <div class="pull-right">
+                    </div>
+                    <div class="clear borderdiv">
+                        <div class="marginleft62 pull-left marginright35">
+                        </div>
+                        <div class="marginright35 pull-right minWidth52IE8">
+                            <div style="height: 16px;">
+                                <a id="lnkSaveBlog_@item.ID" target="_blank" href="@blogModel.Link" class="paddinLeft20 fleft">
+                                    <img title="View Article" alt="View" height="16" src="@(BaseUrl + "images/viewArticle.png")" />
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                                                                                      break;
+                            case CommonFunctions.CategoryType.Radio:
+                                                                                      IQAgent_TVEyesResultsModel tvEyesModel = item.MediaData as IQAgent_TVEyesResultsModel;
+                <div id="divMedia_@item.ID" class="media">
+                    <div class="pull-left">
+                        <div class="post-date">
+                            <span class="month">@Month</span><div>
+                                <span class="today">@Day</span></div>
+                            <span class="time">@Time</span></div>
+                        <div align="center" class="network">
+                            <img src="@(BaseUrl + "images/MediaIcon/radio.png")" alt="radio" /></div>
+                    </div>
+                    <div class="pull-left maxWidth85">
+                        <div>
+                            <span class="media-heading">
+                                @tvEyesModel.Title</span>
+                        </div>
+                        <div class="newsMediadiv">
+                            @Html.Raw(tvEyesModel.HighlightingText)
+                            @if (!string.IsNullOrWhiteSpace(tvEyesModel.TranscriptUrl))
+                            {
+                                <a href="@tvEyesModel.TranscriptUrl" class="cursorPointer pull-right" target="_blank" style="position:relative; top:-30px; left:7%;">
+								    <img width="50" height="auto" style="width: 50px;height:auto;" src="http://qav4.iqmediacorp.com/images/radioplay.png" alt="play"/>
+								</a>
+                            }
+                        </div>
+                    </div>
+                    <div class="pull-right">
+                    </div>
+                    <div class="clear borderdiv">
+                        <div class="marginleft62 pull-left marginright35">
+                        </div>
+                        <div class="marginright35 pull-right minWidth52IE8">
+                            <div style="height: 16px;">
+                                &nbsp;
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                       break;
+                            case IQMedia.Shared.Utility.CommonFunctions.CategoryType.PM:
+                       IQAgent_BLPMResultsModel iQAgent_BLPMResultsModel = (IQAgent_BLPMResultsModel)item.MediaData;
+                       string PMBasePath = Convert.ToString(System.Configuration.ConfigurationManager.AppSettings["IQArchieve_PMBaseUrl"]);
+                <div class="media" id="divMedia_@item.ID">
+                    <div class="pull-left">
+                        <div class="post-date">
+                            <span class="month">@item.MediaDateTime.ToString("MMM", System.Globalization.CultureInfo.InvariantCulture)</span>
+                            <div>
+                                <span class="today">@item.MediaDateTime.Day</span>
+                            </div>
+                            <span class="time">@item.MediaDateTime.ToString("hh:mm tt")</span>
+                        </div>
+                        <div class="network" align="center">
+                            <img src="@(BaseUrl + "images/MediaIcon/print-media.png")" /></div>
+                    </div>
+                    <div class="pull-left maxWidth85">
+                        <div>
+                            <span class="media-heading"><a target="_blank" href="@(PMBasePath + iQAgent_BLPMResultsModel.FileLocation.Replace(@"\", @"/"))">@Html.Raw(iQAgent_BLPMResultsModel.Title)</a>
+                            </span>
+                        </div>
+                        <div class="newsMediadiv">
+                            @if (!string.IsNullOrWhiteSpace(iQAgent_BLPMResultsModel.Pub_Name))
+                            {
+                                <span style="color: #73797F;">@iQAgent_BLPMResultsModel.Pub_Name
+                                    - </span>
+                            }
+                            @Html.Raw(iQAgent_BLPMResultsModel.HighlightingText.Length > 300 ? iQAgent_BLPMResultsModel.HighlightingText.Substring(0, 300) : iQAgent_BLPMResultsModel.HighlightingText)
+                        </div>
+                    </div>
+                    <div class="clear borderdiv">
+                        <div class="pull-left marginleft62 ">
+                            &nbsp;</div>
+                        <div class="pull-left">
+                            Circulation:&nbsp;<span>@(string.Format("{0:n0}", iQAgent_BLPMResultsModel.Circulation))</span>
+                        </div>
+                        <div class="marginRight10 pull-right minWidth52IE8">
+                            <div class="margintop-3">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                                                break;
+                        }
+                    }
+                <br />
+                }
+            }
+        </div>
+    </div>
+</body>
+</html>

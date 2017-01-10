@@ -1,0 +1,579 @@
+﻿/* CSS Document */
+
+/* Active nav classes needed for click */
+#ampBar > li > a.active
+{
+    background-color: #5A5E62;
+    border-top: 7px solid #C6D268;
+    padding-top: 8px !important; /*Decrease padding by 7px to account for border*/
+}
+.primaryNavTabs > a.active
+{
+    /*background-color: #F3F3F3 !important;*/
+    /*font-weight: bold;*/
+}
+.primaryNavTabsPE > a.active
+{
+    /*background-color: #dde4a5 !important;*/
+    /*font-weight: bold;*/
+}
+.primaryNavTabsSHR > a.active
+{
+    /*background-color: #cddde2 !important;*/
+    /*font-weight: bold;*/
+}
+/* Bold active results in primary nav bar */
+.navBorderedTabs > li > a.active .font14Pt
+{
+    /*font-weight: bold !important;*/
+}
+#primaryContentSideNav li > a.active
+{
+    background-color: #E8E8E8 !important;
+    border-radius: 0px !important;
+}
+#bottomShortNav > li > a.active
+{
+    background-color: #E9E9E9 !important;
+}
+#bottomShortNav2 > li > a.active
+{
+    background-color: #E9E9E9 !important;
+}
+#liMenuAnalytics.active > a > span
+{
+    border-top-color: #F3B350 !important;
+    border-bottom-color: #F3B350 !important;
+}
+#dateRangeList > li > a.active
+{
+    color: Black;
+    font-weight: bold;
+}
+#dateIntervalList > li > a.active
+{
+    color: Black;
+    font-weight: bold;
+}
+
+/* Used to apply formatting to <a>s when they have their classes cleared by JS to set active links */
+#bottomShortNav > li > a
+{
+    padding: 3px 10px 3px 10px;
+}
+#bottomShortNav2 > li > a
+{
+    padding: 3px 10px 3px 10px;
+}
+.navTabs > li > a
+{
+    color: #FFFFFF !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+    padding-top: 10px !important;
+    padding: 15px 10px 10px 10px !important;
+}
+.navBorderedTabs > li > a
+{
+    border: 2px solid #E6E7E8 !important;
+    float: left !important;
+    width: 100px !important;
+    padding: 0px 0px 0px 5px !important;
+    text-shadow: 0 0 0 !important;
+}
+.primaryNavTabs > a
+{
+    background-color: #D1D2D3 !important;
+    font-weight: normal;
+}
+.primaryNavTabsPE > a
+{
+    background-color: #ccd678 !important;
+    font-weight: normal;
+}
+.primaryNavTabsSHR > a
+{
+    background-color: #acc6d0 !important;
+    font-weight: normal;
+}
+
+.dateFiltering > li > a
+{
+    padding: 0px;
+    color: #1E85A1;
+}
+
+.navTabHeading
+{
+    color: #c6d268 !important;
+    float: left;
+    line-height: normal !important;
+    padding: 15px 10px 10px 10px !important;
+}
+#primaryContentSideNav
+{
+    line-height:140px;
+    margin-left: 5px;
+    text-align: center;
+    width: 30px;
+}
+#primaryContentSideNav li > a
+{
+    border-bottom: 8px solid white;
+    margin: 0px 0px 0px 0px !important;
+}
+.primaryNav
+{
+    background-color: #FAFAFA;
+    margin-bottom:0px;
+}
+.primaryNavIcon
+{
+    line-height:20px;
+    padding-left: 0px;
+}
+
+/* Miscellaneous Classes */
+.chartNoData
+{
+    font-size:20px;
+    font-weight:bold;
+    margin:150px 0px;
+    text-align:center;
+}
+
+.aBottomNav
+{
+    padding:3px 10px 3px 10px;
+}
+
+.disabledOption
+{
+    color:#cfcfcf;
+}
+
+.displayNoneImp
+{
+    display: none !important;
+}
+
+.cursorPointer
+{
+    cursor: pointer;
+}
+
+/* Font Classes */
+.font12Pt
+{
+    font-size: 12px !important;
+}
+.font13Pt
+{
+    font-size: 13px !important;
+}
+.font14Pt
+{
+    font-size: 14px !important;
+}
+.font15Pt
+{
+    font-size: 15px !important;
+}
+.font22Pt
+{
+    font-size: 22px !important;
+}
+.fontBold
+{
+    font-weight: bold !important;
+}
+#divFilters select, input, button
+{
+    font-size: 13px !important;
+}
+
+/* Border Classes */
+.rlBorders
+{
+    border-left: 1px solid #ECECEC;
+    border-right: 1px solid #ECECEC;
+}
+.primaryBotBorder
+{
+    border-bottom: medium solid #E6E7E8;
+}
+.rightBorderOnly
+{
+    border-bottom: 0px none !important;
+    border-left: 0px none !important;
+    border-right: thin solid !important;
+    border-top: 0px none !important;
+}
+.clearBorders
+{
+    border: 0px none transparent !important;
+}
+.clearBorders > td
+{
+    border: 0px none transparent !important;
+}
+
+/* Padding Classes */
+.clearPadding
+{
+    padding: 0px !important;
+}
+
+/* Margin Classes */
+.clearLeftMargin
+{
+    margin-left: 0px !important;
+}
+.rlMargins10
+{
+    margin-left: 10px;
+    margin-right: 10px;
+}
+.marginLeft35
+{
+    margin-left: 35px !important;
+}
+.marginLeft15
+{
+    margin-left: 15px !important;
+}
+.blMargins4
+{
+    margin-bottom: 4px !important;
+    margin-left: 4px !important;
+}
+
+/* Coloring Classes */
+.bg-ContentGray
+{
+    background-color: #E6E7E8;
+}
+.bg-NavDarkGray
+{
+    background-color: #636f72 !important;
+}
+.bg-danger
+{
+    background-color: #F2DEDE !important;
+}
+.bg-blue
+{
+    background-color: #1E85A1 !important;
+}
+.text-blue
+{
+    color: #1E85A1 !important;
+}
+.border-danger
+{
+    border: 3px solid #D9534F !important;
+    margin: 5px !important;
+    padding: 10px !important;
+}
+
+/* Used to expand top nav bar to full length */
+.navbar-inner > .container
+{
+    width: auto !important; /* Only for DEV */
+}
+
+.closeIcon:hover
+{
+    background-color: White;
+}
+
+/* Text Classes */
+.underlined
+{
+    text-decoration: underline !important;
+}
+
+/* Active/Inactive Icons */
+#primaryContentSideNav .lineChart
+{
+    background: url(../Images/Analytics/linechart.png) no-repeat;
+    background-size: 20px;
+    height: 20px;
+    width: 20px;
+}
+
+#primaryContentSideNav .lineChart.inactive
+{
+    background: url(../Images/Analytics/linechart_inactive.png) no-repeat !important;
+    background-size: 20px !important;   
+    height: 20px !important;
+    width: 20px !important;
+}
+
+#primaryContentSideNav .mapChart
+{
+    background: url(../Images/Analytics/40x40_globe.png) no-repeat;
+}
+
+#primaryContentSideNav .mapChart.inactive
+{
+    background: url(../Images/Analytics/40x40_globe_inactive.png) no-repeat !important;
+}
+
+#primaryContentSideNav .pieChart
+{
+    background: url(../Images/Analytics/40x40_piechart.png) no-repeat;
+}
+
+#primaryContentSideNav .pieChart.inactive
+{
+    background: url(../Images/Analytics/40x40_piechart_inactive.png) no-repeat !important;
+}
+
+#primaryContentSideNav .barChart
+{
+    background: url(../Images/Analytics/40x40_barchart.png) no-repeat;
+}
+
+#primaryContentSideNav .barChart.inactive
+{
+    background: url(../Images/Analytics/40x40_barchart_inactive.png) no-repeat !important;
+}
+
+#primaryContentSideNav .columnChart
+{
+    background: url(../Images/Analytics/40x40_columnchart.png) no-repeat;
+}
+
+#primaryContentSideNav .columnChart.inactive
+{
+    background: url(../Images/Analytics/40x40_columnchart_inactive.png) no-repeat !important;
+}
+
+#primaryContentSideNav .daytimeChart
+{
+    background: url(../Images/Analytics/40x40_daytimechart.png) no-repeat;
+}
+
+#primaryContentSideNav .daytimeChart.inactive
+{
+    background: url(../Images/Analytics/40x40_daytimechart_inactive.png) no-repeat !important;
+}
+
+#primaryContentSideNav .daypartChart
+{
+    background: url(../Images/Analytics/40x40_daypartchart.png) no-repeat;
+}
+
+#primaryContentSideNav .daypartChart.inactive
+{
+    background: url(../Images/Analytics/40x40_daypartchart_inactive.png) no-repeat !important;
+}
+
+#primaryContentSideNav .growthChart
+{
+    background: url(../Images/Analytics/40x40_growth.png) no-repeat;
+}
+
+#primaryContentSideNav .growthChart.inactive
+{
+    background: url(../Images/Analytics/40x40_growth_inactive.png) no-repeat !important;
+}
+
+#primaryContentSideNav .googleOverlay
+{
+    background: url(../Images/Analytics/40x40_google.png) no-repeat;
+}
+
+#primaryContentSideNav .googleOverlay.inactive
+{
+    background: url(../Images/Analytics/40x40_google_inactive.png) no-repeat !important;
+}
+
+#primaryContentSideNav .audienceOverlay
+{
+    background: url(../Images/Analytics/40x40_audience.png) no-repeat;
+}
+
+#primaryContentSideNav .audienceOverlay.inactive
+{
+    background: url(../Images/Analytics/40x40_audience_inactive.png) no-repeat !important;
+}
+
+#primaryContentSideNav .mediaValueOverlay
+{
+    background: url(../Images/Analytics/40x40_mediavalue.png) no-repeat;
+}
+
+#primaryContentSideNav .mediaValueOverlay.inactive
+{
+    background: url(../Images/Analytics/40x40_mediavalue_inactive.png) no-repeat !important;
+}
+
+/* Classes for custom CBs */
+.coloredCB
+{
+    display: none;
+}
+
+.coloredCB + label div
+{
+    border: solid 1px #6D6E71;
+    cursor: pointer;
+    display: inline-block;
+    height: 13px;
+    vertical-align: bottom;
+    width: 13px;
+}
+
+.coloredCB + label div span
+{
+    display: inline-block;
+    height: 11px;
+    margin-bottom: 3px;
+    width: 11px;
+}
+
+.demoColors
+{
+    border: solid 1px #6D6E71;
+    cursor: pointer;
+    display: none;
+    height: 13px;
+    text-align: center;
+    vertical-align: middle;
+    width: 13px;
+}
+
+.demoColors > span
+{
+    display: inline-block;
+    height: 11px;
+    margin-bottom: 3px;
+    width: 11px;
+}
+
+.quickFilterCB
+{
+    float: right;
+    vertical-align: bottom;
+    margin-right: 2px !important;
+    opacity: 0.5;
+}
+
+/* Class for secondary tables */
+.secondaryHeaderRow
+{
+    background-color: #E6E7E8;
+    border: 2px solid #CCCCCC;
+    padding: 2px 5px;
+}
+.secondaryHeaderCol
+{
+    padding: inherit !important;
+    border: inherit;
+}
+.secondaryDetailCBCol
+{
+    padding: 2px 5px !important;
+    vertical-align: middle !important;
+    width: 23px;
+    text-align: center !important;
+    height: 15px;
+}
+.secondaryDetailRow
+{
+    padding: 2px 5px !important;
+    page-break-inside: avoid;
+}
+.secondaryDetailRow > td
+{
+    padding: 2px 5px !important;
+    vertical-align: middle;
+}
+
+.coloredCBdiv
+{
+    border: solid 1px #6D6E71;
+    cursor: pointer;
+    display: inline-block;
+    height: 13px;
+    vertical-align: bottom;
+    width: 13px;
+}
+
+.coloredCBspan
+{
+    display: inline-block !important;
+    height: 11px;
+    margin-bottom: 3px;
+    width: 11px !important;
+    min-height: 0px !important;
+    margin-left: 0px !important;
+    float: none !important;
+}
+
+/* Sentiment Bar Classes */
+.sentimentTDContainer
+{
+    height: 15px;
+    min-width: 104px;
+    padding: 2px 5px;
+    vertical-align: middle;
+}
+
+.sentimentDivContainer
+{
+    width: 100%;
+}
+
+.sentimentTRContainer
+{
+    background-color: #DEDEDE;
+    color: #FFFFFF;
+}
+
+.sentimentNegPosTD
+{
+    height: 100%;
+    width: 52px;
+    padding: 0px !important;
+    -mox-box-sizing: border-box;
+    box-sizing: border-box;
+    border-right: 1px solid #FFFFFF;
+    background-color: #DEDEDE;
+    color: White;
+    overflow: hidden;
+}
+
+.sentimentNegSpan
+{
+    background-color: #D8635D;
+    color: #FFFFFF;
+    float: right !important;
+    text-align: right;
+    overflow: hidden;
+    padding: 0px !important;
+}
+
+.sentimentPosSpan
+{
+    background-color: #C7D36A;
+    color: #FFFFFF;
+    overflow: hidden;
+    padding: 0px !important;
+    float: left !important;
+}
+
+/* Quick Filter Classes */
+.active .QFCheck:before
+{
+    content: "\2713";   /* UTF-8 Dingbat for checkmark */
+}
+
+.QFCheck
+{
+    float: right;
+    height: 15px;
+    width: 15px;
+}

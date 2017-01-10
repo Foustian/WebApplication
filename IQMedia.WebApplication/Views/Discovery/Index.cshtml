@@ -1,0 +1,1442 @@
+﻿@{
+    ViewBag.Title = "iQ media Discovery";
+    if (!string.IsNullOrEmpty(Request.QueryString["SearchTermTopic"]) || !string.IsNullOrEmpty(Request.QueryString["SearchNameTopic"]))
+    {
+        Layout = null;
+	    <!doctype html>
+        <script src="~/Scripts/jquery-1.9.1.min.js?v=1.0" type="text/javascript"></script>
+        <script src="~/Scripts/jquery.placeholder.min.js?v=1.0" type="text/javascript"></script>
+        <link href="~/Css/jquery-ui.css" rel="stylesheet" type="text/css" />
+    	<link href="~/Css/Fonts.css?v=1.1" rel="stylesheet" type="text/css" />
+    	<link href="~/Css/jquery.mCustomScrollbar.css?v=1.0" rel="stylesheet" type="text/css" />
+        <link href="~/Css/jquery.mCustomScrollbar.custom.css?v=1.0" rel="stylesheet" type="text/css" />
+        <!-- Le styles -->
+        <link href="~/Css/bootstrap.css" rel="stylesheet" type="text/css" />
+        <!-- Customizable CSS -->
+        <link href="~/Css/feed.css?v=3.4" rel="stylesheet" type="text/css">
+	    <link href="~/Css/MasterInner.css?v=1.0" rel="stylesheet" type="text/css" />
+
+	    <script src="~/Scripts/jquery-ui.min.js?v=1.0" type="text/javascript"></script>
+	    <script src="~/Scripts/ConstantScript.js?v=1.32" type="text/javascript"></script>
+        <script src="~/Scripts/IQMediaCommon.js?v=2.7" type="text/javascript"></script>
+    	<script src="~/Scripts/Bootstrap/bootstrap-modal.js?v=1.0" type="text/javascript"></script>
+	    <script src="~/Scripts/Bootstrap/bootstrap-dropdown.js?v=1.0" type="text/javascript"></script>
+	    <script src="~/Scripts/Bootstrap/bootstrap-tooltip.js?v=1.0" type="text/javascript"></script>
+	    <script src="~/Scripts/Bootstrap/bootstrap-popover.js?v=1.0" type="text/javascript"></script>
+	    <script src="~/Scripts/Bootstrap/bootstrap-collapse.js?v=1.0" type="text/javascript"></script>
+	    <script src="~/Scripts/jquery.mCustomScrollbar.concat.min.js?v=1.1" type="text/javascript"></script>
+        <link href="~/Css/bootstrap-responsive.css" rel="stylesheet" type="text/css">
+
+        <script type ="text/javascript" >
+            var _urlVideoMetaData = '@System.Configuration.ConfigurationManager.AppSettings["UrlGetVideoMetaData"]';
+            var _urlVideoNielsenData = '@System.Configuration.ConfigurationManager.AppSettings["UrlGetVideoNielSenData"]';
+            var _urlVideoThumb = '@System.Configuration.ConfigurationManager.AppSettings["UrlGenerateVideoRawMediaThumb"]';
+            var _urlVideoCategory = '@System.Configuration.ConfigurationManager.AppSettings["UrlGetVideoCategoryData"]';
+            var _urlVideoCreateClip = '@System.Configuration.ConfigurationManager.AppSettings["UrlCreateMediaClip"]';
+            var _urlClipThumbgen = '@System.Configuration.ConfigurationManager.AppSettings["UrlGenerateMediaClipThumbnail"]';
+            var _urlClipExport = '@System.Configuration.ConfigurationManager.AppSettings["UrlExportMediaClip"]';
+            var _urlClipIOSExport = '@System.Configuration.ConfigurationManager.AppSettings["UrlExportIOSMediaClip"]';
+            var _urlClipTimeSync = '@System.Configuration.ConfigurationManager.AppSettings["UrlClipTimeSync"]';
+            var _MaxEmailAdressAllowed = @System.Configuration.ConfigurationManager.AppSettings["MaxDefaultEmailAddress"];
+
+            if (document.documentMode != undefined && document.documentMode < 9) {
+                $.getScript("/Scripts/json3.min.js")
+            }
+
+            if (document.documentMode != undefined && document.documentMode < 11) {
+                $.getScript("/Scripts/weakmap.js")
+                $.getScript("/Scripts/MutationObserver.js")
+            }
+        </script>
+    
+        <style type="text/css">
+            body
+            {
+                /*padding-top: 59px;*/ /*padding-bottom: 40px;*/
+                padding: 0px !important;
+                font-family: 'Open Sans';
+            }      
+            .container
+            {
+                width: 100% !important;
+            }       
+            .container_custom
+            {
+                margin-top: 0px;
+            }       
+            .minheight500
+            {
+                height: 100%;
+            }
+        </style>
+    
+        <!--[if IE 7]>
+	        <style>
+	        .container {
+	        width:1280px;
+	        }
+	        .btn-group {
+	        float:left;
+	        }
+	
+	        .action {
+	        float:right;
+	        }
+	        .media-heading {
+	        width:95%;
+	        display:block;
+	        }
+	        </style>
+        <!--<![endif]-->
+        <!--[if IE 8]>
+        <style>
+	        .container {
+		        width:1280px;
+	        }
+	        .media-heading {
+	        width:90%;
+	        }
+        </style>
+        <!--<![endif]-->
+        <!--[if lt IE 9]>
+	        <script src="http://html5shim.googlecode.com/svn/trunk/html5.js?v=1.0"></script>
+            <script src="~/Scripts/respond.min.js"></script>
+	    <!--<![endif]-->
+        	
+        <div id="divConfirmationPopup" class="modal fade hide resizable modalPopupDiv">
+            <div class="closemodalpopup">
+	            <img id="imgCloudUGCFTPUploadPopup" src="~/images/close-icon.png" alt="close" class="popup-top-close"
+		            onclick="CancelCloudUGCFTPUploadPopup();" /></div>
+            <div style="padding: 20px;">
+	            <div class="modalpopheadertitle">
+		            Delete Confirmation</div>
+	            <div class="divconfirmationpop-content">
+	            </div>
+	            <div class="divconfirmationpop-buttons">
+		            <button type="button" button-type="cancel" class="cancelButton">
+			            Cancel</button>
+		            <button type="button" button-type="ok" id="btnConfirmationPopupOK" class="button">
+			            OK</button>
+	            </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_IQMediaMasterInner.cshtml";
+    }
+}
+@{
+    
+    IQMedia.Model.ActiveUser sessionInformation = IQMedia.WebApplication.Utility.ActiveUserMgr.GetActiveUser();
+    List<IQCommon.Model.IQ_MediaTypeModel> MasterMediaTypes = new List<IQCommon.Model.IQ_MediaTypeModel>();
+    if (Model != null && Model["MasterMediaTypes"] != null)
+    {
+        MasterMediaTypes = ((List<IQCommon.Model.IQ_MediaTypeModel>)Model["MasterMediaTypes"]).Where(w => w.TypeLevel == 2 && w.IsActiveDiscovery && w.HasAccess).ToList();
+    }
+}
+@*<script src="../../Scripts/Col2D1.js?v=1.0" type="text/javascript"></script>*@
+<script src="~/Scripts/highcharts.js?v=1.1" type="text/javascript"></script>
+<script src="~/Scripts/Discovery.js?v=4.7" type="text/javascript"></script>
+<script src="~/Scripts/ArticleScript.js?v=1.4" type="text/javascript"></script>
+<script type="text/javascript" src="~/Scripts/VideoPlayer.js?v=1.23"></script>
+<link href="~/Css/video-player.css?v=1.3" rel="stylesheet" type="text/css" />
+<script src="~/Scripts/enscroll.js?v=1.0" type="text/javascript"></script>
+<script src="~/Scripts/chosen.jquery.js?v=1.1" type="text/javascript"></script>
+<link rel="stylesheet" href="~/Css/Chosen/chosen.css" />
+<link rel="Stylesheet" href="~/Css/Timeshift.css" />
+<style type="text/css">
+        .pieChartChks 
+        {
+            padding-top:59px;
+        }
+        
+        .pieChartChks li
+        {
+            padding-bottom:3px;
+        }
+    
+        .pieChartChks input
+        {
+            margin-top:-2px;
+            margin-right:3px
+        }
+        
+        .hiddenPieChart
+        {
+            height:0px;
+            overflow:hidden;
+        }
+        
+        .topResultsTab
+        {
+            float:left;
+            padding:5px;
+            cursor:pointer;
+            overflow:hidden;
+            text-overflow:ellipsis;
+            white-space:nowrap;
+            width:47%;
+            font-weight:bold;
+            text-align:center;
+        }
+        
+        .topResultsContainer
+        {
+            border-top:1px solid gray;
+            margin-top:31px;
+            width:98%;
+        }
+        
+        .topResultsActive
+        {
+            background-color:#fafafa;
+            border-top:1px solid gray;
+            border-left:1px solid gray;
+            border-right:1px solid gray;
+            border-bottom:1px solid white;
+        }
+</style>
+@if (ViewBag.IsSuccess)
+{
+    <script type="text/javascript">                
+        _MasterMediaTypes = [@Html.Raw(string.Join(", ", MasterMediaTypes.Select(s => "['" + s.MediaType + "','" + s.SubMediaType + "','" + s.DisplayName + "']").ToArray()))];
+    </script>
+}
+<div class="container container_custom">
+    <div class="row-fluid" id="divRowFluid">
+        @if (ViewBag.IsSuccess)
+        {            
+            <div class="span3 minheight500 borderRight" id="divQuickFeedFinder">
+                <div class="well sidebar-nav">
+                    <h5>
+                        Discovery
+                    </h5>
+                    <ul id="ulSearchTerm" class="searchTermUL">
+                    </ul>
+                    <script type="text/javascript">
+                        var _clipLimit = @Model["ManualClipDuration"];
+                        var rootFolderName = '@System.Configuration.ConfigurationManager.AppSettings["ClientRootFolderName"]'
+
+                        var _PlaySecondsSetting = @Model["RawMediaPauseSecs"]
+
+                        // commented for now, uncomment below if need to pause by absolute time
+                        //var _RawPlaySeconds = @Model["RawMediaPauseSecs"]
+                        //var _PlaySecondsSetting =0;
+                        var _MaxRecordShownLimit = @System.Configuration.ConfigurationManager.AppSettings["MaxDiscoveryItemLimit"];
+                    </script>
+
+                    @if (string.IsNullOrEmpty(Request.QueryString["SearchTermTopic"]) && string.IsNullOrEmpty(Request.QueryString["SearchNameTopic"]))
+                    {
+                        <div class="paddinBottom20 paddingTop5">
+                            <div onclick="AddNewSearchTermTextBox();" class="cursorPointer float-left clear paddingBottom10" id="divAddItem">
+                                <img id="imgAddItem" src="../../Images/Plus.png" alt="" class="marginRight10" />Add Search Term</div>
+                            <div onclick="AddNewSearchAgentTextBox();" class="cursorPointer float-left clear paddingBottom5" id="divAddAgent">
+                                <img id="imgAddAgent" src="../../Images/Plus.png" alt="" class="marginRight10" />Add Agent Search Term</div>
+                            <div class="float-right displayNone clear" id="divDiscoveryClearAll">
+                                <a data-original-title="" onclick="ClearSearch();" id="aClearSearch" class="cursorPointer paddingBottom5">
+                                    <img src="../../Images/clear.png" alt="Clear" id="imgClearSearch" class="float-left marginRight9"><span>Clear All</span></a></div>
+                        </div>
+                    }
+                    
+                    @{
+                    var jsonList = IQMedia.Shared.Utility.CommonFunctions.SearializeJson(((List<IQMedia.Model.IQAgent_SearchRequestModel>)Model["SearchRequests"]).Select(x => (x.QueryName == null ? "" : x.QueryName.Trim()) + "|||" + (x.SearchTerm == null ? "" : x.SearchTerm.Trim()) + "|||" + x.ID).Distinct().ToList());
+                    var jsonListAll = IQMedia.Shared.Utility.CommonFunctions.SearializeJson(((List<IQMedia.Model.IQAgent_SearchRequestModel>)Model["SearchRequestsAll"]).Select(x => (x.QueryName == null ? "" : x.QueryName.Trim()) + "|||" + (x.SearchTerm == null ? "" : x.SearchTerm.Trim()) + "|||" + x.ID).Distinct().ToList());
+                            
+                        <script type="text/javascript">
+                            var _AgentList = new Array();
+                            _AgentList = @Html.Raw(jsonList);
+
+                            var _AgentListAll = new Array();
+                            _AgentListAll = @Html.Raw(jsonListAll);
+
+                            var hasAgentAccess = @(sessionInformation.Isv4IQAgentAccess.ToString().ToLower());
+
+                            if(_AgentList.length <= 0 || !hasAgentAccess)
+                            {
+                                $("#divAddAgent").attr('onclick', '');
+                                $("#divAddAgent").toggleClass('greyOut', true);
+                                $("#imgAddAgent").attr('src', '../../Images/Plus_grey.png');
+                            }
+                        </script>
+                    }
+
+                    <ul aria-labelledby="drop2" role="menu" class="dropdown-menu sideMenu" id="ulNarrowResult">
+                        <li role="presentation" class="cursorPointer"><a tabindex="-1" role="menuitem"></a>
+                        </li>
+                    </ul>
+                    <br />
+                    <br />
+                    <div class="clear">
+                    </div>
+                    <h5>Modify Date Range</h5>
+                    <input type="text" id="dpFrom" readonly="readonly" class="date" />
+                    <input type="text" id="dpTo" readonly="readonly" class="date" />
+                    <br />
+                    <br />
+                    <h5>Narrow Result</h5>
+                    <div class="navbar minHeight120">
+                        <ul role="navigation" class="nav floatNone sideMenuUl width100p">
+                            <li class="dropdown ndate"><a id="narResDatepicker" data-toggle="dropdown" class="dropdown-toggle" role="button"
+                                href="#" id="drop1">Date<span class="spnArrow">&nbsp;</span></a>
+                                <ul id="ulCalender" aria-labelledby="drop1" role="menu" class="dropdown-menu sideMenu ulCalenderFilter">
+                                    <li role="presentation">
+                                        <div id="divCalender">
+                                        </div>
+                                </ul>
+                            </li>
+                            <li class="dropdown nmedium">
+                                <a data-toggle="dropdown" class="dropdown-toggle" role="button" id="A1" href="#">Medium<span class="spnArrow">&nbsp;</span></a>
+                                <ul aria-labelledby="drop2" role="menu" class="dropdown-menu multi-level sideMenu" id="ulMedium" style="overflow-y:visible;">
+                                    <li role="presentation"><a tabindex="-1" role="menuitem">No Filter Available</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown custom-settings" onclick="OpenAdvanceSearchPopup()"><a data-toggle="dropdown"
+                                class="dropdown-toggle" role="button" id="A1" href="#">Advanced Search<span class="spnArrow">&nbsp;</span></a>
+                            </li>
+                        </ul>
+                    </div>
+                    <br />
+                    @if (string.IsNullOrEmpty(Request.QueryString["SearchTermTopic"]) && string.IsNullOrEmpty(Request.QueryString["SearchNameTopic"]))
+                    {
+                        <div id="divSavedSearch" class="text-align-center paddingBottom10">
+                            <img alt="" id="imgSaveSearchLoading" class="marginRight10" src="../../Images/Loading_1.gif" />
+                        </div>
+                        <div class="clear" align="right">
+                            <a onclick="ShowSaveSearchDiscovery();" id="aSaveSearch" class="cursorPointer">
+                                <img src="../../Images/Save_Floppy.png" alt="Save Search" id="imgSaveSearch" class="marginRight9" /><span>Save New Search</span>
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="span9 span9-custom borderWidth0imp">
+                <div class="row-fluid row-custom noBorder">
+                    @*<div class="float-right">
+                    <img id="imgChartResult" width="43" height="27" src="../../Images/Result.png" onclick="ToggleChartResult();"
+                        class="cursorPointer" style="height: 27px;" />
+                </div>*@
+                    <div id="divActiveFilter" class="row-fluid filter">
+                    </div>
+                    <div id="divChartMain">
+                        <div id="divChartActionHeader" class="float-right marginLeft10 bottomBorderColor width100p DiscoveryChartHeaderMainDiv">
+                            <div id="divHeader" class="pull-left DiscoveryHeader">
+                                <b>Discovery Overview</b></div>
+                            <div class="float-right dashboardHeader" id="divDashboardUtility">
+                                <div class="float-left displayNone" id="divDiscoveryUtility">
+                                    <img src="../../Images/Email.png" alt="Email" title="Email" class="cursorPointer"
+                                        onclick="ShowDashboardEmailPopup();" />
+                                    <img src="../../Images/pdf.png" alt="Save as PDF" title="Save as PDF" class="cursorPointer" onclick="GenerateDashboardPDF();" /><span
+                                        style="color: #3C3C3E;">|</span>
+                                </div>
+                                <img src="../../Images/Result.png" alt="" onclick="ToggleChartResult();" class="cursorPointer float-right"
+                                    id="imgResult" />
+                            </div>
+                        </div>
+                        @*<div class="pull-left paddingLeft20p dashboardHeader displayNone" id="divDiscoveryUtility">
+                        <a href="#" onclick="ShowDashboardEmailPopup();">Email</a>|<a href="javascript:void();"
+                            onclick="GenerateDashboardPDF();">Save as PDF</a></div>*@
+                        <div class="float-right" id="divChartTotal">
+                        </div>
+                        <div id="divNoDataChart" class="clear">
+                        </div>
+                        <div id="divColumnChart" class="float-left NoDataDiv">
+                        </div>
+                        <div id="divLineChart" class="float-left">
+                        </div>
+                        <div id="divPieChartSearchTerm" class="clear width100p" style="display:none;">
+                            <div id="divPieChartStatic" class="float-left" style="margin-left:140px;">
+                            </div>
+                            <div id="divPieChartStaticPDF" class="float_left hiddenPieChart" style="margin-left:140px;">
+                            </div>
+                            <div id="divPieChartDynamic" class="float-left">
+                            </div>
+                            <div id="divPieChartDynamicPDF" class="float_left hiddenPieChart">
+                            </div>
+                            <div id="divPieChartChks" class="float-left pieChartChks">
+                                <ul>
+                                    @{
+                                        foreach (IQCommon.Model.IQ_MediaTypeModel objSubMediaType in MasterMediaTypes.OrderBy(o => o.SortOrder))
+                                        {
+                                            <li><input type="checkbox" id="chk@(objSubMediaType.SubMediaType)" name="chkPieChartMedium" value="@objSubMediaType.SubMediaType" checked="checked" />@objSubMediaType.DisplayName</li>
+                                        }
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                        <div id="divPieChartMedium" class="paddingTop30 float-left width100p">
+                            <div id="divPieChartHeader" class="discoveryTabParent displayNone">
+                            </div>
+                            <div id="divPieChartData" class="clear paddingTop20" style="display: none;">
+                            </div>
+                        </div>
+                    </div>
+                    <div id="divResultMain" class="heightWidth0">
+                        @*<div id="divResultActionHeader" class="clear bottomBorderColor">*@
+                        <div class="btn-group">
+                            <a class="btn dropdown-toggle no-background" data-toggle="dropdown" href="#" id="aSortDirection">
+                                Most Recent&nbsp;&nbsp;<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li class="cursorPointer"><a onclick="SortDirection(false);">Most Recent</a></li>
+                                <li class="cursorPointer"><a onclick="SortDirection(true);">Oldest First</a></li>
+                            </ul>
+                        </div>
+                        <div class="pull-right action">
+                            <div class="btn-group fleft">
+                                <a class="btn dropdown-toggle no-background" data-toggle="dropdown" href="#">Action&nbsp;&nbsp;<span
+                                    class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="cursorPointer" onclick="ShowSaveReportPopup();">Create Report</a></li>
+                                    <li><a class="cursorPointer" onclick="ShowAddToReportPopup();">Add to Report</a></li>
+                                    <li><a class="cursorPointer" onclick="ShowAddToLibraryPopup();">Add to Library</a></li>
+                                    <li><a class="cursorPointer" onclick="ExportDiscoveryToCSV();">Export to CSV</a></li>
+                                    @*<li><a class="cursorPointer" onclick="GetExportCSVStatus();">Export Status</a></li>                                        *@
+                                    @if (sessionInformation.Isv4IQAgentAccess && sessionInformation.Isv4FeedsAccess)
+                                    {
+                                        <li><a class="cursorPointer" onclick="ShowAddToFeedsPopup();">Add to Feeds</a></li>
+                                    }
+                                    else
+                                    {
+                                        <li><a class="cursorPointer greyOut" onclick="">Add to Feeds</a></li>
+                                    }
+                                </ul>
+                            </div>
+                            @if (string.IsNullOrEmpty(Request.QueryString["SearchTermTopic"]) && string.IsNullOrEmpty(Request.QueryString["SearchNameTopic"]))
+                            {
+                                <div class="float-left">
+                                    <img src="../../Images/Chart.png" alt="" onclick="ToggleChartResult();" class="cursorPointer" id="imgChart" />
+                                </div>
+                            }
+                            <div class="select">
+                                <label>Select all</label><input type="checkbox" id="chkInputAll" onclick="checkUncheckAll('divResult','chkInputAll');" />
+                            </div>
+                        </div>
+                        @*</div>*@ @*<div id="divNoDataResult" class="clear">
+                    </div>*@
+                        <div class="clear">
+                        </div>
+                        <div id="divResultHeader" class="margintop5 discoveryTabParent">
+                        </div>
+                        <div id="divMainContent" class="clear">
+                            <div id="divResult" class="clear">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="divAdvanceSearchPopup" class="modal fade hide resizable modalPopupDiv">
+                    <div class='closemodalpopup'>
+                        <img src='../images/close-icon.png' alt='close' class='popup-top-close' onclick='closeModal("divAdvanceSearchPopup");' />
+                    </div>
+                    <div style='padding: 20px;'>
+                        <div class='advSearchTitle' style='width: 100%;'>
+                            <div id='divIQAgentSetupPopupTitle' style='float: left;'>Discovery Advanced Search</div>
+                            <div style='float: right;'>
+                                <input type='button' id='btnCancelAdvanceSearch' name='btnCancelAdvanceSearch' value='Cancel' onclick='CancelAdvancedSearch();' class='cancelButton' style='margin: 0px;' />
+                                <input type='button' id='btnSubmitAdvanceSearch' name='btnSubmitAdvanceSearch' value='Search' onclick='SubmitAdvancedSearch();' class='button' style='margin: 0px; margin-left:4px;' />
+                            </div>
+                        </div>
+                        <div id='divAdvSearchTabHeader' class='margintop5 discoveryTabParent' style='width: 100%;'>
+                        </div>
+                        <div id='divAdvanceSearchScrollContent'>
+                            <div id="AdvancedSearchTabNote" class="AdvancedSearchTabNote"></div>
+                            @{
+                            IQMedia.Model.DiscoveryAdvanceSearch_DropDown discoveryAdvanceSearch_DropDown = (IQMedia.Model.DiscoveryAdvanceSearch_DropDown)Model["AdvaceSearchDropDowns"];
+
+                                <!-- Only certain sections have Language filters, so this is only needed if those roles are active -->
+                            if (sessionInformation.Isv4NM || sessionInformation.Isv4PQ || sessionInformation.IsLN)
+                            {
+                                    <div style="float:right; padding:20px 10px 10px;">
+                                        <a href="javascript:void(0)" onclick="SetAdvancedSearchLanguage('English');">Click here</a>&nbsp; to set Language filters to English
+                                    </div>
+                            }
+                            }
+                            <div id="divAdvanceSearchTabs" style="clear: both;">
+                            @foreach (IQCommon.Model.IQ_MediaTypeModel objMediaType in sessionInformation.MediaTypes.Where(w => w.IsActiveDiscovery && w.TypeLevel == 2))
+                            {
+                                if (objMediaType.HasAccess)
+                                {
+                                    switch (objMediaType.SubMediaType)
+                                    {
+                                        case "TV":             
+			                            <div id="divTVSetup" class="show-hide cursorPointer" onclick="ShowHideTabdiv(0);" style="margin-top: 15px;">
+				                            <div class="float-left">
+					                            <img alt="" id="imgShowHide" src="~/images/show.png">
+					                            @objMediaType.DisplayName
+				                            </div>
+			                            </div>    
+			                            <div id="divTVTabContent" name="advSearchTabContent" class="margin10" style="display: none;">
+                                        	<div class="control-group" name="searchTermDIV">
+					                            <label class="control-label" for="txtSearchTerm_TV">Search Term</label>
+					                            <div class="controls">
+						                            <input type="text" id="txtSearchTerm_TV" name="txtClearAdvSearch" class="txtwidth90per" placeholder="Search Term" />
+					                            </div>
+				                            </div>
+				                            <div class="control-group">
+					                            <label class="control-label" for="txtProgramTitle">Program Title</label>
+					                            <div class="controls">
+						                            <input type="text" id="txtProgramTitle" name="txtClearAdvSearch" class="txtwidth90per" placeholder="Program Title" />
+					                            </div>
+				                            </div>
+                                            <div class="control-group">
+					                            <label class="control-label" for="txtAppearing">Appearing</label>
+					                            <div class="controls">
+						                            <input type="text" id="txtAppearing" name="txtClearAdvSearch" class="txtwidth90per" placeholder="Appearing" />
+					                            </div>
+				                            </div>
+                                            <div class="control-group">
+					                            <label class="control-label" for="ddlCategory_TV">Category</label>
+					                            <div class="controls">
+						                            @if (discoveryAdvanceSearch_DropDown.TV_ClassList != null)
+                                  {
+							                            <select id="ddlCategory_TV" name="ddlClearAdvSearch" class="chosen-select ddlwidth93per" multiple="multiple" data-placeholder="Categories">
+								                            <option value="0" selected="selected">All</option>
+								                            @foreach (IQMedia.Model.IQ_Class item in discoveryAdvanceSearch_DropDown.TV_ClassList)
+                                    {
+                                                                <option value="@item.Num">@item.Name</option>
+                                    }
+							                            </select>
+                                  }
+					                            </div>
+				                            </div>
+				                            <div class="control-group">
+					                            <label class="control-label" for="ddlDMA_TV">Market</label>
+					                            <div class="controls">
+						                            @if (discoveryAdvanceSearch_DropDown.TV_DMAList != null)
+                                  {
+							                            <select id="ddlDMA_TV" name="ddlClearAdvSearch" class="chosen-select ddlwidth93per" multiple="multiple" data-placeholder="Market">
+								                            <option value="0" selected="selected">All</option>
+								                            @foreach (IQMedia.Model.IQ_Dma item in discoveryAdvanceSearch_DropDown.TV_DMAList)
+                                    {
+									                            <option value="@item.Name">@item.Name</option>
+                                    }
+							                            </select>
+                                  }
+					                            </div>
+				                            </div>
+				                            <div class="control-group">
+					                            <label class="control-label" for="ddlAffiliate_TV">Station Affiliate</label>
+					                            <div class="controls">
+						                            @if (discoveryAdvanceSearch_DropDown.TV_AffiliateList != null)
+                                  {
+							                            <select id="ddlAffiliate_TV" name="ddlClearAdvSearch" class="chosen-select ddlwidth93per" multiple="multiple" data-placeholder="Station Affiliate">
+								                            <option value="0" selected="selected">All</option>
+								                            @foreach (IQMedia.Model.Station_Affil item in discoveryAdvanceSearch_DropDown.TV_AffiliateList)
+                                    {
+									                            <option value="@item.Name">@item.Name</option>
+                                    }
+							                            </select>
+                                  }
+					                            </div>
+				                            </div>
+				                            <div class="control-group">
+					                            <label class="control-label" for="ddlStation_TV">Station</label>
+					                            <div class="controls">
+						                            @if (discoveryAdvanceSearch_DropDown.TV_StationList != null)
+                                  {
+							                            <select id="ddlStation_TV" name="ddlClearAdvSearch" class="chosen-select ddlwidth93per" multiple="multiple" data-placeholder="Station">
+								                            <option value="0" selected="selected">All</option>
+								                            @foreach (IQMedia.Model.IQ_Station item in discoveryAdvanceSearch_DropDown.TV_StationList)
+                                    {
+									                            <option value="@item.IQ_Station_ID">@item.Station_Call_Sign</option>
+                                    }
+							                            </select>
+                                  }
+					                            </div>
+				                            </div>
+				                            <div class="control-group">
+					                            <label class="control-label" for="ddlRegion_TV">Region</label>
+					                            <div class="controls">
+						                            @if (discoveryAdvanceSearch_DropDown.TV_RegionList != null)
+                                  {
+							                            <select id="ddlRegion_TV" name="ddlClearAdvSearch" class="chosen-select ddlwidth93per"
+								                            multiple="multiple" data-placeholder="Region">
+								                            <option value="0" selected="selected">All</option>
+								                            @foreach (IQMedia.Model.IQ_Region item in discoveryAdvanceSearch_DropDown.TV_RegionList)
+                                    {
+									                            <option value="@item.Num">@item.Name</option>
+                                    }
+							                            </select>
+                                  }
+					                            </div>
+				                            </div>
+				                            <div class="control-group">
+					                            <label class="control-label" for="ddlCountry_TV">Country</label>
+					                            <div class="controls">
+						                            @if (discoveryAdvanceSearch_DropDown.TV_CountryList != null)
+                                  {
+							                            <select id="ddlCountry_TV" name="ddlClearAdvSearch" class="chosen-select ddlwidth93per"  multiple="multiple" data-placeholder="Country">
+								                            <option value="0" selected="selected">All</option>
+								                            @foreach (IQMedia.Model.IQ_Country item in discoveryAdvanceSearch_DropDown.TV_CountryList)
+                                    {
+									                            <option value="@item.Num">@item.Name</option>
+                                    }
+							                            </select>
+                                  }
+					                            </div>
+				                            </div>
+			                            </div>
+                                  break;
+                                        case "NM":
+			                            <div id="divNMSetup" class="show-hide cursorPointer" onclick="ShowHideTabdiv(1);" style="margin-top: 15px;">
+				                            <div class="float-left">
+					                            <img alt="" id="imgShowHide" src="~/images/show.png">
+                                                @objMediaType.DisplayName
+				                            </div>
+			                            </div> 
+			                            <div id="divOnlineNewsTabContent" name="advSearchTabContent" class="margin10" style="display: none;">
+                                            <div class="control-group" name="searchTermDIV">
+					                            <label class="control-label" for="txtSearchTerm_NM">Search Term</label>
+					                            <div class="controls">
+						                            <input type="text" id="txtSearchTerm_NM" name="txtClearAdvSearch" class="txtwidth90per" placeholder="Search Term" />
+					                            </div>
+				                            </div>
+				                            <div class="control-group">
+					                            <label class="control-label" for="txtPublication_NM">Publication</label>
+					                            <div class="controls">
+						                            <input type="text" id="txtPublication_NM" name="txtClearAdvSearch" class="txtwidth90per" placeholder="Publication (separate multiple publications with semicolon)" />
+					                            </div>
+				                            </div>
+                                            <div class="control-group">
+					                            <label class="control-label" for="ddlCategory_NM">Category</label>
+					                            <div class="controls">
+                                                    @if (discoveryAdvanceSearch_DropDown.NM_CategoryList != null)
+                                                    {
+                                                        <select id="ddlCategory_NM" name="ddlClearAdvSearch" class="chosen-select ddlwidth93per" multiple="multiple" data-placeholder="Category">
+                                                            <option value="0" selected="selected">All</option>
+                                                            @foreach (IQMedia.Model.IQAgentDropDown_NM_Category item in discoveryAdvanceSearch_DropDown.NM_CategoryList)
+                                                            {
+                                                                <option value="@item.Label">@item.Label</option>
+                                                            }
+                                                        </select>
+                                                    }
+					                            </div>
+				                            </div>
+                                            <div class="control-group">
+					                            <label class="control-label" for="ddlPublicationCategory_NM">Publication Category</label>
+					                            <div class="controls">
+                                                    @if (discoveryAdvanceSearch_DropDown.NM_PublicationCategoryList != null)
+                                                    {
+                                                        <select id="ddlPublicationCategory_NM" name="ddlClearAdvSearch" class="chosen-select ddlwidth93per" multiple="multiple" data-placeholder="Publication Category">
+                                                            <option value="0" selected="selected">All</option>
+                                                            @foreach (IQMedia.Model.IQAgentDropDown_NM_PublicationCategory item in discoveryAdvanceSearch_DropDown.NM_PublicationCategoryList)
+                                                            {
+                                                                <option value="@item.ID">@item.Label</option>
+                                                            }
+                                                        </select>
+                                                    }
+					                            </div>
+				                            </div>
+                                            <div class="control-group">
+                                                <label class="control-label" for="ddlMarket_NM">Market</label>
+                                                <div class= "controls">
+                                                @if (discoveryAdvanceSearch_DropDown.NM_MarketList != null)
+                                                {
+                                                    <select id="ddlMarket_NM" name="ddlClearAdvSearch" class="chosen-select cclsicgh9per" multiple="multiple" data-placeholder="Market">
+                                                    <option value="0" selected="selected">All</option>
+                                                    @foreach(IQMedia.Model.IQAgentDropDown_NM_Market item in discoveryAdvanceSearch_DropDown.NM_MarketList)
+                                                    {
+                                                        <option value="@item.Label">@item.Label</option>
+                                                    }
+                                                    </select>
+                                                }
+                                                </div>
+                                            </div>
+                                            <div class="control-group">
+					                            <label class="control-label" for="ddlGenre_NM">Genre</label>
+					                            <div class="controls">
+                                                    @if (discoveryAdvanceSearch_DropDown.NM_GenreList != null)
+                                                    {
+                                                        <select id="ddlGenre_NM" name="ddlClearAdvSearch" class="chosen-select ddlwidth93per" multiple="multiple" data-placeholder="Genre">
+                                                            <option value="0" selected="selected">All</option>
+                                                            @foreach (IQMedia.Model.IQAgentDropDown_NM_Genere item in discoveryAdvanceSearch_DropDown.NM_GenreList)
+                                                            {
+                                                                <option value="@item.Label">@item.Label</option>
+                                                            }
+                                                        </select>
+                                                    }
+					                            </div>
+				                            </div>
+				                            <div class="control-group">
+					                            <label class="control-label" for="ddlRegion_NM">Region</label>
+					                            <div class="controls">
+						                            @if (discoveryAdvanceSearch_DropDown.NM_RegionList != null)
+                                  {
+							                            <select id="ddlRegion_NM" name="ddlClearAdvSearch" class="chosen-select ddlwidth93per" multiple="multiple" data-placeholder="Region">
+								                            <option value="0" selected="selected">All</option>
+								                            @foreach (IQMedia.Model.IQAgentDropDown_NM_Region item in discoveryAdvanceSearch_DropDown.NM_RegionList)
+                                    {
+									                            <option value="@item.Label">@item.Label</option>
+                                    }
+							                            </select>
+                                  }
+					                            </div>
+				                            </div>
+				                            <div class="control-group">
+					                            <label class="control-label" for="ddlCountry_NM">Country</label>
+					                            <div class="controls">
+						                            @if (discoveryAdvanceSearch_DropDown.CountryList != null)
+                                  {
+							                            <select id="ddlCountry_NM" name="ddlClearAdvSearch" class="chosen-select ddlwidth93per" multiple="multiple" data-placeholder="Country">
+								                            <option value="0" selected="selected">All</option>
+								                            @foreach (var item in discoveryAdvanceSearch_DropDown.CountryList)
+                                    {
+									                            <option value="@item.Value">@item.Key</option>
+                                    }
+							                            </select>
+                                  }
+					                            </div>
+				                            </div>
+				                            <div class="control-group">
+					                            <label class="control-label" for="ddlLanguage_NM">Language</label>
+					                            <div class="controls">
+						                            @if (discoveryAdvanceSearch_DropDown.LanguageList != null)
+                                  {
+							                            <select id="ddlLanguage_NM" name="ddlAdvSearchLanguage" class="chosen-select ddlwidth93per" multiple="multiple" data-placeholder="Language">
+								                            <option value="0" selected="selected">All</option>
+								                            @foreach (var item in discoveryAdvanceSearch_DropDown.LanguageList)
+                                    {
+									                            <option value="@item">@item</option>
+                                    }
+							                            </select>
+                                  }
+					                            </div>
+				                            </div>
+				                            <div class="control-group">
+					                            <label class="control-label" for="txtExcludeDomains_NM">Exclude Domains</label>
+					                            <div class="controls">
+						                            <input type="text" id="txtExcludeDomains_NM" name="txtClearAdvSearch" class="txtwidth90per" placeholder="Exclude Domains (separate multiple domains with semicolon)" />
+						                            <span class="help-inline" id="spanExcludeDomains_NM" style="color: #FF0000; display: none; vertical-align: top"></span>
+					                            </div>
+				                            </div>
+			                            </div>      
+                                  break;
+                                        case "Blog":
+			                            <div id="divBLSetup" class="show-hide cursorPointer" onclick="ShowHideTabdiv(2);" style="margin-top: 15px;">
+				                            <div class="float-left">
+					                            <img alt="" id="imgShowHide" src="~/images/show.png">
+					                            @objMediaType.DisplayName
+				                            </div>
+			                            </div> 
+			                            <div id="divBLTabContent" name="advSearchTabContent" class="margin10" style="display: none;">
+				                            <div class="control-group" name="searchTermDIV">
+					                            <label class="control-label" for="txtSearchTerm_BL">Search Term</label>
+					                            <div class="controls">
+						                            <input type="text" id="txtSearchTerm_BL" name="txtClearAdvSearch" class="txtwidth90per" placeholder="Search Term" />
+					                            </div>
+				                            </div>
+                                            <div class="control-group">
+					                            <label class="control-label" for="txtSource_BL">Source</label>
+					                            <div class="controls">
+						                            <input type="text" id="txtSource_BL" name="txtClearAdvSearch" class="txtwidth90per" placeholder="Source (separate multiple sources with semicolon)" />
+					                            </div>
+				                            </div>
+				                            <div class="control-group">
+					                            <label class="control-label" for="txtAuthor_BL">Author</label>
+					                            <div class="controls">
+						                            <input type="text" id="txtAuthor_BL" name="txtClearAdvSearch" class="txtwidth90per" placeholder="Author" />
+					                            </div>
+				                            </div>
+				                            <div class="control-group">
+					                            <label class="control-label" for="txtTitle_BL">Title</label>
+					                            <div class="controls">
+						                            <input type="text" id="txtTitle_BL" name="txtClearAdvSearch" class="txtwidth90per" placeholder="Title" />
+					                            </div>
+				                            </div>
+				                            <div class="control-group">
+					                            <label class="control-label" for="txtExcludeDomains_BL">Exclude Domains</label>
+					                            <div class="controls">
+						                            <input type="text" id="txtExcludeDomains_BL" name="txtClearAdvSearch" class="txtwidth90per" placeholder="Exclude Domains (separate multiple domains with semicolon)" />
+						                            <span class="help-inline" id="spanExcludeDomains_BL" style="color: #FF0000; display: none; vertical-align: top"></span>
+					                            </div>
+				                            </div>
+			                            </div>
+                            break;
+                                        case "Forum":
+			                            <div id="divFOSetup" class="show-hide cursorPointer" onclick="ShowHideTabdiv(3);" style="margin-top: 15px;">
+				                            <div class="float-left">
+					                            <img alt="" id="imgShowHide" src="~/images/show.png">
+					                            @objMediaType.DisplayName
+				                            </div>
+			                            </div> 
+			                            <div id="divFOTabContent" name="advSearchTabContent" class="margin10" style="display: none;">
+				                            <div class="control-group" name="searchTermDIV">
+					                            <label class="control-label" for="txtSearchTerm_FO">Search Term</label>
+					                            <div class="controls">
+						                            <input type="text" id="txtSearchTerm_FO" name="txtClearAdvSearch" class="txtwidth90per" placeholder="Search Term" />
+					                            </div>
+				                            </div>
+                                            <div class="control-group">
+					                            <label class="control-label" for="txtSource_FO">Source</label>
+					                            <div class="controls">
+						                            <input type="text" id="txtSource_FO" name="txtClearAdvSearch" class="txtwidth90per" placeholder="Source (separate multiple sources with semicolon)" />
+					                            </div>
+				                            </div>
+				                            <div class="control-group">
+					                            <label class="control-label" for="txtAuthor_FO">Author</label>
+					                            <div class="controls">
+						                            <input type="text" id="txtAuthor_FO" name="txtClearAdvSearch" class="txtwidth90per" placeholder="Author" />
+					                            </div>
+				                            </div>
+				                            <div class="control-group">
+					                            <label class="control-label" for="txtTitle_FO">Title</label>
+					                            <div class="controls">
+						                            <input type="text" id="txtTitle_FO" name="txtClearAdvSearch" class="txtwidth90per" placeholder="Title" />
+					                            </div>
+				                            </div>
+				                            <div class="control-group">
+					                            <label class="control-label" for="ddlSourceType_FO">Source Type</label>
+					                            <div class="controls">
+						                            @if (discoveryAdvanceSearch_DropDown.SM_SourceTypeList != null)
+                                  {
+							                            <select id="ddlSourceType_FO" name="ddlClearAdvSearch" class="chosen-select ddlwidth93per" multiple="multiple" data-placeholder="Source Type">
+								                            <option value="0" selected="selected">All</option>
+								                            @foreach (IQMedia.Model.IQAgentDropDown_SM_SourceType item in discoveryAdvanceSearch_DropDown.SM_SourceTypeList.Where(w => w.Label == IQMedia.Shared.Utility.CommonFunctions.GetEnumDescription(PMGSearch.SourceType.Forum) || w.Label == IQMedia.Shared.Utility.CommonFunctions.GetEnumDescription(PMGSearch.SourceType.Review)))
+                                    {
+									                            <option value="@item.Label">@item.Label</option>
+                                    }
+							                            </select>
+                                  }
+					                            </div>
+				                            </div>
+				                            <div class="control-group">
+					                            <label class="control-label" for="txtExcludeDomains_FO">Exclude Domains</label>
+					                            <div class="controls">
+						                            <input type="text" id="txtExcludeDomains_FO" name="txtClearAdvSearch" class="txtwidth90per" placeholder="Exclude Domains (separate multiple domains with semicolon)" />
+						                            <span class="help-inline" id="spanExcludeDomains_FO" style="color: #FF0000; display: none; vertical-align: top"></span>
+					                            </div>
+				                            </div>
+			                            </div>
+                                  break;
+                                        case "PQ":
+		                            <div id="divPQSetup" class="show-hide cursorPointer" onclick="ShowHideTabdiv(4);" style="margin-top: 15px;">
+			                            <div class="float-left">
+				                            <img alt="" id="imgShowHide" src="~/images/show.png">
+				                            @objMediaType.DisplayName
+			                            </div>
+		                            </div> 
+		                            <div id="divProQuestTabContent" name="advSearchTabContent" class="margin10" style="display: none;">
+                                        <div class="control-group" name="searchTermDIV">
+					                        <label class="control-label" for="txtSearchTerm_PQ">Search Term</label>
+					                        <div class="controls">
+						                        <input type="text" id="txtSearchTerm_PQ" name="txtClearAdvSearch" class="txtwidth90per" placeholder="Search Term" />
+					                        </div>
+				                        </div>
+			                            <div class="control-group">
+				                            <label class="control-label" for="txtPublication_PQ">Publication</label>
+				                            <div class="controls">
+					                            <input type="text" id="txtPublication_PQ" name="txtClearAdvSearch" class="txtwidth90per" placeholder="Publication (separate multiple publications with semicolon)" />
+				                            </div>
+			                            </div>
+			                            <div class="control-group">
+				                            <label class="control-label" for="txtAuthor_PQ">Author</label>
+				                            <div class="controls">
+					                            <input type="text" id="txtAuthor_PQ" name="txtClearAdvSearch" class="txtwidth90per" placeholder="Author (separate multiple authors with semicolon)" />
+				                            </div>
+			                            </div>
+			                            <div class="control-group">
+				                            <label class="control-label" for="ddlLanguage_PQ">Language</label>
+				                            <div class="controls">
+					                            @if (discoveryAdvanceSearch_DropDown.LanguageList != null)
+                                 {
+						                            <select id="ddlLanguage_PQ" name="ddlAdvSearchLanguage" class="chosen-select ddlwidth93per" multiple="multiple" data-placeholder="Language">
+							                            <option value="0" selected="selected">All</option>
+							                            @foreach (var item in discoveryAdvanceSearch_DropDown.LanguageList)
+                                   {
+								                            <option value="@item">@item</option>
+                                   }
+						                            </select>
+                                 }
+				                            </div>
+			                            </div>
+		                            </div>      
+                                 break;
+                                        case "LN":
+			                            <div id="divLNSetup" class="show-hide cursorPointer" onclick="ShowHideTabdiv(5);" style="margin-top: 15px;">
+				                            <div class="float-left">
+					                            <img alt="" id="imgShowHide" src="~/images/show.png">
+                                                @objMediaType.DisplayName
+				                            </div>
+			                            </div> 
+			                            <div id="divLNTabContent" name="advSearchTabContent" class="margin10" style="display: none;">
+                                            <div class="control-group" name="searchTermDIV">
+					                            <label class="control-label" for="txtSearchTerm_LN">Search Term</label>
+					                            <div class="controls">
+						                            <input type="text" id="txtSearchTerm_LN" name="txtClearAdvSearch" class="txtwidth90per" placeholder="Search Term" />
+					                            </div>
+				                            </div>
+				                            <div class="control-group">
+					                            <label class="control-label" for="txtPublication_LN">Publication</label>
+					                            <div class="controls">
+						                            <input type="text" id="txtPublication_LN" name="txtClearAdvSearch" class="txtwidth90per" placeholder="Publication (separate multiple publications with semicolon)" />
+					                            </div>
+				                            </div>
+                                            <div class="control-group">
+					                            <label class="control-label" for="ddlCategory_LN">Category</label>
+					                            <div class="controls">
+                                                    @if (discoveryAdvanceSearch_DropDown.NM_CategoryList != null)
+                                                    {
+                                                        <select id="ddlCategory_LN" name="ddlClearAdvSearch" class="chosen-select ddlwidth93per" multiple="multiple" data-placeholder="Category">
+                                                            <option value="0" selected="selected">All</option>
+                                                            @foreach (IQMedia.Model.IQAgentDropDown_NM_Category item in discoveryAdvanceSearch_DropDown.NM_CategoryList)
+                                                            {
+                                                                <option value="@item.Label">@item.Label</option>
+                                                            }
+                                                        </select>
+                                                    }
+					                            </div>
+				                            </div>
+                                            <div class="control-group">
+					                            <label class="control-label" for="ddlPublicationCategory_LN">Publication Category</label>
+					                            <div class="controls">
+                                                    @if (discoveryAdvanceSearch_DropDown.NM_PublicationCategoryList != null)
+                                                    {
+                                                        <select id="ddlPublicationCategory_LN" name="ddlClearAdvSearch" class="chosen-select ddlwidth93per" multiple="multiple" data-placeholder="Publication Category">
+                                                            <option value="0" selected="selected">All</option>
+                                                            @foreach (IQMedia.Model.IQAgentDropDown_NM_PublicationCategory item in discoveryAdvanceSearch_DropDown.NM_PublicationCategoryList)
+                                                            {
+                                                                <option value="@item.ID">@item.Label</option>
+                                                            }
+                                                        </select>
+                                                    }
+					                            </div>
+				                            </div>
+                                            <div class="control-group">
+					                            <label class="control-label" for="ddlGenre_LN">Genre</label>
+					                            <div class="controls">
+                                                    @if (discoveryAdvanceSearch_DropDown.NM_GenreList != null)
+                                                    {
+                                                        <select id="ddlGenre_LN" name="ddlClearAdvSearch" class="chosen-select ddlwidth93per" multiple="multiple" data-placeholder="Genre">
+                                                            <option value="0" selected="selected">All</option>
+                                                            @foreach (IQMedia.Model.IQAgentDropDown_NM_Genere item in discoveryAdvanceSearch_DropDown.NM_GenreList)
+                                                            {
+                                                                <option value="@item.Label">@item.Label</option>
+                                                            }
+                                                        </select>
+                                                    }
+					                            </div>
+				                            </div>
+				                            <div class="control-group">
+					                            <label class="control-label" for="ddlRegion_LN">Region</label>
+					                            <div class="controls">
+						                            @if (discoveryAdvanceSearch_DropDown.NM_RegionList != null)
+                                  {
+							                            <select id="ddlRegion_LN" name="ddlClearAdvSearch" class="chosen-select ddlwidth93per" multiple="multiple" data-placeholder="Region">
+								                            <option value="0" selected="selected">All</option>
+								                            @foreach (IQMedia.Model.IQAgentDropDown_NM_Region item in discoveryAdvanceSearch_DropDown.NM_RegionList)
+                                    {
+									                            <option value="@item.Label">@item.Label</option>
+                                    }
+							                            </select>
+                                  }
+					                            </div>
+				                            </div>
+				                            <div class="control-group">
+					                            <label class="control-label" for="ddlCountry_LN">Country</label>
+					                            <div class="controls">
+						                            @if (discoveryAdvanceSearch_DropDown.CountryList != null)
+                                  {
+							                            <select id="ddlCountry_LN" name="ddlClearAdvSearch" class="chosen-select ddlwidth93per" multiple="multiple" data-placeholder="Country">
+								                            <option value="0" selected="selected">All</option>
+								                            @foreach (var item in discoveryAdvanceSearch_DropDown.CountryList)
+                                    {
+									                            <option value="@item.Value">@item.Key</option>
+                                    }
+							                            </select>
+                                  }
+					                            </div>
+				                            </div>
+				                            <div class="control-group">
+					                            <label class="control-label" for="ddlLanguage_LN">Language</label>
+					                            <div class="controls">
+						                            @if (discoveryAdvanceSearch_DropDown.LanguageList != null)
+                                  {
+							                            <select id="ddlLanguage_LN" name="ddlAdvSearchLanguage" class="chosen-select ddlwidth93per" multiple="multiple" data-placeholder="Language">
+								                            <option value="0" selected="selected">All</option>
+								                            @foreach (var item in discoveryAdvanceSearch_DropDown.LanguageList)
+                                    {
+									                            <option value="@item">@item</option>
+                                    }
+							                            </select>
+                                  }
+					                            </div>
+				                            </div>
+				                            <div class="control-group">
+					                            <label class="control-label" for="txtExcludeDomains_LN">Exclude Domains</label>
+					                            <div class="controls">
+						                            <input type="text" id="txtExcludeDomains_LN" name="txtClearAdvSearch" class="txtwidth90per" placeholder="Exclude Domains (separate multiple domains with semicolon)" />
+						                            <span class="help-inline" id="spanExcludeDomains_LN" style="color: #FF0000; display: none; vertical-align: top"></span>
+					                            </div>
+				                            </div>
+			                            </div>      
+                                  break;
+                                    }
+                                }
+                            }
+                            </div>
+                        </div>
+                    </div>
+            </div>
+        }
+        else
+        {
+            <div class="mainerrorDiv">@IQMedia.WebApplication.Config.ConfigSettings.Settings.PageLoadErrorMessage</div>
+        }
+    </div>
+</div>
+<div id="divEmailPopup" class="modal fade hide resizable modalPopupDiv">
+    <div class="closemodalpopup">
+        <img id="imgCloseEmalilPopup" src="~/images/close-icon.png" alt="close" class="popup-top-close"
+            onclick="CancelEmailpopup();" /></div>
+    <div style="padding: 20px 20px 0px 20px;" class="modalBody">
+        <input type="hidden" id="hdnDefaultSender" value="@Model["DefaultEmailSender"]" />
+        <div class="modalpopheadertitle" style="margin-bottom: 20px;">
+            Share with friends
+        </div>
+        <div id="divEmailPopupScrollContent" style="padding-right: 15px;">
+            <form class="form-horizontal">
+            <input type="hidden" id="hdnEmailFunctionalityType" value="result" />
+            <div class="control-group">
+                @{
+                    bool useCustomerEmailAsDefault = Convert.ToBoolean(Model["UseCustomerEmailAsDefault"]);
+                <label class="control-label" for="txtFromEmail">
+                    @(useCustomerEmailAsDefault ? "Your" : "From") email</label>
+                <div class="controls">
+                    <input type="text" id="txtFromEmail" placeholder="From Email" class="txtwidth90per" @(useCustomerEmailAsDefault ? "" : "readonly=\"readonly\"") />
+                    <span class="help-inline" id="spanFromEmail" style="color: #FF0000; display: none;">
+                    </span>
+                </div>
+                }
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="txtToEmail">
+                    Friend's email</label>
+                <div class="controls">
+                    <input type="text" id="txtToEmail" placeholder="To Email (separate multiple addresses with semicolon, up to @ViewBag.MaxEmailAddresses addresses)"
+                        class="txtwidth90per" />
+                    <span class="help-inline" id="spanToEmail" style="color: #FF0000; display: none;">
+                    </span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="txtBCCEmail">
+                    BCC email</label>
+                <div class="controls">
+                    <input type="text" id="txtBCCEmail" placeholder="BCC Email (separate multiple addresses with semicolon, up to @ViewBag.MaxEmailAddresses addresses)"
+                        class="txtwidth90per" />
+                    <span class="help-inline" id="spanBCCEmail" style="color: #FF0000; display: none;">
+                    </span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="txtSubject">
+                    Subject</label>
+                <div class="controls">
+                    <input type="text" id="txtSubject" placeholder="Subject" class="txtwidth90per" />
+                    <span class="help-inline" id="spanSubject" style="color: #FF0000; display: none;">
+                    </span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="txtMessage">
+                    Message</label>
+                <div class="controls">
+                    <textarea id="txtMessage" rows="5" cols="50" placeholder="Message" class="txtwidth90per"></textarea>
+                    <span class="help-inline" id="spanMessage" style="color: #FF0000; display: none;
+                        vertical-align: top"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="controls">
+                    <button type="button" id="btnCancel" onclick="CancelEmailpopup();" class="cancelButton">
+                        Cancel</button>
+                    <button type="button" id="btnSendEmail" onclick="SendEmail();" class="button">
+                        OK</button>
+                </div>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div id="divReportPopup" class="modal fade hide resizable modalPopupDiv">
+    <div class="closemodalpopup">
+        <img id="imgReportPopup" src="~/images/close-icon.png" alt="close" class="popup-top-close"
+            onclick="ClosePopUp('divReportPopup');" /></div>
+    <div style="padding-top: 20px;" class="modalBody">
+        <form class="form-horizontal">
+        <div style="padding-bottom: 5px; border-bottom: 1px solid #dadada; margin: 1px 15px 1px 15px;
+            font-weight: bold;">
+            Create Discovery Report
+        </div>
+        <br />
+        <div class="control-group">
+            <label class="control-label" for="txtReportTitle">
+                Title</label>
+            <div class="controls">
+                <input type="text" id="txtReportTitle" placeholder="Report Title" style="width: 85%;" />
+                <span class="help-inline" id="spanReportTitle" style="color: #FF0000; display: none;">
+                </span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="txtReportKeywords">
+                Keywords</label>
+            <div class="controls">
+                <input type="text" id="txtReportKeywords" placeholder="Report Keywords" style="width: 85%;" />
+                <span class="help-inline" id="spanKeywords" style="color: #FF0000; display: none;">
+                </span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="txtReportDescription">
+                Description</label>
+            <div class="controls">
+                <input type="text" id="txtReportDescription" placeholder="Report Description" style="width: 85%;" />
+                <span class="help-inline" id="spanDescription" style="color: #FF0000; display: none;">
+                </span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="ddlReportCategory">
+                Category</label>
+            <div class="controls">
+                <select id="ddlReportCategory">
+                </select>
+                <span class="help-inline" id="spanPCategory" style="color: #FF0000; display: none;">
+                </span><a class="cursorPointer" onclick="CreateAndOpenAddCategoryPopup(GetCustomCategory,'undefined',true);">
+                    Add Category </a>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="ddlReportImage">
+                Report Image</label>
+            <div class="controls">
+                <select id="ddlReportImage">
+                    <option>Default</option>
+                    @if (Model != null)
+                    {
+                        List<IQMedia.Model.IQClient_CustomImageModel> lstIQClient_CustomImageModel = (List<IQMedia.Model.IQClient_CustomImageModel>)Model["ReportImages"];
+                        foreach (IQMedia.Model.IQClient_CustomImageModel item in lstIQClient_CustomImageModel)
+                        {
+                        <option value="@item.ID">@item.Location</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="ddlReportFolder">
+                Report Folder</label>
+            <div class="controls">
+                <select id="ddlReportFolder">
+                    @if (Model != null && Model["ReportFolders"] != null)
+                    {
+                            List<IQMedia.Model.IQReport_FolderModel> lstIQReport_FolderModel = (List<IQMedia.Model.IQReport_FolderModel>)Model["ReportFolders"];
+                            string lastParent = "THIS IS NOT A VALID ID";
+                            string lastLastParent = "THIS IS NOT A VALID ID";
+                            int spaceCount = 0;
+                            Dictionary<string, int> indents = new Dictionary<string,int>();
+
+                            foreach (IQMedia.Model.IQReport_FolderModel item in lstIQReport_FolderModel)
+                            {
+                                if (lastParent == item.parent)
+                                {
+                                    spaceCount++;
+                                }
+                                else if (lastLastParent != item.parent && lastLastParent != "THIS IS NOT A VALID ID")
+                                {
+                                    if (indents.ContainsKey(item.parent))
+                                    {
+                                        spaceCount = indents.Where(x => x.Key == item.parent).Select(x => x.Value).First();
+                                    }
+                                    else
+                                    {
+                                        spaceCount--;
+                                    }
+                                }
+
+                                if (item.parent != null && !indents.ContainsKey(item.parent))
+                                {
+                                    indents.Add(item.parent, spaceCount);
+                                }
+
+                                lastLastParent = lastParent;
+                                lastParent = item.id;   
+                            
+                                <option value="@item.id">
+                                    @{
+                                        for (int x = 0; x < spaceCount; x++)
+                                        {
+                                            <p>&nbsp;</p>
+                                        }
+                                    }
+                                
+                                    -@item.text
+                                </option>
+                            }
+                    }
+                </select>
+                <span class="help-inline" id="spanReportFolder" style="color: #FF0000; display: none;">
+                </span>
+            </div>
+        </div>
+        <div class="control-group">
+            <div class="controls">
+                <button type="button" id="btnReportCancel" onclick="ClosePopUp('divReportPopup');"
+                    class="cancelButton">
+                    Cancel</button>
+                <button type="button" id="btnCreateReport" onclick="InsertDiscoveryReport();" class="button">
+                    OK</button>
+                <img alt="" id="imgCreateReportLoading" class="marginLeft10 displayNone" src="../../Images/Loading_1.gif" />
+            </div>
+        </div>
+        </form>
+    </div>
+</div>
+<div id="divPieChartText" style="position:absolute; left:0px; top:0px;"></div>
+<div id="divAddToReportPopup" class="modal fade hide resizable modalPopupDiv">
+    <div class="closemodalpopup">
+        <img id="imgAddToReportPopupPopup" src="~/images/close-icon.png" alt="close" class="popup-top-close"
+            onclick="ClosePopUp('divAddToReportPopup');" /></div>
+    <div style="padding-top: 20px;" class="modalBody">
+        <div id="divAddtoReportMsg" class="center" style="font-weight: bold">
+        </div>
+        <div style="padding-bottom: 5px; border-bottom: 1px solid #dadada; margin: 1px 15px 1px 15px;
+            font-weight: bold;">
+            Add To Discovery Report
+        </div>
+        <div id="divAddtoReport">
+            <form class="form-horizontal">
+            <div class="control-group">
+                <label class="control-label" for="spnAddToReportNote">
+                </label>
+                <div class="controls">
+                    <span id="spnAddToReportPopupNote" class="RedFont"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="ddlReportTitle">
+                    Report</label>
+                <div class="controls">
+                    <select id="ddlReportTitle">
+                    </select>
+                    <span class="help-inline" id="spanReportValidationMessage" style="color: #FF0000;
+                        display: none;"></span><a class="cursorPointer" onclick="GetDiscoveryReport();">Refresh
+                        </a>
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="controls">
+                    <button type="button" id="btnCancel" onclick="ClosePopUp('divAddToReportPopup');"
+                        class="cancelButton">
+                        Cancel</button>
+                    <button type="button" id="btnAddToReport" onclick="AddToDiscoveryReport();" class="button">
+                        OK</button>
+                    <img alt="" id="imgAddToReportLoading" class="marginLeft10 displayNone" src="../../Images/Loading_1.gif" />
+                </div>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div id="divAddToLibraryPopup" class="modal fade hide resizable modalPopupDiv">
+    <div class="closemodalpopup">
+        <img id="imgAddToLibraryPopup" src="~/images/close-icon.png" alt="close" class="popup-top-close"
+            onclick="ClosePopUp('divAddToLibraryPopup');" /></div>
+    <div style="padding-top: 20px;" class="modalBody">
+        <form class="form-horizontal">
+        <div style="padding-bottom: 5px; border-bottom: 1px solid #dadada; margin: 1px 15px 1px 15px;
+            font-weight: bold;">
+            Add To Library
+        </div>
+        <br />
+        <div class="control-group">
+            <label class="control-label" for="spnAddToLibraryNote">
+            </label>
+            <div class="controls">
+                <span id="spnAddToLibraryPopupNote" class="RedFont"></span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="txtLibraryKeywords">
+                Keywords</label>
+            <div class="controls">
+                <input type="text" id="txtLibraryKeywords" placeholder="Keywords" style="width: 85%;" />
+                <span class="help-inline" id="spanLibraryKeywords" style="color: #FF0000; display: none;">
+                </span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="txtLibraryDescription">
+                Description</label>
+            <div class="controls">
+                <input type="text" id="txtLibraryDescription" placeholder="Description" style="width: 85%;" />
+                <span class="help-inline" id="spanLibraryDescription" style="color: #FF0000; display: none;">
+                </span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="ddlReportTitle">
+                Category</label>
+            <div class="controls">
+                <select id="ddlLibraryCategory">
+                </select>
+                <a class="cursorPointer" onclick="CreateAndOpenAddCategoryPopup(GetCustomCategory,'undefined',true);">
+                    Add Category </a>
+            </div>
+        </div>
+        <div class="control-group">
+            <div class="controls">
+                <button type="button" id="btnLibraryCancel" onclick="ClosePopUp('divAddToLibraryPopup');"
+                    class="cancelButton">
+                    Cancel</button>
+                <button type="button" id="btnAddToLibrary" onclick="AddToDiscoveryLibrary();" class="button">
+                    OK</button>
+                <img alt="" id="imgAddToLibraryLoading" class="marginLeft10 displayNone" src="../../Images/Loading_1.gif" />
+            </div>
+        </div>
+        </form>
+    </div>
+</div>
+<div id="divAddToFeedsPopup" class="modal fade hide resizable modalPopupDiv">
+    <div class="closemodalpopup">
+        <img id="imgdivAddToFeedsPopup" src="~/images/close-icon.png" alt="close" class="popup-top-close"
+            onclick="ClosePopUp('divAddToFeedsPopup');" /></div>
+    <div style="padding-top: 20px;" class="modalBody">
+        <div style="padding-bottom: 5px; border-bottom: 1px solid #dadada; margin: 1px 15px 1px 15px;
+            font-weight: bold;">
+            Add To Feeds
+        </div>
+        <div>
+            <form class="form-horizontal">
+            <div class="control-group">
+                <label class="control-label">
+                </label>
+                <div class="controls">
+                    <span class="RedFont"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="ddlReportTitle">
+                    Total Selected Item(s)
+                </label>
+                <div class="controls margintop5">
+                    <span id="spanItemsSelectedCount"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="ddlReportTitle">
+                    IQAgent</label>
+                <div class="controls">
+                    <select id="ddlIQAgent">
+                        <option>Select IQ Agent</option>
+                        @foreach (IQMedia.Model.IQAgent_SearchRequestModel item in (List<IQMedia.Model.IQAgent_SearchRequestModel>)Model["SearchRequests"])
+                        {
+                            <option value="@item.ID">@item.QueryName</option>
+                        }
+                    </select>
+                    <span class="help-inline" id="spanddlIQAgent" style="color: #FF0000; display: none;">
+                    </span>
+                </div>
+            </div>
+            @*<div class="control-group">
+                    <label class="control-label" for="ddlReportTitle">
+                        Feeds Report (Optional)</label>
+                    <div class="controls">
+                        <select id="ddlFeedsReport">
+                            <option>Select Report </option>
+                            @foreach (IQMedia.Model.IQFeeds_ReportModel item in (List<IQMedia.Model.IQFeeds_ReportModel>)Model["FeedsReports"])
+                            {
+                                <option value="@item.ID">@item.Title</option>
+                            }
+                        </select>
+                        <span class="help-inline" id="spanddlFeedsReport" style="color: #FF0000; display: none;">
+                        </span>
+                    </div>
+                </div>*@
+            <div class="control-group">
+                <div class="controls">
+                    <button type="button" id="btnCancelAddtoFeeds" onclick="ClosePopUp('divAddToFeedsPopup');"
+                        class="cancelButton">
+                        Cancel</button>
+                    <button type="button" id="btnAddToFeeds" onclick="AddToFeeds();" class="button">
+                        OK</button>
+                </div>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div id="divViewArticlePopup" class="modal fade hide resizable modalPopupDiv">
+    <div class="closemodalpopup">
+        <img id="imgdivViewArticlePopup" src="~/images/close-icon.png" alt="close" class="popup-top-close"
+            onclick="ClosePopUp('divViewArticlePopup');" /></div>
+    <div style="padding: 20px;" class="modalBody">
+        <div style="padding-bottom: 5px; border-bottom: 1px solid #dadada; margin-bottom:10px; font-weight: bold;">
+            <div id="divPQTitle" style="float:left;"></div>
+            <div id="divPQMediaDate" style="float:right;"></div>
+            <div style="clear:both;"></div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" style="font-weight:bold;">
+                Author</label>
+            <div id="divPQAuthor" class="controls" style="margin-left:15px;"></div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" style="font-weight:bold;">
+                Publication</label>
+            <div id="divPQPublication" class="controls" style="margin-left:15px;"></div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" style="font-weight:bold;">
+                Content</label>
+            <div id="divPQContent" class="controls" style="margin-left:15px;"></div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" style="font-weight:bold;">
+                Copyright</label>
+            <div id="divPQCopyright" class="controls" style="margin-left:15px;"></div>
+        </div>
+    </div>
+</div>
+<div id="divJobStatusExportedPopup" class="modal fade hide resizable modalPopupDiv">
+        <div class="closemodalpopup">
+        <img id="imgdivJobStatusExportedPopup" src="~/images/close-icon.png" alt="close" class="popup-top-close"
+            onclick="ClosePopUp('divJobStatusExportedPopup');" /></div>
+        <div style="padding-top: 20px;" class="modalBody">
+        <div style="padding-bottom: 5px; border-bottom: 1px solid #dadada; margin: 1px 15px 1px 15px;
+            font-weight: bold;">
+            Job Status
+        </div>
+        <div class="divconfirmationpop-content">
+            @*<a href = "@{ Response.Redirect("~/Setup?returnUrl=DisplayJobStatusList");}" style="cursor:pointer;">Click here</a> to view your job status and download your file.*@
+            @if (string.IsNullOrEmpty(Request.QueryString["SearchTermTopic"]) && string.IsNullOrEmpty(Request.QueryString["SearchNameTopic"]))
+            {
+                <p><a href="/Setup?JS=true" style="cursor:pointer;">Click here</a> to view your job status and download your file.</p>
+            }
+            else
+            {
+                <p>Please visit the Setup page to view your job status and download your file.</p>
+            }
+        </div>
+    </div>
+</div>
+@if (sessionInformation.ClientGUID.Equals(new Guid("7722a116-c3bc-40ae-8070-8c59ee9e3d2a")))
+{
+    <div id="divExportCSVStatusPopup" class="modal fade hide resizable modalPopupDiv">
+        <div class="closemodalpopup">
+            <img src="~/images/close-icon.png" alt="close" class="popup-top-close" onclick="ClosePopUp('divExportCSVStatusPopup');" /></div>
+        <div style="padding-top: 20px;" class="modalBody">
+            
+        </div>
+    </div>
+}
+
+<div id="divDiscoveryResultsPage" class="modal fade hide resizable modalPopupDiv" style="width: 65%;height: 70%;">
+    <div class="closemodalpopup">
+        <img id="imgCloseIFramePopup" src="~/images/close-icon.png" alt="close" class="popup-top-close"
+            onclick="CancelIFramePopup();" /></div>
+    <div style="width: 99.5%; height: 99.5%;margin-left:10px;" id="divFrameResize" >
+        <iframe id="iFrameDiscoveryResults" style="width: 100%; height: 100%;" src="" frameborder="0" ></iframe>
+    </div>
+</div>

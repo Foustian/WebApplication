@@ -1,0 +1,141 @@
+﻿@using IQMedia.Model;
+@using IQMedia.Shared.Utility;
+@model IQAgent_MediaResultsModel
+@if (Model != null)
+{
+    ActiveUser sessioninfo = IQMedia.WebApplication.Utility.ActiveUserMgr.GetActiveUser();
+    IQAgent_PQResultsModel iQAgent_PQResultsModel = (IQAgent_PQResultsModel)Model.MediaData;
+    string highlightedPQText = string.Empty;
+    string HighlightedPQOutput = string.Empty;
+    string highlightedPQOriginalText = string.Empty;
+
+    if (iQAgent_PQResultsModel.HighlightedPQOutput != null && iQAgent_PQResultsModel.HighlightedPQOutput.Highlights != null)
+    {
+        highlightedPQOriginalText = string.Join(" ", iQAgent_PQResultsModel.HighlightedPQOutput.Highlights.Select(c => c));
+        HighlightedPQOutput = IQMedia.Shared.Utility.CommonFunctions.GetWordsAround(highlightedPQOriginalText, ViewData["HighlightKeyword"].ToString(), Convert.ToInt32(ViewData["WordsBeforeSpan"]), Convert.ToInt32(ViewData["WordsAfterSpan"]), ViewData["Separator"].ToString());
+
+        if (string.IsNullOrWhiteSpace(HighlightedPQOutput))
+        {
+            HighlightedPQOutput = highlightedPQOriginalText;
+        }
+    }
+
+    if (HighlightedPQOutput.Length > 300)
+    {
+        highlightedPQText = HighlightedPQOutput.Substring(0, 300);
+        highlightedPQText = System.Text.RegularExpressions.Regex.Replace(highlightedPQText, "(</span(?!>)|</s(?!pan>)|</sp(?!an>)|</spa(?!n>)|</(?!span>))\\Z", "</span>");
+    }
+    else
+    {
+        highlightedPQText = HighlightedPQOutput;
+    }
+
+    highlightedPQText = CommonFunctions.ProcessHighlightingText(HighlightedPQOutput, highlightedPQText).Trim();
+
+    string authors = String.Empty;
+
+    if (iQAgent_PQResultsModel.Authors != null && iQAgent_PQResultsModel.Authors.Count > 0)
+    {
+        authors = "(" + (iQAgent_PQResultsModel.Authors.Count > 2 ? String.Join(", ", iQAgent_PQResultsModel.Authors.Take(2)) : String.Join(", ", iQAgent_PQResultsModel.Authors)) + ") ";
+    }
+                
+    <div class="media" id="divMedia_@Model.ID">
+        <div class="MediaDate">
+            <div class="post-date">
+                <span class="month">@Model.MediaDateTime.ToString("MMM", System.Globalization.CultureInfo.InvariantCulture)</span>
+                <div>
+                    <span class="today">@Model.MediaDateTime.Day</span>
+                </div>
+                <span class="timeWithTimeZone">&nbsp;</span>
+            </div>
+        </div>
+        <div class="MediaTypeLogo" align="center">
+            <img src="@ViewData["MediaIconPath"]" title="@ViewData["MediaTypeDescription"]">
+        </div>
+        <div class="pull-right">
+            <input type="checkbox" onclick="CheckUncheckMasterCheckBox(this.id,'ulMediaResults','chkInputAll');" value="@Model.ID:@Model.MediaType" id="chkdivResults_@Model.ID" />
+            <input type="hidden" value="0" id="hdnParentID_@Model.ID" />
+        </div>
+        <div class="FeedsContentNone">
+            @{
+                string pqTitle = string.Empty;
+
+                if (Html.Raw(iQAgent_PQResultsModel.Title).ToString().Trim().Length > 65)
+                {
+                    pqTitle = Html.Raw(iQAgent_PQResultsModel.Title).ToString().Trim().Substring(0, 62) + "...";
+                }
+                else
+                {
+                    pqTitle = Html.Raw(iQAgent_PQResultsModel.Title).ToString().Trim();
+                }
+            }
+            <div class="float-left media-heading">
+                <a target="_blank" onclick="ShowViewArticleFeeds(@Model.ID)" class="cursorPointer" title="@Html.Raw(iQAgent_PQResultsModel.Title)">@pqTitle</a>
+            </div>
+            <div class="subheading float-left margintop1">
+                @Model.timeDifference
+            </div>
+            <div class="clear float-left media-body">
+                @Html.Raw(highlightedPQText)
+            </div>
+        </div>
+        <div class="clear post-divider"></div>
+        <div class="clear margintop2 marginbottom2">
+            <div class="FeedsActionBarLeftDiv">
+                <div class="viewmore"></div>
+                <div id="divLocationTM_@Model.ID" class="viewlocation">
+                    <div class="">
+                        @if (!string.IsNullOrWhiteSpace(iQAgent_PQResultsModel.Publication))
+                        {
+                            var Journal = iQAgent_PQResultsModel.Publication.Trim() + authors.Trim();
+                            
+                            <div class="location-tag" title="@Journal">
+                                @{
+                                    if (Journal.Length > 23)
+                                    {
+                                        @(Journal.Substring(0, 21) + "...")
+                                    }
+                                    else
+                                    {
+                                        @(Journal)
+                                    }
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <div align="center" class="margintop2"></div>
+                        }
+                    </div>
+                </div>
+                <div style="width: 12%" id="divSentimentSM_@Model.ID" class="viewsentiment" title="Sentiment">
+                    <div class="sentimentLeftFloat sentiment-tag">
+                        <div class="divSentimentMain sentimentFont">
+                            <div class="divSentimentNeg">
+                                <div style='width:@ViewData["maxNegativeSentimentWidth"]'>
+                                    @Model.NegativeSentiment</div>
+                            </div>
+                            <div class="divSentimentPos">
+                                <div style='width:@ViewData["maxPositiveSentimentWidth"]'>
+                                    @Model.PositiveSentiment</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="FeedsActionBarRightDiv minWidth52IE8">
+                <div class="detailIcon">
+                    <a class="cursorPointer saveMedia saveArticle" title="Save Article" onclick="ShowSaveArticle(@Model.ID,this.id);return false;" target="_blank" id="aSavePQ_@Model.ID"></a>
+                </div>
+                <div class="detailIcon">
+                    <a class="cursorPointer viewArticle" title="View Article" onclick="ShowViewArticleFeeds(@Model.ID)" target="_blank" id="aShowPQ_@Model.ID"></a>
+                </div>
+                <div class="detailIcon">
+                    <!--Padding on the right-->
+                    <div align="center" class="margintop2">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

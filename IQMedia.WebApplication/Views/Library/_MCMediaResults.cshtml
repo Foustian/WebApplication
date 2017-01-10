@@ -1,0 +1,1796 @@
+﻿@using IQMedia.Model;
+@using IQMedia.Shared.Utility;
+@using IQCommon.Model;
+@model List<IQArchive_MediaModel>
+@if (Model != null)
+{
+    ActiveUser sessionInformation = IQMedia.WebApplication.Utility.ActiveUserMgr.GetActiveUser();
+    string mediaIconFormat = "../images/MediaIcon/{0}?v=1.3";
+    foreach (IQArchive_MediaModel item in Model)
+    {
+        IQ_MediaTypeModel objSubMediaType = sessionInformation.MediaTypes.First(w => w.SubMediaType == item.SubMediaType.ToString() && w.TypeLevel == 2);
+
+        string Month = item.MediaDate != null ? item.MediaDate.ToString("MMM", System.Globalization.CultureInfo.InvariantCulture) : string.Empty;
+        string Day = item.MediaDate != null ? item.MediaDate.Day.ToString() : string.Empty;
+        string Time = item.MediaDate != null && item.MediaType != CommonFunctions.CategoryType.PQ.ToString() ? item.MediaDate.ToString("hh:mm tt") : string.Empty;
+        string fTitle = string.Empty;
+        string sTitle = string.Empty;
+        string displayText = string.Empty;
+        string sPub = string.Empty;
+        string fPub = string.Empty;
+        string fCreatedDate = string.Empty;
+
+        string sLocalAudience = string.Empty;
+        string fLocalAudience = string.Empty;
+        string sLocalMediaValue = string.Empty;
+        string fLocalMediaValue = string.Empty;
+        string sNationalAudience = string.Empty;
+        string fNationalAudience = string.Empty;
+        string sNationalMediaValue = string.Empty;
+        string fNationalMediaValue = string.Empty;
+
+        int Billion = 1000000000;
+        decimal BillionD = 1000000000;
+        int Million = 1000000;
+        decimal MillionD = 1000000;
+
+        if (!string.IsNullOrWhiteSpace(item.Title))
+        {
+            fTitle = item.Title.Trim();
+
+            if (fTitle.Length > 65)
+            {
+                sTitle = fTitle.Substring(0, 62) + "...";
+            }
+            else
+            {
+                sTitle = fTitle;
+            }
+        }
+
+        if (!string.IsNullOrWhiteSpace(item.DisplayText))
+        {
+            displayText = item.DisplayText.Trim();
+        }
+
+        if (item.CreatedDate.HasValue)
+        {
+            fCreatedDate = item.CreatedDate.Value.ToString("MMM dd, yyyy hh:mm:ss tt");
+        }
+
+        item.timeDifference = string.Format("added {0}", item.timeDifference);
+
+        switch (item.SubMediaType)
+        {
+            case CommonFunctions.CategoryType.TV:
+                IQArchive_ArchiveClipModel TVModel = item.MediaData as IQArchive_ArchiveClipModel;
+                string totalAdShare = string.Empty;
+                string totalNielsenResult = string.Empty;
+                string totalNielsenAudience = string.Empty;
+                string TVThumbUrl = Convert.ToString(System.Configuration.ConfigurationManager.AppSettings["IQArchieve_TVThumbUrl"]);
+                string nielsenAudience = string.Empty;
+                string adShare = string.Empty;
+                string nielsenResult = string.Empty;
+
+                TVThumbUrl += TVModel.ClipID;
+                Month = TVModel.LocalDateTime != null ? TVModel.LocalDateTime.ToString("MMM", System.Globalization.CultureInfo.InvariantCulture) : string.Empty;
+                Day = TVModel.LocalDateTime != null ? TVModel.LocalDateTime.Day.ToString() : string.Empty;
+                Time = TVModel.LocalDateTime != null ? TVModel.LocalDateTime.ToString("hh:mm tt") : string.Empty;
+
+                if (sessionInformation.IsNielsenData)
+                {
+                    if (TVModel.Nielsen_Audience.HasValue && TVModel.Nielsen_Audience > 0)
+                    {
+                        fLocalAudience = string.Format("{0:N0}", TVModel.Nielsen_Audience);
+
+                        if (TVModel.Nielsen_Audience >= Billion)
+                        {
+                            sLocalAudience = string.Format("{0:F1} bil", TVModel.Nielsen_Audience / BillionD);
+                        }
+                        else if (TVModel.Nielsen_Audience >= Million)
+                        {
+                            sLocalAudience = string.Format("{0:F1} mil", TVModel.Nielsen_Audience / MillionD);
+                        }
+                        else
+                        {
+                            sLocalAudience = fLocalAudience;
+                        }
+                    }
+                    else
+                    {
+                        sLocalAudience = "NA";
+                    }
+
+                    if (TVModel.IQAdShareValue.HasValue && TVModel.IQAdShareValue > 0)
+                    {
+                        fLocalMediaValue = string.Format("{0:N2}", TVModel.IQAdShareValue);
+
+                        if (TVModel.IQAdShareValue >= BillionD)
+                        {
+                            sLocalMediaValue = string.Format("{0:F1} bil", TVModel.IQAdShareValue / BillionD);
+                        }
+                        else if (TVModel.IQAdShareValue >= MillionD)
+                        {
+                            sLocalMediaValue = string.Format("{0:F1} mil", TVModel.IQAdShareValue / MillionD);
+                        }
+                        else
+                        {
+                            sLocalMediaValue = fLocalMediaValue;
+                        }
+                    }
+                    else
+                    {
+                        sLocalMediaValue = "NA";
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(TVModel.Nielsen_Result))
+                    {
+                        nielsenResult = TVModel.Nielsen_Result.ToUpper();
+                    }
+                }
+
+                if (TVModel.ChildResults != null && TVModel.ChildResults.Count > 0)
+                {
+                    decimal SumAdShareValue = TVModel.National_IQAdShareValue.HasValue ? TVModel.National_IQAdShareValue.Value : 0;
+                    long SumAudience = TVModel.National_Nielsen_Audience.HasValue ? TVModel.National_Nielsen_Audience.Value : 0;
+
+                    if (SumAdShareValue > 0)
+                    {
+                        totalNielsenResult = TVModel.National_Nielsen_Result;
+                        fNationalMediaValue = string.Format("{0:N2}", SumAdShareValue);
+
+                        if (SumAdShareValue >= BillionD)
+                        {
+                            sNationalMediaValue = string.Format("{0:F1} bil", SumAdShareValue / BillionD);
+                        }
+                        else if (SumAdShareValue >= MillionD)
+                        {
+                            sNationalMediaValue = string.Format("{0:F1} mil", SumAdShareValue / MillionD);
+                        }
+                        else
+                        {
+                            sNationalMediaValue = fNationalMediaValue;
+                        }
+                    }
+
+                    if (SumAudience > 0)
+                    {
+                        fNationalAudience = string.Format("{0:N0}", SumAudience);
+
+                        if (SumAudience >= Billion)
+                        {
+                            sNationalAudience = string.Format("{0:F1} bil", SumAudience / BillionD);
+                        }
+                        else if (SumAudience >= Million)
+                        {
+                            sNationalAudience = string.Format("{0:F1} mil", SumAudience / MillionD);
+                        }
+                        else
+                        {
+                            sNationalAudience = fNationalAudience;
+                        }
+                    }
+                }
+
+                if (!string.IsNullOrWhiteSpace(TVModel.Market))
+                {
+                    fPub = TVModel.Market.Trim();
+
+                    if (fPub.Length > 23)
+                    {
+                        sPub = fPub.Substring(0, 21) + "...";
+                    }
+                    else
+                    {
+                        sPub = fPub;
+                    }
+                }
+                
+    <div id="divMedia_@item.ID" class="media">
+        <div class="MediaDate">
+            <div class="post-date">
+                <span class="month">@Month</span>
+                <div>
+                    <span class="today">@Day</span>
+                </div>
+                <span class="timeWithTimeZone">@Time @TVModel.TimeZone</span>
+            </div>
+        </div>
+        <div class="MediaTypeLogo">
+            <img src="@TVModel.StationLogo" title="@objSubMediaType.DisplayName" />
+        </div>
+        <div class="float-right FeedsVideoSpacer">
+            <div class="FeedsVideo positionRelative float-left">
+                <a class="cursorPointer" onclick="LoadClipPlayer('@TVModel.ClipID');">
+                    <img csrc="@TVThumbUrl" class="maxwidth130" alt="" />
+                </a>
+            </div>
+            <div class="float-right">
+                <input type="checkbox" onclick="javascript:void(0);" id="chkMCResults_@item.ID" value="@item.ID" />
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="MediaRoomContentVideo">
+            <div class="media-heading float-left" title="@Html.Raw(fTitle)">
+                <span id="h4MCTVTitle_@item.ID">@Html.Raw(sTitle)</span>
+            </div>
+            <div class="subheading float-left margintop1" title="@fCreatedDate">
+                @item.timeDifference
+            </div>
+            <div class="clear float-left media-body">
+                @Html.Raw(displayText)
+            </div>
+        </div>
+        <div class="clear post-divider"></div>
+        <div class="clear margintop2 marginbottom2">
+            <div class="MediaRoomActionBarLeftDiv">
+                <div class="viewmore" style="min-height: 1px">
+                    @if (item.IsPublished)
+                    { 
+                        <div id="publishedDiv_@item.ID" class="isPublished" title="Published"></div>
+                    }
+                    else
+                    {
+                        <div id="publishedDiv_@item.ID" class="isNotPublished" title="Not Published"></div>
+                    }
+                </div>
+                <div class="viewlocation">
+                        @if (!string.IsNullOrWhiteSpace(fPub))
+                        {
+                            <div class="location-tag" title="@fPub">
+                                @sPub
+                            </div>
+                        }
+                        else
+                        { 
+                            <div class="margintop2"></div>
+                        }
+                    </div>
+                <div id="divMCSentimentTV_@item.ID" class="viewsentiment" title="Sentiment">
+                    <div class="sentimentLeftFloat sentiment-tag">
+                        <div class="divSentimentMain sentimentFont">
+                            <div class="divSentimentMain">
+                                <div class="divSentimentNeg">
+                                    <div style='width:@((TVModel.NegativeSentiment * 6) > 25 ? 25 : (TVModel.NegativeSentiment * 6))px;'>
+                                        @TVModel.NegativeSentiment
+                                    </div>
+                                </div>
+                                <div class="divSentimentPos">
+                                    <div style='width:@((TVModel.PositiveSentiment * 6) > 25 ? 25 : (TVModel.PositiveSentiment * 6))px;'>
+                                        @TVModel.PositiveSentiment
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="viewcontentdetail">
+                    <div class="viewshortdetail">
+                        <div class="view" title="Local Audience @fLocalAudience">
+                            @sLocalAudience
+                        </div>
+                    </div>
+                    <div class="viewshortdetail">
+                        <div class="price" title="Local Media Value @fLocalMediaValue">
+                            @sLocalMediaValue @nielsenResult
+                        </div>
+                    </div>
+                    <div class="viewlongdetail">
+                        @if (!string.IsNullOrEmpty(fNationalAudience) && sessionInformation.IsNielsenData)
+                        {
+                            <div class="totalview" title="National Audience @fNationalAudience">
+                                @sNationalAudience
+                            </div>
+                        }
+                        else
+                        {
+                            <div align="center" class="margintop2"></div>
+                        }
+                    </div>
+                    <div class="viewlongdetail">
+                        @if (!string.IsNullOrEmpty(fNationalMediaValue) && sessionInformation.IsNielsenData)
+                        {
+                            <div class="totalprice" title="National Media Value @fNationalMediaValue">
+                                @sNationalMediaValue @totalNielsenResult
+                            </div>
+                        }
+                        else
+                        {
+                            <div align="center" class="margintop2"></div>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="MediaRoomActionBarRightDiv">
+                <div style="float: right">
+                    <div class="detailIcon">
+                        <a  class="cursorPointer viewMetrics" title="Views" onclick="ShowPlayLogNSummaryPopup('@TVModel.ClipID','@TVThumbUrl');" href="javascript:void(0);"></a>
+                    </div>
+                    <div class="detailIcon">
+                        @if (Convert.ToBoolean(TempData["v4Download"]))
+                        {
+                            <a id="lnkMCDownloadClip_@item.ID" class="cursorPointer downloadArticle" title="Download Clip" onclick="DownloadTV('@item.ID');" href="javascript:void(0);" rel="popover"></a>
+                        }
+                    </div>
+                    <div class="rightPad"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                        break;
+            case CommonFunctions.CategoryType.TW:
+                        IQArchive_ArchiveTweetsModel twitterModel = item.MediaData as IQArchive_ArchiveTweetsModel;
+                        string actorlink = string.Empty;
+                        string sFollowers = string.Empty;
+                        string fFollowers = string.Format("{0:N0}", twitterModel.FollowersCount);
+                        string sFriends = string.Empty;
+                        string fFriends = string.Format("{0:N0}", twitterModel.FreiendsCount);
+
+                        if (twitterModel.FollowersCount >= Billion)
+                        {
+                            sFollowers = string.Format("{0:F1} bil", twitterModel.FollowersCount / BillionD);
+                        }
+                        else if (twitterModel.FollowersCount >= Million)
+                        {
+                            sFollowers = string.Format("{0:F1} mil", twitterModel.FollowersCount / MillionD);
+                        }
+                        else
+                        {
+                            sFollowers = fFollowers;
+                        }
+
+                        if (twitterModel.FreiendsCount >= Billion)
+                        {
+                            sFriends = string.Format("{0:F1} bil", twitterModel.FreiendsCount / BillionD);
+                        }
+                        else if (twitterModel.FreiendsCount >= Million)
+                        {
+                            sFriends = string.Format("{0:F1} mil", twitterModel.FreiendsCount / MillionD);
+                        }
+                        else
+                        {
+                            sFriends = fFriends;
+                        }
+
+                        if (CommonFunctions.Validate_url(twitterModel.ActorLink + "/status/" + twitterModel.TweetID))
+                        {
+                            actorlink = twitterModel.ActorLink + "/status/" + twitterModel.TweetID;
+                        }
+
+                        if (!string.IsNullOrWhiteSpace(twitterModel.ActorDisplayname))
+                        {
+                            fTitle = twitterModel.ActorDisplayname.Trim();
+
+                            if (fTitle.Length > 65)
+                            {
+                                sTitle = fTitle.Substring(0, 62) + "...";
+                            }
+                            else
+                            {
+                                sTitle = fTitle;
+                            }
+                        }
+
+                        if (!string.IsNullOrWhiteSpace(twitterModel.PreferredUserName))
+                        {
+                            fPub = twitterModel.PreferredUserName.Trim();
+
+                            if (fPub.Length > 23)
+                            {
+                                sPub = fPub.Substring(0, 21) + "...";
+                            }
+                            else
+                            {
+                                sPub = fPub;
+                            }
+                        }
+                
+    <div id="divMedia_@item.ID" class="media">
+        <div class="MediaDate">
+            <div class="post-date">
+                <span class="month">@Month</span>
+                <div>
+                    <span class="today">@Day</span>
+                </div>
+                <span class="timeWithTimeZone">@Time @sessionInformation.TimeZone</span>
+            </div>
+        </div>
+        <div class="MediaTypeLogo">
+            <img src="@objSubMediaType.MediaIconPath" title="@objSubMediaType.DisplayName" />
+        </div>
+        <div class="float-right">
+            <input type="checkbox" id="chkMCResults_@item.ID" value="@item.ID" onclick="javascript:void(0);" />
+        </div>
+        <div class="MediaRoomContent borderBoxSizing">
+            <div class="media-heading float-left" title="@Html.Raw(fTitle)">
+                <a id="aMCActorLink_@item.ID" target="_blank" href="@actorlink">
+                    <span id="lblMCDisplayName_@item.ID">@Html.Raw(sTitle)</span>
+                </a>
+            </div>
+            <div class="subheading float-left margintop1" title="@fCreatedDate">
+                @item.timeDifference
+            </div>
+            <div class="clear float-left media-body">
+                <span id="lblMCTweetBody_@item.ID">@Html.Raw(displayText)</span>
+            </div>
+        </div>
+        <div class="clear post-divider"></div>
+        <div class="clear margintop2 marginbottom2">
+            <div class="MediaRoomActionBarLeftDiv">
+                <div class="viewmore" style="min-height: 1px;">
+                    @if (item.IsPublished)
+                    { 
+                        <div id="publishedDiv_@item.ID" class="isPublished" title="Published"></div>
+                    }
+                    else
+                    {
+                        <div id="publishedDiv_@item.ID" class="isNotPublished" title="Not Published"></div>
+                    }
+                </div>
+                <div class="viewlocation">
+                    @if (!string.IsNullOrWhiteSpace(fPub))
+                    {
+                        <div class="location-tag" title="@fPub">
+                            @sPub
+                        </div>
+                    }
+                    else
+                    { 
+                        <div class="margintop2"></div>
+                    }
+                </div>
+                <div id="divMCSentimentTV_@item.ID" class="viewsentiment" title="Sentiment">
+                    <div class="sentimentLeftFloat sentiment-tag">
+                        <div class="divSentimentMain sentimentFont">
+                            <div class="divSentimentMain">
+                                <div class="divSentimentNeg">
+                                    <div style='width:@((twitterModel.NegativeSentiment * 6) > 25 ? 25 : (twitterModel.NegativeSentiment * 6))px;'>
+                                        @twitterModel.NegativeSentiment
+                                    </div>
+                                </div>
+                                <div class="divSentimentPos">
+                                    <div style='width:@((twitterModel.PositiveSentiment * 6) > 25 ? 25 : (twitterModel.PositiveSentiment * 6))px;'>
+                                        @twitterModel.PositiveSentiment
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="viewcontentdetail">
+                    <div class="viewshortdetail">
+                        <div class="klout" title="Klout Score">
+                            @(string.Format("{0:n0}", twitterModel.KloutScore))
+                        </div>
+                    </div>
+                    <div class="viewshortdetail">
+                        <div class="followers" title="Followers @fFollowers">
+                            @sFollowers
+                        </div>
+                    </div>
+                    <div class="viewshortdetail">
+                        <div class="following" title="Following @fFriends">
+                            @sFriends
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="MediaRoomActionBarRightDiv"></div>
+        </div>
+    </div>
+
+                       break;
+            case CommonFunctions.CategoryType.NM:
+            case CommonFunctions.CategoryType.LN:
+                       IQArchive_ArchiveNMModel newsMediaModel = item.MediaData as IQArchive_ArchiveNMModel;
+
+                       if (newsMediaModel.Compete_Audience.HasValue && newsMediaModel.Compete_Audience > 0)
+                       {
+                           fLocalAudience = string.Format("{0:N0}", newsMediaModel.Compete_Audience);
+
+                           if (newsMediaModel.Compete_Audience >= Billion)
+                           {
+                               sLocalAudience = string.Format("{0:F1} bil", newsMediaModel.Compete_Audience / BillionD);
+                           }
+                           else if (newsMediaModel.Compete_Audience >= Million)
+                           {
+                               sLocalAudience = string.Format("{0:F1} mil", newsMediaModel.Compete_Audience / MillionD);
+                           }
+                           else
+                           {
+                               sLocalAudience = fLocalAudience;
+                           }
+                       }
+                       else
+                       {
+                           sLocalAudience = "NA";
+                       }
+
+                       if (newsMediaModel.IQAdShareValue.HasValue && newsMediaModel.IQAdShareValue > 0)
+                       {
+                           fLocalMediaValue = string.Format("{0:N2}", newsMediaModel.IQAdShareValue);
+
+                           if (newsMediaModel.IQAdShareValue >= BillionD)
+                           {
+                               sLocalMediaValue = string.Format("{0:F1} bil", newsMediaModel.IQAdShareValue / BillionD);
+                           }
+                           else if (newsMediaModel.IQAdShareValue >= MillionD)
+                           {
+                               sLocalMediaValue = string.Format("{0:F1} mil", newsMediaModel.IQAdShareValue / MillionD);
+                           }
+                           else
+                           {
+                               sLocalMediaValue = fLocalMediaValue;
+                           }
+                       }
+                       else
+                       {
+                           sLocalMediaValue = "NA";
+                       }
+
+                       if (!string.IsNullOrWhiteSpace(newsMediaModel.Publication))
+                       {
+                           fPub = newsMediaModel.Publication.Trim();
+
+                           if (fPub.Length > 23)
+                           {
+                               sPub = fPub.Substring(0, 21) + "...";
+                           }
+                           else
+                           {
+                               sPub = fPub;
+                           }
+                       }
+                
+    <div id="divMedia_@item.ID" class="media">
+        <div class="MediaDate">
+            <div class="post-date">
+                <span class="month">@Month</span>
+                <div>
+                    <span class="today">@Day</span>
+                </div>
+                <span class="timeWithTimeZone">@Time @sessionInformation.TimeZone</span>
+            </div>
+        </div>
+        <div class="MediaTypeLogo">
+            <img src="@objSubMediaType.MediaIconPath" title="@objSubMediaType.DisplayName" />
+        </div>
+        <div class="float-right">
+            <input type="checkbox" id="chkMCResults_@item.ID" value="@item.ID" onclick="javascript:void(0)" />
+        </div>
+        <div class="MediaRoomContent">
+            <div class="media-heading float-left" title="@Html.Raw(fTitle)">
+                @if (newsMediaModel.IQLicense == 3)
+                {
+                    <img src="@String.Format(mediaIconFormat, "LexisNexis_Small.png")" title="LexisNexis(R)" alt="LexisNexis(R)" class="lexisNexisImg" />
+                } 
+                <a href="@(newsMediaModel.IQLicense > 0 ? Url.Action("Index", "Article", new { au = CommonFunctions.EncryptLicenseStringAES(sessionInformation.CustomerKey + "¶Library¶" + newsMediaModel.Url + "&u1=cliq40&u2=" + sessionInformation.ClientID + "¶" + newsMediaModel.IQLicense) }) : newsMediaModel.Url)" target="_blank">
+                    @Html.Raw(sTitle)
+                </a>
+            </div>
+            <div class="subheading float-left margintop1" title="@fCreatedDate">
+                @item.timeDifference
+            </div>
+            <div class="clear float-left media-body">
+                @Html.Raw(displayText)
+            </div>
+        </div>
+        <div class="clear post-divider"></div>
+        <div class="clear margintop2 marginbottom2">
+            <div class="MediaRoomActionBarLeftDiv">
+                <div class="viewmore" style="min-height: 1px">
+                    @if (item.IsPublished)
+                    { 
+                        <div id="publishedDiv_@item.ID" class="isPublished" title="Published"></div>
+                    }
+                    else
+                    {
+                        <div id="publishedDiv_@item.ID" class="isNotPublished" title="Not Published"></div>
+                    }
+                </div>
+                <div class="viewlocation">
+                    @if (!string.IsNullOrWhiteSpace(fPub))
+                    {
+                        <div class="location-tag" title="@fPub">
+                            @sPub
+                        </div>
+                    }
+                    else
+                    { 
+                        <div class="margintop2"></div>
+                    }
+                </div>
+                <div id="divMCSentimentTV_@item.ID" class="viewsentiment" title="Sentiment">
+                    <div class="sentimentLeftFloat sentiment-tag">
+                        <div class="divSentimentMain sentimentFont">
+                            <div class="divSentimentMain">
+                                <div class="divSentimentNeg">
+                                    <div style='width:@((newsMediaModel.NegativeSentiment * 6) > 25 ? 25 : (newsMediaModel.NegativeSentiment * 6))px;'>
+                                        @newsMediaModel.NegativeSentiment
+                                    </div>
+                                </div>
+                                <div class="divSentimentPos">
+                                    <div style='width:@((newsMediaModel.PositiveSentiment * 6) > 25 ? 25 : (newsMediaModel.PositiveSentiment * 6))px;'>
+                                        @newsMediaModel.PositiveSentiment
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="viewcontentdetail">
+                    @if (Decimal.Compare(Convert.ToDecimal(newsMediaModel.IQAdShareValue), -1M) != 0 && newsMediaModel.Compete_Audience != -1 && sessionInformation.IsCompeteData)
+                    {
+                        <div class="viewshortdetail">
+                            <div class="view" title="Local Audience @fLocalAudience">
+                                @sLocalAudience
+                                @if (!string.IsNullOrWhiteSpace(newsMediaModel.Compete_Result) && newsMediaModel.Compete_Result.ToUpper() == "A")
+                                {
+                                    <img title="Powered by Compete" class="competeIcon" src="~/Images/compete.png" alt="Compete Image" />
+                                }
+                            </div>
+                        </div>
+                        <div class="viewshortdetail">
+                            <div class="price" title="Local Media Value @fLocalMediaValue">
+                                @sLocalMediaValue
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="MediaRoomActionBarRightDiv">
+                <div style="float: right">
+                    <div class="detailIcon">
+                        @if (Convert.ToBoolean(TempData["v4Download"]))
+                        {
+                            <a id="aMCSaveNM_@item.ID" class="cursorPointer downloadArticle" title="Download Article" onclick="DownloadNM('@item.ID')" target="_blank"></a>
+                        }
+                    </div>
+                    <div class="detailIcon">
+                        <a id="lnkMCSaveNM_@item.ID" class="viewArticle" title="View Article" target="_blank" href="@(newsMediaModel.IQLicense > 0 ? Url.Action("Index", "Article", new { au = CommonFunctions.EncryptLicenseStringAES(sessionInformation.CustomerKey + "¶Library¶" + newsMediaModel.Url + "&u1=cliq40&u2=" + sessionInformation.ClientID + "¶" + newsMediaModel.IQLicense) }) : newsMediaModel.Url)"></a>
+                    </div>
+                    <div class="rightPad"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+            
+                                                                                                                break;
+            case CommonFunctions.CategoryType.PM:
+                                                                                                                string PMBasePath = Convert.ToString(System.Configuration.ConfigurationManager.AppSettings["IQArchieve_PMBaseUrl"]);
+                                                                                                                IQArchive_ArchiveBLPMModel PMModel = item.MediaData as IQArchive_ArchiveBLPMModel;
+                                                                                                                string sCirculation = string.Empty;
+                                                                                                                string fCirculation = string.Format("{0:N0}", PMModel.Circulation);
+
+                                                                                                                if (PMModel.Circulation >= Billion)
+                                                                                                                {
+                                                                                                                    sCirculation = string.Format("{0:F1} bil", PMModel.Circulation / BillionD);
+                                                                                                                }
+                                                                                                                else if (PMModel.Circulation >= Million)
+                                                                                                                {
+                                                                                                                    sCirculation = string.Format("{0:F1} mil", PMModel.Circulation / MillionD);
+                                                                                                                }
+                                                                                                                else
+                                                                                                                {
+                                                                                                                    sCirculation = fCirculation;
+                                                                                                                }
+
+                                                                                                                if (!string.IsNullOrWhiteSpace(PMModel.Pub_Name))
+                                                                                                                {
+                                                                                                                    fPub = PMModel.Pub_Name.Trim();
+
+                                                                                                                    if (fPub.Length > 23)
+                                                                                                                    {
+                                                                                                                        sPub = fPub.Substring(0, 21) + "...";
+                                                                                                                    }
+                                                                                                                    else
+                                                                                                                    {
+                                                                                                                        sPub = fPub;
+                                                                                                                    }
+                                                                                                                }
+                
+    <div id="divMedia_@item.ID" class="media">
+        <div class="MediaDate">
+            <div class="post-date">
+                <span class="month">@Month</span>
+                <div>
+                    <span class="today">@Day</span>
+                </div>
+                <span class="timeWithTimeZone">@Time @sessionInformation.TimeZone</span>
+            </div>
+        </div>
+        <div class="MediaTypeLogo">
+            <img src="@objSubMediaType.MediaIconPath" title="@objSubMediaType.DisplayName" />
+        </div>
+        <div class="float-right">
+            <input type="checkbox" id="chkMCResults_@item.ID" value="@item.ID" onclick="javascript:void(0)" />
+        </div>
+        <div class="MediaRoomContent">
+            <div class="media-heading float-left" title="@Html.Raw(fTitle)">
+                <a href="@(PMBasePath + PMModel.FileLocation.Replace(@"\", @"/"))"target="_blank">
+                    @Html.Raw(sTitle)
+                </a>
+            </div>
+            <div class="subheading float-left margintop1" title="@fCreatedDate">
+                @item.timeDifference
+            </div>
+            <div class="clear float-left media-body">
+                @Html.Raw(displayText)
+            </div>
+        </div>
+        <div class="clear post-divider"></div>
+        <div class="clear margintop2 marginbottom2">
+            <div class="LibraryActionBarLeftDiv">
+                <div class="viewmore" style="min-height: 1px">
+                    @if (item.IsPublished)
+                    { 
+                        <div id="publishedDiv_@item.ID" class="isPublished" title="Published"></div>
+                    }
+                    else
+                    {
+                        <div id="publishedDiv_@item.ID" class="isNotPublished" title="Not Published"></div>
+                    }
+                </div>
+                <div class="viewlocation">
+                    @if (!string.IsNullOrWhiteSpace(fPub))
+                    {
+                        <div class="location-tag" title="@fPub">
+                            @sPub
+                        </div>
+                    }
+                    else
+                    { 
+                        <div class="margintop2"></div>
+                    }
+                </div>
+                <div class="viewcontentdetail">
+                    <div class="circulation pull-left" title="Circulation @fCirculation">
+                        <span>@sCirculation</span>
+                    </div>
+                </div>
+            </div>
+            <div class="MediaRoomActionBarRightDiv">
+                <div style="float:right">
+                    <div class="detailIcon">
+                        <a id="aMCShowNewsPM_@item.ID" class="cursorPointer viewArticle" title="View Article" href="@(PMBasePath + PMModel.FileLocation.Replace(@"\", @"/"))" target="_blank"></a>
+                    </div>
+                    <div class="rightPad"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+            
+                                                                                                                break;
+            case CommonFunctions.CategoryType.SocialMedia:
+                                                                                                                IQArchive_ArchiveSMModel socialMediaModel = item.MediaData as IQArchive_ArchiveSMModel;
+
+                                                                                                                if (!string.IsNullOrWhiteSpace(socialMediaModel.Publication))
+                                                                                                                {
+                                                                                                                    fPub = socialMediaModel.Publication.Trim();
+
+                                                                                                                    if (fPub.Length > 23)
+                                                                                                                    {
+                                                                                                                        sPub = fPub.Substring(0, 21) + "...";
+                                                                                                                    }
+                                                                                                                    else
+                                                                                                                    {
+                                                                                                                        sPub = fPub;
+                                                                                                                    }
+                                                                                                                }
+
+    <div id="divMedia_@item.ID" class="media">
+        <div class="MediaDate">
+            <div class="post-date">
+                <span class="month">@Month</span>
+                <div>
+                    <span class="today">@Day</span>
+                </div>
+                <span class="timeWithTimeZone">@Time @sessionInformation.TimeZone</span>
+            </div>
+        </div>
+        <div class="MediaTypeLogo">
+            <img src="@objSubMediaType.MediaIconPath" title="@objSubMediaType.DisplayName" />
+        </div>
+        <div class="float-right">
+            <input type="checkbox" id="chkMCResults_@item.ID" value="@item.ID" onclick="javascript:void(0)" />
+        </div>
+        <div class="MediaRoomContent">
+            <div class="media-heading float-left" title="@Html.Raw(fTitle)">
+                <a href="@socialMediaModel.Url" target="_blank">
+                    @Html.Raw(sTitle)
+                </a>
+            </div>
+            <div class="subheading float-left margintop1" title="@fCreatedDate">
+                @item.timeDifference
+            </div>
+            <div class="clear float-left media-body">
+                @Html.Raw(displayText)
+            </div>
+        </div>
+        <div class="clear post-divider"></div>
+        <div class="clear margintop2 marginbottom2">
+            <div class="LibraryActionBarLeftDiv">
+                <div class="viewmore" style="min-height: 1px">
+                    @if (item.IsPublished)
+                    { 
+                        <div id="publishedDiv_@item.ID" class="isPublished" title="Published"></div>
+                    }
+                    else
+                    {
+                        <div id="publishedDiv_@item.ID" class="isNotPublished" title="Not Published"></div>
+                    }
+                </div>
+                <div class="viewlocation">
+                    @if (!string.IsNullOrWhiteSpace(fPub))
+                    {
+                        <div class="location-tag" title="@fPub">
+                            @sPub
+                        </div>
+                    }
+                    else
+                    { 
+                        <div class="margintop2"></div>
+                    }
+                </div>
+                <div id="divMCSentimentTV_@item.ID" class="viewsentiment" title="Sentiment">
+                    <div class="sentimentLeftFloat sentiment-tag">
+                        <div class="divSentimentMain sentimentFont">
+                            <div class="divSentimentMain">
+                                <div class="divSentimentNeg">
+                                    <div style='width:@((socialMediaModel.NegativeSentiment * 6) > 25 ? 25 : (socialMediaModel.NegativeSentiment * 6))px;'>
+                                        @socialMediaModel.NegativeSentiment
+                                    </div>
+                                </div>
+                                <div class="divSentimentPos">
+                                    <div style='width:@((socialMediaModel.PositiveSentiment * 6) > 25 ? 25 : (socialMediaModel.PositiveSentiment * 6))px;'>
+                                        @socialMediaModel.PositiveSentiment
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="MediaRoomActionBarRightDiv">
+                <div style="float: right;">
+                    <div class="detailIcon">
+                        @if (Convert.ToBoolean(TempData["v4Download"]))
+                        {
+                            <a id="aMCSaveSM_@item.ID" class="cursorPointer downloadArticle" title="Download Article" onclick="DownloadSM('@item.ID')" target="_blank"></a>
+                        }
+                    </div>
+                    <div class="detailIcon">
+                        <a id="lnkMCSaveSM_@item.ID" class="cursorPointer viewArticle" title="View Article" target="_blank" href="@socialMediaModel.Url"></a>
+                    </div>
+                    <div class="rightPad"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                                                                                                                             break;
+            case CommonFunctions.CategoryType.Forum:
+                                                                                                                             IQArchive_ArchiveSMModel forumModel = item.MediaData as IQArchive_ArchiveSMModel;
+
+                                                                                                                             if (!string.IsNullOrWhiteSpace(forumModel.Publication))
+                                                                                                                             {
+                                                                                                                                 fPub = forumModel.Publication.Trim();
+
+                                                                                                                                 if (fPub.Length > 23)
+                                                                                                                                 {
+                                                                                                                                     sPub = fPub.Substring(0, 21) + "...";
+                                                                                                                                 }
+                                                                                                                                 else
+                                                                                                                                 {
+                                                                                                                                     sPub = fPub;
+                                                                                                                                 }
+                                                                                                                             }
+                
+    <div id="divMedia_@item.ID" class="media">
+        <div class="MediaDate">
+            <div class="post-date">
+                <span class="month">@Month</span>
+                <div>
+                    <span class="today">@Day</span>
+                </div>
+                <span class="timeWithTimeZone">@Time @sessionInformation.TimeZone</span>
+            </div>
+        </div>
+        <div class="MediaTypeLogo">
+            <img src="@objSubMediaType.MediaIconPath" title="@objSubMediaType.DisplayName" />
+        </div>
+        <div class="float-right">
+            <input type="checkbox" id="chkMCResults_@item.ID" value="@item.ID" onclick="javascript:void(0)" />
+        </div>
+        <div class="MediaRoomContent">
+            <div class="media-heading float-left" title="@Html.Raw(fTitle)">
+                <a href="@forumModel.Url" target="_blank">
+                    @Html.Raw(sTitle)
+                </a>
+            </div>
+            <div class="subheading float-left margintop1" title="@fCreatedDate">
+                @item.timeDifference
+            </div>
+            <div class="clear float-left media-body">
+                @Html.Raw(displayText)
+            </div>
+        </div>
+        <div class="clear post-divider"></div>
+        <div class="clear margintop2 marginbottom2">
+            <div class="LibraryActionBarLeftDiv">
+                <div class="viewmore" style="min-height: 1px">
+                    @if (item.IsPublished)
+                    { 
+                        <div id="publishedDiv_@item.ID" class="isPublished" title="Published"></div>
+                    }
+                    else
+                    {
+                        <div id="publishedDiv_@item.ID" class="isNotPublished" title="Not Published"></div>
+                    }
+                </div>
+                <div class="viewlocation">
+                    @if (!string.IsNullOrWhiteSpace(fPub))
+                    {
+                        <div class="location-tag" title="@fPub">
+                            @sPub
+                        </div>
+                    }
+                    else
+                    { 
+                        <div class="margintop2"></div>
+                    }
+                </div>
+                <div id="divMCSentimentTV_@item.ID" class="viewsentiment" title="Sentiment">
+                    <div class="sentimentLeftFloat sentiment-tag">
+                        <div class="divSentimentMain sentimentFont">
+                            <div class="divSentimentMain">
+                                <div class="divSentimentNeg">
+                                    <div style='width:@((forumModel.NegativeSentiment * 6) > 25 ? 25 : (forumModel.NegativeSentiment * 6))px;'>
+                                        @forumModel.NegativeSentiment
+                                    </div>
+                                </div>
+                                <div class="divSentimentPos">
+                                    <div style='width:@((forumModel.PositiveSentiment * 6) > 25 ? 25 : (forumModel.PositiveSentiment * 6))px;'>
+                                        @forumModel.PositiveSentiment
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="MediaRoomActionBarRightDiv">
+                <div style="float:right">
+                    <div class="detailIcon">
+                        @if (Convert.ToBoolean(TempData["v4Download"]))
+                        {
+                            <a id="aMCSaveForum_@item.ID" class="cursorPointer downloadArticle" title="Download Article" onclick="DownloadSM('@item.ID')" target="_blank"></a>
+                        }
+                    </div>
+                    <div class="detailIcon">
+                        <a id="lnkMCSaveForum_@item.ID" class="cursorPointer viewArticle" title="View Article" target="_blank" href="@forumModel.Url"></a>
+                    </div>
+                    <div class="rightPad"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                                                                                                                                break;
+            case CommonFunctions.CategoryType.Blog:
+                                                                                                                                IQArchive_ArchiveSMModel blogModel = item.MediaData as IQArchive_ArchiveSMModel;
+
+                                                                                                                                if (blogModel.Compete_Audience.HasValue && blogModel.Compete_Audience > 0)
+                                                                                                                                {
+                                                                                                                                    fLocalAudience = string.Format("{0:N0}", blogModel.Compete_Audience);
+
+                                                                                                                                    if (blogModel.Compete_Audience >= Billion)
+                                                                                                                                    {
+                                                                                                                                        sLocalAudience = string.Format("{0:F1} bil", blogModel.Compete_Audience / BillionD);
+                                                                                                                                    }
+                                                                                                                                    else if (blogModel.Compete_Audience >= Million)
+                                                                                                                                    {
+                                                                                                                                        sLocalAudience = string.Format("{0:F1} mil", blogModel.Compete_Audience / MillionD);
+                                                                                                                                    }
+                                                                                                                                    else
+                                                                                                                                    {
+                                                                                                                                        sLocalAudience = fLocalAudience;
+                                                                                                                                    }
+                                                                                                                                }
+                                                                                                                                else
+                                                                                                                                {
+                                                                                                                                    sLocalAudience = "NA";
+                                                                                                                                }
+
+                                                                                                                                if (blogModel.IQAdShareValue.HasValue && blogModel.IQAdShareValue > 0)
+                                                                                                                                {
+                                                                                                                                    fLocalMediaValue = string.Format("{0:N2}", blogModel.IQAdShareValue);
+
+                                                                                                                                    if (blogModel.IQAdShareValue >= BillionD)
+                                                                                                                                    {
+                                                                                                                                        sLocalMediaValue = string.Format("{0:F1} bil", blogModel.IQAdShareValue / BillionD);
+                                                                                                                                    }
+                                                                                                                                    else if (blogModel.IQAdShareValue >= MillionD)
+                                                                                                                                    {
+                                                                                                                                        sLocalMediaValue = string.Format("{0:F1} mil", blogModel.IQAdShareValue / MillionD);
+                                                                                                                                    }
+                                                                                                                                    else
+                                                                                                                                    {
+                                                                                                                                        sLocalMediaValue = fLocalMediaValue;
+                                                                                                                                    }
+                                                                                                                                }
+                                                                                                                                else
+                                                                                                                                {
+                                                                                                                                    sLocalMediaValue = "NA";
+                                                                                                                                }
+
+                                                                                                                                if (!string.IsNullOrWhiteSpace(blogModel.Publication))
+                                                                                                                                {
+                                                                                                                                    fPub = blogModel.Publication.Trim();
+
+                                                                                                                                    if (fPub.Length > 23)
+                                                                                                                                    {
+                                                                                                                                        sPub = fPub.Substring(0, 21) + "...";
+                                                                                                                                    }
+                                                                                                                                    else
+                                                                                                                                    {
+                                                                                                                                        sPub = fPub;
+                                                                                                                                    }
+                                                                                                                                }
+
+    <div id="divMedia_@item.ID" class="media">
+        <div class="MediaDate">
+            <div class="post-date">
+                <span class="month">@Month</span>
+                <div>
+                    <span class="today">@Day</span>
+                </div>
+                <span class="timeWithTimeZone">@Time @sessionInformation.TimeZone</span>
+            </div>
+        </div>
+        <div class="MediaTypeLogo">
+            <img src="@objSubMediaType.MediaIconPath" title="@objSubMediaType.DisplayName" />
+        </div>
+        <div class="float-right">
+            <input type="checkbox" id="chkMCResults_@item.ID" value="@item.ID" onclick="javascript:void(0)" />
+        </div>
+        <div class="MediaRoomContent">
+            <div class="media-heading float-left" title="@Html.Raw(fTitle)">
+                <a href="@blogModel.Url" target="_blank">
+                    @Html.Raw(sTitle)
+                </a>
+            </div>
+            <div class="subheading float-left margintop1" title="@fCreatedDate">
+                @item.timeDifference
+            </div>
+            <div class="clear float-left media-body">
+                @Html.Raw(displayText)
+            </div>
+        </div>
+        <div class="clear post-divider"></div>
+        <div class="clear margintop2 marginbottom2">
+            <div class="LibraryActionBarLeftDiv">
+                <div class="viewmore" style="min-height: 1px">
+                    @if (item.IsPublished)
+                    { 
+                        <div id="publishedDiv_@item.ID" class="isPublished" title="Published"></div>
+                    }
+                    else
+                    {
+                        <div id="publishedDiv_@item.ID" class="isNotPublished" title="Not Published"></div>
+                    }
+                </div>
+                <div class="viewlocation">
+                    @if (!string.IsNullOrWhiteSpace(fPub))
+                    {
+                        <div class="location-tag" title="@fPub">
+                            @sPub
+                        </div>
+                    }
+                    else
+                    { 
+                        <div class="margintop2"></div>
+                    }
+                </div>
+                <div id="divMCSentimentTV_@item.ID" class="viewsentiment" title="Sentiment">
+                    <div class="sentimentLeftFloat sentiment-tag">
+                        <div class="divSentimentMain sentimentFont">
+                            <div class="divSentimentMain">
+                                <div class="divSentimentNeg">
+                                    <div style='width:@((blogModel.NegativeSentiment * 6) > 25 ? 25 : (blogModel.NegativeSentiment * 6))px;'>
+                                        @blogModel.NegativeSentiment
+                                    </div>
+                                </div>
+                                <div class="divSentimentPos">
+                                    <div style='width:@((blogModel.PositiveSentiment * 6) > 25 ? 25 : (blogModel.PositiveSentiment * 6))px;'>
+                                        @blogModel.PositiveSentiment
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="viewcontentdetail">
+                    @if (Decimal.Compare(Convert.ToDecimal(blogModel.IQAdShareValue), -1M) != 0 && blogModel.Compete_Audience != -1 && sessionInformation.IsCompeteData)
+                    {
+                        <div class="viewshortdetail">
+                            <div class="view" title="Local Audience @fLocalAudience">
+                                @sLocalAudience
+                                @if (!string.IsNullOrWhiteSpace(blogModel.Compete_Result) && blogModel.Compete_Result.ToUpper() == "A")
+                                {
+                                    <img title="Powered by Compete" class="competeIcon" src="~/Images/compete.png" alt="Compete Image" />
+                                }
+                            </div>
+                        </div>
+                        <div class="viewshortdetail">
+                            <div class="price" title="Local Media Value @fLocalMediaValue">
+                                @sLocalMediaValue
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="MediaRoomActionBarRightDiv">
+                <div style="float: right">
+                    @if (Convert.ToBoolean(TempData["v4Download"]))
+                    {
+                        <div class="detailIcon">
+                            <a id="aMCSaveBlog_@item.ID" class="cursorPointer downloadArticle" title="Download Article" onclick="DownloadSM('@item.ID')" target="_blank"></a>
+                        </div>
+                    }
+                    <div class="detailIcon">
+                        <a id="lnkMCSaveBlog_@item.ID" class="cursorPointer viewArticle" title="View Article" target="_blank" href="@blogModel.Url"></a>
+                    </div>
+                    <div class="rightPad"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                                                                                                                               break;
+            case CommonFunctions.CategoryType.FB:
+            case CommonFunctions.CategoryType.IG:
+                                                                                                                               IQArchive_ArchiveSMModel fbModel = item.MediaData as IQArchive_ArchiveSMModel;
+                                                                                                                               string contentClass = item.SubMediaType == CommonFunctions.CategoryType.IG ? "MediaRoomContentVideo" : "MediaRoomContent";
+                                                                                                                               string videoSpacer = item.SubMediaType == CommonFunctions.CategoryType.IG ? "FeedsVideoSpacer" : string.Empty;
+
+                                                                                                                               string fLikes = string.Format("{0:N0}", fbModel.ArticleStats.Likes);
+                                                                                                                               string sLikes = string.Empty;
+
+                                                                                                                               if (fbModel.ArticleStats.Likes >= Billion)
+                                                                                                                               {
+                                                                                                                                   sLikes = string.Format("{0:F1} bil", fbModel.ArticleStats.Likes / BillionD);
+                                                                                                                               }
+                                                                                                                               else if (fbModel.ArticleStats.Likes >= Million)
+                                                                                                                               {
+                                                                                                                                   sLikes = string.Format("{0:F1} mil", fbModel.ArticleStats.Likes / MillionD);
+                                                                                                                               }
+                                                                                                                               else
+                                                                                                                               {
+                                                                                                                                   sLikes = fLikes;
+                                                                                                                               }
+
+                                                                                                                               string fComments = string.Format("{0:N0}", fbModel.ArticleStats.Comments);
+                                                                                                                               string sComments = string.Empty;
+
+                                                                                                                               if (fbModel.ArticleStats.Comments >= Billion)
+                                                                                                                               {
+                                                                                                                                   sComments = string.Format("{0:F1} bil", fbModel.ArticleStats.Comments / BillionD);
+                                                                                                                               }
+                                                                                                                               else if (fbModel.ArticleStats.Comments >= Million)
+                                                                                                                               {
+                                                                                                                                   sComments = string.Format("{0:F1} mil", fbModel.ArticleStats.Comments / MillionD);
+                                                                                                                               }
+                                                                                                                               else
+                                                                                                                               {
+                                                                                                                                   sComments = fComments;
+                                                                                                                               }
+
+                                                                                                                               string fShares = string.Format("{0:N0}", fbModel.ArticleStats.Shares);
+                                                                                                                               string sShares = string.Empty;
+
+                                                                                                                               if (fbModel.ArticleStats.Shares >= Billion)
+                                                                                                                               {
+                                                                                                                                   sShares = string.Format("{0:F1} bil", fbModel.ArticleStats.Shares / BillionD);
+                                                                                                                               }
+                                                                                                                               else if (fbModel.ArticleStats.Shares >= Million)
+                                                                                                                               {
+                                                                                                                                   sShares = string.Format("{0:F1} mil", fbModel.ArticleStats.Shares / MillionD);
+                                                                                                                               }
+                                                                                                                               else
+                                                                                                                               {
+                                                                                                                                   sShares = fShares;
+                                                                                                                               }
+
+                                                                                                                               if (!string.IsNullOrWhiteSpace(fbModel.Publication))
+                                                                                                                               {
+                                                                                                                                   fPub = fbModel.Publication.Trim();
+
+                                                                                                                                   if (fPub.Length > 23)
+                                                                                                                                   {
+                                                                                                                                       sPub = fPub.Substring(0, 21) + "...";
+                                                                                                                                   }
+                                                                                                                                   else
+                                                                                                                                   {
+                                                                                                                                       sPub = fPub;
+                                                                                                                                   }
+                                                                                                                               }
+
+    <div id="divMedia_@item.ID" class="media">
+        <div class="MediaDate">
+            <div class="post-date">
+                <span class="month">@Month</span>
+                <div>
+                    <span class="today">@Day</span>
+                </div>
+                <span class="timeWithTimeZone">@Time @sessionInformation.TimeZone</span>
+            </div>
+        </div>
+        <div class="MediaTypeLogo">
+            <img src="@objSubMediaType.MediaIconPath" title="@objSubMediaType.DisplayName" />
+        </div>
+        <div class="float-right @videoSpacer">
+            @if (item.SubMediaType == CommonFunctions.CategoryType.IG)
+            {
+                <div class="FeedsVideo positionRelative float-left">
+                    <img class="instagramIMG" csrc="@fbModel.ThumbUrl" />
+                </div>
+            }
+            <div class="float-right">
+                <input type="checkbox" id="chkMCResults_@item.ID" value="@item.ID" onclick="javascript:void(0)" />
+            </div>
+        </div>
+        <div class="@contentClass">
+            <div class="media-heading float-left" title="@Html.Raw(fTitle)">
+                <a href="@fbModel.Url" target="_blank">
+                    @Html.Raw(sTitle)
+                </a>
+            </div>
+            <div class="subheading float-left margintop1" title="@fCreatedDate">
+                @item.timeDifference
+            </div>
+            <div class="clear float-left media-body">
+                @Html.Raw(displayText)
+            </div>
+        </div>
+        <div class="clear post-divider"></div>
+        <div class="clear margintop2 marginbottom2">
+            <div class="LibraryActionBarLeftDiv">
+                <div class="viewmore" style="min-height: 1px">
+                    @if (item.IsPublished)
+                    { 
+                        <div id="publishedDiv_@item.ID" class="isPublished" title="Published"></div>
+                    }
+                    else
+                    {
+                        <div id="publishedDiv_@item.ID" class="isNotPublished" title="Not Published"></div>
+                    }
+                </div>
+                <div class="viewlocation">
+                    @if (!string.IsNullOrWhiteSpace(fPub))
+                    {
+                        <div class="location-tag" title="@fPub">
+                            @sPub
+                        </div>
+                    }
+                    else
+                    { 
+                        <div class="margintop2"></div>
+                    }
+                </div>
+                <div id="divMCSentimentTV_@item.ID" class="viewsentiment" title="Sentiment">
+                    <div class="sentimentLeftFloat sentiment-tag">
+                        <div class="divSentimentMain sentimentFont">
+                            <div class="divSentimentMain">
+                                <div class="divSentimentNeg">
+                                    <div style='width:@((fbModel.NegativeSentiment * 6) > 25 ? 25 : (fbModel.NegativeSentiment * 6))px;'>
+                                        @fbModel.NegativeSentiment
+                                    </div>
+                                </div>
+                                <div class="divSentimentPos">
+                                    <div style='width:@((fbModel.PositiveSentiment * 6) > 25 ? 25 : (fbModel.PositiveSentiment * 6))px;'>
+                                        @fbModel.PositiveSentiment
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="viewcontentdetail">
+                    <div class="viewshortdetail">
+                        <div class="likes" title="Likes @fLikes">
+                            @sLikes
+                        </div>
+                    </div>
+                    <div class="viewshortdetail">
+                        <div class="comments" title="Comments @fComments">
+                            @sComments
+                        </div>
+                    </div>
+                    <div class="viewshortdetail">
+                        @if (item.SubMediaType == CommonFunctions.CategoryType.FB)
+                        {
+                            <div class="shares" title="Shares @fShares">
+                                @sShares
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="MediaRoomActionBarRightDiv">
+                <div style="float: right">
+                    <div class="detailIcon">
+                        <a id="lnkMCSaveFB_@item.ID" class="cursorPointer viewArticle" title="View Article" target="_blank" href="@fbModel.Url"></a>
+                    </div>
+                    <div class="rightPad"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                                                                                                                             break;
+            case CommonFunctions.CategoryType.Radio:
+                                                                                                                             IQArchive_ArchiveTVEyesModel tvEyesModel = item.MediaData as IQArchive_ArchiveTVEyesModel;
+                                                                                                                             Month = tvEyesModel.LocalDateTime != null ? tvEyesModel.LocalDateTime.ToString("MMM", System.Globalization.CultureInfo.InvariantCulture) : string.Empty;
+                                                                                                                             Day = tvEyesModel.LocalDateTime != null ? tvEyesModel.LocalDateTime.Day.ToString() : string.Empty;
+                                                                                                                             Time = tvEyesModel.LocalDateTime != null ? tvEyesModel.LocalDateTime.ToString("hh:mm tt") : string.Empty;
+
+                                                                                                                             if (!string.IsNullOrWhiteSpace(tvEyesModel.Market))
+                                                                                                                             {
+                                                                                                                                 fPub = tvEyesModel.Market.Trim();
+
+                                                                                                                                 if (fPub.Length > 23)
+                                                                                                                                 {
+                                                                                                                                     sPub = fPub.Substring(0, 21) + "...";
+                                                                                                                                 }
+                                                                                                                                 else
+                                                                                                                                 {
+                                                                                                                                     sPub = fPub;
+                                                                                                                                 }
+                                                                                                                             }
+                
+    <div id="divMedia_@item.ID" class="media">
+        <div class="MediaDate">
+            <div class="post-date">
+                <span class="month">@Month</span>
+                <div>
+                    <span class="today">@Day</span>
+                </div>
+                <span class="timeWithTimeZone">@Time @sessionInformation.TimeZone</span>
+            </div>
+        </div>
+        <div class="MediaTypeLogo">
+            <img src="@objSubMediaType.MediaIconPath" title="@objSubMediaType.DisplayName" />
+        </div>
+        <div class="float-right FeedsVideoSpacer">
+            <div class="float-left FeedsVideo positionRelative">
+                <a onclick="LoadTMPopup('@item.ArchiveMediaID')" class="cursorPointer">
+                    <img class="media-object" csrc="~/images/video.png" alt="" />
+                </a>
+            </div>
+            <div class="float-right tvFeedsCheck">
+                <input type="checkbox" value="@item.ID" id="chkMCResults_@item.ID" />
+            </div>
+        </div>
+        <div class="MediaRoomContentVideo2">
+            <div class="media-heading float-left" title="@Html.Raw(fTitle)">
+                @Html.Raw(sTitle)
+            </div>
+            <div class="subheading float-left margintop1" title="@fCreatedDate">
+                @item.timeDifference
+            </div>
+            <div class="clear float-left media-body tmStationDiv">
+                <span style="color:#73897F">@tvEyesModel.StationID</span>
+                @if (!string.IsNullOrEmpty(displayText))
+                {
+                    <span> - @Html.Raw(displayText)</span>
+                }
+            </div>
+        </div>
+        <div class="clear post-divider"></div>
+        <div class="clear margintop2 marginbottom2">
+            <div class="LibraryActionBarLeftDiv">
+                <div class="viewmore" style="min-height: 1px">
+                    @if (item.IsPublished)
+                    { 
+                        <div id="publishedDiv_@item.ID" class="isPublished" title="Published"></div>
+                    }
+                    else
+                    {
+                        <div id="publishedDiv_@item.ID" class="isNotPublished" title="Not Published"></div>
+                    }
+                </div>
+                <div class="viewlocation">
+                    @if (!string.IsNullOrWhiteSpace(fPub))
+                    {
+                        <div class="location-tag" title="@fPub">
+                            @sPub
+                        </div>
+                    }
+                    else
+                    { 
+                        <div class="margintop2"></div>
+                    }
+                </div>
+                <div id="divMCSentimentTM_@item.ID" class="viewsentiment" title="Sentiment">
+                    <div class="sentimentLeftFloat sentiment-tag">
+                        <div class="divSentimentMain sentimentFont">
+                            <div class="divSentimentMain">
+                                <div class="divSentimentNeg">
+                                    <div style='width:@((tvEyesModel.NegativeSentiment * 6) > 25 ? 25 : (tvEyesModel.NegativeSentiment * 6))px;'>
+                                        @tvEyesModel.NegativeSentiment
+                                    </div>
+                                </div>
+                                <div class="divSentimentPos">
+                                    <div style='width:@((tvEyesModel.PositiveSentiment * 6) > 25 ? 25 : (tvEyesModel.PositiveSentiment * 6))px;'>
+                                        @tvEyesModel.PositiveSentiment
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="viewcontentdetail">
+                    @if (!string.IsNullOrEmpty(tvEyesModel.DMARank))
+                    {
+                        <div class="marketrank pull-left" title="Market Rank @tvEyesModel.DMARank">
+                            <span>@tvEyesModel.DMARank</span>
+                        </div>
+                    }
+                    else
+                    {
+                        <div align="center" class="margintop2"></div>
+                    }
+                </div>
+            </div>
+            <div class="MediaRoomActionBarRightDiv">
+                <div style="float: right">
+                    <div class="detailIcon">
+                        @if (Convert.ToBoolean(TempData["v4Download"]))
+                        {
+                            <a class="cursorPointer downloadArticle" title="Download Article" onclick="DownloadTVEyes('@item.ID')" target="_blank"></a>
+                        }
+                    </div>
+                    <div class="rightPad"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                        break;
+            case CommonFunctions.CategoryType.MS:
+                        IQArchive_ArchiveMiscModel miscModel = item.MediaData as IQArchive_ArchiveMiscModel;
+                        Month = miscModel.CreateDT.ToString("MMM", System.Globalization.CultureInfo.InvariantCulture);
+                        Day = miscModel.CreateDT.Day.ToString();
+                        Time = miscModel.CreateDT.ToString("hh:mm tt");
+
+                        string catimg = string.Empty;
+                        string tooltip = string.Empty;
+
+                        switch (miscModel.FileType)
+                        {
+                            case CommonFunctions.IQUGCMediaTypes.Doc:
+                                catimg = "word.png";
+                                tooltip = "Document";
+                                break;
+                            case CommonFunctions.IQUGCMediaTypes.Excel:
+                                catimg = "excel.png";
+                                tooltip = "Spreadsheet";
+                                break;
+                            case CommonFunctions.IQUGCMediaTypes.Pdf:
+                                catimg = "pdf.png";
+                                tooltip = "PDF";
+                                break;
+                            case CommonFunctions.IQUGCMediaTypes.Image:
+                                catimg = "image.png";
+                                tooltip = "Image";
+                                break;
+                            default:
+                                catimg = string.Empty;
+                                break;
+                        }
+                
+    <div id="divMedia_@item.ID" class="media">
+        <div class="MediaDate">
+            <div class="post-date">
+                <span class="month">@Month</span>
+                <div>
+                    <span class="today">@Day</span>
+                </div>
+                <span class="timeWithTimeZone">@Time @miscModel.TimeZone</span>
+            </div>
+        </div>
+        <div class="MediaTypeLogo">
+            <img src="/images/MediaIcon/@catimg" title="@tooltip" />
+        </div>
+        <div class="float-right">
+            <input type="checkbox" id="chkMCResults_@item.ID" value="@item.ID" onclick="javascript:void(0)" />
+        </div>
+        <div class="MediaRoomContent">
+            <div class="media-heading float-left" title="@Html.Raw(fTitle)">
+                <a href="@miscModel.MediaUrl" target="_blank">
+                    @Html.Raw(sTitle)
+                </a>
+            </div>
+            <div class="subheading float-left margintop1" title="@fCreatedDate">
+                @item.timeDifference
+            </div>
+            <div class="clear float-left media-body">
+                @Html.Raw(displayText)
+            </div>
+        </div>
+        <div class="clear post-divider"></div>
+        <div class="clear margintop2 marginbottom2">
+            <div class="LibraryActionBarLeftDiv">
+                <div class="viewmore" style="min-height: 1px">
+                    @if (item.IsPublished)
+                    { 
+                        <div id="publishedDiv_@item.ID" class="isPublished" title="Published"></div>
+                    }
+                    else
+                    {
+                        <div id="publishedDiv_@item.ID" class="isNotPublished" title="Not Published"></div>
+                    }
+                </div>
+                <div class="viewlocation">
+                    @if (!string.IsNullOrWhiteSpace(fPub))
+                    {
+                        <div class="location-tag" title="@fPub">
+                            @sPub
+                        </div>
+                    }
+                    else
+                    { 
+                        <div class="margintop2"></div>
+                    }
+                </div>
+            </div>
+            <div class="MediaRoomActionBarRightDiv">
+                <div style="float: right">
+                    <div class="detailIcon">
+                        <a id="lnkMCSaveMS_@item.ID" class="cursorPointer viewArticle" title="View Article" target="_blank" href="@miscModel.MediaUrl"></a>
+                    </div>
+                    <div class="rightPad"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                                                                                                                             break;
+            case CommonFunctions.CategoryType.PQ:
+                                                                                                                             IQArchive_ArchivePQModel pqModel = item.MediaData as IQArchive_ArchivePQModel;
+                                                                                                                             string authors = String.Empty;
+
+                                                                                                                             if (pqModel.Authors != null && pqModel.Authors.Count > 0)
+                                                                                                                             {
+                                                                                                                                 authors = "(" + (pqModel.Authors.Count > 2 ? String.Join(", ", pqModel.Authors.Take(2)) : String.Join(", ", pqModel.Authors)) + ") ";
+                                                                                                                             }
+
+                                                                                                                             if (!string.IsNullOrWhiteSpace(pqModel.Publication))
+                                                                                                                             {
+                                                                                                                                 fPub = pqModel.Publication.Trim() + " " + authors;
+
+                                                                                                                                 if (fPub.Length > 23)
+                                                                                                                                 {
+                                                                                                                                     sPub = fPub.Substring(0, 21) + "...";
+                                                                                                                                 }
+                                                                                                                                 else
+                                                                                                                                 {
+                                                                                                                                     sPub = fPub;
+                                                                                                                                 }
+                                                                                                                             }
+                
+    <div id="divMedia_@item.ID" class="media">
+        <div class="MediaDate">
+            <div class="post-date">
+                <span class="month">@Month</span>
+                <div>
+                    <span class="today">@Day</span>
+                </div>
+                <span class="timeWithTimeZone">&nbsp;</span>
+            </div>
+        </div>
+        <div class="MediaTypeLogo">
+            <img src="@objSubMediaType.MediaIconPath" title="@objSubMediaType.DisplayName" />
+        </div>
+        <div class="float-right">
+            <input type="checkbox" id="chkMCResults_@item.ID" value="@item.ID" onclick="javascript:void(0)" />
+        </div>
+        <div class="MediaRoomContent">
+            <div class="media-heading float-left" title="@Html.Raw(fTitle)">
+                <a class="cursorPointer" onclick="ShowViewArticleLibrary('@item.ID');" target="_blank">
+                    @Html.Raw(sTitle)
+                </a>
+            </div>
+            <div class="subheading float-left margintop1" title="@fCreatedDate">
+                @item.timeDifference
+            </div>
+            <div class="clear float-left media-body">
+                @Html.Raw(displayText)
+            </div>
+        </div>
+        <div class="clear post-divider"></div>
+        <div class="clear margintop2 marginbottom2">
+            <div class="LibraryActionBarLeftDiv">
+                <div class="viewmore" style="min-height: 1px">
+                    @if (item.IsPublished)
+                    { 
+                        <div id="publishedDiv_@item.ID" class="isPublished" title="Published"></div>
+                    }
+                    else
+                    {
+                        <div id="publishedDiv_@item.ID" class="isNotPublished" title="Not Published"></div>
+                    }
+                </div>
+                <div class="viewlocation">
+                    @if (!string.IsNullOrWhiteSpace(fPub))
+                    {
+                        <div class="location-tag" title="@fPub">
+                            @sPub
+                        </div>
+                    }
+                    else
+                    { 
+                        <div class="margintop2"></div>
+                    }
+                </div>
+                <div id="divMCSentimentTV_@item.ID" class="viewsentiment" title="Sentiment">
+                    <div class="sentimentLeftFloat sentiment-tag">
+                        <div class="divSentimentMain sentimentFont">
+                            <div class="divSentimentMain">
+                                <div class="divSentimentNeg">
+                                    <div style='width:@((pqModel.NegativeSentiment * 6) > 25 ? 25 : (pqModel.NegativeSentiment * 6))px;'>
+                                        @pqModel.NegativeSentiment
+                                    </div>
+                                </div>
+                                <div class="divSentimentPos">
+                                    <div style='width:@((pqModel.PositiveSentiment * 6) > 25 ? 25 : (pqModel.PositiveSentiment * 6))px;'>
+                                        @pqModel.PositiveSentiment
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="MediaRoomActionBarRightDiv">
+                <div style="float: right">
+                    <div class="detailIcon">
+                        <a class="cursorPointer viewArticle" title="View Article" href="javascript:void(0);" onclick="ShowViewArticleLibrary('@item.ID');"></a>
+                    </div>
+                    <div class="rightPad"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                                                                                                                                         break;
+
+            case CommonFunctions.CategoryType.IQRadio:
+                IQArchive_ArchiveRadioModel RadioModel = item.MediaData as IQArchive_ArchiveRadioModel;
+                
+                Month = RadioModel.LocalDateTime != null ? RadioModel.LocalDateTime.ToString("MMM", System.Globalization.CultureInfo.InvariantCulture) : string.Empty;
+                Day = RadioModel.LocalDateTime != null ? RadioModel.LocalDateTime.Day.ToString() : string.Empty;
+                Time = RadioModel.LocalDateTime != null ? RadioModel.LocalDateTime.ToString("hh:mm tt") : string.Empty;
+
+                if (!string.IsNullOrWhiteSpace(RadioModel.Market))
+                {
+                    fPub = RadioModel.Market.Trim();
+
+                    if (fPub.Length > 23)
+                    {
+                        sPub = fPub.Substring(0, 21) + "...";
+                    }
+                    else
+                    {
+                        sPub = fPub;
+                    }
+                }
+                
+    <div id="divMedia_@item.ID" class="media">
+        <div class="MediaDate">
+            <div class="post-date">
+                <span class="month">@Month</span>
+                <div>
+                    <span class="today">@Day</span>
+                </div>
+                <span class="timeWithTimeZone">@Time @RadioModel.TimeZone</span>
+            </div>
+        </div>
+        <div class="MediaTypeLogo">
+            <img src="@RadioModel.StationLogo" title="@objSubMediaType.DisplayName" />
+        </div>
+        <div class="float-right FeedsVideoSpacer">
+            <div class="FeedsVideo positionRelative float-left">
+                <a class="cursorPointer" onclick="LoadClipPlayer('@RadioModel.ClipGuid');">
+                    <img csrc="~/images/video.png" class="maxwidth130" alt="" />
+                </a>
+            </div>
+            <div class="float-right">
+                <input type="checkbox" onclick="javascript:void(0);" id="chkMCResults_@item.ID" value="@item.ID" />
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="MediaRoomContentVideo">
+            <div class="media-heading float-left" title="@Html.Raw(fTitle)">
+                <span id="h4MCTVTitle_@item.ID">@Html.Raw(sTitle)</span>
+            </div>
+            <div class="subheading float-left margintop1" title="@fCreatedDate">
+                @item.timeDifference
+            </div>
+            <div class="clear float-left media-body">
+                <span style="color:#73897F">@RadioModel.StationID</span>
+                @if (!string.IsNullOrWhiteSpace(displayText))
+                {
+                    <span> - @Html.Raw(displayText)</span>
+                }
+            </div>
+        </div>
+        <div class="clear post-divider"></div>
+        <div class="clear margintop2 marginbottom2">
+            <div class="MediaRoomActionBarLeftDiv">
+                <div class="viewmore" style="min-height: 1px">
+                    @if (item.IsPublished)
+                    { 
+                        <div id="publishedDiv_@item.ID" class="isPublished" title="Published"></div>
+                    }
+                    else
+                    {
+                        <div id="publishedDiv_@item.ID" class="isNotPublished" title="Not Published"></div>
+                    }
+                </div>
+                <div class="viewlocation">
+                        @if (!string.IsNullOrWhiteSpace(fPub))
+                        {
+                            <div class="location-tag" title="@fPub">
+                                @sPub
+                            </div>
+                        }
+                        else
+                        { 
+                            <div class="margintop2"></div>
+                        }
+                    </div>
+                <div id="divMCSentimentTV_@item.ID" class="viewsentiment" title="Sentiment">
+                    <div class="sentimentLeftFloat sentiment-tag">
+                        <div class="divSentimentMain sentimentFont">
+                            <div class="divSentimentMain">
+                                <div class="divSentimentNeg">
+                                    <div style='width:@((RadioModel.NegativeSentiment * 6) > 25 ? 25 : (RadioModel.NegativeSentiment * 6))px;'>
+                                        @RadioModel.NegativeSentiment
+                                    </div>
+                                </div>
+                                <div class="divSentimentPos">
+                                    <div style='width:@((RadioModel.PositiveSentiment * 6) > 25 ? 25 : (RadioModel.PositiveSentiment * 6))px;'>
+                                        @RadioModel.PositiveSentiment
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="viewcontentdetail">
+                    <div class="marketrank pull-left" title="Market Rank @RadioModel.DMARank">
+                        <span>@RadioModel.DMARank</span>
+                    </div>
+                </div>
+            </div>
+            <div class="MediaRoomActionBarRightDiv">
+                <div style="float: right">
+                    <div class="detailIcon">
+                        @if (Convert.ToBoolean(TempData["v4Download"]))
+                        {
+                            <a id="lnkMCDownloadClip_@item.ID" class="cursorPointer downloadArticle" title="Download Clip" onclick="DownloadRadio('@item.ID');" href="javascript:void(0);" rel="popover"></a>
+                        }
+                    </div>
+                    <div class="rightPad"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                        break;
+        }
+    }
+}

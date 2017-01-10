@@ -1,0 +1,200 @@
+﻿.f-location li
+{
+    display:inline-block;
+    vertical-align:top;
+    margin-bottom:20px;
+    margin-right:20px;
+           
+}
+
+.f-location li div
+{
+    float:left;  
+    clear:left;      
+}
+
+.f-location li span:first-of-type
+{
+    display:inline;
+}
+
+.f-location li img
+{
+    margin: 0px 5px 0px -10px;
+}
+
+.f-location li span
+{
+    width:182px;
+    display:block;    
+}
+
+.footer-ul
+{
+    text-align:center;    
+}
+
+.footer-ul > li
+{
+    display : inline-block;    
+    text-align:left;
+    vertical-align : top;
+    margin-right:50px;
+}
+
+.footer-ul > li:last-child
+{
+    margin-right:0px;    
+}
+
+.f-rdemo
+{
+    -o-transition:.3s;
+  -ms-transition:.3s;
+  -moz-transition:.3s;
+  -webkit-transition:.3s;  
+  transition:.3s;    
+  margin-top:20px;
+    font-size:20px !important;
+    font-family: "robotoslab-light" !important;
+    color:#f3b350 !important;
+}
+
+.f-rdemo:hover
+{
+    color:#fff !important;        
+}
+
+.f-signin
+{
+    width: 100%; background: #430089; height: 100%; float: left;    
+}
+
+.f-ressite
+{
+    width: 50%; height: 100%; float: left;    
+}
+
+.f-resources
+{
+    width: 100%; height: 50%; background: url(../Images/home_new/greyoverlay_platform.jpg) no-repeat;background-size: 100% 100%;    
+}
+
+.f-oursite
+{
+    width: 100%; height: 50%; background: #C7D269; position: relative;    
+}
+
+.f-spn-wlcm
+{
+    font-size: 50px;    
+}
+
+.f-spn-login
+{
+    display: block;padding-bottom: 25px; font-size: 22px;    
+}
+
+.f-spn-resources
+{
+    font-size: 40px; line-height: 44px; display: block;text-align: left;    
+}
+.f-signin button:hover
+{
+    background-color:#fff !important;
+    text-decoration:none;
+    color:#5A8EA1;
+}
+
+.f-resources a:hover
+{
+    text-decoration:none;
+}
+
+.f-oursite a:hover
+{
+    text-decoration:none;
+}
+
+.followus img
+{
+    width:42px; height:42px;    
+}
+
+@media (max-width: 1199px) 
+{
+    .footer-ul{text-align:left;}
+    
+    .footer-ul>li{margin-bottom:20px;}
+}
+
+@media (max-width: 767px) 
+{
+    .f-signin
+    {
+        width: 100%; float: none;    
+    }
+    
+    .f-signin .row > div
+    {
+        position:static !important;
+        padding-top:25px !important;
+        padding-bottom:20px !important;
+    }   
+    
+    .f-ressite
+    {
+        width: 100%; float: none;    
+    }
+
+    .f-resources
+    {
+        height: 100%;
+    }
+    
+    .f-resources .row > div
+    {
+        position:static !important;
+        padding-top:25px !important;
+        padding-bottom:20px !important;
+    } 
+
+    .f-oursite
+    {
+        height: 100%;
+    }
+    
+    .f-oursite .row > div
+    {
+        position:static !important;
+        padding-top:25px !important;
+        padding-bottom:20px !important;
+    }
+}
+.bottom-nav-soc li {
+    display: inline-block;
+    padding-right: 5px;
+    font-size: 14px;
+    font-weight: 600;
+}
+.bottom-nav li {
+    display: inline-block;
+    padding-right: 35px;
+    font-size: 14px;
+    font-weight: 600;
+}
+a         
+{
+position: relative;    
+}
+a:hover
+{
+    color:#b2d235 !important;
+    }
+.bottom-nav a 
+{
+    font-family:'lato-regular';
+    color: #fff;
+    font-weight: 700;
+    text-transform: uppercase;
+}

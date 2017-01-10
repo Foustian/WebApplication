@@ -1,0 +1,1937 @@
+﻿@using IQMedia.Shared.Utility;
+@using IQCommon.Model;
+@model Dictionary<string, object>
+@{
+    ViewBag.Title = "iQ media Library";
+    Layout = "~/Views/Shared/_IQMediaMasterInner.cshtml";
+}
+@{
+    IQMedia.Model.ActiveUser sessionInformation = IQMedia.WebApplication.Utility.ActiveUserMgr.GetActiveUser();
+    string dates = string.Empty;
+    string strUGCFileTypes = string.Empty;
+    //string strUGCDocFileTypes = string.Empty;
+    IQMedia.Model.IQArchive_FilterModel filter = null;
+    var UGCTempData = (IQMedia.Model.TempDataModel)TempData["TempDataModel"];
+    if (ViewBag.IsSuccess)
+    {
+        if (Model != null && Model["Filter"] != null)
+        {
+            filter = Model["Filter"] as IQMedia.Model.IQArchive_FilterModel;
+            dates = string.Join("', '", @filter.Dates.Select(f => Convert.ToDateTime(f).ToString("MM/dd/yyyy")).ToArray());
+        }
+        //strUGCFileTypes = string.Join("', '", @System.Configuration.ConfigurationManager.AppSettings["UGCPermittedFileTypes"].Split(new char[] { ',' }));
+        //strUGCDocFileTypes = string.Join("', '", @System.Configuration.ConfigurationManager.AppSettings["UGCDocFileTypes"].Split(new char[] { ',' }));
+
+        strUGCFileTypes = Newtonsoft.Json.JsonConvert.SerializeObject((Dictionary<string, string>)TempData["UGCDocument_FileTypes"]);
+    }
+    
+}
+
+<script language="javascript" type="text/javascript" src="~/Scripts/jstree.js"></script>
+<script language="javascript" type="text/javascript" src="~/Scripts/Library.js?v=4.0"></script>
+<script language="javascript" type="text/javascript" src="~/Scripts/LibraryEditRecord.js?v=1.8"></script>
+<script language="javascript" type="text/javascript" src="~/Scripts/LibraryReport.js?v=2.8"></script>
+<script language="javascript" type="text/javascript" src="~/Scripts/LibraryReportFolder.js?v=1.4"></script>
+<script language="javascript" type="text/javascript" src="~/Scripts/CustomCategory.js?v=1.2"></script>
+
+<script language="javascript" type="text/javascript" src="~/Scripts/jquery.gridster-responsive.js"></script>
+<script src="~/Scripts/highcharts.js?v=1.1" type="text/javascript"></script>
+<script src="~/Scripts/fusioncharts.js?v=1.0" type="text/javascript"></script>
+@if (sessionInformation.Isv4UGCAccess && ViewBag.IsSuccess)
+{
+    <script language="javascript" type="text/javascript" src="~/Scripts/LibraryUGCContent.js?v=1.9"></script>
+    <script type="text/javascript" src="~/Scripts/PlayerScript.js?v=1.1"></script>
+}
+@if ((sessionInformation.IsMediaRoomEditor || sessionInformation.IsMediaRoomContributor) && ViewBag.IsSuccess)
+{
+    <script language="javascript" type="text/javascript" src="~/Scripts/LibraryMCMedia.js?v=1.7"></script>    
+}
+<script language="javascript" type="text/javascript" src="~/Scripts/jquery.form.js?v=1.0"></script>
+<script language="javascript" type="text/javascript" src="~/Scripts/jquery-ui-timepicker-addon.js?v=1.0"></script>
+<script language="javascript" type="text/javascript" src="~/Scripts/enscroll.js?v=1.0"></script>
+<link href="~/Css/video-player.css?v=1.3" type="text/css" rel="Stylesheet" />
+<link href="~/Css/Dashboard.css?v=1.6" type="text/css" rel="Stylesheet" />
+<script type="text/javascript" src="~/Scripts/Player/PlayerClip.js?v=1.4"></script>
+<link type="text/css" rel="stylesheet" href="~/Css/jstree-style.css?v=1.1" />
+<link rel="stylesheet" type="text/css" href="~/Css/jquery.gridster.css">
+<script language="javascript" type="text/javascript" src="~/Scripts/Gallery.js?v=1.1"></script>
+<link href="../../Css/jquery-te-1.4.0.css" type="text/css" rel="Stylesheet" />
+<script type="text/javascript" src="~/Scripts/CKEditor/ckeditor.js"></script>
+
+@if (ViewBag.IsSuccess)
+{
+    if (sessionInformation.Isv4UGCAccess && Model.ContainsKey("ManualClipDuration"))
+    {    
+    <script type="text/javascript">
+        var _clipLimit = @Model["ManualClipDuration"]
+    </script>
+    }
+    <script language="javascript" type="text/javascript">
+        var disabledDays = ['@Html.Raw(dates)'];
+        var ugcFileTypes = @Html.Raw(strUGCFileTypes);
+        var ugcMediaType = '@IQMedia.Shared.Utility.CommonFunctions.UGCMediaType';
+        
+        var rootFolderName = '@System.Configuration.ConfigurationManager.AppSettings["ClientRootFolderName"]'
+        $(function () {
+            $("#dpUGCAirDateTime").datetimepicker({
+                timeFormat: "hh:mm:ss tt"
+            });
+        });
+        var Isv4LibraryRollup = @(ViewBag.v4LibraryRollup.ToString().ToLower());
+        var IsShowTimeSync = @System.Configuration.ConfigurationManager.AppSettings["IsShowArchiveTimeSync"];
+        var _urlSendEmail = '@System.Configuration.ConfigurationManager.AppSettings["UrlSendEmail"]';
+        var _IQArchieveTVThumbUrl = '@System.Configuration.ConfigurationManager.AppSettings["SVCGetClipThumbUrl"]';
+        var _GetNielSenDataUrl = '@System.Configuration.ConfigurationManager.AppSettings["UrlGetNielSenData"]';
+        var _urlClipPlayer = '@System.Configuration.ConfigurationManager.AppSettings["ClipPlayerURL"]';
+        var DefaultTimeZone = '@sessionInformation.TimeZone';
+        var _ClipEmbedAutoPlay = @(Convert.ToBoolean(Model["ClipEmbedAutoPlay"])?1:0);
+    </script>
+}
+<style type="text/css">
+    .row-custom .dropdown-menu
+    {
+        width: 190px !important;
+    }
+    /* css for timepicker */
+    #ui-datepicker-div
+    {
+        z-index: 1050 !important;
+    }
+    .ui-timepicker-div .ui-widget-header
+    {
+        margin-bottom: 8px;
+    }
+    .ui-timepicker-div dl
+    {
+        text-align: left;
+    }
+    .ui-timepicker-div dl dt
+    {
+        height: 33px;
+        margin-bottom: -25px;
+    }
+    .ui-timepicker-div dl dd
+    {
+        margin: 0 10px 10px 65px;
+    }
+    .ui-timepicker-div td
+    {
+        font-size: 90%;
+    }
+    .ui-tpicker-grid-label
+    {
+        background: none;
+        border: none;
+        margin: 0;
+        padding: 0;
+    }
+    
+    .ui-timepicker-rtl
+    {
+        direction: rtl;
+    }
+    .ui-timepicker-rtl dl
+    {
+        text-align: right;
+    }
+    .ui-timepicker-rtl dl dd
+    {
+        margin: 0 65px 10px 10px;
+    }
+    
+    .ui-progressbar
+    {
+        position: relative;
+    }
+    .progress-label
+    {
+        position: absolute;
+        left: 50%;
+        top: 4px;
+        font-weight: bold;
+        text-shadow: 1px 1px 0 #fff;
+    }
+    
+    .popover-content
+    {
+        padding: 0px;
+    }
+    
+    #divtranscript table
+    {
+        width: auto;
+    }
+</style>
+<div class="container container_custom">
+    <div class="row-fluid" id="divRowFluid">
+        @if (ViewBag.IsSuccess)
+        {
+            <div class="span3 minheight500" id="divQuickIQArchieveFinder">
+                <div class="well sidebar-nav">
+                    <h5 id="h5Library" onclick="CollapseExpandLeftSection(1);" class="libraryheader-active">
+                        Library</h5>
+                    <div id="divQuickLibrarySection" style="padding-left: 10px;">
+                        <input type="text" class="keywordTetBox" placeholder="Quick library finder" id="txtKeyword" /><img
+                            id="imgKeyword" title="Search" src="../../images/magnifier.png" alt="search"
+                            class="imgsearch" />
+                        <input type="text" id="dpFrom" readonly="readonly" class="date" />
+                        <input type="text" id="dpTo" readonly="readonly" class="date" />
+                        <br />
+                        <br />
+                        <h5>
+                            Narrow Results</h5>
+                        <div class="navbar">
+                            <ul role="navigation" class="nav floatNone sideMenuUl width100p">
+                                <li class="dropdown ndate"><a data-toggle="dropdown" class="dropdown-toggle" role="button"
+                                    href="#" id="drop1">Date<span class="spnArrow">&nbsp;</span></a>
+                                    <ul id="ulCalender" aria-labelledby="drop1" role="menu" class="dropdown-menu sideMenu ulCalenderFilter">
+                                        <li role="presentation">
+                                            <div id="divCalender">
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li class="dropdown nmedium">
+                                    <a data-toggle="dropdown" class="dropdown-toggle" role="button" id="liMediumFilter" href="#">Medium<span class="spnArrow">&nbsp;</span></a>
+                                    <ul aria-labelledby="drop2" role="menu" class="dropdown-menu multi-level sideMenu" id="ulMediaType" style="overflow-y:visible;">
+                                        @{
+            if (filter != null && filter.MediaTypes != null && filter.MediaTypes.Count > 0)
+            {
+                foreach (IQMedia.Model.IQArchive_MediaTypeFilter mediaType in filter.MediaTypes)
+                {
+                    <li class="dropdown-submenu">
+                        <a data-toggle="dropdown" class="dropdown-toggle" href="#" role="button" name="aMediaType">@mediaType.MediaTypeDesc (@mediaType.RecordCountFormatted)</a>
+                        <ul aris-labelledby="drop2" role="menu" class="dropdown-menu sideMenu" id="ulSubMediaType">
+                            @foreach (IQMedia.Model.IQArchive_SubMediaTypeFilter subMediaType in mediaType.SubMediaTypes)
+                            {
+                                <li onclick="SetSubMediaType('@subMediaType.SubMediaType', '@subMediaType.SubMediaTypeDesc');" role="presentation">
+                                    <a href="#" tabindex="-1" role="menuitem">@subMediaType.SubMediaTypeDesc (@subMediaType.RecordCountFormatted)</a>
+                                </li>
+                            }
+                        </ul>
+                    </li>
+                }
+            }
+            else
+            {
+                                            <li role="presentation"><a tabindex="-1" role="menuitem">No Filter Available</a></li>
+            }
+                                        }
+                                    </ul>
+                                </li>
+                                <li class="ncategory"><a data-toggle="dropdown" class="dropdown-toggle" role="button"
+                                    id="liCategoryFilter" href="#">Category<span class="spnArrow">&nbsp;</span></a>
+                                    <ul aria-labelledby="drop2" role="menu" class="nav nav-stacked nav-dropdpwn" id="ulCategory"
+                                        style="display: none;">
+                                        @{
+            if (filter != null)
+            {
+                                            <li role="presentation" id="liCategorySearch" style="padding: 0px;">
+                                                <ul class="sideMenu sub-submenu" aria-labelledby="drop2" role="menu">
+                                                    <li role="presentation" style="text-align: right">
+                                                        <div>
+                                                            <div class="fleft margintop5">
+                                                                <input type="radio" onclick="SetSelectionType(false)" value="AND" id="rdAnd" style="margin-top: -3px"
+                                                                    name="rdSelectionType" />
+                                                                AND
+                                                                <input type="radio" onclick="SetSelectionType(false)" value="OR" id="rdOr" style="margin-top: -3px"
+                                                                    name="rdSelectionType" checked="checked" />
+                                                                OR
+                                                            </div>
+                                                            <div>
+                                                                <input type="button" value="Done" id="btnSearchCategory" class="button" style="margin: 0px;
+                                                                    padding: 2px; min-width: 40px;" onclick="SearchCategory();">
+                                                                <input type="button" value="Cancel" id="btnCancelSearchCategory" class="button" style="margin: 0px;
+                                                                    padding: 2px; min-width: 40px;" onclick="SetSelectionType(true);">
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            <li role="presentation" style="padding: 0px;">
+                                                <ul class="sideMenu sub-submenu" aria-labelledby="drop2" role="menu" id="ulCategoryList">
+                                                    @foreach (IQMedia.Model.IQArchive_Filter item in filter.Categories)
+                                                    {
+                                                        if (!string.IsNullOrEmpty(item.CategoryGUID))
+                                                        {
+                                                        <li role="presentation"><a href="javascript:void(0)" onclick="SetCategory(this,'@item.CategoryGUID','@item.CategoryName.Replace("\'", "\\\'")');" tabindex="-1" role="menuitem">
+                                                            @(item.CategoryName + " (" + item.RecordCountFormatted + ")")
+                                                        </a></li>
+                                                        }
+                                                    }
+                                                </ul>
+                                                @{
+                                                    var json = CommonFunctions.SearializeJson(filter.Categories);
+                                                    <script type="text/javascript">
+                                                    _CurrentCategoryFilter = @Html.Raw(json);
+                                                    </script>
+                                                }
+                                            </li>
+            }
+            else
+            {
+                                            <li role="presentation"><a tabindex="-1" role="menuitem">No Filter Available</a></li>
+            }
+                                        }
+                                    </ul>
+                                </li>
+                                <li class="dropdown ncustomers"><a data-toggle="dropdown" class="dropdown-toggle"
+                                    role="button" id="liCustomerFilter" href="#">Created By<span class="spnArrow">&nbsp;</span></a>
+                                    <ul aria-labelledby="drop2" role="menu" class="dropdown-menu sideMenu" id="ulCustomers">
+                                        @{
+            if (filter != null)
+            {
+                foreach (IQMedia.Model.IQArchive_Filter item in filter.Customers)
+                {
+                    if (!string.IsNullOrEmpty(item.CustomerKey))
+                    {
+                                            <li onclick="SetCustomer('@item.CustomerKey','@item.CustomerName.Replace("\'", "\\\'")');" role="presentation">
+                                                <a href="#" tabindex="-1" role="menuitem">
+                                                    @(item.CustomerName + " (" + item.RecordCountFormatted + ")")
+                                                </a></li>
+                    }
+                }
+            }
+            else
+            {
+                                            <li role="presentation"><a tabindex="-1" role="menuitem">No Filter Available</a></li>
+            }
+                                        }
+                                    </ul>
+                                </li>
+                            </ul>
+                            <div style="clear: both;">
+                            </div>
+                        </div>
+                    </div>
+                    <h5 id="h5Report" onclick="CollapseExpandLeftSection(2);" class="reportheader-inactive">
+                        Reports</h5>
+                    <div id="divReportSection" style="display: none; padding-left: 10px;">
+                        <br />
+                        <div class="navbar">
+                            <div class="center">
+                                <img alt="" id="imgSavedReportLoading" class="marginRight10" src="../../images/Loading_1.gif" />
+                            </div>
+                            <div class="displayReportGrid" style="display: none;">
+                                <div class="discoveryTabParent center">
+                                    <div id="headerReportAll" onclick="changeTab('1');" class="TabHeader padding5">
+                                        All
+                                    </div>
+                                    <div id="headerReportFolder" onclick="changeTab('2');" class="TabHeader padding5">
+                                        Folder View
+                                    </div>
+                                </div>
+                                <div class="clear margintop10">
+                                    <div id="divSavedIQReportsScrollContent" class="reportListScroller">
+                                        <div id="divSavedIQReports">
+                                        </div>
+                                    </div>
+                                    <div id="divSavedIQReportsFolders">
+                                        <div id="divSavedIQReportFoldersScrollContent" class="reportListScroller">
+                                            <div id="tree">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="clear: both;">
+                            </div>
+                        </div>
+                    </div>
+                    @if (sessionInformation.Isv4UGCAccess)
+                    {
+                        <h5 id="h5Cloud" onclick="CollapseExpandLeftSection(3);" class="cloudheader-inactive">
+                            Cloud</h5>
+                        <div id="divCloudSection" style="display: none; padding-left: 10px;">
+                            <br />
+                            <input type="text" class="keywordTetBox" placeholder="Quick library finder" id="txtIQUGCArchiveKeyword" /><img
+                                id="imgIQUGCArchiveKeyword" title="Search" src="../../images/magnifier.png" alt="search"
+                                class="imgsearch" />
+                            <input type="text" id="dpIQUGCArchiveFrom" readonly="readonly" class="date" />
+                            <input type="text" id="dpIQUGCArchiveTo" readonly="readonly" class="date" />
+                            <br />
+                            <br />
+                            <h5>
+                                Narrow Results</h5>
+                            <div class="navbar">
+                                <ul role="navigation" class="nav floatNone sideMenuUl width100p">
+                                    <li class="dropdown ndate"><a data-toggle="dropdown" class="dropdown-toggle" role="button"
+                                        href="#" id="drop1">Date<span class="spnArrow">&nbsp;</span></a>
+                                        <ul id="ulIQUGCArchiveCalender" aria-labelledby="drop1" role="menu" class="dropdown-menu sideMenu ulCalenderFilter">
+                                            <li role="presentation">
+                                                <div id="divIQUGCArchiveCalender">
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="ncategory"><a data-toggle="dropdown" class="dropdown-toggle" role="button"
+                                        id="liIQUGCArchiveCategoryFilter" href="#">Category<span class="spnArrow">&nbsp;</span></a>
+                                        <ul aria-labelledby="drop2" role="menu" class="nav nav-stacked nav-dropdpwn top25"
+                                            id="ulIQUGCArchiveCategory" style="display: none;">
+                                            <li role="presentation" id="liIQUGCArchiveCategorySearch" style="padding: 0px;">
+                                                <ul class="sideMenu sub-submenu" aria-labelledby="drop2" role="menu">
+                                                    <li role="presentation" style="text-align: right">
+                                                        <div>
+                                                            <div class="fleft margintop5">
+                                                                <input type="radio" onclick="SetArchiveUGCSelectionType(false)" value="AND" id="rdArchiveUGCAnd"
+                                                                    style="margin-top: -3px" name="rdArchiveUGCSelectionType" />
+                                                                AND
+                                                                <input type="radio" onclick="SetArchiveUGCSelectionType(false)" value="OR" id="rdArchiveUGCOr"
+                                                                    style="margin-top: -3px" name="rdArchiveUGCSelectionType" checked="checked" />
+                                                                OR
+                                                            </div>
+                                                            <div>
+                                                                <input type="button" value="Done" id="btnArchiveUGCSearchCategory" class="button"
+                                                                    style="margin: 0px; padding: 2px; min-width: 40px;" onclick="SearchArchiveUGCCategory();" />
+                                                                <input type="button" value="Cancel" id="btnArchiveUGCCancelSearchCategory" class="button"
+                                                                    style="margin: 0px; padding: 2px; min-width: 40px;" onclick="SetArchiveUGCSelectionType(true);" />
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            <li role="presentation" style="padding: 0px;">
+                                                <ul class="sideMenu sub-submenu" aria-labelledby="drop2" role="menu" id="ulIQUGCArchiveCategoryList">
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="dropdown nmedium"><a data-toggle="dropdown" class="dropdown-toggle" role="button"
+                                        id="liIQUGCArchiveMediaTypeFilter" href="#">Media Type<span class="spnArrow">&nbsp;</span></a>
+                                        <ul aria-labelledby="drop2" role="menu" class="dropdown-menu sideMenu" id="ulIQUGCArchiveMediaTypes">
+                                        </ul>
+                                    </li>
+                                    <li class="dropdown ncustomers"><a data-toggle="dropdown" class="dropdown-toggle"
+                                        role="button" id="liIQUGCArchiveCustomerFilter" href="#">Created By<span class="spnArrow">&nbsp;</span></a>
+                                        <ul aria-labelledby="drop2" role="menu" class="dropdown-menu sideMenu" id="ulIQUGCArchiveCustomers">
+                                        </ul>
+                                    </li>
+                                </ul>
+                                <div style="clear: both;">
+                                </div>
+                            </div>
+                            @if (sessionInformation.Isv4UGCUploadEdit)
+                            {
+                                <div class="center">
+                                    <input type="button" value="Upload" class="btnUgcUpload" onclick="OpenUGCContentModalPopup();"></div>
+                            }
+                        </div>
+                    }
+                   @if (sessionInformation.ClientGUID.Equals(new Guid("7722a116-c3bc-40ae-8070-8c59ee9e3d2a")))
+                   {
+                    <h5 id="h5Gallary" onclick="CollapseExpandLeftSection(4);" class="gallary-inactive">
+                        Gallery</h5>
+                   }
+                    <div id="divGallarySection" style="display: none; padding-left: 10px;">
+                        <br />
+                    </div>
+                    @if (sessionInformation.IsMediaRoomEditor || sessionInformation.IsMediaRoomContributor)
+                    {
+                    <h5 id="h5MCMedia" onclick="CollapseExpandLeftSection(5);" class="mcmedia-inactive">
+                       Media Room
+                    </h5>
+                    }
+                    <div id="divMCMediaSection" style="padding-left: 10px; display:none;">
+                       <input type="text" class="keywordTetBox" placeholder="Quick library finder" id="txtMCKeyword" /><img
+                          id="imgMCKeyword" title="Search" src="../../images/magnifier.png" alt="search"
+                          class="imgsearch" />
+                       <input type="text" id="dpMCFrom" readonly="readonly" class="date" />
+                       <input type="text" id="dpMCTo" readonly="readonly" class="date" />
+                       <br />
+                       <br />
+                       <h5>
+                          Narrow Results
+                       </h5>
+                       <div class="navbar">
+                          <ul role="navigation" class="nav floatNone sideMenuUl width100p">
+                             <li class="dropdown ndate">
+                                <a data-toggle="dropdown" class="dropdown-toggle" role="button"
+                                   href="#" id="drop1">Date<span class="spnArrow">&nbsp;</span></a>
+                                <ul id="ulMCCalender" aria-labelledby="drop1" role="menu" class="dropdown-menu sideMenu ulCalenderFilter">
+                                   <li role="presentation">
+                                      <div id="divMCCalender">
+                                      </div>
+                                   </li>
+                                </ul>
+                             </li>
+                            <li class="dropdown nmedium">
+                                <a data-toggle="dropdown" class="dropdown-toggle" role="button" id="liMediumFilter" href="#">Medium<span class="spnArrow">&nbsp;</span></a>
+                                <ul aria-labelledby="drop2" role="menu" class="dropdown-menu multi-level sideMenu" id="ulMCMediaType" style="overflow-y:visible;">
+                                        @{
+                    if (filter != null && filter.MediaTypes != null && filter.MediaTypes.Count > 0)
+                    {
+                        foreach (IQMedia.Model.IQArchive_MediaTypeFilter mediaType in filter.MediaTypes)
+                        {
+                                    <li class="dropdown-submenu">
+                                        <a data-toggle="dropdown" class="dropdown-toggle" href="#" role="button" name="aMCMediaType">@mediaType.MediaTypeDesc (@mediaType.RecordCountFormatted)</a>
+                                        <ul aris-labelledby="drop2" role="menu" class="dropdown-menu sideMenu" id="ulMCSubMediaType">
+                                            @foreach (IQMedia.Model.IQArchive_SubMediaTypeFilter subMediaType in mediaType.SubMediaTypes)
+                                            {
+                                                <li onclick="SetSubMediaType_MCMedia('@subMediaType.SubMediaType', '@subMediaType.SubMediaTypeDesc');" role="presentation">
+                                                    <a href="#" tabindex="-1" role="menuitem">@subMediaType.SubMediaTypeDesc (@subMediaType.RecordCountFormatted)</a>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </li>
+                        }
+                    }
+                    else
+                    {
+                                    <li role="presentation"><a tabindex="-1" role="menuitem">No Filter Available</a></li>
+                    }
+                                        }
+                                </ul>
+                            </li>
+                             <li class="ncategory">
+                                <a data-toggle="dropdown" class="dropdown-toggle" role="button"
+                                   id="liMCCategoryFilter" href="#">Category<span class="spnArrow">&nbsp;</span></a>
+                                <ul aria-labelledby="drop2" role="menu" class="nav nav-stacked nav-dropdpwn" id="ulMCCategory"
+                                   style="display: none;">
+                                   @{
+                    if (filter != null)
+                    {
+                                            <li role="presentation" id="liMCCategorySearch" style="padding: 0px;">
+                                                <ul class="sideMenu sub-submenu" aria-labelledby="drop2" role="menu">
+                                                    <li role="presentation" style="text-align: right">
+                                                    <div>
+                                                        <div class="fleft margintop5">
+                                                            <input type="radio" onclick="SetSelectionType_MCMedia()" value="AND" id="rdMCAnd" style="margin-top: -3px"
+                                                                name="rdMCSelectionType" />
+                                                            AND
+                                                            <input type="radio" onclick="SetSelectionType_MCMedia()" value="OR" id="rdMCOr" style="margin-top: -3px"
+                                                                name="rdMCSelectionType" checked="checked" />
+                                                            OR
+                                                        </div>
+                                                        <div>
+                                                            <input type="button" value="Done" id="btnMCSearchCategory" class="button" style="margin: 0px;
+                                                                padding: 2px; min-width: 40px;" onclick="SearchCategory_MCMedia();">
+                                                            <input type="button" value="Cancel" id="btnMCCancelSearchCategory" class="button" style="margin: 0px;
+                                                                padding: 2px; min-width: 40px;" onclick="SetSelectionType_MCMedia();">
+                                                        </div>
+                                                    </div>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            <li role="presentation" style="padding: 0px;">
+                                                <ul class="sideMenu sub-submenu" aria-labelledby="drop2" role="menu" id="ulMCCategoryList">
+                                                    @foreach (IQMedia.Model.IQArchive_Filter item in filter.Categories)
+                                                    {
+                                                        if (!string.IsNullOrEmpty(item.CategoryGUID))
+                                                        {
+                                                            <li role="presentation"><a href="javascript:void(0)" onclick="SetCategory_MCMedia(this,'@item.CategoryGUID','@item.CategoryName.Replace("\'", "\\\'")');" tabindex="-1" role="menuitem">
+                                                            @(item.CategoryName + " (" + item.RecordCountFormatted + ")")
+                                                            </a>
+                                                            </li>
+                                                        }
+                                                    }
+                                                </ul>
+                                                @{
+                                                    var json = CommonFunctions.SearializeJson(filter.Categories);
+                                                    <script type="text/javascript">
+                                                        _MCMediaCurrentCategoryFilter = @Html.Raw(json);
+                                                    </script>
+                                                }
+                                            </li>
+                    }
+                    else
+                    {
+                                            <li role="presentation"><a tabindex="-1" role="menuitem">No Filter Available</a></li>
+                    }
+                                   }
+                                </ul>
+                             </li>
+                             <li class="dropdown ncustomers">
+                                <a data-toggle="dropdown" class="dropdown-toggle"
+                                   role="button" id="liMCCustomerFilter" href="#">Created By<span class="spnArrow">&nbsp;</span></a>
+                                <ul aria-labelledby="drop2" role="menu" class="dropdown-menu sideMenu" id="ulMCCustomers">
+                                   @{
+                    if (filter != null)
+                    {
+                        foreach (IQMedia.Model.IQArchive_Filter item in filter.Customers)
+                        {
+                            if (!string.IsNullOrEmpty(item.CustomerKey))
+                            {
+                                                    <li onclick="SetCustomer_MCMedia('@item.CustomerKey','@item.CustomerName.Replace("\'", "\\\'")');" role="presentation">
+                                                    <a href="#" tabindex="-1" role="menuitem">
+                                                    @(item.CustomerName + " (" + item.RecordCountFormatted + ")")
+                                                    </a></li>
+                            }
+                        }
+                    }
+                    else
+                    {
+                                            <li role="presentation"><a tabindex="-1" role="menuitem">No Filter Available</a></li>
+                    }
+                                   }
+                                </ul>
+                             </li>
+                          </ul>
+                          <div style="clear: both;">
+                          </div>
+                       </div>
+                    </div>
+                </div>
+                <!--/.well -->
+            </div>
+            <!--/span-->
+            <div class="span9 span9-custom">
+                <!--/row-->
+                <div id="divMessage" class="notificationdiv">
+                    <span id="spnNotification"></span>
+                </div>
+                <div id="divContent" style="clear: both;">
+                    <div id="divResultContent" style="display: block;">
+                        <div class="row-fluid row-custom">
+                            <!--/span-->
+                            <div class="btn-group">
+                                <a class="btn dropdown-toggle no-background" data-toggle="dropdown" href="#" id="aSortDirection">
+                                    Most Recent (Created Date)&nbsp;&nbsp;<span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li class="cursorPointer"><a onclick="SortDirection('MediaDate',false);">Most Recent
+                                        (Media Date)</a></li>
+                                    <li class="cursorPointer"><a onclick="SortDirection('MediaDate',true);">Oldest First
+                                        (Media Date)</a></li>
+                                    <li class="cursorPointer"><a onclick="SortDirection('CreatedDate',false);">Most Recent
+                                        (Created Date)</a></li>
+                                    <li class="cursorPointer"><a onclick="SortDirection('CreatedDate',true);">Older First
+                                        (Created Date)</a></li>
+                                </ul>
+                            </div>
+                            <div class="btn-group">
+                                <a class="btn dropdown-toggle no-background" data-toggle="dropdown" href="#" id="aDuration">
+                                    All&nbsp;&nbsp;<span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li class="cursorPointer"><a onclick="GetResultOnDuration(0);">All</a></li>
+                                    <li class="cursorPointer"><a onclick="GetResultOnDuration(1);">Last 24 Hours</a></li>
+                                    <li class="cursorPointer"><a onclick="GetResultOnDuration(2);">Last Week</a></li>
+                                    <li class="cursorPointer"><a onclick="GetResultOnDuration(3);">Last Month</a></li>
+                                    <li class="cursorPointer"><a onclick="GetResultOnDuration(4);">Last 3 Months</a></li>
+                                    <li class="cursorPointer"><a onclick="GetResultOnDuration(5);">Custom</a></li>
+                                </ul>
+                            </div>
+                            <div class="pull-right action">
+                                <div class="btn-group fleft">
+                                    <a class="btn dropdown-toggle no-background" data-toggle="dropdown" href="#">Action&nbsp;&nbsp;<span
+                                        class="caret"></span></a>
+                                    <ul class="dropdown-menu pull-right">
+                                        <li><a class="cursorPointer" onclick="DeleteRecords();">Remove</a></li>
+                                        <li><a class="cursorPointer" onclick="OpenEmailPopUp('result');">Send Email</a></li>
+                                        <li><a class="cursorPointer" onclick="OpenInsertLibraryReport();">Create Report</a></li>
+                                        <li><a class="cursorPointer" onclick="OpenReportModifyPopup();">Add to Report</a></li>                                        
+                                        @if (sessionInformation.IsMediaRoomContributor || sessionInformation.IsMediaRoomEditor)
+                                        {
+                                            <li><a class="cursorPointer" onclick="AddToMCMedia();">Add to Media Room</a></li>
+                                            <li><a class="cursorPointer" onclick="RemoveFromMCMedia('library');">Remove from Media Room</a></li>
+                                        }
+	                                    <li><a class="cursorPointer" onclick="BuildDashboard();">Build Dashboard</a></li>
+                                        <li><a class="cursorPointer" onclick="OpenDownloadStatus();">Download Status</a></li>
+                                    </ul>
+                                </div>
+                                <div class="btn-group fleft">
+                                    <a class="btn dropdown-toggle no-background" data-toggle="dropdown" href="#" id="aSelectAll">
+                                        Select All&nbsp;&nbsp;<span class="caret"></span></a>
+                                    <ul class="dropdown-menu" style="min-width: 140px; width: 140px !important">
+                                        <li class="cursorPointer"><a onclick="SetCheckboxSelectionType(0);">Select All</a></li>
+                                        <li class="cursorPointer"><a onclick="SetCheckboxSelectionType(1);">Select All With
+                                            Dupes</a></li>
+                                    </ul>
+                                </div>
+                                <div class="select">
+                                    <input id="chkInputAll" type="checkbox" /></div>
+                            </div>
+                        </div>
+                        <h4 id="h4ResultTitle">
+                            Library Results</h4>
+                        <div id="divActiveFilter" class="row-fluid filter">
+                        </div>
+                        <div id="divRecordCount" style="font-weight: bold; text-align: right; vertical-align: middle;
+                            padding: 5px 10px 0px 0;">
+                            <span id="spanRecordsLabel"><span id="spanCurrentRecords">@string.Format("{0:n0}", Convert.ToInt64(TempData["FromRecordID"]))
+                                @(ViewBag.v4LibraryRollup ? "(" + string.Format("{0:n0}", Convert.ToInt64(TempData["FromRecordIDDisplay"])) + ")" : string.Empty)</span>
+                                of <span id="spanTotalRecords">@string.Format("{0:n0}", Convert.ToInt64(TempData["TotalResults"]))
+                                    @(ViewBag.v4LibraryRollup ? "(" + string.Format("{0:n0}", Convert.ToInt64(TempData["TotalResultsDisplay"])) + ")" : string.Empty)</span></span>
+                            <span style="margin-left: 10px; float: right;"><a onclick="javascript:window.location='@Url.Content("~/Library/RefreshTVResults")';" title="Refresh" href="javascript:void(0);">
+                                Refresh </a></span>
+                        </div>
+                        <div id="divResultScrollContent" class="mainContent">
+                            <div class="row-fluid posts" id="ulIQArchieveResults">
+                                @{ 
+                                        if (Model != null && Model["Result"] != null)
+                                        {
+                                            Html.RenderPartial("_Library", Model["Result"]);
+                                        }
+                                }
+                            </div>
+                            <div id="ulTempMediaResults">
+                            </div>
+                            <div align="center" id="divShowResult">
+                                <img src="../../images/Loading_1.gif" class="marginRight10 visibilityHidden offset2"
+                                    id="imgMoreResultLoading" alt="" />
+                                @{    
+                                        if (Convert.ToInt64(TempData["FromRecordID"]) < Convert.ToInt64(TempData["TotalResults"]))
+                                        {
+                                    <input type="button" id="btnShowMoreResults" class="loadmore" onclick="GetMoreResults();"
+                                        value="Show More Results" />
+                                        }
+                                        else
+                                        {
+                                    <input type="button" id="btnShowMoreResults" class="loadmore" value="No More Results" />
+                                        }
+                                }
+                                @{
+                                        if (System.Configuration.ConfigurationManager.AppSettings["IQArchievePageSizeOptions"] != null && System.Configuration.ConfigurationManager.AppSettings["IQArchievePageSizeOptions"].Split(',').Count() > 0 && Convert.ToInt64(TempData["TotalResults"]) > 0)
+                                        {
+                                            List<string> _PageSizeArray = System.Configuration.ConfigurationManager.AppSettings["IQArchievePageSizeOptions"].Split(',').ToList();
+                                
+                                    <a id="aPageSize" class="btn dropdown-toggle no-background margintop10 marginRight10 float-right"
+                                        onclick="showPopupOver()" data-toggle="dropdown fleft" href="#">@ViewBag.DefaultArchivePageSize
+                                        Items Per Page&nbsp;&nbsp;<span class="caret"></span></a>
+                                    <div id="divPageSizeDropDown" class="displayNone">
+                                        <ul class="dropdown-popover" style="width: auto;">
+                                            @{
+                                            if (!_PageSizeArray.Contains(ViewBag.DefaultArchivePageSize.ToString()))
+                                            {
+                                                _PageSizeArray.Add(ViewBag.DefaultArchivePageSize.ToString());
+                                            }
+                                            _PageSizeArray = _PageSizeArray.OrderBy(x => Int32.Parse(x)).ToList();
+                                            }
+                                            @for (int i = 0; i < _PageSizeArray.Count(); i++)
+                                            {
+                                                <li><a class="cursorPointer" onclick="SelectPageSize(@_PageSizeArray[i]);">@_PageSizeArray[i]</a></li>
+                                            }
+                                        </ul>
+                                    </div>
+                                  
+                                        }
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <div id="divReportContent" style="display: none;">
+                        <div class="row-fluid row-custom">
+                            <div class="pull-right action">
+                                <div class="btn-group fleft">
+                                    <a class="btn dropdown-toggle no-background" data-toggle="dropdown" href="#">Action&nbsp;&nbsp;<span
+                                        class="caret"></span></a>
+                                    <ul class="dropdown-menu pull-right">
+                                        <li><a class="cursorPointer" onclick="GenerateReportPDF(false, false);">Export to PDF</a></li>
+                                        <li><a class="cursorPointer" onclick="GenerateReportCSV();">Export to CSV</a></li>
+                                        <li><a class="cursorPointer" onclick="OpenEmailPopUp('report');">Send Email</a></li>
+                                        <li><a class="cursorPointer" onclick="EnableReportEditOptions();">Edit Report</a></li>
+                                        <li><a class="cursorPointer" onclick="DeleteReportByReportID();">Delete Report</a></li>
+                                        <li><a class="cursorPointer" onclick="OpenMergeReportsPopup();">Merge Reports</a></li>
+                                        <li><a class="cursorPointer" onclick="SetupReportForSort();">Sort Report</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="display: none; padding: 5px;" id="divReportEditOptions" class="clear DiscoveryChartHeaderMainDiv">
+                                <div class="clear borderBottom padding5">
+                                    <div class="float-left" style="margin: 22px 0px 5px">
+                                        <b>Update Report Settings</b></div>
+                                    <div class="float-right">
+                                        <input type="button" value="Cancel" class="button" onclick="CancelReportEditOptions();"
+                                            id="btnCancelReportEditOptions" />
+                                        <input type="button" value="Save" class="button" onclick="SaveReport(false);" id="btnSaveLibReport" />
+                                        <input type="button" value="Save As" class="button" onclick="SaveReportAs();" id="btnSaveReportAs" />
+                                        <input type="button" value="Remove Selected Items" class="button" onclick="RemoveReportItems();"
+                                            id="btnRemoveSelectedReportItems" />
+                                    </div>
+                                </div>
+                                <div class="clear" style="margin-top:10px;">
+                                    Report Title: 
+                                    <input type="text" id="txtEditReportTitle" style="width:80%; margin-bottom:4px;" />
+                                </div>
+                                <div class="clear">
+                                    <div class="span3">
+                                        <ul class="ul-line-none">
+                                            <li class="margintop5">Sort</li>
+                                            <li class="margintop5">
+                                                <input type="radio" style="margin-top: -3px" name="rdSort" checked="checked" value="Date-" />
+                                                Most Recent Date </li>
+                                            <li class="margintop5">
+                                                <input type="radio" style="margin-top: -3px" name="rdSort" value="Date+" />
+                                                Oldest Date</li>
+                                            <li class="margintop5">
+                                                <input type="radio" style="margin-top: -3px" name="rdSort" value="Audience-" />
+                                                Highest First Audience</li>
+                                            <li class="margintop5">
+                                                <input type="radio" style="margin-top: -3px" name="rdSort" value="Audience+" />
+                                                Lowest First Audience</li>
+                                            <li id="rdCustomSort" class="margintop5" style="display:none;">
+                                                <input type="radio" style="margin-top: -3px" name="rdSort" value="Custom" />
+                                                Custom</li>
+                                        </ul>
+                                        <ul class="ul-line-none" style="margin-top:20px;">
+                                            <li class="margintop5">Group</li>
+                                            <li class="margintop5 marginleft25">Primary Grouping</li>
+                                            <li class="marginleft25">
+                                                <select id="ddlPrimaryGroup">
+                                                    <option value="SubMediaType">Medium</option>
+                                                    <option value="CategoryName">Category</option>
+                                                    <option value="AgentName">Agent</option>
+                                                </select>
+                                            </li>
+                                            <li class="margintop5 marginleft25">Secondary Grouping</li>
+                                            <li class="marginleft25">
+                                                <select id="ddlSecondaryGroup">
+                                                    <option value="None">None</option>
+                                                    <option value="SubMediaType">Medium</option>
+                                                    <option value="CategoryName">Category</option>
+                                                    <option value="AgentName">Agent</option>
+                                                </select>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="span3">
+                                        <ul class="ul-line-none">
+                                            <li class="margintop5">
+                                                <input type="checkbox" style="margin-top: -3px" id="chkShowHideAll" value="All" />
+                                                Show/Hide All</li>
+                                            <li class="margintop5 marginleft25">
+                                                <input type="checkbox" style="margin-top: -3px" name="chkShowHide" checked="checked"
+                                                    value="TotalAudience" />
+                                                Total Audience</li>
+                                            <li class="margintop5 marginleft25">
+                                                <input type="checkbox" style="margin-top: -3px" name="chkShowHide" checked="checked"
+                                                    value="TotalMediaValue" />
+                                                Total MediaValue</li>
+                                            <li class="margintop5 marginleft25">
+                                                <input type="checkbox" style="margin-top: -3px" name="chkShowHide" checked="checked"
+                                                    value="Audience" />
+                                                Audience</li>
+                                            <li class="margintop5 marginleft25">
+                                                <input type="checkbox" style="margin-top: -3px" name="chkShowHide" checked="checked"
+                                                    value="MediaValue" />
+                                                MediaValue</li>
+                                            <li class="margintop5 marginleft25">
+                                                <input type="checkbox" style="margin-top: -3px" name="chkShowHide" checked="checked"
+                                                    value="Sentiment" />
+                                                Sentiment</li>
+                                            <li class="margintop5 marginleft25">
+                                                <input type="checkbox" style="margin-top: -3px" name="chkShowHide" checked="checked"
+                                                    value="NationalValue" />
+                                                National Values</li>
+                                            <li class="margintop5 marginleft25">
+                                                <input type="checkbox" style="margin-top: -3px" name="chkShowHide" checked="checked"
+                                                    value="TotalNationalAudience" />
+                                                Total National Audience</li>
+                                            <li class="margintop5 marginleft25">
+                                                <input type="checkbox" style="margin-top: -3px" name="chkShowHide" checked="checked"
+                                                    value="TotalNationalMediaValue" />
+                                                Total National MediaValue</li>
+                                            <li class="margintop5 marginleft25">
+                                                <input type="checkbox" style="margin-top: -3px" name="chkShowHide" checked="checked"
+                                                    value="CoverageSources" />
+                                                Coverage Sources</li>
+                                        </ul>
+                                    </div>
+                                    <div class="span3">
+                                        <ul class="ul-line-none">
+                                            <li class="margintop5">Report Image</li>
+                                            <li>
+                                                <select id="ddlSavedReportImage">
+                                                    <option>Default</option>
+                                                    @if (Model != null && Model["ReportImages"] != null)
+                                                    {
+                                                        List<IQMedia.Model.IQClient_CustomImageModel> lstIQClient_CustomImageModel = (List<IQMedia.Model.IQClient_CustomImageModel>)Model["ReportImages"];
+                                                        foreach (IQMedia.Model.IQClient_CustomImageModel item in lstIQClient_CustomImageModel)
+                                                        {
+                                                        <option value="@item.ID">@item.Location</option>
+                                                        }
+                                                    }
+                                                </select>
+                                            </li>
+                                            <li class="margintop5">Cover Page</li>
+                                            <li class="margintop5">
+                                                <input type="checkbox" style="margin-top: -3px" id="chkDashboardItemsAll" value="All" />
+                                                Dashboard Items</li>
+                                            <li class="margintop5 marginleft25">
+                                                <input type="checkbox" style="margin-top: -3px" name="chkShowHideDashboard" value="Overview" onclick="javascript:void(0);" />
+                                                @CommonFunctions.GetEnumDescription(CommonFunctions.DashBoardMediumType.Overview)</li>
+                                            @{
+                                                foreach (IQ_MediaTypeModel objMediaType in sessionInformation.MediaTypes.Where(m => m.TypeLevel == 1 && m.HasAccess && sessionInformation.MediaTypes.Where(sm => string.Compare(m.MediaType, sm.MediaType, true) == 0 && sm.TypeLevel == 2 && sm.HasAccess).Count() > 0).OrderBy(o => o.SortOrder))
+                                                {
+                                                    <li class="margintop5 marginleft25">
+                                                        <input type="checkbox" style="margin-top: -3px" name="chkShowHideDashboard" value="@objMediaType.MediaType" onclick="javascript:void(0);" />
+                                                        @objMediaType.DisplayName</li>
+                                                }                                                
+                                             }
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="float: left;">
+                                <h4 id="h4ReportTitle">
+                                    Report Results</h4>
+                            </div>
+                        </div>
+                        <div style="clear: both;">
+                        </div>
+                        <div id="divReportScrollContent" class="mainContent">
+                            <div id="divReportResults"></div>
+                        </div>
+                    </div>
+                    @if (sessionInformation.Isv4UGCAccess)
+                    {
+                        <div id="divCloudContent" style="display: none;">
+                            <div class="row-fluid row-custom">
+                                <div class="btn-group">
+                                    <a class="btn dropdown-toggle no-background" data-toggle="dropdown" href="#" id="aSortDirectionIQUGCArchive">
+                                        Most Recent (Air Date)&nbsp;&nbsp;<span class="caret"></span></a>
+                                    <ul class="dropdown-menu">
+                                        <li class="cursorPointer"><a onclick="SortDirectionIQUGCArchiveResults('AirDate',false);">
+                                            Most Recent (Air Date)</a></li>
+                                        <li class="cursorPointer"><a onclick="SortDirectionIQUGCArchiveResults('AirDate',true);">
+                                            Oldest First (Air Date)</a></li>
+                                        <li class="cursorPointer"><a onclick="SortDirectionIQUGCArchiveResults('CreatedDate',false);">
+                                            Most Recent (Created Date)</a></li>
+                                        <li class="cursorPointer"><a onclick="SortDirectionIQUGCArchiveResults('CreatedDate',true);">
+                                            Oldest First (Created Date)</a></li>
+                                    </ul>
+                                </div>
+                                <div class="btn-group">
+                                    <a class="btn dropdown-toggle no-background" data-toggle="dropdown" href="#" id="aDurationIQUGCArchive">
+                                        All&nbsp;&nbsp;<span class="caret"></span></a>
+                                    <ul class="dropdown-menu">
+                                        <li class="cursorPointer"><a onclick="GetResultOnDurationIQUGCArchive(0);">All</a></li>
+                                        <li class="cursorPointer"><a onclick="GetResultOnDurationIQUGCArchive(1);">Last 24 Hours</a></li>
+                                        <li class="cursorPointer"><a onclick="GetResultOnDurationIQUGCArchive(2);">Last Week</a></li>
+                                        <li class="cursorPointer"><a onclick="GetResultOnDurationIQUGCArchive(3);">Last Month</a></li>
+                                        <li class="cursorPointer"><a onclick="GetResultOnDurationIQUGCArchive(4);">Last 3 Months</a></li>
+                                        <li class="cursorPointer"><a onclick="GetResultOnDurationIQUGCArchive(5);">Custom</a></li>
+                                    </ul>
+                                </div>
+                                @if (sessionInformation.Isv4UGCUploadEdit)
+                                {
+                                    <div class="pull-right action">
+                                        <div class="btn-group fleft">
+                                            <a class="btn dropdown-toggle no-background" data-toggle="dropdown" href="#">Action&nbsp;&nbsp;<span
+                                                class="caret"></span></a>
+                                            <ul class="dropdown-menu pull-right">
+                                                <li><a class="cursorPointer" onclick="DeleteIQUGCArchiveRecords();">Remove</a></li>
+                                                <li><a class="cursorPointer" onclick="AddIQUGCToLibrary();">Add To Library</a></li>
+                                                <li><a class="cursorPointer" onclick="OpenUGCContentModalPopup();">Upload UGC Content</a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="select">
+                                            <label>
+                                                Select All</label><input id="chkIQUGCArchiveAll" type="checkbox" /></div>
+                                    </div>
+                                }
+                            </div>
+                            <div id="divActiveFilterIQUGCArchive" class="row-fluid filter">
+                            </div>
+                            <div style="clear: both;">
+                            </div>
+                            <div style="font-weight: bold; text-align: right; vertical-align: middle; padding: 5px 10px 0px 0;">
+                                <span id="divRecordCountIQUGCArchive" style="display: none;"><span id="spanIQUGCArchiveCurrentRecords">
+                                </span> of <span id="spanIQUGCArchiveTotalRecords"></span></span>
+                                @if (sessionInformation.Isv4UGCUploadEdit)
+                                {<span style="margin-left: 10px; float: right;"><a onclick="RefreshIQUGCArchiveResults();"
+                                    title="Refresh" href="javascript:void(0);">Refresh </a></span>}
+                            </div>
+                            <div id="divIQUGCArchiveResultsScrollContent" class="mainContent">
+                                <div class="row-fluid posts" id="divIQUGCArchiveResultsHTML">
+                                </div>
+                                <div style="text-align: center; margin-top: 10px;" id="divUGCShowResult">
+                                    <img src="../../images/Loading_1.gif" class="marginRight10 visibilityHidden offset2"
+                                        id="imgUGCMoreResultLoading" alt="" />
+                                    <input type="button" id="btnUGCShowMoreResults" class="loadmore" onclick="LoadIQUGCArchiveResults();"
+                                        style="display: none;" value="Show More Results" />
+                                    @{
+                                if (System.Configuration.ConfigurationManager.AppSettings["IQUGCArchievePageSizeOptions"] != null && System.Configuration.ConfigurationManager.AppSettings["IQUGCArchievePageSizeOptions"].Split(',').Count() > 0)
+                                {
+                                    List<string> _PageSizeArray = System.Configuration.ConfigurationManager.AppSettings["IQUGCArchievePageSizeOptions"].Split(',').ToList();
+                                    
+                                        <a id="aUGCPageSize" class="btn dropdown-toggle no-background margintop10 marginRight10 float-right displayNone"
+                                            onclick="showIQUGArchiveCPopupOver()" data-toggle="dropdown fleft" href="#">@ViewBag.DefaultArchivePageSize
+                                            Items Per Page&nbsp;&nbsp;<span class="caret"></span></a>
+                                        <div id="divIQUGCArchivePageSizeDropDown" class="displayNone">
+                                            <ul class="dropdown-popover" style="width: auto;">
+                                                @{
+                                    if (!_PageSizeArray.Contains(ViewBag.DefaultArchivePageSize.ToString()))
+                                    {
+                                        _PageSizeArray.Add(ViewBag.DefaultArchivePageSize.ToString());
+                                    }
+                                    _PageSizeArray = _PageSizeArray.OrderBy(x => Int32.Parse(x)).ToList();
+                                                }
+                                                @for (int i = 0; i < _PageSizeArray.Count(); i++)
+                                                {
+                                                    <li><a class="cursorPointer" onclick="UGCSelectPageSize(@_PageSizeArray[i]);">@_PageSizeArray[i]</a></li>
+                                                }
+                                            </ul>
+                                        </div>
+                                }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    <div id="divGallaryContent" style="display: none;">
+                        <div id="divGalleryResultsScrollContent" class="mainContent">
+                            <div class="row-fluid posts" id="divGalleryResultsHTML">
+                            </div>
+                        </div>
+                    </div>                
+                    @if (sessionInformation.IsMediaRoomEditor || sessionInformation.IsMediaRoomContributor)
+                    {    
+                        <div id="divMCMediaContent" style="display: none;">
+                            <div class="row-fluid row-custom">
+                                <!--/span-->
+                                <div class="btn-group">
+                                    <a class="btn dropdown-toggle no-background" data-toggle="dropdown" href="#" id="aMCSortDirection">
+                                        Most Recent (Created Date)&nbsp;&nbsp;<span class="caret"></span></a>
+                                    <ul class="dropdown-menu">
+                                        <li class="cursorPointer"><a onclick="SortDirection_MCMedia('MediaDate',false);">Most Recent
+                                            (Media Date)</a></li>
+                                        <li class="cursorPointer"><a onclick="SortDirection_MCMedia('MediaDate',true);">Oldest First
+                                            (Media Date)</a></li>
+                                        <li class="cursorPointer"><a onclick="SortDirection_MCMedia('CreatedDate',false);">Most Recent
+                                            (Created Date)</a></li>
+                                        <li class="cursorPointer"><a onclick="SortDirection_MCMedia('CreatedDate',true);">Older First
+                                            (Created Date)</a></li>
+                                    </ul>
+                                </div>
+                                <div class="btn-group">
+                                    <a class="btn dropdown-toggle no-background" data-toggle="dropdown" href="#" id="aMCDuration">
+                                        All&nbsp;&nbsp;<span class="caret"></span></a>
+                                    <ul class="dropdown-menu">
+                                        <li class="cursorPointer"><a onclick="GetResultOnDuration_MCMedia(0);">All</a></li>
+                                        <li class="cursorPointer"><a onclick="GetResultOnDuration_MCMedia(1);">Last 24 Hours</a></li>
+                                        <li class="cursorPointer"><a onclick="GetResultOnDuration_MCMedia(2);">Last Week</a></li>
+                                        <li class="cursorPointer"><a onclick="GetResultOnDuration_MCMedia(3);">Last Month</a></li>
+                                        <li class="cursorPointer"><a onclick="GetResultOnDuration_MCMedia(4);">Last 3 Months</a></li>
+                                        <li class="cursorPointer"><a onclick="GetResultOnDuration_MCMedia(5);">Custom</a></li>
+                                    </ul>
+                                </div>
+                                <div class="pull-right action">
+                                    <div class="btn-group fleft">
+                                        <a class="btn dropdown-toggle no-background" data-toggle="dropdown" href="#">Action&nbsp;&nbsp;<span
+                                            class="caret"></span></a>
+                                        <ul class="dropdown-menu pull-right">
+                                            <li><a class="cursorPointer" onclick="RemoveFromMCMedia('mcmedia');">Remove From Media Room</a></li>
+                                            <li><a class="cursorPointer" onclick="OpenEmailPopUp('mcmedia');">Send Email</a></li>
+                                            <li><a class="cursorPointer" onclick="OpenCustomCategoryRankingPopup()">Set Category Order</a></li>
+                                            @if (sessionInformation.IsMediaRoomEditor)
+                                            {
+                                                <li><a class="cursorPointer" onclick="AddToReport_MCMedia();">Publish</a></li>
+                                                <li><a class="cursorPointer" onclick="RemoveFromReport_MCMedia();">Un-Publish</a></li>                                                
+                                            } 
+                                            <li><a class="cursorPointer" onclick="GetMCMediaReportGUID(true);">View Published</a></li>   
+                                        </ul>
+                                    </div>
+                                    <div class="select">
+                                       <label>Select All</label>
+                                       <input id="chkMCAll" type="checkbox" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="divMCActiveFilter" class="row-fluid filter">
+                            </div>
+                            <div style="clear: both;">
+                            </div>
+                            <div style="font-weight: bold; text-align: right; vertical-align: middle; padding: 5px 10px 0px 0;">
+                                <span id="divMCRecordCount" style="display: none;">
+                                    <span id="spanMCCurrentRecords"></span> 
+                                    of 
+                                    <span id="spanMCTotalRecords"></span>
+                                </span>
+                                <span style="margin-left: 10px; float: right;">
+                                    <a onclick="LoadResults_MCMedia(true);" title="Refresh" href="javascript:void(0);">Refresh</a>
+                                </span>
+                            </div>
+                            <div id="divMCMediaScrollContent" class="mainContent">
+                                <div class="row-fluid posts" id="ulMCResults">
+                                </div>
+                                <div align="center" id="divMCShowResult">
+                                    <img src="../../images/Loading_1.gif" class="marginRight10 visibilityHidden offset2" id="imgMCMoreResultLoading" alt="" />
+                                    <input type="button" id="btnMCShowMoreResults" class="loadmore" onclick="GetMoreResults_MCMedia();" value="Show More Results" />
+                                    @{
+                                            if (System.Configuration.ConfigurationManager.AppSettings["IQArchievePageSizeOptions"] != null && System.Configuration.ConfigurationManager.AppSettings["IQArchievePageSizeOptions"].Split(',').Count() > 0)
+                                            {
+                                                List<string> _PageSizeArray = System.Configuration.ConfigurationManager.AppSettings["IQArchievePageSizeOptions"].Split(',').ToList();
+                                
+                                            <a id="aMCPageSize" class="btn dropdown-toggle no-background margintop10 marginRight10 float-right" onclick="ShowPopupOver_MCMedia()" data-toggle="dropdown fleft" href="#">
+                                                @ViewBag.DefaultArchivePageSize Items Per Page&nbsp;&nbsp;<span class="caret"></span>
+                                            </a>
+                                            <div id="divMCPageSizeDropDown" class="displayNone">
+                                                <ul class="dropdown-popover" style="width: auto;">
+                                                    @{
+                                                if (!_PageSizeArray.Contains(ViewBag.DefaultArchivePageSize.ToString()))
+                                                {
+                                                    _PageSizeArray.Add(ViewBag.DefaultArchivePageSize.ToString());
+                                                }
+                                                _PageSizeArray = _PageSizeArray.OrderBy(x => Int32.Parse(x)).ToList();
+                                                    }
+                                                    @for (int i = 0; i < _PageSizeArray.Count(); i++)
+                                                    {
+                                                        <li><a class="cursorPointer" onclick="SelectPageSize_MCMedia(@_PageSizeArray[i]);">@_PageSizeArray[i]</a></li>
+                                                    }
+                                                </ul>
+                                            </div>                                  
+                                            }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+            <!--/span-->
+        }
+        else
+        {
+            <div class="mainerrorDiv">@IQMedia.WebApplication.Config.ConfigSettings.Settings.PageLoadErrorMessage</div>
+        }
+    </div>
+    <!--/row-->
+</div>
+@if (ViewBag.IsSuccess)
+{
+    <div id="divEmailPopup" class="modal fade hide resizable modalPopupDiv">
+        <div class="closemodalpopup">
+            <img id="imgCloseEmalilPopup" src="~/images/close-icon.png" alt="close" class="popup-top-close"
+                onclick="CancelEmailpopup();" /></div>
+        <div style="padding: 20px 20px 0px 20px;">
+            <input type="hidden" id="hdnDefaultSender" value="@Model["DefaultEmailSender"]" />
+            <div class="modalpopheadertitle" style="margin-bottom: 20px;">
+                Share with friends
+            </div>
+            <div id="divEmailPopupScrollContent" style="padding-right: 15px;">
+                <form class="form-horizontal">
+                <input type="hidden" id="hdnEmailFunctionalityType" value="result" />
+                <input type="hidden" id="hdnLibraryMaxLibraryEmailItems" value="@ViewBag.MaxLibraryEmailItems" />
+                <div class="control-group">
+                    @{
+    bool useCustomerEmailAsDefault = Convert.ToBoolean(Model["UseCustomerEmailAsDefault"]);
+                    <label class="control-label" for="txtFromEmail">
+                        @(useCustomerEmailAsDefault ? "Your" : "From") email</label>
+                    <div class="controls">
+                        <input type="text" id="txtFromEmail" placeholder="From Email" class="txtwidth90per" @(useCustomerEmailAsDefault ? "" : "readonly=\"readonly\"") />
+                        <span class="help-inline" id="spanFromEmail" style="color: #FF0000; display: none;">
+                        </span>
+                    </div>
+                    }
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="txtToEmail">
+                        Friend's email</label>
+                    <div class="controls">
+                        <input type="text" id="txtToEmail" placeholder="To Email (separate multiple addresses with semicolon, up to @ViewBag.MaxEmailAddresses addresses)"
+                            class="txtwidth90per" />
+                        <span class="help-inline" id="spanToEmail" style="color: #FF0000; display: none;">
+                        </span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="txtBCCEmail">
+                        BCC email</label>
+                    <div class="controls">
+                        <input type="text" id="txtBCCEmail" placeholder="BCC Email (separate multiple addresses with semicolon, up to @ViewBag.MaxEmailAddresses addresses)"
+                            class="txtwidth90per" />
+                        <span class="help-inline" id="spanBCCEmail" style="color: #FF0000; display: none;">
+                        </span>
+                    </div>
+                </div>
+                <div id="divEmailTemplate" class="control-group">
+                    <label class="control-label" for="ddlTemplate">
+                        Email Template</label>
+                    <div class="controls">
+                        <select id="ddlTemplate" class="txtwidth66per">
+                            @if (Model != null && Model["EmailTemplates"] != null)
+                            {
+                                List<IQMedia.Model.MCMediaTemplateModel> lstEmailTemplates = (List<IQMedia.Model.MCMediaTemplateModel>)Model["EmailTemplates"];
+                                foreach (IQMedia.Model.MCMediaTemplateModel item in lstEmailTemplates)
+                                {
+                                    <option value="@item.TemplateKey" @(item.TemplateKey == Convert.ToInt32(Model["DefaultEmailTemplateID"]) ? "selected=selected isdefault=true" : string.Empty)>@item.TemplateName</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="txtSubject">
+                        Subject</label>
+                    <div class="controls">
+                        <input type="text" id="txtSubject" placeholder="Subject" class="txtwidth90per" />
+                        <span class="help-inline" id="spanSubject" style="color: #FF0000; display: none;">
+                        </span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="txtMessage">
+                        Message</label>
+                    <div class="controls">
+                        <textarea id="txtMessage" rows="5" cols="50" placeholder="Message" class="txtwidth90per"></textarea>
+                        <span class="help-inline" id="spanMessage" style="color: #FF0000; display: none;
+                            vertical-align: top"></span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="controls">
+                        <button type="button" id="btnCancel" onclick="CancelEmailpopup();" class="cancelButton">
+                            Cancel</button>
+                        <button type="button" id="btnSendEmail" onclick="SendEmail();" class="button">
+                            OK</button>
+                    </div>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div id="divEditRecordPopup" class="modal fade hide resizable modalPopupDiv">
+        <div class="closemodalpopup">
+            <img id="imgCloseEditPopup" src="~/images/close-icon.png" alt="close" class="popup-top-close"
+                onclick="CancelEditPopup();" /></div>
+        <div id="divEditHTML" style="padding: 20px 20px 0px 20px;" class="modalBody">
+        </div>
+    </div>
+    <div id="divIQReport" class="modal fade hide resizable modalPopupDiv">
+        <div class="closemodalpopup">
+            <img id="imgCloseIQReport" src="~/images/close-icon.png" alt="close" class="popup-top-close"
+                onclick="CancelIQReportPopup();" /></div>
+        <div id="divCreateReportMsg" class="center" style="font-weight: bold;">
+        </div>
+        <div id="divCreateReport" style="padding: 20px 20px 0px 20px;" class="modalBody">
+            <input type="hidden" id="hdnLibraryMaxLibraryReportItems" value="@ViewBag.MaxLibraryReportItems" />
+            <div class="modalpopheadertitle" style="margin-bottom: 20px;">
+                Create Report
+            </div>
+            <form class="form-horizontal">
+            <div class="control-group">
+                <label class="control-label" for="txtReportTitle">
+                    Report Title</label>
+                <div class="controls">
+                    <input type="text" id="txtReportTitle" placeholder="Report Title" class="txtwidth90per" />
+                    <span class="help-inline" id="spanReportTitle" style="color: #FF0000; display: none;">
+                    </span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="ddlReportImage">
+                    Report Image</label>
+                <div class="controls">
+                    <select id="ddlReportImage">
+                        <option>Default</option>
+                        @if (Model != null && Model["ReportImages"] != null)
+                        {
+                            List<IQMedia.Model.IQClient_CustomImageModel> lstIQClient_CustomImageModel = (List<IQMedia.Model.IQClient_CustomImageModel>)Model["ReportImages"];
+                            foreach (IQMedia.Model.IQClient_CustomImageModel item in lstIQClient_CustomImageModel)
+                            {
+                            <option value="@item.ID">@item.Location</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="ddlReportFolder">
+                    Report Folder</label>
+                <div class="controls">
+                    <select id="ddlReportFolder">
+                    @if (Model != null && Model["ReportFolders"] != null)
+                    {
+                        List<IQMedia.Model.IQReport_FolderModel> lstIQReport_FolderModel = (List<IQMedia.Model.IQReport_FolderModel>)Model["ReportFolders"];
+                        string lastParent = "THIS IS NOT A VALID ID";
+                        string lastLastParent = "THIS IS NOT A VALID ID";
+                        int spaceCount = 0;
+                        Dictionary<string, int> indents = new Dictionary<string, int>();
+
+                        foreach (IQMedia.Model.IQReport_FolderModel item in lstIQReport_FolderModel)
+                        {
+                            if (lastParent == item.parent)
+                            {
+                                spaceCount++;
+                            }
+                            else if (lastLastParent != item.parent && lastLastParent != "THIS IS NOT A VALID ID")
+                            {
+                                if (indents.ContainsKey(item.parent))
+                                {
+                                    spaceCount = indents.Where(x => x.Key == item.parent).Select(x => x.Value).First();
+                                }
+                                else
+                                {
+                                    spaceCount--;
+                                }
+                            }
+
+                            if (item.parent != null && !indents.ContainsKey(item.parent))
+                            {
+                                indents.Add(item.parent, spaceCount);
+                            }
+
+                            lastLastParent = lastParent;
+                            lastParent = item.id;   
+                            
+                                <option value="@item.id" @(item.text == System.Configuration.ConfigurationManager.AppSettings["ClientRootFolderName"] ? "selected=selected" : string.Empty)>
+                                    @{
+                            for (int x = 0; x < spaceCount; x++)
+                            {
+                                            <p>&nbsp;</p>
+                            }
+                                    }
+                                
+                                    -@item.text
+                                </option>
+                        }
+                    }
+                    </select>
+                    <span class="help-inline" id="spanReportFolder" style="color: #FF0000; display: none;">
+                    </span>
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="controls">
+                    <button type="button" id="btnCancelReport" onclick="CancelIQReportPopup();" class="cancelButton">
+                        Cancel</button>
+                    <button type="button" id="btnSaveReport" onclick="SaveIQReport();" class="button">
+                        OK</button>
+                </div>
+            </div>
+            </form>
+        </div>
+    </div>
+    <div id="divIQReportAppend" class="modal fade hide resizable modalPopupDiv">
+        <div class="closemodalpopup">
+            <img id="imgCloseIQReportAppend" src="~/images/close-icon.png" alt="close" class="popup-top-close"
+                onclick="CancelIQReportAppendPopup();" /></div>
+        <div style="padding: 20px 20px 0px 20px" class="modalBody">
+            <div id="divAddtoReportMsg" class="center" style="font-weight: bold">
+            </div>
+            <div class="modalpopheadertitle" style="margin-bottom: 20px;">
+                Modify Report
+            </div>
+            <div id="divAddtoReport">
+                <form class="form-horizontal">
+                <div class="control-group">
+                    <label class="control-label" for="txtReportTitle">
+                        Select report
+                    </label>
+                    <div class="controls">
+                        <select id="ddlReportNames" class="ddlwidth93per">
+                        </select>
+                        <span class="help-inline" id="spanReportDropDownItem" style="color: #FF0000; display: none;">
+                        </span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="controls">
+                        <button type="button" id="btnCancelAppendReport" onclick="CancelIQReportAppendPopup();"
+                            class="cancelButton">
+                            Cancel</button>
+                        <button type="button" id="btnAppendReport" onclick="ModifyIQReport();" class="button">
+                            OK</button>
+                    </div>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+                    if (sessionInformation.Isv4UGCAccess && sessionInformation.Isv4UGCUploadEdit)
+                    {
+    <div id="divCloudUGCUploadPopup" class="modal fade hide resizable modalPopupDiv">
+        <div class="closemodalpopup">
+            <img id="imgCloudUGCUploadPopup" src="~/images/close-icon.png" alt="close" class="popup-top-close"
+                onclick="CancelCloudUGCUploadPopup();" /></div>
+        <div style="padding: 20px;">
+            <div class="center" id="divCloudUGCLoadMsg" style="font-weight: bold">
+            </div>
+            <div class="modalpopheadertitle">
+                UGC Content Upload
+            </div>
+            <div id="divUGCContentFormContent" style="margin-top: 20px;">
+                <div id="divUGCCommonErrorMsg" style="color: #FF0000; display: none; padding-bottom: 10px;">
+                </div>
+                <div id="divUGCContentFormScrollContent" style="padding-right: 10px;">
+                    <form id="ugcContentForm" name="ugcContentForm" class="form-horizontal" action="/Library/UGCUploadContentIE/"
+                    method="post" enctype="multipart/form-data">
+                    <div class="control-group">
+                        <label class="control-label" for="txtUGCSelectedFileDisplay">
+                            File</label>
+                        <div class="controls">
+                            <div class="input-append width100p">
+                                <div class="float-left width50p">
+                                    <input class="width100p" id="txtUGCSelectedFileDisplay" name="txtUGCSelectedFileDisplay"
+                                        disabled="disabled" type="text" />
+                                    <input id="hdnUGCSelectedFileDisplay" name="hdnUGCSelectedFileDisplay" type="hidden" />
+                                    <input type="file" id="fucUGCFile" name="fucUGCFile" style="width: 100%" />
+                                </div>
+                                <div class="float-left">
+                                    <button class="btn float-left marginLeft14" type="button" id="btnUGCBrowseFile">
+                                        Browse</button>
+                                    <button class="btn float-left" type="button" id="btnUGCBrowseFTP" onclick="OpenCloudUGCFTPUploadPopup();">
+                                        Browse FTP</button>
+                                    <button type="button" class="btn float-left" id="btnClearUGCFileSelection" onclick="ClearUGCFileSelection();">
+                                        Clear</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="spanDateUploaded">
+                        </label>
+                        <div class="controls">
+                            <span class="help-inline" id="spanUGCFile" style="color: #FF0000; display: none;
+                                vertical-align: top"></span>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="spanDateUploaded">
+                            Date Uploaded</label>
+                        <div class="controls">
+                            <input type="text" id="txtDateUploaded" readonly="readonly" />
+                        </div>
+                    </div>
+                    @if (sessionInformation.IsUgcAutoClip.HasValue && sessionInformation.IsUgcAutoClip.Value == true && UGCTempData.UGC_Client_MapModel.AutoClip_Status == true)
+                    {
+                        <div class="control-group">
+                            <label class="control-label" for="chkAutoClip">
+                                Auto Clip</label>
+                            <div class="controls">
+                                <input type="checkbox" id="chkAutoClip" name="chkAutoClip" value="1" />
+                            </div>
+                        </div>
+                    }
+                    <div class="control-group">
+                        <label class="control-label" for="txtUGCTitle">
+                            Title</label>
+                        <div class="controls">
+                            <input type="text" id="txtUGCTitle" name="txtUGCTitle" class="txtwidth90per" placeholder="Title" />
+                            <span class="help-inline" id="spanUGCTitle" style="color: #FF0000; display: none;
+                                vertical-align: top"></span>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="txtUGCKeywords">
+                            Keywords</label>
+                        <div class="controls">
+                            <input type="text" id="txtUGCKeywords" name="txtUGCKeywords" placeholder="Keywords"
+                                class="txtwidth90per" />
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="ddlUGCCategory">
+                            Category</label>
+                        <div class="controls">
+                            <select id="ddlUGCCategory" name="ddlUGCCategory" onchange="OnSelectOfCategory_UGCcontent(this.id,'ddlUGCCategory','ddlUGCSubCategory1','ddlUGCSubCategory2','ddlUGCSubCategory3','divUGCCommonErrorMsg');">
+                            </select>
+                            <span class="help-inline" id="spanUGCCategory" style="color: #FF0000; display: none;
+                                vertical-align: top"></span><a class="cursorPointer" onclick="CreateAndOpenAddCategoryPopup(BindCustomCategoryDropDown,true);">
+                                    Add Category </a>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="txtUGCSubCategory1">
+                            Sub Category1</label>
+                        <div class="controls">
+                            <select id="ddlUGCSubCategory1" name="ddlUGCSubCategory1" onchange="OnSelectOfCategory_UGCcontent(this.id,'ddlUGCCategory','ddlUGCSubCategory1','ddlUGCSubCategory2','ddlUGCSubCategory3','divUGCCommonErrorMsg');">
+                            </select>
+                            <a class="cursorPointer" onclick="CreateAndOpenAddCategoryPopup(BindCustomCategoryDropDown,true);">
+                                Add Category </a>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="txtUGCSubCategory2">
+                            Sub Category2</label>
+                        <div class="controls">
+                            <select id="ddlUGCSubCategory2" name="ddlUGCSubCategory2" onchange="OnSelectOfCategory_UGCcontent(this.id,'ddlUGCCategory','ddlUGCSubCategory1','ddlUGCSubCategory2','ddlUGCSubCategory3','divUGCCommonErrorMsg');">
+                            </select>
+                            <a class="cursorPointer" onclick="CreateAndOpenAddCategoryPopup(BindCustomCategoryDropDown,true);">
+                                Add Category </a>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="txtUGCSubCategory3">
+                            Sub Category3</label>
+                        <div class="controls">
+                            <select id="ddlUGCSubCategory3" name="ddlUGCSubCategory3" onchange="OnSelectOfCategory_UGCcontent(this.id,'ddlUGCCategory','ddlUGCSubCategory1','ddlUGCSubCategory2','ddlUGCSubCategory3','divUGCCommonErrorMsg');">
+                            </select>
+                            <a class="cursorPointer" onclick="CreateAndOpenAddCategoryPopup(BindCustomCategoryDropDown,true);">
+                                Add Category </a>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="txtUGCairDate">
+                            Publish Date</label>
+                        <div class="controls">
+                            <input type="text" readonly="readonly" id="dpUGCAirDateTime" name="dpUGCAirDateTime" />
+                            <span class="help-inline" id="spanUGCAirDateTime" style="color: #FF0000; display: none;
+                                vertical-align: top"></span>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="ddlTimeZone">
+                            Time Zone</label>
+                        <div class="controls">
+                            <select id="ddlUGCtimeZone" name="ddlUGCtimeZone">
+                                <option value="">&lt;Blank&gt;</option>
+                                <option value="CST">CST</option>
+                                <option value="EST">EST</option>
+                                <option value="MST">MST</option>
+                                <option value="PST">PST</option>
+                            </select>
+                            <span class="help-inline" id="spanUGCTimeZone" style="color: #FF0000; display: none;
+                                vertical-align: top"></span>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="txtUGCDescription">
+                            Description</label>
+                        <div class="controls">
+                            <textarea id="txtUGCDescription" name="txtUGCDescription" rows="2" cols="50" placeholder="Description"
+                                class="txtwidth90per"></textarea>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <div class="controls">
+                            <button type="button" id="btnCancelUGCContent" onclick="CancelCloudUGCUploadPopup();"
+                                class="cancelButton">
+                                Cancel</button>
+                            <button type="button" id="btnUGCContentSave" onclick="SaveCloudUGCContent();" class="button">
+                                OK</button>
+                        </div>
+                    </div>
+                    </form>
+                </div>
+            </div>
+            <div id="divUGCProgressbar">
+                <div style="padding-bottom: 15px;">
+                    <div style="padding-top: 25px;">
+                        Uploading File</div>
+                    <div id="divUGCUploadingFileName" style="padding-top: 10px;">
+                    </div>
+                </div>
+                <div id="divProgressbar" style="display: none;">
+                    <a style="z-index: 2000; text-decoration: none;" href="javascript:;" onclick="CancelUGCUpload()"
+                        class="padding5 float-right">X</a>
+                    <div class="progress-label">
+                        Loading...</div>
+                </div>
+                <div id="divIEProgressbar" style="display: none;">
+                    <a style="z-index: 2000; text-decoration: none;" href="javascript:;" onclick="CancelUGCUpload()"
+                        class="padding5 float-right">X</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="divCloudUGCFTPUploadPopup" class="modal fade hide resizable modalPopupDiv">
+        <div class="closemodalpopup">
+            <img id="imgCloudUGCFTPUploadPopup" src="~/images/close-icon.png" alt="close" class="popup-top-close"
+                onclick="CancelCloudUGCFTPUploadPopup();" /></div>
+        <div style="padding: 20px 20px 20px 20px;" class="">
+            <div class="modalpopheadertitle">
+                FTP file slection
+            </div>
+            <div style="padding-top: 25px; padding-left: 10px;">
+                <input type="text" disabled="disabled" id="txtFTPSelectedFile" class="txtwidth66per"
+                    style="margin: 0px;" />
+                <input type="button" id="btnSaveFTPSelectedFile" onclick="SelectFTPSelectedFile();"
+                    value="Select File" class="btn" />
+            </div>
+            <div id="divUGCFTPExplorer" style="padding-top: 25px;">
+            </div>
+        </div>
+    </div>
+    
+    <div id="divEditIQUGCArchivePopup" class="modal fade hide resizable modalPopupDiv">
+        <div class="closemodalpopup">
+            <img src="~/images/close-icon.png" alt="close" class="popup-top-close" onclick="CancelIQUGCArchiveEditPopup();" /></div>
+        <div style="padding: 20px;">
+            <div class="modalpopheadertitle">
+                UGC Content Edit
+            </div>
+            <div id="divEditIQUGCArchiveHTML">
+            </div>
+        </div>
+    </div>
+                    }
+    <div id="divLoadTMIframePopup" class="modal fade hide resizable modalPopupDiv">
+        <div class="closemodalpopup">
+            <img id="imgLoadTMIframePopup" src="~/images/close-icon.png" alt="close" class="popup-top-close"
+                onclick="CloseTMIframePopup();" /></div>
+        <div style="padding: 20px;">
+            <div class="row-fluid">
+                <div class="span5" id="divplayer">
+                    <div class="divlibplayer" align="center">
+                        <img src="~/images/phonograph.png" class="imgradio" id="imgradio" alt="Radio" style="width: 125px;" />
+                        <div id="divAudio">
+                        </div>
+                    </div>
+                </div>
+                <div class="span7" id="DivTVEyesScrollContent">
+                    <div id="divtranscript">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="divPlayLogNSummaryPopup" class="modal fade hide resizable modalPopupDiv">
+        <div class="closemodalpopup">
+            <img id="imgPlayLogNSummaryPopup" src="~/images/close-icon.png" alt="close" class="popup-top-close"
+                onclick="ClosePlayLogNSummaryPopup();" /></div>
+        <div style="padding: 20px;">
+            <div class="media">
+                <div class="float-left tvFeedsThumbParent">
+                    <div class="float-left video-thumb-width tvFeedsThumb marginRight10">
+                        <div class="positionRelative">
+                            <a id="ClipPlayerLogo" class="cursorPointer">
+                                <img id="imgClipThumbnails" alt="" class="maxwidth130"></a></div>
+                    </div>
+                </div>
+                <div class="tvFeedsContent">
+                    <input type="hidden" id="hdnClipID" value="" />
+                    <div class="tvFeedsDetail">
+                        <span id="TVTitle" class="media-heading"></span>
+                        <div class="clearfix">
+                        </div>
+                        <span style="color: #73797F;">Life Time Views :</span> <span style="color: #73797F;"
+                            id="TVLifeTimeCount"></span>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <input type="text" id="dpFromPopup" readonly="readonly" class="date" />
+            <input type="text" id="dpToPopup" readonly="readonly" class="date" />
+            <button type="button" id="btnSubmitTVViews" onclick="GetTVViews()" class="button"
+                style="min-width: 50px; margin-top: 0px; margin-left: 10px;">
+                GO</button>
+            <div class="row-fluid" style="border-top:1px solid #ececec; padding-top:7px;">
+                <div class="span5">
+                    <div style="margin-bottom:5px; font-weight:bold; font-size:12px;">Performance</div>
+                    <div id="divPlayLogNSummaryChart" style="margin-left:20px;">
+                    </div>
+                    <div style="font-size:11px;">Views</div>
+                    <div id="TotalViews" style="font-size:12px;"></div>
+                </div>                
+                <div class="span7" style="border-left:1px solid #ececec; padding-left:20px;">
+                    <div style="margin-bottom:5px; font-weight:bold; font-size:12px;">Demographics</div>
+                    <div class="span5" style="font-size:11px; margin-left:0px;">
+                        <div><b>Top Geographies</b></div>
+                        <ul id="ulTopRegions" style="margin:5px 0px 0px 0px;"></ul>
+                    </div>
+                    <div id="divUsaMap" class="span7">
+                    </div>
+                </div>
+            </div>
+            @*<div class="row-fluid">
+                <div class="tvFeedsThumb marginRight10" style="width:700px;">
+            <input type="hidden" id="hdnClipID" value="" />
+                <div class="positionRelative">
+                    <a class="cursorPointer">
+                        <img id="imgTVViews" csrc="" class="maxwidth130" alt="" /></a>
+                        <span class="media-heading" style="margin-left:20px; vertical-align:top; font-size:20px;" id="TVTitle"></span>
+                        </div>
+                        <span style="position:relative; left:155px; top:-60px; color:#c4c4c4; font-size:13px;">Life Time Views :</span>
+                        <span class="media-heading" style="position:relative; left:160px; top:-60px; color:#c4c4c4; font-size:13px;" id="TVLifeTimeCount"></span>
+                </div>
+                <input type="text" id="dpFromPopup" readonly="readonly" class="date" />
+                <input type="text" id="dpToPopup" readonly="readonly" class="date" />
+                <button type="button" id="btnSubmitTVViews" onclick="GetTVViews()" class="button" style="min-width:50px; margin-top:0px; margin-left:10px;">
+                        GO</button>
+                <div id="divPlayLogNSummaryChart"></div>
+            </div>*@
+            <div class="row-fluid" style="border-top:1px solid #ececec; border-bottom:1px solid #ececec; padding-top:7px; margin-top:7px; min-height:100px;">
+                <div class="span12">
+                    <div id="divTopReferrerSites"style="font-size:11px; margin:auto; width:50%;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div onmouseover="hideToolTipDiv();" onmouseout="hideToolTip();" id="mapToolTip" class="mapTooltip">
+    </div>
+    <div id="divDashboardPopup" class="modal fade hide resizable modalPopupDiv" style="width:880px;">
+        <div class="closemodalpopup">
+            <img id="imgCloseDashboardPopup" src="~/images/close-icon.png" alt="close" class="popup-top-close"
+                onclick="CloseDashboardPopup();" />
+        </div>
+        <div style="width: 99.5%; height: 99.5%;margin-left:10px;" id="divFrameResize" >
+            <iframe id="iFrameDashboard" style="width: 100%; height: 100%;" src="" frameborder="0" ></iframe>
+        </div>
+    </div>
+    <div id="divGallaryPopup" class="modal fade hide resizable modalPopupDiv" style="width: 75%;min-height:300px;">
+    <div class="closemodalpopup">
+        <img src="~/images/close-icon.png" alt="close" class="popup-top-close" onclick="CancelGallaryPopup();" /></div>
+    <div style="padding:20px;">
+        <div class="clearfix">
+            <div>
+            <table style="width:100%;">
+            <tr>
+                <td style="width:10%;">
+                    
+                </td>
+                <td style="width:90%;">
+                    <select id="ddlGalleryType" name="ddlGalleryType">
+                    @{IQMedia.WebApplication.Controllers.GalleryController galleryController = new IQMedia.WebApplication.Controllers.GalleryController();
+                      List<IQMedia.Model.IQGalleryItemType> lstIQGalleryItemType = galleryController.GetBlockTypeList();}
+                    @foreach (IQMedia.Model.IQGalleryItemType item in lstIQGalleryItemType)
+                    {
+                        <option value="@item.Name">@item.Description</option>
+                    }
+                </select>
+                <button onclick="AddGallary();" class="button" type="button" style="margin: 0 0 10px">
+                    Add More</button>
+                    <button onclick="SaveGallary();" class="button" type="button" style="margin: 0 0 10px 45%;">
+                Save</button>
+            <button onclick="CancelGallaryPopup();" class="button" type="button" style="margin: 0 0 10px;">
+                Cancel</button>
+                </td>
+            </tr>
+            </table>
+            </div>
+        </div>
+        <div class="clearfix">
+            <input type="hidden" id="hdnGalleryID" />
+            <table style="width:100%;">
+            <tr>
+                <td style="width:10%;">
+                    <span style="font-weight:bold;">Name: </span>
+                </td>
+                <td style="width:90%;">
+                    <input type="text" class="keywordTetBox" id="txtGallaryName" style="width:93.5%;"/>        
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span style="font-weight:bold;">Description: </span>
+                </td>
+                <td>
+                    <input type="text" class="keywordTetBox" id="txtGallaryDescription" style="width:93.5%;"/>        
+                </td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <div style="border-bottom: 3px solid black; width:95%; height:10px; margin-bottom:10px;">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div style="margin-bottom:10px;">
+                    <span style="font-weight:bold;">Build your Gallery: </span></div>
+                </td>
+            </tr>
+            </table>
+        </div>
+        <div id="divGallaryArea" class="mainContent">
+            <input type="hidden" id="hdnSquareBoxId" />
+            <table style="width:100%;">
+            <tr>
+                <td style="width:10%; vertical-align:top;">
+                    <div style="margin-right:10px; text-align:right;">
+                    <span style="font-weight:bold;">Title: </span></div>
+                </td>
+                <td style="width:80%;">                    
+                    <textarea class="editor" id="txtGallaryTitle" style="width:94.5%; min-height:50px;"></textarea>
+                </td>
+                <td style="width:80%;"></td>
+            </tr>
+            <tr>
+                <td style="width:10%;">
+                </td>
+                <td style="width:90%;">
+                    <div class="gridster">
+                <ul>
+                </ul>
+            </div>
+                </td>
+            </tr>
+            </table>
+        </div>
+        
+    </div>
+</div>
+<div id="divLibraryPopup" class="modal fade hide resizable modalPopupDiv" style="width: 90%;">
+    <div class="closemodalpopup">
+        <img src="~/images/close-icon.png" alt="close" class="popup-top-close" onclick="CancelLibraryPopup();" /></div>
+    <div>
+        @{
+                    Html.RenderPartial("~/Views/Gallery/_LibraryGallery.cshtml", Model);
+        }
+    </div>
+</div>
+<div id="divViewArticlePopup" class="modal fade hide resizable modalPopupDiv">
+    <div class="closemodalpopup">
+        <img id="imgdivViewArticlePopup" src="~/images/close-icon.png" alt="close" class="popup-top-close" 
+            onclick="CloseViewArticlePopup();" /></div>
+    <div style="padding: 20px;" class="modalBody">
+        <div style="padding-bottom: 5px; border-bottom: 1px solid #dadada; margin-bottom:10px; font-weight: bold;">
+            <div id="divPQTitle" style="float:left;"></div>
+            <div id="divPQMediaDate" style="float:right;"></div>
+            <div style="clear:both;"></div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" style="font-weight:bold;">
+                Author</label>
+            <div id="divPQAuthor" class="controls" style="margin-left:15px;"></div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" style="font-weight:bold;">
+                Publication</label>
+            <div id="divPQPublication" class="controls" style="margin-left:15px;"></div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" style="font-weight:bold;">
+                Content</label>
+            <div id="divPQContent" class="controls" style="margin-left:15px;"></div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" style="font-weight:bold;">
+                Copyright</label>
+            <div id="divPQCopyright" class="controls" style="margin-left:15px;"></div>
+        </div>
+    </div>
+</div>
+<div id="divCustomCategoryRankingPopup" class="modal fade hide resizable modalPopupDiv">
+    <div class="closemodalpopup">
+        <img id="imgCloseEditRankingPopup" src="~/images/close-icon.png" alt="close" class="popup-top-close" onclick="CancelCustomCategoryRankingPopup();" />        
+    </div>
+    <div style="padding:15px;">
+        <div class="pull-left" style="padding-top:18px;">
+            <span style="font-weight:bold; font-size:14pt;">Category Ranking</span>
+            <span>(Determines order of categories in Media Room email)</span>
+        </div>
+        <button type="button" onclick="UpdateCustomCategoryRankings()" class="button pull-right" style="margin-left:5px;">Save</button>
+        <button type="button" onclick="CancelCustomCategoryRankingPopup()" class="cancelButton pull-right">Cancel</button>
+    </div>
+    <div id="divCustomCategoryScroll" style="padding-top: 10px; height:300px; overflow:auto; width:99%;">
+        <div id="customCategoryTree">
+        </div>
+    </div>
+</div>
+<div id="divMergeReportsPopup" class="modal fade hide resizable modalPopupDiv">
+    <div class="closemodalpopup">
+        <img id="imgCloseMergeReportsPopup" src="~/images/close-icon.png" alt="close" class="popup-top-close" onclick="CancelMergeReportsPopup();" />
+    </div>
+    <div style="padding: 20px 20px 0px 20px;" class="modalBody">
+        <div class="modalpopheadertitle" style="margin-bottom:20px;">Merge Reports</div>
+        <form class="form-horizontal">
+            <div class="control-group">
+                <label class="control-label" for="txtMergedReportTitle">
+                    Report Title</label>
+                <div class="controls">
+                    <input type="text" id="txtMergedReportTitle" placeholder="Report Title" class="txtwidth90per" />
+                    <span class="help-inline" id="spanMergedReportTitle" style="color: #FF0000; display: none;">
+                    </span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="ddlMergedReportImage">
+                    Report Image</label>
+                <div class="controls">
+                    <select id="ddlMergedReportImage">
+                        <option>Default</option>
+                        @if (Model != null && Model["ReportImages"] != null)
+                        {
+                            List<IQMedia.Model.IQClient_CustomImageModel> lstIQClient_CustomImageModel = (List<IQMedia.Model.IQClient_CustomImageModel>)Model["ReportImages"];
+                            foreach (IQMedia.Model.IQClient_CustomImageModel item in lstIQClient_CustomImageModel)
+                            {
+                            <option value="@item.ID">@item.Location</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="ddlMergedReportFolder">
+                    Report Folder</label>
+                <div class="controls">
+                    <select id="ddlMergedReportFolder">
+                    @if (Model != null && Model["ReportFolders"] != null)
+                    {
+                        List<IQMedia.Model.IQReport_FolderModel> lstIQReport_FolderModel = (List<IQMedia.Model.IQReport_FolderModel>)Model["ReportFolders"];
+                        string lastParent = "THIS IS NOT A VALID ID";
+                        string lastLastParent = "THIS IS NOT A VALID ID";
+                        int spaceCount = 0;
+                        Dictionary<string, int> indents = new Dictionary<string, int>();
+
+                        foreach (IQMedia.Model.IQReport_FolderModel item in lstIQReport_FolderModel)
+                        {
+                            if (lastParent == item.parent)
+                            {
+                                spaceCount++;
+                            }
+                            else if (lastLastParent != item.parent && lastLastParent != "THIS IS NOT A VALID ID")
+                            {
+                                if (indents.ContainsKey(item.parent))
+                                {
+                                    spaceCount = indents.Where(x => x.Key == item.parent).Select(x => x.Value).First();
+                                }
+                                else
+                                {
+                                    spaceCount--;
+                                }
+                            }
+
+                            if (item.parent != null && !indents.ContainsKey(item.parent))
+                            {
+                                indents.Add(item.parent, spaceCount);
+                            }
+
+                            lastLastParent = lastParent;
+                            lastParent = item.id;   
+                            
+                                <option value="@item.id" @(item.text == System.Configuration.ConfigurationManager.AppSettings["ClientRootFolderName"] ? "selected=selected" : string.Empty)>
+                                    @{
+                            for (int x = 0; x < spaceCount; x++)
+                            {
+                                            <p>&nbsp;</p>
+                            }
+                                    }
+                                
+                                    -@item.text
+                                </option>
+                        }
+                    }
+                    </select>
+                    <span class="help-inline" id="spanMergedReportFolder" style="color: #FF0000; display: none;">
+                    </span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">Reports Selected<br />(<span id="spanMergeReportCurrReports">0</span> of <span id="spanMergeReportTotalReports">0</span>)<br /><br />Items Selected<br /><span id="spanMergeReportCount">(<span id="spanMergeReportCurrItems">0</span> of @ViewBag.MaxLibraryReportItems max)</span></label>
+                <div class="controls">
+                    <div id="divMergeReportScroll" style="max-height:300px; height:300px;">
+                        <div id="divMergeReportOptions"></div>
+                    </div>
+                    <span class="help-inline" id="spanMergeReportOptions" style="color: #FF0000; display: none;">
+                    </span>
+                </div>
+            </div>   
+            <div class="control-group">
+                <div class="controls">
+                    <button type="button" id="btnCancelMergedReport" onclick="CancelMergeReportsPopup();" class="cancelButton">
+                        Cancel</button>
+                    <button type="button" id="btnSaveMergedReport" onclick="SaveMergedReport();" class="button">
+                        OK</button>
+                </div>
+            </div>         
+        </form>
+    </div>
+</div>
+<div id="divSortReportPopup" class="modal fade hide resizable modalPopupDiv" style="width:1000px;">
+    <div class="closemodalpopup">
+        <img id="imgCloseSortReportPopup" src="~/images/close-icon.png" alt="close" class="popup-top-close"
+            onclick="CloseSortReportPopup();" />
+    </div>
+    <div style="width: 99.5%; height: 99.5%;margin-left:10px;" id="divFrameResize" >
+        <iframe id="iFrameSortReport" style="width: 100%; height: 100%;" src="" frameborder="0" ></iframe>
+    </div>
+</div>
+<div id="divJobStatusExportedPopup" class="modal fade hide resizable modalPopupDiv">
+    <div class="closemodalpopup">
+        <img id="imgdivJobStatusExportedPopup" src="~/images/close-icon.png" alt="close" class="popup-top-close" onclick="CloseJobStatusPopUp();" />
+    </div>
+    <div style="padding-top: 20px;" class="modalBody">
+        <div style="padding-bottom: 5px; border-bottom: 1px solid #dadada; margin: 1px 15px 1px 15px; font-weight: bold;">
+            Job Status
+        </div>
+        <div class="divconfirmationpop-content">
+            <p><a href="/Setup?JS=true" style="cursor:pointer;">Click here</a> to view your job status and download your file.</p>
+        </div>
+    </div>
+</div>
+}
+@Html.Partial("~/Views/Shared/_DashboardMediaSparkChart.cshtml")

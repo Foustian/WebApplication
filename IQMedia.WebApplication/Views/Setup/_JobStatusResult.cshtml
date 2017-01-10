@@ -1,0 +1,118 @@
+﻿@model List<IQMedia.Model.JobStatusModel>
+<style type="text/css">
+    .topResult
+    {
+        font-size: 11px;
+        border: 1px solid #D8D8D8;
+    }
+    
+    .topResult tr th
+    {
+        padding: 4px;
+    }
+    
+    .topResult .button
+    {
+       font-size: 11px;
+       margin-left: 5px;
+       min-width: 0px;
+       padding: 0px 5px;
+    }
+    
+</style>
+@if (Model != null && Model.Count > 0)
+{
+    <div id="divJobStatusPreviousNext" class="nextprevdiv">
+        <span id="lblJobStatusRecords" style="float: left; padding: 5px 10px 0 0;">
+        </span><a href="#" onclick="GetJobStatus(false);" id="btnJobStatusPreviousPage"
+            class="nextprevbtn">
+            <img src="../../Images/prev.png" /></a> <a href="#" onclick="GetJobStatus(true);"
+                id="btnJobStatusNextPage" class="nextprevbtn">
+                <img src="../../Images/next.png" /></a><span style="margin-left: 10px; margin-top: 5px; float: right;"><a onclick="LoadJobStatusPartial();" title="Refresh" href="javascript:void(0);">
+                                Refresh </a></span>
+    </div>
+    <div id="divJobStatus_ScrollContent" class="clear">
+        <div class="float-left width100p" style="padding-right: 15px; margin-bottom: 10px;">
+    <table class="topResult jobStatuspg" width="100%" cellpadding="0" cellspacing="0" style="margin-top: 15px;">
+        @{ bool IsHeader = false; }
+        @foreach (IQMedia.Model.JobStatusModel item in Model)
+        {
+            if (!IsHeader)
+            {
+            <tr>
+                @{IsHeader = true; }
+                <th style="text-align: left; width: 8%">
+                    Job ID
+                </th>
+                <th style="text-align: left; width: 19%;">
+                    Requested By
+                </th>
+                <th style="text-align: left; width: 18%;">
+                    Job Request Name
+                </th>
+                <th style="text-align: left; width: 24%;">
+                    Title
+                </th>
+                <th style="text-align: left; width: 17%;">
+                    Requested / Completed
+                </th>
+                <th style="text-align: center; width: 15%;">
+                    Status
+                </th>
+            </tr>
+            }
+            <tr>
+                <td style="text-align: left;">
+                    @item.ID
+                </td>
+                <td style="text-align: left;">
+                    @item.CustomerFirstName @item.CustomerLastName
+                </td>
+                <td style="text-align: left;">
+                    @item.Description
+                </td>
+                <td style="text-align: left;">
+                    @item.Title
+                </td>
+                <td style="text-align: left;">
+                    @( item.RequestedDateTime.HasValue ? item.RequestedDateTime.Value.ToString("MMM dd, yyyy hh:mm:ss tt") : string.Empty)
+                    <br />                    
+                    @( item.CompletedDateTime.HasValue ? item.CompletedDateTime.Value.ToString("MMM dd, yyyy hh:mm:ss tt") : string.Empty)
+                </td>
+                <td style="text-align: center;">                    
+                    @if (item.CompletedDateTime.HasValue)
+                    {
+                        <img title="@item.Status" src="/Images/@(item.Status).png" />
+                        
+                        if (item.Status.ToUpper() == "FAILED" && item.CanReset)
+                        {
+                            <input type="button" id="btnReset" class="button" onclick="ResetJob(@item.ID, @item.RequestID, '@item.ResetProcedureName')" value="Retry" />
+                        }
+                    }
+                    else
+                    {
+                        <img title="QUEUED" src="/Images/queued.png" />
+                    }
+                    @if (item.DownloadPath != "N/A")
+                    {
+                        <img onclick="DownloadJobStatusFile(@item.ID)" style="cursor:pointer; margin-top:1px; margin-left:5px;" title="Download" src="/Images/save.png" />
+                    }
+                </td>
+            </tr> 
+        }
+    </table>
+    </div>
+    </div>
+}
+else
+{
+    <table width="100%" style="text-align: center;">
+        <tr>
+            <td>
+                <span style="background: none repeat scroll 0 0 #F2F2F2; border: 1px solid #DCDCDC;
+                    margin-bottom: 10px; margin-right: 10px; padding: 3px 10px 3px 6px; position: relative;
+                    width: 300px !important;">No Results found</span>
+            </td>
+        </tr>
+    </table>
+}

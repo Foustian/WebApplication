@@ -1,0 +1,22 @@
+.mi-pages .row h1
+{
+    font-size:40px;
+    margin-left:-28px;
+}
+
+.mi-pages .row p
+{
+    font-size:18px;
+}
+
+.mi-pages .row div{padding-left:35px;padding-right:35px;}
+
+.mi-f{text-align:center;}
+
+.mi-f-img{height:134px;}
+
+.mi-f-img > span{height:100%; vertical-align:bottom; display:inline-block;}
+
+.mi-f-img > img{vertical-align:bottom;}
+
+.mi-f-lbl{margin-top:10px;font-size:25px;}

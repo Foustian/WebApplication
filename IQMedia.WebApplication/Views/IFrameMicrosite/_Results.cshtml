@@ -1,0 +1,91 @@
+﻿@using IQMedia.Model;
+@using IQMedia.Shared.Utility;
+@using IQMedia.WebApplication.Models;
+@using IQMedia.WebApplication.Models.TempData;
+@model IFrameMicrositeData
+@if (Model != null)
+{
+    Int32 currentIndex = 0;
+    <table>
+        @for (int r = 0; r < Model.MaxRows; r++)
+        {
+            <tr>
+                @for (int c = 0; c < Model.MaxCols; c++)
+                {
+                    if (currentIndex < Model.lstIFrameMicrositeModel.Count)
+                    {
+                    <td valign="top">
+                        <table>
+                            <tr class="positionRelative">
+                                <td>
+                                    <div class="float-left
+                        clipContentDiv">
+                                        <div class="float-left positionRelative">
+                                            <a data-toggle="tooltip"
+                        id="lnkImage_@Model.lstIFrameMicrositeModel[currentIndex].ClipID">
+                                                <img align="middle"
+                        style="height: 100px; width: 100px; border-width: 0px;" alt="@Model.lstIFrameMicrositeModel[currentIndex].ClipDate"
+                        src="@(System.Configuration.ConfigurationManager.AppSettings["IQArchieve_TVThumbUrl"]+Model.lstIFrameMicrositeModel[currentIndex].ClipID)" onmouseover="ShowClipDetail('divChild_@Model.lstIFrameMicrositeModel[currentIndex].ClipID')"
+                        onmouseout="HideClipDetail('divChild_@Model.lstIFrameMicrositeModel[currentIndex].ClipID')"
+                        id="" onclick="LoadPlayerbyGuid('@Model.lstIFrameMicrositeModel[currentIndex].ClipID');"
+                        />
+                                            </a>
+                                            @if (Model.HasMSDownloadRight)
+                                            {
+                                                <div class="download">
+                                                    <a onclick="IFrameMicrositeDownloadClip('@Model.lstIFrameMicrositeModel[currentIndex].ClipID','@(!string.IsNullOrEmpty(Model.lstIFrameMicrositeModel[currentIndex].ClipTitle) ? Model.lstIFrameMicrositeModel[currentIndex].ClipTitle.Replace("\'","\\\'") : string.Empty)')" href="javascript:void(0)" >
+                                                        <input type="image" style="height: 24px; width: 22px; border-width: 0px;" src="../Images/down_ms.png" />
+                                                    </a>
+                                                </div>
+                                            }
+                                            <div id="divChild_@Model.lstIFrameMicrositeModel[currentIndex].ClipID"
+                        onmouseover="ShowClipDetail('divChild_@Model.lstIFrameMicrositeModel[currentIndex].ClipID')"
+                        onmouseout="HideClipDetail('divChild_@Model.lstIFrameMicrositeModel[currentIndex].ClipID')"
+                        class="displayNone CssClipDetail" style="text-align: left; max-width: 500px; max-height:
+                        400px; overflow: auto; position: absolute; z-index: 100; left: 100px; top: -44px;
+                        display: none;">
+                                                @Model.lstIFrameMicrositeModel[currentIndex].Keywords<br />
+                                                @Model.lstIFrameMicrositeModel[currentIndex].Description
+                                            </div>
+                                        </div>
+                                        <div class="clear WordWrap">@Model.lstIFrameMicrositeModel[currentIndex].ClipTitle</div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                    }
+                    currentIndex++;
+                }
+            </tr>
+        }
+    </table>
+@*<div>
+        @foreach (IFrameMicrositeModel item in Model)
+        {
+            <div class="float-left clipContentDiv">
+                <div class="float-left positionRelative">
+                    <a data-toggle="tooltip"
+                    id="lnkImage_@item.ClipID">
+                        <img align="middle" style="height: 100px; width: 100px; border-width: 0px;" alt="@item.ClipDate"
+                        src="@item.ThumbnailImagePath"
+                        onmouseover="ShowClipDetail('divChild_@item.ClipID')"
+                        onmouseout="HideClipDetail('divChild_@item.ClipID')"
+                        id="" />
+                    </a>
+                    <div class="download">
+                        <input type="image" style="height: 24px; width: 22px; border-width: 0px;" onclick="ClearMsg();"
+                            src="../Images/down_ms.png" id="lnkDownload" />
+                    </div>
+                    <div id="divChild_@item.ClipID" class="displayNone CssClipDetail" style="text-align: left; max-width: 500px; max-height: 400px; overflow: auto; position: absolute; z-index: 100; left: 100px; top: -44px; display: none;">
+                        @item.Keywords<br />
+                        @item.Description
+                    </div>
+                </div>
+                <div class="clear WordWrap">@item.ClipTitle</div>
+            </div>
+        }
+    </div>*@   
+    
+
+}

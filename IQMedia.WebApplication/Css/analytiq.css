@@ -1,0 +1,8 @@
+.r-sample h2
+{ font-size:40px;}
+
+.r-sample h3
+{ color:#b4b4da; font-size:18px;margin-left:10px;margin-top:-5px;font-family:'lato-italic';}
+
+.r-sample h3 a
+{color:#598ea2 !important; font-size:18px;font-family:'lato-italic'; text-decoration:none;outline:none;}

@@ -1,0 +1,81 @@
+﻿@*<div id="wrapper">
+    <div class="logo">
+        <a runat="server" id="anchorHome" href="~/">
+            <img id="imgLogo" runat="server" src="~/images/logo_N.png" alt="" /></a></div>
+    @{
+        IQMedia.Model.SessionInformation sessionInformation = IQMedia.WebApplication.Utility.CommonFunctions.GetSessionInformation();
+        if (sessionInformation.IsLogIn == true
+            && sessionInformation.AuthorizedVersion.HasValue && (sessionInformation.AuthorizedVersion == 0 || sessionInformation.AuthorizedVersion == 4)
+            )
+        {
+            IQMedia.Shared.Utility.Log4NetLogger.Debug("Hview-If");
+        @Html.Partial("~/Views/Shared/_LogOut.cshtml");
+        }
+        else
+        {
+            IQMedia.Shared.Utility.Log4NetLogger.Debug("Hview-Else");
+        @Html.Partial("~/Views/Shared/_Login.cshtml");
+        }
+    }
+    @Html.Partial("~/Views/Shared/_Navigation.cshtml")
+    <section>
+    <div class="banner">    
+     <div id="banner">
+     <img  id="imgBanner"  src='@ViewBag.MainBanner'>
+     
+     </div>      
+    </div>
+    <div class="content-main">
+    	<div class="small-text"><div class="banner-bottom-box">
+        <a href='pdf/Success Stories_Miami Hurricanes.pdf' target='_blank' class='leadinbox'><img  id="imgSubBanner"  src='@ViewBag.SubBanner'></a>
+</div>    	
+        @ViewBag.pText @Html.Partial("~/Views/Shared/_SocialMedia.cshtml")</div>
+       <div id="show">
+               <a target="_blank" href='http://www.iqmediacorp.com/ClipPlayer/default.aspx?ClipID=ce641edb-44c4-4e73-aabb-32c3f0f61f4e&TE=nb%2fdH9YSimVlgeHlRzMuFAYD3wKa6p4GCFMFEirCGeQ%3d&PN=bt9sZFac%2bKA%3d' class='leadinbox'><img src='images/home/home-img03.png'></a> 
+               <a href='pdf/PL1-cliQ-4-pages.pdf' target='_blank' class="leadinbox"><img src="images/home/home-img02.png" alt=""></a>
+               <a href='pdf/WP01-Overcoming-TMS-Limits.pdf' target='_blank' class='leadinbox'><img src='images/home/home-img01.png'></a>
+       </div>       
+    </div>
+   
+  </section>
+    @Html.Partial("~/Views/Shared/_Footer.cshtml")
+</div>*@
+<script src="@Url.Content("~/Scripts/jquery-1.9.1.min.js?v=1.0")" type="text/javascript"></script>
+<script type="text/javascript" src="@Url.Content("~/Scripts/jquery.rwdImageMaps.min.js?v=1.0")" ></script>
+@Html.Partial("~/Views/Shared/_Header.cshtml")
+<div class="row-fluid banner-bg">
+    <div class="container">
+        <a href ="/Software" target="_blank" ><img border="0" alt="Cliq4" src="../images/staticBanner/iQV4banner.jpg"></a>
+        
+    </div>
+</div>
+<div class="row-fluid">
+    <div class="container">
+        <div class="row-fluid text-center clearfix">
+            <p class="margintop-10">
+                <a href ="http://iqmediacorp.sites.hubspot.com/free-sms-broadcast-alerts" target="_blank" ><img src="../images/staticBanner/SMS_Video_Campaign.jpg" alt="SMS Video Campaign" border="0" /></a>
+            </p>
+           @* <div class="margintop-10" style="margin-bottom:3px;">
+                <a href ="http://iqmediacorp.hs-sites.com/iqmedia-sxsw-interactive-2014" target="_blank" ><img src="../images/staticBanner/sxsw.png" alt="SXSW Music Film Interactive" border="0" /></a>
+            </div>*@
+            <div>
+                <a href ="../pdf/SuccessStory_LeggMason.pdf" target="_blank" ><img src="../images/staticBanner/success-stories-badge.jpg" alt="Customers and Success Stories"
+                    /></a>
+            </div>
+           @* <a href ="../pdf/SuccessStory_LeggMason.pdf" target="_blank" ><img src="../images/staticBanner/leggmason.png" alt="Miami Case"
+                border="0" /></a>*@
+            <a href="~/Customers">
+                <img src="../images/staticBanner/customers.png" alt="Customers" /></a>
+        </div>
+    </div>
+    @Html.Partial("~/Views/Shared/_SiteMap.cshtml")
+    @Html.Partial("~/Views/Shared/_FooterStatic.cshtml")
+</div>
+<map name="learnmore">
+    <area shape="rect" coords="70,302,271,342" href="/Software" alt="Sun">
+</map>
+<script type="text/javascript">
+//    $(document).ready(function (e) {
+//        $('img[usemap]').rwdImageMaps();
+//    });
+</script>

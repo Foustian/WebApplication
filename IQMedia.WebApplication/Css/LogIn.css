@@ -1,0 +1,50 @@
+﻿body
+{
+}
+
+
+.backgroundColorED
+{
+    background-color: #EDEDED;
+}
+
+.LogInHeader
+{
+    margin-left: 100px;
+    padding: 10px 0px;
+}
+
+.margintop30
+{
+    margin-top: 30px;
+}
+
+.LogInButton
+{
+    /*background-color:#ffffff;*/
+    background-color: #3E3E3E;
+    padding: 4px 7px;
+    border: 1px solid #3b3b3b;
+    margin: 10px 0;
+    text-align: center;
+    color: #ffffff;
+    cursor: pointer;
+    width: 115px !important;
+}
+
+.LogInButton:hover
+{
+    /*background:#EDEDED;*/
+    color: #8FD8D8;
+}
+
+
+.displayNone
+{
+    display: none;
+}
+
+.marginLeft10
+{
+    margin-left: 10px;
+}

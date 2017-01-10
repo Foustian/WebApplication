@@ -1,0 +1,155 @@
+﻿body
+{
+    background-color: White;
+    background-image: none !important;
+}
+
+.positionRelative
+{
+    position: relative;
+}
+
+.download
+{
+    height: 24px;
+    width: 22px;
+    position: absolute;
+    z-index: 10;
+    right: 0px;
+    bottom: 0px;
+}
+.download a
+{
+    text-decoration: none;
+}
+
+.float-left
+{
+    float: left;
+}
+
+.displayNone
+{
+    display: none;
+}
+
+
+.CssClipDetail
+{
+    background: #f5f5f5;
+    padding: 15px;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    min-width: 225px;
+    min-height: 130px;
+    left: 0px;
+}
+
+
+.nextprevdiv
+{
+    float: right;
+    padding-bottom: 10px;
+}
+
+.clear
+{
+    clear: both;
+    overflow: hidden;
+}
+
+.ClearSearchButton
+{
+    /*background-color:#ffffff;*/
+    background-color: #3E3E3E;
+    padding: 4px 7px;
+    border: 1px solid #3b3b3b;
+    margin: 10px 0;
+    text-align: center;
+    color: #ffffff;
+    cursor: pointer;
+    width: 90px !important;
+}
+
+.ClearSearchButton:hover
+{
+    /*background:#EDEDED;*/
+    color: #8FD8D8;
+}
+
+.mainContent
+{
+    /*width: 545px;     margin-left: 30%;*/
+}
+
+.show-hide
+{
+    background-color: #f5f5f5; /*padding:3px 10px 3px 10px;*/
+    padding: 3px;
+    display: block;
+    color: #2f2f2f;
+    font-weight: bold;
+    border: solid 1px #dfdfdf;
+    border-radius: 5px;
+    background: #dfdfdf url(../images/show-hide-bg.png) repeat-y center top;
+    clear: both;
+    overflow: hidden;
+}
+
+.show-hide a
+{
+    display: block;
+    color: #5e5e5e;
+    text-decoration: none;
+    margin-top: 4px;
+    font: normal 14px "avenir_65medium";
+    text-transform: uppercase;
+}
+.show-hide a:hover
+{
+    display: block;
+    color: #32b0cf;
+    text-decoration: none;
+}
+
+.searchTextBox
+{
+    width: 315px;
+    height: 28px !important;
+    margin-bottom: 0px !important;
+}
+
+
+.paddingTop15
+{
+    padding-top: 15px;
+}
+
+.marginTop15
+{
+    margin-top: 15px;
+}
+
+.clipContentDiv
+{
+    word-break: break-all;
+    word-wrap: break-word;
+    table-layout: fixed;
+    width: 100px;
+    padding: 8px;
+}
+
+.marginLeft30p
+{
+    margin-left: 30%;
+}
+
+.maxWidth545
+{
+    max-width:545px;
+}
+
+.minHeight100
+{
+    min-height:200px;
+}

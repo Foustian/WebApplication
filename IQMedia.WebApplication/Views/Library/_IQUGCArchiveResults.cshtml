@@ -1,0 +1,293 @@
+﻿@using IQMedia.Shared.Utility;
+@model IQMedia.Model.IQUGCArchiveResult
+@if (Model != null && Model.IQUGCArchiveList != null)
+{
+    IQMedia.Model.ActiveUser sessionInformation = IQMedia.WebApplication.Utility.ActiveUserMgr.GetActiveUser();
+    foreach (IQMedia.Model.IQUGCArchiveModel item in Model.IQUGCArchiveList)
+    {
+        string Month = item.AirDate.HasValue ? item.AirDate.Value.ToString("MMM", System.Globalization.CultureInfo.InvariantCulture) : string.Empty;
+        string Day = item.AirDate.HasValue != null ? item.AirDate.Value.Day.ToString() : string.Empty;
+        string Time = item.AirDate.HasValue != null ? item.AirDate.Value.ToString("hh:mm tt") : string.Empty;
+        string displayText = string.Empty;
+        string fTitle = string.Empty;
+        string sTitle = string.Empty;
+        string fullUploadDate = string.Empty;
+
+        if (!string.IsNullOrWhiteSpace(item.Title))
+        {
+            fTitle = item.Title.Trim();
+
+            if (fTitle.Length > 65)
+            {
+                sTitle = fTitle.Substring(0, 62) + "...";
+            }
+            else
+            {
+                sTitle = fTitle;
+            }
+        }
+
+        if (!string.IsNullOrWhiteSpace(item.Description))
+        {
+            displayText = item.Description.Length > 300 ? item.Description.Substring(0, 300) : item.Description;
+        }
+
+        /* Time Difference Logic */
+        string timeDifference = string.Empty;
+        DateTime dateFrom = item.DateUploaded.Value.ToUniversalTime();
+        DateTime dateTo = DateTime.UtcNow;
+        var diffY = dateTo.Year - dateFrom.Year;
+        var diffM = dateTo.Month - dateFrom.Month;
+        var diffD = dateTo.Day - dateFrom.Day;
+        var diffH = dateTo.Hour - dateFrom.Hour;
+        var diffMin = dateTo.Minute - dateFrom.Minute;
+
+        //Year diff
+        var yearDiff = diffY;
+
+        if (yearDiff > 0 && (diffM < 0 || (diffM == 0 && (diffD < 0 || (diffD == 0 && (diffH < 0 || (diffH == 0 && (diffMin < 0))))))))
+        {
+            yearDiff--;
+        }
+
+        if (yearDiff <= 0)
+        {
+            //Month diff
+            if (yearDiff == 0 && diffM == -11)
+            {
+                diffM = 1;
+            }
+
+            var monthDiff = diffM > 0 ? diffM : (diffY - yearDiff) * 12 + diffM;
+
+            if (monthDiff > 0 && (diffD < 0 || (diffD == 0 && (diffH < 0 || (diffH == 0 && (diffMin < 0))))))
+            {
+                monthDiff--;
+            }
+
+            if (monthDiff <= 0)
+            {
+                //Day diff
+                int daysInMonth = dateTo.AddDays(-1 * dateTo.Day).Day;
+                var dayDiff = diffD > 0 ? diffD : (diffM - monthDiff) * daysInMonth + diffD;
+
+                if (dayDiff > 0 && (diffH < 0 || (diffH == 0 && (diffMin < 0))))
+                {
+                    dayDiff--;
+                }
+
+                if (dayDiff <= 0)
+                {
+                    //Hour diff
+                    var hourDiff = diffH > 0 ? diffH : (diffD - dayDiff) * 24 + diffH;
+
+                    if (hourDiff > 0 && diffMin < 0)
+                    {
+                        hourDiff--;
+                    }
+
+                    if (hourDiff <= 0)
+                    {
+                        //Minute Diff
+                        var mntDiff = diffH == 0 ? diffMin : ((hourDiff * 60) + (diffMin < 0 ? (60 + diffMin) : diffMin));
+
+                        if (mntDiff < 0)
+                        {
+                            mntDiff = 0;
+                        }
+
+                        timeDifference = mntDiff + (mntDiff == 1 ? " minute ago" : " minutes ago");
+                    }
+                    else
+                    {
+                        timeDifference = hourDiff + (hourDiff == 1 ? " hour ago" : " hours ago");
+                    }
+                }
+                else
+                {
+                    timeDifference = dayDiff + (dayDiff == 1 ? " day ago" : " days ago");
+                }
+            }
+            else
+            {
+                timeDifference = monthDiff + (monthDiff == 1 ? " month ago" : " months ago");
+            }
+        }
+        else
+        {
+            timeDifference = yearDiff + (yearDiff == 1 ? " year ago" : " years ago");
+        }
+        
+        timeDifference = string.Format("uploaded {0}", timeDifference);
+
+        switch (item.FileType)
+        {
+            case CommonFunctions.IQUGCMediaTypes.VMedia:
+                string vidThumbURL = !string.IsNullOrWhiteSpace(item.ThumbnailImage) ? item.ThumbnailImage.Replace("\\", "/") : "../../Images/video.png";
+
+    <div id="divIQUGCArchive_@item.IQUGCArchiveKey" class="media">
+        <div class="MediaDate">
+            <div class="post-date">
+                <span class="month">@Month</span>
+                <div>
+                    <span class="today">@Day</span>
+                </div>
+                <span class="timeWithTimeZone">@Time @sessionInformation.TimeZone</span>
+            </div>
+        </div>
+        <div class="MediaTypeLogo">
+            <img src="~/images/MediaIcon/video-ugc.png" title="@CommonFunctions.GetEnumDescription(CommonFunctions.IQUGCMediaTypes.VMedia)" alt="ugc" />
+        </div>
+        <div class="float-right FeedsVideoSpacer">
+            <div class="FeedsVideo positionRelative float-left">
+                <a class="cursorPointer" onclick="LoadPlayerbyGuidTS('@item.UGCGuid','','',true);">
+                    <img src="@vidThumbURL" class="maxwidth130" alt="video icon"/>
+                </a>
+            </div>
+            @if (sessionInformation.Isv4UGCUploadEdit)
+            {
+                <div class="float-right">
+                    <input type="checkbox" onclick="javascript:void(0);" id="chkIQUGCArchive_@item.IQUGCArchiveKey" value="@item.IQUGCArchiveKey" />
+                </div>
+            }
+        </div>
+        <div class="MediaRoomContentVideo2">
+            <div class="media-heading float-left" title="@Html.Raw(fTitle)" style="max-width: 100%">
+                <span id="spanUGCTitle_@item.IQUGCArchiveKey">
+                    @Html.Raw(sTitle)
+                </span>
+            </div>
+            <div class="subheading float-left margintop1">
+                @timeDifference
+            </div>
+            <div id="divUGCDescription_@item.IQUGCArchiveKey" class="clear float-left media-body">
+                @Html.Raw(CommonFunctions.ProcessHighlightingText(item.Description, displayText))
+            </div>
+        </div>
+        <div class="clear post-divider"></div>
+        <div class="clear margintop2 marginbottom2">
+            <div class="LibraryActionBarLeftDiv">
+                <div class="margintop2"></div>
+            </div>
+            <div class="LibraryActionBarRightDiv">
+                <div style="float: right">
+                    @if (sessionInformation.Isv4UGCUploadEdit)
+                    {
+                        <div class="detailIcon">
+                            <a class="cursorPointer editArticle" title="Edit Record" onclick="GetUGCContentEditForm(@item.IQUGCArchiveKey);" href="javascript:void(0);"></a>
+                        </div>
+                    }
+                    @if (sessionInformation.Isv4UGCDownload)
+                    {
+                        <div class="detailIcon">
+                            <a class="cursorPointer downloadArticle" title="Download" onclick="DownloadUGCFile('@item.IQUGCArchiveKey');" href="javascript:void(0);"></a>
+                        </div>
+                    }
+                    @if (sessionInformation.Isv4UGCUploadEdit)
+                    {
+                        <div class="detailIcon">
+                            <a class="cursorPointer deleteArticle" title="Delete Item" onclick="DeleteIQUGCArchiveByID('@item.IQUGCArchiveKey');" href="javascript:void(0);"></a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+                break;
+            case CommonFunctions.IQUGCMediaTypes.Doc:
+            case CommonFunctions.IQUGCMediaTypes.Excel:
+            case CommonFunctions.IQUGCMediaTypes.Pdf:
+            case CommonFunctions.IQUGCMediaTypes.Image:
+                string catimg = string.Empty;
+                string tooltip = string.Empty;
+
+                switch (item.FileType)
+                {
+                    case CommonFunctions.IQUGCMediaTypes.Doc:
+                        catimg = "word.png";
+                        tooltip = "Document";
+                        break;
+                    case CommonFunctions.IQUGCMediaTypes.Excel:
+                        catimg = "excel.png";
+                        tooltip = "Spreadsheet";
+                        break;
+                    case CommonFunctions.IQUGCMediaTypes.Pdf:
+                        catimg = "pdf.png";
+                        tooltip = "PDF";
+                        break;
+                    case CommonFunctions.IQUGCMediaTypes.Image:
+                        catimg = "image.png";
+                        tooltip = "Image";
+                        break;
+                    default:
+                        catimg = string.Empty;
+                        break;
+                }
+
+    <div id="divIQUGCArchive_@item.IQUGCArchiveKey" class="media">
+        <div class="MediaDate">
+            <div class="post-date">
+                <span class="month">@Month</span>
+                <div>
+                    <span class="today">@Day</span>
+                </div>
+                <span class="timeWithTimeZone">@Time @sessionInformation.TimeZone</span>
+            </div>
+        </div>
+        <div class="MediaTypeLogo">
+            <img src="/images/MediaIcon/@catimg" title="@tooltip" alt='' />
+        </div>
+        <div class="float-right">
+            <input type="checkbox" onclick="javascript:void(0);" id="chkIQUGCArchive_@item.IQUGCArchiveKey" value="@item.IQUGCArchiveKey" />
+        </div>
+        <div class="MediaRoomContent">
+            <div class="media-heading float-left" title="@Html.Raw(fTitle)">
+                <a target="_blank" href="@item.MediaUrl" id="spanUGCTitle_@item.IQUGCArchiveKey">
+                    @Html.Raw(sTitle)
+                </a>
+            </div>
+            <div class="subheading float-left margintop1">
+                @timeDifference
+            </div>
+            <div class="clear float-left media-body">
+                @Html.Raw(CommonFunctions.ProcessHighlightingText(item.Description, displayText))
+            </div>
+        </div>
+        <div class="clear post-divider"></div>
+        <div class="clear margintop2 marginbottom2">
+            <div class="LibraryActionBarLeftDiv">
+                <div class="margintop2"></div>
+            </div>
+            <div class="LibraryActionBarRightDiv">
+                <div style="float: right">
+                    @if (sessionInformation.Isv4UGCUploadEdit)
+                    {
+                        <div class="detailIcon">
+                            <a class="cursorPointer editArticle" title="Edit Record" onclick="GetUGCContentEditForm(@item.IQUGCArchiveKey);" href="javascript:void(0);"></a>
+                        </div>
+                    }
+                    @if (sessionInformation.Isv4UGCDownload)
+                    {
+                        <div class="detailIcon">
+                            <a class="cursorPointer downloadArticle" title="Download" href="javascript:void(0);" onclick="DownloadUGCFile('@item.IQUGCArchiveKey');"></a>
+                        </div>
+                    }
+                    @if (sessionInformation.Isv4UGCUploadEdit)
+                    {
+                        <div class="detailIcon">
+                            <a class="cursorPointer deleteArticle" title="Delete Item" onclick="DeleteIQUGCArchiveByID('@item.IQUGCArchiveKey');" href="javascript:void(0);"></a>
+                        </div>
+                    }
+                    <div class="detailIcon">
+                        <a id="aShowNewsPM_@item.IQUGCArchiveKey" class="cursorPointer viewArticle" title="View Article" target="_blank" href="@(@item.MediaUrl)"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+                break;
+        }
+    }
+}

@@ -1,0 +1,84 @@
+﻿@model IQMedia.Model.CustomerModel
+<script src="@Url.Content("~/Scripts/jquery-1.9.1.min.js?v=1.0")" type="text/javascript"></script>
+<script src="~/Scripts/jquery.validate.min.js?v=1.0" type="text/javascript"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js?v=1.0" type="text/javascript"></script>
+<script src="~/Scripts/Bootstrap/bootstrap-dropdown.js?v=1.0" type="text/javascript"></script>
+<script type="text/javascript">
+
+    $(function () {
+        $("#LoginID").focus();
+        $('#liSignIn').siblings().removeClass('active')
+        $('#liSignIn').addClass('active');
+    });
+
+    function CheckForm() {
+
+        if ($('#frmLogin').valid()) {
+            /* $('#btnLogin').attr('disabled', 'disabled');*/
+            $('#imgLogInLoading').show();
+        }
+    }
+    
+</script>
+<style type="text/css">
+    .field-validation-error
+    {
+        display:none;
+    }
+    
+    .input-validation-error
+    {
+        border:1px solid #FF0000;
+    }
+    
+    .form-control.input-validation-error:focus
+    {
+        border:1px solid #FF0000;
+    }
+</style>
+@using (Html.BeginForm("Index", "SignIn", FormMethod.Post, new { @class = "form-horizontal", @id = "frmLogin" }))
+{
+    
+@*<div class="header-right">
+        <span class="clientLoginSpan">
+            Client Login</span>
+        <div class="clear">
+            <div class="floatLeft">
+                @Html.TextBoxFor(model => model.Email, new { style = "margin-right:-2px;" })
+                @Html.ValidationMessageFor(model => model.Email, null, new { style = "color:red;float:left;" })
+            </div>
+            <div class="floatLeft">
+                @Html.EditorFor(model => model.Password)
+                @Html.ValidationMessageFor(model => model.Password, null, new { style = "color:red;float:left;" })
+            </div>
+            <input type="submit" value="Log in" class="submit" />
+        </div>
+    </div>*@   
+    
+    <div class="form-group">
+        <label class="control-label col-lg-5 col-sm-4" style="width:47%;" for="inputEmail">
+            Email</label>
+        <div class="col-lg-4 col-sm-8" style="width:200px;">
+            @Html.TextBoxFor(model => model.LoginID, new { style = "", @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.LoginID, null, new { @class = "field-validation-error" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-lg-5 col-sm-4" style="width:47%;" for="inputPassword">
+            Password</label>
+        <div class="col-lg-4 col-sm-8" style="width:200px;">
+            @Html.PasswordFor(model => model.Password, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.Password, null, new { @class = "field-validation-error" })
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="controls" style="text-align:left; padding-left:47%; margin-left:15px;">            
+                <button type="submit" class="btn signinbtn" id="btnLogin" style="background:#fff; color:#430089" onclick="CheckForm();">
+                    SIGN IN</button>                
+                <img alt="" id="imgLogInLoading" class="marginLeft10 displayNone" src="../../Images/Loading_1.gif" />
+                <a href="~/Account/ResetPwd" style="font-size:16px;text-decoration:none;display:block;margin-top:15px;color:#fff;">Reset Password</a>
+        </div>
+    </div>
+    <div style="color: #A50000; font-size:15px; padding-bottom: 5px; line-height:0px;" class="controls">@ViewBag.Message</div>
+    @Html.ValidationSummary(true)
+}

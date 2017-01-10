@@ -1,0 +1,42 @@
+﻿@{
+    ViewBag.Title = "iQ media Services";
+    Layout = "~/Views/Shared/_IQMediaMasterStaticPages.cshtml";
+}
+@section HeaderImage
+{
+    <img src="~/Images/staticBanner/Services.jpg" alt="Services" />
+}
+@section Content
+{
+    <div class="span4">
+        @Html.Partial("~/Views/Services/_Left.cshtml")
+    </div>
+    <div class="span14 span14pad">
+        <p>
+            iQ media brings high touch back in an era when most communications
+            professionals using enterprise software feel left out on their own.
+        </p>
+        <p>
+            The fastest path to success with your iQ media subscription is to take advantage
+            of our implementation expertise and then become your own personal support center as an
+            ongoing customer.
+        </p>
+        <p>
+            When you begin to experience highflying programs, our consultative analysis group
+            can then help you to provide tailored insights into your public relations and communications
+            effectiveness.
+        </p>
+        <p>
+            At iQ media, we are one of the only media intelligence tools that allow comprehensive
+            access to media optimized for the cloud through our full featured API’s. Our REST
+            API lets you integrate applications using simple HTTP methods, in either XML or
+            JSON formats, making this an ideal API for integrating into 3rd party applications.
+        </p>
+    </div>
+    <script type="text/javascript" language="javascript">
+
+        $(document).ready(function () {
+            SetHighligtedLi('ulServiceNavigation', 'liOverview');
+        });    
+    </script>
+}

@@ -1,0 +1,190 @@
+﻿@using IQMedia.Model;
+@model DiscoveryMediaResult
+@if (Model != null)
+{
+    ActiveUser sessionInformation = IQMedia.WebApplication.Utility.ActiveUserMgr.GetActiveUser();
+    string Month = Model.LocalDateTime != null ? Model.LocalDateTime.Value.ToString("MMM", System.Globalization.CultureInfo.InvariantCulture) : string.Empty;
+    string Day = Model.LocalDateTime != null ? Model.LocalDateTime.Value.Day.ToString() : string.Empty;
+    string Time = Model.LocalDateTime != null ? Model.LocalDateTime.Value.ToString("hh:mm tt") : string.Empty;
+    string TVThumbUrl = Convert.ToString(System.Configuration.ConfigurationManager.AppSettings["IQArchieve_TVThumbUrl"]) + Model.VideoGuid;
+    string sLocalAudience = string.Empty;
+    string fLocalAudience = string.Empty;
+    string sLocalMediaValue = string.Empty;
+    string fLocalMediaValue = string.Empty;
+    string sNationalAudience = string.Empty;
+    string fNationalAudience = string.Empty;
+    string sNationalMediaValue = string.Empty;
+    string fNationalMediaValue = string.Empty;
+
+    int Billion = 1000000000;
+    decimal BillionD = 1000000000;
+    int Million = 1000000;
+    decimal MillionD = 1000000;
+
+    if (Model.Audience.HasValue && sessionInformation.IsNielsenData)
+    {
+        fLocalAudience = string.Format("{0:N0}", Model.Audience);
+
+        if (Model.Audience >= Billion)
+        {
+            sLocalAudience = string.Format("{0:F1} bil", Model.Audience / BillionD);
+        }
+        else if (Model.Audience >= Million)
+        {
+            sLocalAudience = string.Format("{0:F1} mil", Model.Audience / MillionD);
+        }
+        else
+        {
+            sLocalAudience = fLocalAudience;
+        }
+    }
+    else
+    {
+        sLocalAudience = "NA";
+    }
+
+    if (Model.IQAdsharevalue.HasValue && sessionInformation.IsNielsenData)
+    {
+        fLocalMediaValue = string.Format("{0:N2}", Model.IQAdsharevalue);
+
+        if (Model.IQAdsharevalue >= BillionD)
+        {
+            sLocalMediaValue = string.Format("{0:F1} bil", Model.IQAdsharevalue / BillionD);
+        }
+        else if (Model.IQAdsharevalue >= MillionD)
+        {
+            sLocalMediaValue = string.Format("{0:F1} mil", Model.IQAdsharevalue / MillionD);
+        }
+        else
+        {
+            sLocalMediaValue = fLocalMediaValue;
+        }
+    }
+                
+    <div class="media displayNone">
+        <div class="MediaDate">
+            <div class="post-date">
+                <span class="month">@Month</span>
+                <div>
+                    <span class="today">@Day</span>
+                </div>
+                <span class="timeWithTimeZone">@Time @Model.TimeZone</span>
+            </div>
+        </div>
+        <div class="MediaTypeLogo" align="center">
+            <img src="@Model.StationLogo" title="@ViewData["MediaTypeDescription"]" />
+        </div>
+        <div class="float-right FeedsVideoSpacer">
+            <div class="FeedsVideo positionRelative float-left">
+                <a class="cursorPointer" onclick='LoadPlayerbyGuidTS("@Model.VideoGuid",null,"@Model.SearchTerm.Replace("\"", "\\\"")");'>
+                    <img csrc="@TVThumbUrl" class="media-object" alt="" />
+                </a>
+            </div>
+            <div class="float-right">
+                <input type="checkbox" id="ckhTV_@Model.VideoGuid" value="@Model.VideoGuid,@ViewData["SubMediaType"]" onclick="CheckUncheckMasterCheckBox(this,'divResult','chkInputAll');" />
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="FeedsContentVideo">
+            <div class="media-heading float-left" title="@Model.Title">
+                @ViewData["Title"]
+            </div>
+            <div class="subheading float-left margintop1" >
+                @Model.timeDifference
+            </div>
+            <div class="clear float-left media-body">
+               @Html.Raw(@ViewData["Body"])
+            </div>
+        </div>
+        <div class="clear post-divider" />
+        <div class="clear margintop2 marginbottom2">
+            <div class="FeedsActionBarLeftDiv">
+                <div class="viewmore" style="min-height:1px">
+                    <!--min-height needed to force expand div-->
+                    <!--discovery model has no isRead or children-->
+                </div>
+                <div class="viewlocation">
+                    <div class="">
+                        @{
+    if (!string.IsNullOrWhiteSpace(Model.Market))
+    {
+                                <div class="location-tag" title="@Model.Market">
+                                    @{
+        if (Model.Market.Trim().Length > 23)
+        {
+                                            @(Model.Market.Trim().Substring(0, 21) + "...")
+        }
+        else
+        {
+                                            @Model.Market.Trim()
+        }
+                                    }
+                                </div>
+    }
+    else
+    { 
+                                <div class="margintop2" />
+    }                                      
+                        }
+                    </div>
+                </div>
+                <div class="viewsentiment" title="Sentiment">
+                    <div class="sentimentLeftFloat sentiment-tag">
+                        <div class="divSentimentMain sentimentFont">
+                            <div class="divSentimentNeg">
+                                <div style='width:@ViewData["MaxNegativeSentimentWidth"]'>
+                                    @Model.NegativeSentiment
+                                </div>
+                            </div>
+                            <div class="divSentimentPos">
+                                <div style='width:@ViewData["MaxPositiveSentimentWidth"]'>
+                                    @Model.PositiveSentiment
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="viewcontentdetail">
+                    <div class="viewshortdetail">
+                        @if (Model.Audience > 0 && sessionInformation.IsNielsenData)
+                        {
+                            <div class="view" title="Local Audience @fLocalAudience">
+                                @sLocalAudience
+                            </div>
+                        }
+                        else
+                        {
+                            <div align="center" class="margintop2"></div>
+                        }
+                    </div>
+                    <div class="viewshortdetail">
+                        @if (Model.IQAdsharevalue > 0 && sessionInformation.IsNielsenData)
+                        {
+                            <div class="price" title="Local Media Value @fLocalMediaValue">
+                                @sLocalMediaValue @Model.Nielsen_Result
+                            </div>
+                        }
+                        else
+                        {
+                            <div align="center" class="margintop2" />
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="FeedsActionBarRightDiv minWidth52IE8">
+                <div class="detailIcon">
+                    <!--Padding Save Article-->
+                    <div align="center" class="margintop2" />
+                </div>
+                <div class="detailIcon">
+                    <!--Padding View Article-->
+                    <div align="center" class="margintop2" />
+                </div>
+                <div class="detailIcon">
+                    <!--Padding on the right-->
+                    <div align="center" class="margintop2" />
+                </div>
+            </div>
+        </div>
+    </div>
+}

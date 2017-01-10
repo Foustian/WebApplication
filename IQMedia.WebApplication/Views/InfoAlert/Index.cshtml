@@ -1,0 +1,24 @@
+﻿@{
+    ViewBag.Title = "iQ Media";
+    Layout = "~/Views/Shared/_IQMediaMasterInner.cshtml";
+}
+
+<div class="container container_custom">
+    <div class="row-fluid" id="divRowFluid">
+        @if (ViewBag.IsSuccess)
+        {    
+            using (Html.BeginForm("Continue", "InfoAlert", FormMethod.Post))
+            {
+                <div style="text-align:left; margin:120px 300px 200px 300px; background-color:#f5f5f5; border:1px solid #e3e3e3; border-radius:4px; padding:19px;">
+                    <div style="font-weight:bold; margin-bottom:20px; font-size:16px;">@Html.Raw(IQMedia.WebApplication.Config.ConfigSettings.Settings.InfoAlertHeader)</div>
+                    @Html.Raw(IQMedia.WebApplication.Config.ConfigSettings.Settings.InfoAlertMessage)
+                    <div style="margin-top:20px; text-align:center;"><button type="submit" class="button">Continue</button></div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="mainerrorDiv" style="text-align: left;">@IQMedia.WebApplication.Config.ConfigSettings.Settings.PageLoadErrorMessage</div>
+        }
+    </div>
+</div>

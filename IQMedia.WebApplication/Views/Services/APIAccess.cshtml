@@ -1,0 +1,56 @@
+﻿@{
+    ViewBag.Title = "iQ media API Integration";
+    Layout = "~/Views/Shared/_IQMediaMasterStaticPages.cshtml";
+}
+@section HeaderImage
+{
+    <img src="~/Images/staticBanner/Services.jpg" alt="API Access" />
+}
+@section Content
+{
+    <div class="span4">
+        @Html.Partial("~/Views/Services/_Left.cshtml")
+    </div>
+    <div class="span14 span14pad">
+        <p>
+            <span class="staticPageHeader">Access to Media Optimized for the Cloud</span></p>
+        <p>
+            Many companies are looking for a better way to integrate broadcast TV, online news,
+            and social media into their products and services.</p>
+        <p>
+            Access to broadcast TV, in particular, has been hampered by the technology limitations
+            of the infrastructure relied on by traditional suppliers. Among the problems are
+            long search times, limited playback options, user-hostile toolsets that waste time,
+            and the fact that broadcast media is deleted after a short period of availability
+            – usually about 60 days.</p>
+        <p>
+            iQ media has developed breakthrough software and has built out a brand new, advanced
+            technology infrastructure that solves those problems. We call it media optimized
+            for the cloud, and now you can use our open APIs to integrate its power into your
+            own products and services.</p>
+        <p>
+            With our cloud-based media resource, you can search an ever-expanding repository
+            of US broadcast TV content, in which programming never expires. This capability
+            alone will enable you to expand your products and services with new fair use applications
+            that can drive increased revenue.</p>
+        <p>
+            Beyond providing access to the most US broadcast video, our cloud-based media resource
+            gives you extremely fast search results, the ability to quickly synchronize the
+            video to your keywords, and instant playback of up to a full hour of content. Your
+            customers will be amazed at the blazing fast speed of searches and how quickly they
+            can work with TV content once it is found.</p>
+        <p>
+            If you provide broadcast TV monitoring services as part of your solution portfolio,
+            you are no doubt struggling with the problems inherent to traditional capture technology.
+            It&#8217;s time that you evaluated iQ media&#8217;s cloud-based media resource.
+            You&#8217;ll be glad that you did.</p>
+        <p>
+            <a href="http://iqmediacorp.sites.hubspot.com/contactus">Contact us</a> to learn more in
+            how to integrate with iQ media</p>
+    </div>
+    <script type="text/javascript" language="javascript">
+        $(document).ready(function () {
+            SetHighligtedLi('ulServiceNavigation', 'liApi');
+        });    
+    </script>
+}

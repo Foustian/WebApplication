@@ -1,0 +1,39 @@
+﻿@{
+    ViewBag.Title = "iQ media Download";
+    Layout = "~/Views/Download/_DownloadMaster.cshtml";
+}
+<div>
+    @if (ViewBag.IsSuccess == true)
+    {
+        if (ViewBag.IsError == true)
+        {
+        <div style="color: #FF0000;">
+            Invalid parameter
+        </div>
+        }
+        else
+        {
+            if (ViewBag.IsError == false && ViewBag.IsDownloadLimitExceed == true)
+            {
+                using (Html.BeginForm("TermsAndCondition", "Download", FormMethod.Get))
+                { 
+                <div style="color: #FF0000;">
+                    You have reached maximum download limit
+                    <br />
+                    <br />
+                </div>
+                <span>Please click continue to see previous downloads/requests</span>
+                <br />
+                <br />
+                <input type="submit" class="button" value="Click to continue" />
+                }
+            }
+        }
+    }
+    else
+    {
+        <div style="color: #FF0000;">
+            @IQMedia.WebApplication.Config.ConfigSettings.Settings.PageLoadErrorMessage
+        </div>
+    }
+</div>

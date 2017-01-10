@@ -1,0 +1,861 @@
+﻿@using IQMedia.Model;
+@using IQMedia.Shared.Utility;
+@model Dictionary<string, object>
+@{
+    Layout = null;
+}
+@{
+    string dates = String.Empty;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>iQ media Media Room</title>
+    <link href="../../Css/Fonts.css" rel="stylesheet" type="text/css" />
+    <link href="../../Css/bootstrap.css" rel="stylesheet" type="text/css" />
+    <link href="../../Css/bootstrap-responsive.css" rel="stylesheet" type="text/css" />
+	<link href="../../Css/jquery-ui.css" rel="stylesheet" type="text/css" />
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js?v=1.0"></script>
+    <![endif]-->
+    <script src="~/Scripts/jquery-1.9.1.min.js?v=1.0" type="text/javascript"></script>
+    <script src="~/Scripts/jquery.placeholder.js" type="text/javascript"></script>
+    <script src="~/Scripts/ConstantScript.js?v=1.32" type="text/javascript"></script>
+    <script src="~/Scripts/IQMediaCommon.js?v=2.7" type="text/javascript"></script>
+    <script src="~/Scripts/PlayerScript.js?v=1.1" type="text/javascript"></script>
+    <link href="~/Css/jquery.mCustomScrollbar.css?v=1.0" rel="stylesheet" type="text/css" />
+	<script src="~/Scripts/jquery-ui.min.js?v=1.0" type="text/javascript"></script>
+    <!-- Customizable CSS -->
+    <link href="~/css/feed.css?v=3.2" rel="stylesheet" type="text/css" />
+    <script src="~/Scripts/jquery.mCustomScrollbar.concat.min.js?v=1.1" type="text/javascript"></script>
+    <style type="text/css">
+        body
+        {
+            padding-top: 40px;
+            font-family: 'Open Sans';
+        }
+        .mediatitlediv
+        {
+            line-height: 25px;
+            background-color: #EAEAEA;
+            font-weight: bold;
+            font-size: 15px;
+            border: 1px solid #A0A0A0;
+            vertical-align: middle;
+            padding-left: 10px;
+        }
+        .loadingdiv
+        {
+            top: 71px !important;
+        }
+        .imgsearch
+        {
+            margin-left:-21px !important;
+        }
+    </style>   
+</head>
+<body id="mainBody">
+    <div class="navbar navbar-inverse navbar-fixed-top" style="background-color: #fff;">
+        <!-- from desinger-->
+        <div class="container">
+        </div>
+        <!-- from desinger-->
+        <div class="navbar-inner navbar-custome">
+            <div class="container">
+                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span
+                    class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+                </a><a class="brand iqmedia-logo" href="#">
+                    <img src="~/images/iq-media.png?v=1.3" width="155" height="45" alt="IQ Media" /></a>
+                <div class="nav-collapse collapse">
+                </div>
+                <!--/.nav-collapse -->
+            </div>
+        </div>
+    </div>
+    <div class="container container_custom">
+        <div>
+            <div id="divScrollContent" style="min-height: 500px; overflow:auto;">
+                @if (Model != null && Model["MCMediaReport"] != null)
+                {
+                    MCMediaReportModel mcMediaReport = (MCMediaReportModel)Model["MCMediaReport"];
+
+                    if (mcMediaReport.FilterResults != null)
+                    {
+                        dates = string.Join("', '", mcMediaReport.FilterResults.Dates.Select(f => Convert.ToDateTime(f).ToString("MM/dd/yyyy")).ToArray());
+                    }
+
+                    try
+                    {
+                    <div style="padding-top: 10px; text-align: center;">
+                        @if (string.IsNullOrEmpty(mcMediaReport.CustomHeader))
+                        {
+                            <img src="~/Images/EmailNotificationBanner.png" alt="email notification banner" />
+                        }
+                        else
+                        {
+                            <img src="@System.Configuration.ConfigurationManager.AppSettings["UrlReportHeader"]@mcMediaReport.MasterClientGuid.Value/@mcMediaReport.CustomHeader" alt="Client Banner" />
+                        }
+                    </div>
+                    <div class="row-fluid" id="divRowFluid">
+                        <div class="span3 minheight500" id="divFilter">                    
+                            <div class="well sidebar-nav">
+                                <h5>Quick Media Finder</h5>
+                                <input type="text" class="keywordTetBox" placeholder="Keyword" id="txtKeyword" />
+                                <img id="imgKeyword" title="Search" src="../../images/magnifier.png" alt="search" class="imgsearch" />
+                                <input type="text" id="dpFrom" readonly="readonly" class="date" />
+                                <input type="text" id="dpTo" readonly="readonly" class="date" />
+                                <br />
+                                <br />
+                                <h5>Narrow Results</h5>
+                                <div class="navbar">
+                                    <ul role="navigation" class="nav floatNone sideMenuUl width100p">
+                                        <li class="dropdown ndate">
+                                            <a data-toggle="dropdown" class="dropdown-toggle" role="button" href="#" id="drop1">Date<span class="spnArrow">&nbsp;</span></a>
+                                            <ul id="ulCalender" aria-labelledby="drop1" role="menu" class="dropdown-menu sideMenu ulCalenderFilter">
+                                                <li role="presentation">
+                                                    <div id="divCalender">
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li class="dropdown nmedium">
+                                            <a data-toggle="dropdown" class="dropdown-toggle" role="button" id="liMediumFilter" href="#">Medium<span class="spnArrow">&nbsp;</span></a>
+                                            <ul aria-labelledby="drop2" role="menu" class="dropdown-menu multi-level sideMenu" id="ulMediaType" style="overflow-y:visible;">
+                                                @{
+                        if (mcMediaReport.FilterResults != null && mcMediaReport.FilterResults.MediaTypes != null && mcMediaReport.FilterResults.MediaTypes.Count > 0)
+                        {
+                            foreach (IQMedia.Model.MCMediaReport_MediaTypeFilter mediaType in mcMediaReport.FilterResults.MediaTypes)
+                            {
+                                                <li class="dropdown-submenu">
+                                                    <a data-toggle="dropdown" class="dropdown-toggle" href="#" role="button" name="aMediaType">@mediaType.MediaTypeDesc (@mediaType.RecordCountFormatted)</a>
+                                                    <ul aris-labelledby="drop2" role="menu" class="dropdown-menu sideMenu" id="ulSubMediaType">
+                                                        @foreach (IQMedia.Model.MCMediaReport_SubMediaTypeFilter subMediaType in mediaType.SubMediaTypes)
+                                                        {
+                                                            <li onclick="SetSubMediaType('@subMediaType.SubMediaType', '@subMediaType.SubMediaTypeDesc');" role="presentation">
+                                                                <a href="#" tabindex="-1" role="menuitem">@subMediaType.SubMediaTypeDesc (@subMediaType.RecordCountFormatted)</a>
+                                                            </li>
+                                                        }
+                                                    </ul>
+                                                </li>
+                            }       
+                        }
+                        else
+                        {
+                                                <li role="presentation"><a tabindex="-1" role="menuitem">No Filter Available</a></li>
+                        }
+                                                }
+                                            </ul>
+                                        </li>
+                                        <li class="dropdown institution">
+                                            <a data-toggle="dropdown" class="dropdown-toggle" role="button" id="liClientFilter" href="#">Institution<span class="spnArrow">&nbsp;</span></a>
+                                            <ul aria-labelledby="drop2" role="menu" class="dropdown-menu sideMenu" id="ulClient">
+                                                @{
+                        if (mcMediaReport.FilterResults != null)
+                        {
+                            foreach (MCMediaReport_Filter item in mcMediaReport.FilterResults.Clients)
+                            {
+                                if (!string.IsNullOrEmpty(item.ClientName))
+                                {
+                                                                <li onclick="SetClient('@item.ClientGuid','@item.ClientName.Replace("\'", "\\\'")');" role="presentation">
+                                                                    <a href="javascript:void(0)" tabindex="-1" role="menuitem">
+                                                                        @(item.ClientName + " (" + item.RecordCountFormatted + ")")
+                                                                    </a>
+                                                                </li>
+                                }
+                            }
+                        }
+                        else
+                        {
+                                                        <li role="presentation"><a tabindex="-1" role="menuitem">No Filter Available</a></li>
+                        }
+                                                }
+                                            </ul>
+                                        </li>      
+                                        <li class="ncategory">
+                                            <a data-toggle="dropdown" class="dropdown-toggle" role="button" id="liCategoryFilter" href="#">Category<span class="spnArrow">&nbsp;</span></a>
+                                            <ul aria-labelledby="drop2" role="menu" class="nav nav-stacked nav-dropdpwn" id="ulCategory" style="display: none;">
+                                                @{
+                        if (mcMediaReport.FilterResults != null)
+                        {                                      
+                                                        <li role="presentation" id="liCategorySearch" style="padding: 0px;">
+                                                            <ul class="sideMenu sub-submenu" aria-labelledby="drop2" role="menu">
+                                                                <li role="presentation" style="text-align: right">
+                                                                    <div>
+                                                                        <div class="fleft margintop5">
+                                                                            <input type="radio" onclick="SetSelectionType()" value="AND" id="rdAnd" style="margin-top: -3px"
+                                                                                name="rdSelectionType" />
+                                                                            AND
+                                                                            <input type="radio" onclick="SetSelectionType()" value="OR" id="rdOr" style="margin-top: -3px"
+                                                                                name="rdSelectionType" checked="checked" />
+                                                                            OR
+                                                                        </div>
+                                                                        <div>
+                                                                            <input type="button" value="Done" id="btnSearchCategory" class="button" style="margin: 0px; padding: 2px; min-width: 40px;" onclick="SearchCategory();">
+                                                                            <input type="button" value="Cancel" id="btnCancelSearchCategory" class="button" style="margin: 0px; padding: 2px; min-width: 40px;" onclick="SetSelectionType();">
+                                                                        </div>
+                                                                    </div>
+                                                                </li>
+                                                            </ul>
+                                                        </li>
+                                                        <li role="presentation" style="padding: 0px;">
+                                                            <ul class="sideMenu sub-submenu" aria-labelledby="drop2" role="menu" id="ulCategoryList">     
+                                                                @foreach (MCMediaReport_Filter item in mcMediaReport.FilterResults.Categories)
+                                                                {
+                                                                    if (!string.IsNullOrEmpty(item.CategoryName))
+                                                                    {
+                                                                        <li role="presentation">
+                                                                            <a href="javascript:void(0)" onclick="SetCategory(this,'@item.CategoryName.Replace("\'", "\\\'")');" tabindex="-1" role="menuitem">
+                                                                                @(item.CategoryName + " (" + item.RecordCountFormatted + ")")
+                                                                            </a>
+                                                                        </li>
+                                                                    }
+                                                                }
+                                                            </ul>
+                                                            @{                               
+                                                                var json = CommonFunctions.SearializeJson(mcMediaReport.FilterResults.Categories);
+                                                                <script type="text/javascript">
+                                                                    var _CurrentCategoryFilter = new Array();
+                                                                    _CurrentCategoryFilter = @Html.Raw(json);
+                                                                </script>
+                                                            }
+                                                        </li>      
+                        }
+                        else
+                        {
+                                                        <li role="presentation"><a tabindex="-1" role="menuitem">No Filter Available</a></li>
+                        }
+                                                }
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                    <div style="clear:both;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="span9 span9-custom">                        
+                            <div id="divActiveFilter" class="row-fluid">
+                            </div>
+                            <div id="divResults" style="padding:25px;">
+                                @{					
+                        if (mcMediaReport.HasResults)
+                        {
+                            if (Model != null && Model["HTML"] != null)
+                            {
+                                var html = Model["HTML"];
+                                                        @Html.Raw(html);
+                            }
+                        }
+                        else
+                        {
+                                                    <text>No items have been published</text>
+                        }
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    }
+                    catch (Exception exception)
+                    {
+                        IQMedia.WebApplication.Utility.CommonFunctions.WriteException(exception);
+                        <div style="color: #ff0000; padding: 25px;">
+                            An error occurred, please try again
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div style="color: #ff0000; padding: 25px;">
+                        @if (ViewBag.IsInvalidID)
+                        {
+                            <text> Invalid/Missing ID </text>
+                        }
+                        @if (ViewBag.IsError)
+                        {
+                            <text> An error occurred, please try again </text>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    @Html.Partial("~/Views/Shared/_Footer.cshtml")
+</body>
+<!-- Le javascript
+    ================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="~/Scripts/Bootstrap/bootstrap-modal.js?v=1.0" type="text/javascript"></script>
+<script src="~/Scripts/Bootstrap/bootstrap-dropdown.js?v=1.0" type="text/javascript"></script>
+<script language="javascript" type="text/javascript">
+
+    function ShowLoading() {
+        var loadingHTML = '<div id="divLoading" class="loadingdiv"><span>Loading<img src=\'../../images/1.gif\' /></span></div>';
+        $(document.body).append(loadingHTML);
+        $("#divLoading").fadeIn(500);
+    }
+    function HideLoading() {
+        $("#divLoading").remove();
+    }
+</script>
+
+ <script type="text/javascript">
+     var _ReportGuid = "";
+     var _SearchTerm = "";
+     var _FromDate = null;
+     var _ToDate = null;
+     var _SubMediaType = "";
+     var _SubMediaTypeDescription = "";
+     var _ClientName = "";
+     var _ClientGuid = "";
+     var _CategoryNameList = [];
+     var _OldCategoryNameList = [];
+     var _CategoryName = "";
+     var _SelectionType = 'OR';
+     var _DisabledDays = ['@Html.Raw(dates)'];
+
+     $(document).ready(function () {
+         if (screen.height >= 768) {
+             $('#divScrollContent').css({ 'height': documentHeight - 140 });
+             $("#divScrollContent").mCustomScrollbar({
+                 advanced: {
+                     updateOnContentResize: true,
+                     autoScrollOnFocus: false
+                 },
+                 scrollInertia: 60
+             });
+         }
+
+         $("#txtKeyword").keypress(function (e) {
+             if (e.keyCode == 13) {
+                 SetKeyword();
+             }
+         });
+
+         $("#imgKeyword").click(function (e) {
+             SetKeyword();
+         });
+
+         $("#txtKeyword").blur(function () {
+             SetKeyword();
+         });
+
+         $("#divCalender").datepicker({
+             beforeShowDay: EnableAllTheseDays,
+             changeMonth: true,
+             changeYear: true,
+             onSelect: function (dateText, inst) {
+                 $('#dpFrom').val(dateText);
+                 $('#dpTo').val(dateText);
+                 SetDateVariable();
+             }
+
+         });
+
+         $('.ndate').click(function () {
+             $("#divCalender").datepicker("refresh");
+         });
+
+         $("#dpFrom").datepicker({
+             showOn: "button",
+             buttonImage: "../../images/calender.png",
+             buttonImageOnly: true,
+             changeMonth: true,
+             changeYear: true,
+             onSelect: function (dateText, inst) {
+                 $('#dpFrom').val(dateText);
+                 SetDateVariable();
+             }
+         });
+
+         $("#dpTo").datepicker({
+             showOn: "button",
+             buttonImage: "../../images/calender.png",
+             buttonImageOnly: true,
+             changeMonth: true,
+             changeYear: true,
+             onSelect: function (dateText, inst) {
+                 $('#dpTo').val(dateText);
+                 SetDateVariable();
+             }
+         });
+
+         _ReportGuid = getParameterByName("ID");
+
+         $("body").click(function (e) {
+             if (e.target.id == "liCategoryFilter" || $(e.target).parents("#liCategoryFilter").size() > 0) {
+                 if ($('#ulCategory').is(':visible')) {
+                     $('#ulCategory').hide();
+                 }
+                 else {
+                     $('#ulCategory').show();
+                 }
+             }
+             else if ((e.target.id !== "liCategoryFilter" && e.target.id !== "ulCategory" && $(e.target).parents("#ulCategory").size() <= 0) || e.target.id == "btnSearchCategory") {
+                 $('#ulCategory').hide();
+                 if (e.target.id != "btnSearchCategory") {
+                     _CategoryNameList = [];
+                     var categoriesHTML = "";
+                     if (_SelectionType == $('#rdAnd').val()) {
+                         $('#rdAnd').prop("checked", true);
+                     }
+                     else {
+                         $('#rdOr').prop("checked", true);
+                     }
+
+                     $.each(_CurrentCategoryFilter, function (eventID, eventData) {
+                         if (_OldCategoryNameList.length > 0 && $.inArray(eventData.CategoryName, _OldCategoryNameList) !== -1) {
+                             _CategoryNameList.push(eventData.CategoryName);
+                         }
+                         var liStyle = "";
+                         if ($.inArray(eventData.CategoryName, _CategoryNameList) !== -1) {
+                             liStyle = "style=\"background-color: rgb(233, 233, 233);\"";
+                         }
+                         categoriesHTML = categoriesHTML + '<li role=\"presentation\"><a ' + liStyle + '  href=\"javascript:void(0)\" onclick="SetCategory(this,\'' + eventData.CategoryName.replace(/"/g, '&quot;').replace(/'/g, '\\\'') + '\');" tabindex=\"-1\" role=\"menuitem\">';
+                         categoriesHTML += EscapeHTML(eventData.CategoryName) + ' (' + eventData.RecordCountFormatted + ') </a></li>';
+                     });
+                     if (categoriesHTML == '') {
+                         $('#ulCategoryList').html('<li role="presentation"><a tabindex="-1" role="menuitem">' + _msgNoFilterAvailable + '</a></li>');
+                     }
+                     else {
+                         $("#ulCategoryList").html(categoriesHTML);
+                     }
+                 }
+             }
+         });
+     });
+
+     $(window).resize(function () {
+         if (screen.height >= 768) {
+             $('#divResults').css({ 'height': documentHeight - 250 });
+         }
+     });
+
+     function EnableAllTheseDays(date) {
+         date = $.datepicker.formatDate("mm/dd/yy", date);
+         return [$.inArray(date, _DisabledDays) !== -1];
+     }
+
+     function SetKeyword() {
+         if ($("#txtKeyword").val() != "" && _SearchTerm != $("#txtKeyword").val()) {
+             _SearchTerm = $("#txtKeyword").val();
+             RefreshResults();
+         }
+     }
+
+     function SetDateVariable() {
+         if ($("#dpFrom").val() && $("#dpTo").val()) {
+             if (_FromDate != $("#dpFrom").val() || _ToDate != $("#dpTo").val()) {
+                 _FromDate = $("#dpFrom").val();
+                 _ToDate = $("#dpTo").val();
+                 RefreshResults();
+                 $('#ulCalender').parent().removeClass('open');
+             }
+         }
+         else {
+             if ($("#dpFrom").val() != "" && $("#dpTo").val() == "") {
+                 $("#dpTo").addClass("warningInput");
+             }
+             else if ($("#dpTo").val() != "" && $("#dpFrom").val() == "") {
+                 $("#dpFrom").addClass("warningInput");
+             }
+         }
+     }
+
+     function SetSubMediaType(subMediaType, subMediaTypeDescription) {
+         if (_SubMediaType != subMediaType) {
+             _SubMediaType = subMediaType;
+             _SubMediaTypeDescription = subMediaTypeDescription;
+             RefreshResults();
+         }
+     }
+
+     function SetClient(clientGuid, clientName) {
+         if (_ClientGuid != clientGuid) {
+             _ClientGuid = clientGuid;
+             _ClientName = clientName;
+             RefreshResults();
+         }
+     }
+
+     function SearchCategory() {
+         var _CurrentSelectionType;
+         var IsPost = false;
+         if ($('#rdAnd').is(":checked")) {
+             _CurrentSelectionType = $('#rdAnd').val();
+         }
+         else {
+             _CurrentSelectionType = $('#rdOr').val();
+         }
+         if ($(_CategoryNameList).not(_OldCategoryNameList).length != 0 || $(_OldCategoryNameList).not(_CategoryNameList).length != 0) {
+             IsPost = true;
+         }
+         else if (_CategoryNameList.length > 1 && (_SelectionType != '' && _SelectionType != _CurrentSelectionType)) {
+             IsPost = true;
+         }
+
+         if (IsPost) {
+             _OldCategoryNameList = _CategoryNameList.slice(0);
+             _SelectionType = _CurrentSelectionType;
+             _CategoryName = "";
+             $.each(_CategoryNameList, function (index, val) {
+                 if (_CategoryName == "") {
+                     _CategoryName = val;
+                 }
+                 else {
+                     _CategoryName = _CategoryName + ' "' + _SelectionType + '" ' + val;
+                 }
+             });
+             RefreshResults();
+         }
+     }
+
+     function SetCategory(eleCategory, CategoryName) {
+         if ($.inArray(CategoryName, _CategoryNameList) == -1) {
+             _CategoryNameList.push(CategoryName);
+             $(eleCategory).css("background-color", "#E9E9E9");
+         }
+         else {
+             var catIndex = _CategoryNameList.indexOf(CategoryName);
+             if (catIndex > -1) {
+                 _CategoryNameList.splice(catIndex, 1);
+                 $(eleCategory).css("background-color", "#ffffff");
+             }
+         }
+
+         if ($('#rdAnd').is(":checked")) {
+             $("#ulCategoryList li").each(function () {
+                 var _Category = $(this).find('a').attr("onclick").replace('SetCategory(this,\'', '').replace('\');', '');
+                 if ($.inArray(_Category, _CategoryNameList) == -1) {
+                     $(this).find('a').addClass('blur');
+                 }
+             });
+
+             GetCategoryFilter();
+         }
+     }
+
+     function SetSelectionType() {
+         if (_CategoryNameList.length > 0 || _OldCategoryNameList.length > 0) {
+             _CategoryNameList = [];
+             GetCategoryFilter();
+         }
+     }
+
+     function GetCategoryFilter() {
+         var jsonPostData = {
+             reportGuid: _ReportGuid,
+             fromDate: _FromDate,
+             toDate: _ToDate,
+             searchTerm: _SearchTerm,
+             subMediaType: _SubMediaType,
+             clientGuid: _ClientGuid,
+             categoryNames: _CategoryNameList
+         }
+
+         $.ajax({
+             url: _urlMCMediaTemplate2FilterCategory,
+             contentType: "application/json; charset=utf-8",
+             type: "post",
+             dataType: 'json',
+             data: JSON.stringify(jsonPostData),
+             success: function (result) {
+                 if (result.isSuccess) {
+                     var categoriesHTML = "";
+                     $.each(result.categoryFilter, function (eventID, eventData) {
+                         var liStyle = "";
+                         if ($.inArray(eventData.CategoryName, _CategoryNameList) !== -1) {
+                             liStyle = "style=\"background-color: rgb(233, 233, 233);\"";
+                         }
+                         categoriesHTML = categoriesHTML + '<li role=\"presentation\"><a ' + liStyle + '  href=\"javascript:void(0)\" onclick="SetCategory(this,\'' + eventData.CategoryName.replace(/"/g, '&quot;').replace(/'/g, '\\\'') + '\');" tabindex=\"-1\" role=\"menuitem\">';
+                         categoriesHTML += EscapeHTML(eventData.CategoryName) + ' (' + eventData.RecordCountFormatted + ') </a></li>';
+                     });
+
+                     $("#ulCategoryList").html(categoriesHTML);
+                 }
+                 else {
+                     ShowNotification(_msgSomeErrorProcessing);
+                 }
+             },
+             error: function (a, b, c) {
+                 ShowNotification(_msgSomeErrorProcessing, a);
+             }
+         });
+     }
+
+     function RefreshResults() {
+         var jsonPostData = {
+             reportGuid: _ReportGuid,
+             fromDate: _FromDate,
+             toDate: _ToDate,
+             searchTerm: _SearchTerm,
+             subMediaType: _SubMediaType,
+             clientGuid: _ClientGuid,
+             categoryNames: _CategoryNameList,
+             selectionType: _SelectionType
+         }
+
+         if (DateValidation()) {
+             $.ajax({
+                 url: _urlMCMediaTemplate2SearchResults,
+                 contentType: "application/json; charset=utf-8",
+                 type: "post",
+                 dataType: 'json',
+                 data: JSON.stringify(jsonPostData),
+                 success: function (result) {
+                     // Set filter irrespective of success or failure
+                     SetActiveFilter();
+
+                     if (result.isSuccess) {
+                         $("#divResults").html(result.HTML);
+                         _CurrentCategoryFilter = result.filter.Categories.slice(0);
+                         ModifyFilters(result.filter);
+
+                         if (screen.height >= 768) {
+                             setTimeout(function () { $("#divScrollContent").mCustomScrollbar("scrollTo", "top"); }, 200);
+                         }
+                     }
+                     else {
+                         ShowNotification(_msgSomeErrorProcessing);
+                         ClearResultsOnError('divResults', '', '', _msgErrorOnSearch.replace(/@@MethodName@@/g, "RefreshResults()"));
+                     }
+                 },
+                 error: function (a, b, c) {
+                     ShowNotification(_msgSomeErrorProcessing, a);
+                     ClearResultsOnError('divResults', '', '', _msgErrorOnSearch.replace(/@@MethodName@@/g, "RefreshResults()"));
+                 }
+             });
+         }
+     }
+
+     function ModifyFilters(filter) {
+         _DisabledDays = [];
+         if (filter != null && filter.Dates.length > 0) {
+             $.each(filter.Dates, function (id, date) {
+                 _DisabledDays.push(date);
+             });
+         }
+
+         var mediumLI = "";
+         if (filter != null && filter.MediaTypes != null) {
+             $.each(filter.MediaTypes, function (eventID, eventData) {
+                 mediumLI += '<li class="dropdown-submenu"><a data-toggle="dropdown" class="dropdown-toggle" href="#" role="button" name="aMediaType">';
+                 mediumLI += eventData.MediaTypeDesc + ' (' + eventData.RecordCountFormatted + ') </a>';
+                 mediumLI += '<ul aris-labelledby="drop2" role="menu" class="dropdown-menu sideMenu" id="ulSubMediaType">'
+                 $.each(eventData.SubMediaTypes, function (eventID2, eventData2) {
+                     mediumLI += '<li onclick="SetSubMediaType(\'' + eventData2.SubMediaType + '\', \'' + eventData2.SubMediaTypeDesc + '\');" role="presentation"><a href="#" tabindex="-1" role="menuitem">' + eventData2.SubMediaTypeDesc + ' (' + eventData2.RecordCountFormatted + ') </a></li>';
+                 });
+                 mediumLI += '</ul></li>';
+             });
+         }
+
+         if (mediumLI == "") {
+             $("#ulMediaType").html('<li role="presentation"><a tabindex="-1" role="menuitem">' + _msgNoFilterAvailable + '</a></li>');
+         }
+         else {
+             $("#ulMediaType").html(mediumLI);
+         }
+
+         if (filter != null && filter.Categories != null) {
+             var categoriesHTML = "";
+             var strAndSelection = "";
+             var strOrSelection = ""
+             if (_SelectionType == 'AND') {
+                 strAndSelection = "checked=\"checked\"";
+             }
+             else {
+                 strOrSelection = "checked=\"checked\"";
+             }
+
+             $.each(filter.Categories, function (eventID, eventData) {
+                 var liStyle = "";
+                 if ($.inArray(eventData.CategoryName, _CategoryNameList) !== -1) {
+                     liStyle = "style=\"background-color: rgb(233, 233, 233);\"";
+                 }
+                 categoriesHTML = categoriesHTML + '<li role=\"presentation\"><a ' + liStyle + '  href=\"javascript:void(0)\" onclick="SetCategory(this,\'' + eventData.CategoryName.replace(/"/g, '&quot;').replace(/'/g, '\\\'') + '\');" tabindex=\"-1\" role=\"menuitem\">';
+                 categoriesHTML += EscapeHTML(eventData.CategoryName) + ' (' + eventData.RecordCountFormatted + ') </a></li>';
+             });
+
+             if (categoriesHTML == '') {
+                 $('#ulCategoryList').html('<li role="presentation"><a tabindex="-1" role="menuitem">' + _msgNoFilterAvailable + '</a></li>');
+                 $('#liCategorySearch').hide();
+             }
+             else {
+                 $('#ulCategoryList').html(categoriesHTML);
+                 $('#liCategorySearch').show();
+             }
+         }
+
+         if (filter != null && filter.Clients != null) {
+             var clientHTML = "";
+             $.each(filter.Clients, function (eventID, eventData) {
+                 clientHTML = clientHTML + '<li onclick="SetClient(\'' + eventData.ClientGuid + '\',\'' + eventData.ClientName.replace(/"/g, '&quot;').replace(/'/g, '\\\'') + '\');" role=\"presentation\"><a href=\"#\" tabindex=\"-1\" role=\"menuitem\">';
+                 clientHTML += EscapeHTML(eventData.ClientName) + ' (' + eventData.RecordCountFormatted + ') </a></li>';
+             });
+
+             if (clientHTML == "") {
+                 $('#ulClient').html('<li role="presentation"><a tabindex="-1" role="menuitem">' + _msgNoFilterAvailable + '</a></li>');
+             }
+             else {
+                 $('#ulClient').html(clientHTML);
+             }
+         }
+     }
+
+     function SetActiveFilter() {
+         var isFilterEnable = false;
+         $("#divActiveFilter").html("");
+
+         if (_SearchTerm != "") {
+             $('#divActiveFilter').append('<div id="divKeywordActiveFilter" class="filter-in">' + EscapeHTML(_SearchTerm) + '<span class="cancel" onclick="RemoveFilter(1);"></span></div>');
+             isFilterEnable = true;
+         }
+         if ((_FromDate != null && _FromDate != "") && (_ToDate != null && _ToDate != "")) {
+             $('#divActiveFilter').append('<div id="divDateActiveFilter" class="filter-in">' + _FromDate + ' To ' + _ToDate + '<span class="cancel" onclick="RemoveFilter(2);"></span></div>');
+             isFilterEnable = true;
+         }
+         if (_SubMediaType != "") {
+             $('#divActiveFilter').append('<div id="divSubMediaTypeActiveFilter" class="filter-in">' + _SubMediaTypeDescription + '<span class="cancel" onclick="RemoveFilter(3);"></span></div>');
+             isFilterEnable = true;
+         }
+         if (_ClientName != "") {
+             $('#divActiveFilter').append('<div id="divClientActiveFilter" class="filter-in">' + EscapeHTML(_ClientName) + '<span class="cancel" onclick="RemoveFilter(4);"></span></div>');
+             isFilterEnable = true;
+         }
+         if (_CategoryNameList.length > 0) {
+             $('#divActiveFilter').append('<div id="divCategoryActiveFilter" class="filter-in">' + EscapeHTML(_CategoryName) + '<span class="cancel" onclick="RemoveFilter(5);"></span></div>');
+             isFilterEnable = true;
+         }
+
+         if (isFilterEnable) {
+             $("#divActiveFilter").css({ 'border-bottom': '1px solid rgb(236, 236, 236)' });
+         }
+         else {
+             $("#divActiveFilter").css({ 'border-bottom': '' });
+         }
+     }
+
+     function RemoveFilter(filterType) {
+         var isRefresh = false;
+
+         // Represent SearchKeyword
+         if (filterType == 1) {
+             $("#txtKeyword").val("");
+             _SearchTerm = "";
+             isRefresh = true;
+         }
+
+         // Represent Date filter(From Date,To Date)
+         if (filterType == 2) {
+             $("#dpFrom").datepicker("setDate", null);
+             $("#dpTo").datepicker("setDate", null);
+             $("#divCalender").datepicker("setDate", null);
+
+             _FromDate = null;
+             _ToDate = null;
+             isRefresh = true;
+         }
+
+         // Represent SubMediaType Filter
+         if (filterType == 3) {
+             _SubMediaType = "";
+             _SubMediaTypeDescription = "";
+             isRefresh = true;
+         }
+
+         // Represent Client Filter
+         if (filterType == 4) {
+             _ClientGuid = "";
+             _ClientName = "";
+             isRefresh = true;
+         }
+
+         // Represent Category Filter
+         if (filterType == 5) {
+             _CategoryNameList = [];
+             _OldCategoryNameList = [];
+             _CategoryName = "";
+             _SelectionType = $('#rdOr').val();
+             isRefresh = true;
+         }
+
+         if (isRefresh) {
+             RefreshResults();
+         }
+     }
+
+     function DateValidation() {
+         $('#dpFrom').removeClass('warningInput');
+         $('#dpTo').removeClass('warningInput');
+
+         // if both empty
+         if (($('#dpTo').val() == '') && ($('#dpFrom').val() == '')) {
+             return true;
+         }
+         //if one empty not other
+         else if (($('#dpFrom').val() != '') && ($('#dpTo').val() == '')
+                        ||
+                        ($('#dpFrom').val() == '') && ($('#dpTo').val() != '')
+                        ) {
+             if ($('#dpFrom').val() == '') {
+
+                 ShowNotification(_msgFromDateNotSelected);
+                 $('#dpFrom').addClass('warningInput');
+             }
+
+             if ($('#dpTo').val() == '') {
+
+                 ShowNotification(_msgToDateNotSelected);
+                 $('#dpTo').addClass('warningInput');
+
+             }
+             return false;
+         }
+         //if both not empty
+         else {
+             var isFromDateValid = isValidDate($('#dpFrom').val().toString());
+             var isToDateValid = isValidDate($('#dpTo').val().toString());
+             if (isFromDateValid && isToDateValid) {
+                 var fromDate = new Date($('#dpFrom').val());
+                 var toDate = new Date($('#dpTo').val());
+                 if (fromDate > toDate) {
+                     ShowNotification(_msgFromDateLessThanToDate);
+                     $('#dpFrom').addClass('warningInput');
+                     $('#dpTo').addClass('warningInput');
+                     return false;
+                 }
+                 else {
+                     return true;
+                 }
+             }
+             else {
+                 if (!isFromDateValid) {
+                     $('#dpFrom').addClass('warningInput');
+                 }
+                 if (!isToDateValid) {
+                     $('#dpTo').addClass('warningInput');
+                 }
+                 ShowNotification(_msgInvalidDate);
+                 return false;
+             }
+         }
+     }
+
+     function isValidDate(s) {
+         var bits = s.split('/');
+         var y = bits[2], m = bits[0], d = bits[1];
+
+         // Assume not leap year by default (note zero index for Jan) 
+         var daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+         // If evenly divisible by 4 and not evenly divisible by 100, 
+         // or is evenly divisible by 400, then a leap year 
+         if ((!(y % 4) && y % 100) || !(y % 400)) {
+             daysInMonth[1] = 29;
+         }
+
+         return d <= daysInMonth[--m]
+     }
+    </script>
+</html>

@@ -1,0 +1,18 @@
+﻿body
+{
+}
+
+
+.navbar .pull-right > li > .dropdown-menu:after, .navbar .nav > li > .dropdown-menu.pull-right:after
+{
+    right: 32px;
+}
+
+.navbar .nav > li > .dropdown-menu:after
+{
+    border-bottom: 10px solid #FFFFFF;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    top:-10px;
+}
+

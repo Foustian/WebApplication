@@ -1,0 +1,154 @@
+﻿@using IQMedia.Model;
+@model fliQ_ClientApplicationPostModel
+@{
+    
+    IQMedia.Model.ActiveUser sessionInformation = IQMedia.WebApplication.Utility.ActiveUserMgr.GetActiveUser();
+}
+<script src="~/Scripts/jquery.form.js?v=1.0" type="text/javascript"></script>
+<script language="javascript" type="text/javascript">
+    $("#divFliq_ClientApplicationRegistration_ScrollContent").css("height", documentHeight - 250);
+    $("#divFliq_ClientApplicationRegistration_ScrollContent").mCustomScrollbar({
+        advanced: {
+            updateOnContentResize: true,
+            autoScrollOnFocus: true
+        }
+    });
+</script>
+<div style="clear: both;">
+</div>
+<div id="divFliq_ClientApplicationRegistration_ScrollContent">
+    @using (Html.BeginForm("Fliq_ClientApplicationRegistration", "FliqCustomer", FormMethod.Post, new { @class = "form-horizontal", @id = "frmFliq_ClientApplication" }))
+    {
+        <div style="padding-right: 15px;">
+            <div class="sidebar-nav" style="margin-top: 7px;">
+                <h5>
+                    Fliq Client Application Setup Page</h5>
+            </div>
+            <br />
+            <div class="control-group">
+                <label for="clientApplication_ClientID" class="control-label">
+                    Client</label>
+                <div class="controls">
+                    <input type="hidden" id="clientApplication_ID" name="clientApplication.ID" value="@Model.clientApplication.ID" />
+                    <select name="clientApplication.ClientID" id="clientApplication_ClientID" @(Model.clientApplication.ID == 0 ? string.Empty : "readonly=readonly")>
+                        <option value="0">Select</option>
+                        @foreach (ClientModel client in Model.ClientApplication_DropDown.ClientList)
+                        {
+                            <option value="@client.ClientKey" @(Model.clientApplication.ClientID == client.ClientKey ? "selected=\"selected\"" : string.Empty)>@client.ClientName</option>
+                        }
+                    </select>
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanclientApplication_ClientID"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="clientApplication_FliqApplicationID" class="control-label">
+                    Application</label>
+                <div class="controls">
+                    <select name="clientApplication.FliqApplicationID" id="clientApplication_FliqApplicationID" @(Model.clientApplication.ID == 0 ? string.Empty : "readonly=readonly")>
+                        <option value="0">Select</option>
+                        @foreach (fliQ_ApplicationModel app in Model.ClientApplication_DropDown.ApplicationList)
+                        {
+                            <option value="@app.ID" @(Model.clientApplication.FliqApplicationID == app.ID ? "selected=\"selected\"" : string.Empty)>@app.Application</option>
+                        }
+                    </select>
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanclientApplication_FliqApplicationID"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="row-fluid row-custom">
+                &nbsp;</div>
+            <br />
+            <div class="control-group">
+                <input type="hidden" id="editCategoryGuid" value="@(Model.clientApplication.DefaultCategory.HasValue ? Model.clientApplication.DefaultCategory.Value.ToString() : "0")" />
+                <label for="clientApplication_DefaultCategory" class="control-label">
+                    Default Category</label>
+                <div class="controls">
+                    <select id="clientApplication_DefaultCategory" name="clientApplication.DefaultCategory">
+                        <option value="0">&lt;Blank&gt;</option>
+                    </select>
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanclientApplication_DefaultCategory"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="clientApplication_FTPHost" class="control-label">
+                    FTP Host</label>
+                <div class="controls">
+                    <input type="text" name="clientApplication.FTPHost" id="clientApplication_FTPHost" value="@Model.clientApplication.FTPHost" />
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanclientApplication_FTPHost"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="clientApplication_FTPPath" class="control-label">
+                    FTP Path</label>
+                <div class="controls">
+                    <input type="text" name="clientApplication.FTPPath" id="clientApplication_FTPPath" value="@Model.clientApplication.FTPPath" />
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanclientApplication_FTPPath"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="clientApplication_FTPLoginID" class="control-label">
+                    FTP Login</label>
+                <div class="controls">
+                    <input type="text" name="clientApplication.FTPLoginID" id="clientApplication_FTPLoginID" value="@Model.clientApplication.FTPLoginID" />
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanclientApplication_FTPLoginID"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="clientApplication_FTPPwd" class="control-label">
+                    FTP Password</label>
+                <div class="controls">
+                    <input type="text" name="clientApplication.FTPPwd" id="clientApplication_FTPPwd" value="@Model.clientApplication.FTPPwd" />
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanclientApplication_FTPPwd"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="clientApplication_MaxVideoDuration" class="control-label">
+                    Max Video Duration</label>
+                <div class="controls">
+                    <input type="text" name="clientApplication.MaxVideoDuration" id="clientApplication_MaxVideoDuration" value="@(Model.clientApplication.ID == 0 ? 120 : Model.clientApplication.MaxVideoDuration)" />
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanclientApplication_MaxVideoDuration"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="clientApplication_IsLandscapeOnly" class="control-label">
+                    Capture Landscape Only</label>
+                <div class="controls">
+                    <input type="checkbox" name="clientApplication.IsLandscapeOnly" id="clientApplication_IsLandscapeOnly" checked="@(Model.clientApplication.IsLandscapeOnly.HasValue ? Model.clientApplication.IsLandscapeOnly.Value : false)" value="true" />
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="clientApplication_IsCategoryEnable" class="control-label">
+                    Is Category Enabled</label>
+                <div class="controls">
+                    <input type="checkbox" name="clientApplication.IsCategoryEnable" id="clientApplication_IsCategoryEnable" checked="@(Model.clientApplication.IsCategoryEnable.HasValue ? Model.clientApplication.IsCategoryEnable.Value : true)" value="true" />
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="clientApplication_IsActive" class="control-label">
+                    Is Active</label>
+                <div class="controls">
+                    <input type="checkbox" name="clientApplication.IsActive" id="clientApplication_IsActive" checked="@(Model.clientApplication.IsActive.HasValue ? Model.clientApplication.IsActive.Value : true)" value="true" />
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">
+                    &nbsp;</label>
+                <div class="controls">
+                    <input type="button" id="btnCancelFliq_ClientApplicationRegistration" name="btnCancelFliq_ClientApplicationRegistration"
+                        value="Cancel" onclick="CancelFliq_ClientApplicationRegistration();" class="button"
+                        style="margin: 0px;" />
+                    <input type="button" onclick="SaveFliq_ClientApplication()" id="btnSubmitFliq_ClientApplicationRegistration"
+                        name="btnSubmitFliq_ClientApplicationRegistration" value="Submit" class="button"
+                        style="margin: 0px;" />
+                </div>
+            </div>
+        </div>
+    }
+</div>

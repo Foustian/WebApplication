@@ -1,0 +1,143 @@
+﻿@using IQMedia.Model;
+@using IQMedia.Shared.Utility;
+@model IQAgent_MediaResultsModel
+@if (Model != null)
+{
+    ActiveUser sessioninfo = IQMedia.WebApplication.Utility.ActiveUserMgr.GetActiveUser();
+    IQAgent_BLPMResultsModel iQAgent_BLPMResultsModel = (IQAgent_BLPMResultsModel)Model.MediaData;
+    string highlightedPMText = string.Empty;
+    string highlightedPMOutput = !string.IsNullOrEmpty(iQAgent_BLPMResultsModel.HighlightingText) ? iQAgent_BLPMResultsModel.HighlightingText.Replace("&lt;", "<").Replace("&gt;", ">") : string.Empty;
+    
+    int Billion = 1000000000;
+    decimal BillionD = 1000000000;
+    int Million = 1000000;
+    decimal MillionD = 1000000;
+    string sCirculation = string.Empty;
+    string fCirculation = string.Format("{0:N0}", iQAgent_BLPMResultsModel.Circulation);
+
+    if (iQAgent_BLPMResultsModel.Circulation >= Billion)
+    {
+        sCirculation = string.Format("{0:F1} bil", iQAgent_BLPMResultsModel.Circulation / BillionD);
+    }
+    else if (iQAgent_BLPMResultsModel.Circulation >= Million)
+    {
+        sCirculation = string.Format("{0:F1} mil", iQAgent_BLPMResultsModel.Circulation / MillionD);
+    }
+    else
+    {
+        sCirculation = fCirculation;
+    }
+
+    if (highlightedPMOutput.Length > 300)
+    {
+        highlightedPMText = highlightedPMOutput.Substring(0, 300);
+    }
+    else
+    {
+        highlightedPMText = highlightedPMOutput;
+    }
+
+    highlightedPMText = CommonFunctions.ProcessHighlightingText(highlightedPMOutput, highlightedPMText).Trim();
+
+    string PMBasePath = Convert.ToString(System.Configuration.ConfigurationManager.AppSettings["IQArchieve_PMBaseUrl"]);
+                
+   <div class="media" id="divMedia_@Model.ID">
+        <div class="MediaDate">
+            <div class="post-date">
+                <span class="month">@Model.MediaDateTime.ToString("MMM", System.Globalization.CultureInfo.InvariantCulture)</span>
+                <div>
+                    <span class="today">@Model.MediaDateTime.Day</span>
+                </div>
+                <span class="timeWithTimeZone">@Model.MediaDateTime.ToString("hh:mm tt") @sessioninfo.TimeZone</span>
+            </div>
+        </div>
+        <div class="MediaTypeLogo" align="center">
+            <img src="@ViewData["MediaIconPath"]" title="@ViewData["MediaTypeDescription"]">
+        </div>
+        <div class="pull-right">
+            <input type="checkbox" onclick="CheckUncheckMasterCheckBox(this.id,'ulMediaResults','chkInputAll');" value="@Model.ID:@Model.MediaType" id="chkdivResults_@Model.ID" />
+            <input type="hidden" value="0" id="hdnParentID_@Model.ID" />
+        </div>
+        <div class="FeedsContentNone">
+            @{
+                string pmTitle = string.Empty;
+                if (Html.Raw(iQAgent_BLPMResultsModel.Title).ToString().Trim().Length > 65)
+                {
+                    pmTitle = Html.Raw(iQAgent_BLPMResultsModel.Title).ToString().Trim().Substring(0, 62) + "...";
+                }
+                else
+                {
+                    pmTitle = Html.Raw(iQAgent_BLPMResultsModel.Title).ToString().Trim();
+                }
+            }
+            <div class="float-left media-heading">
+                <a target="_blank" href="@(PMBasePath + iQAgent_BLPMResultsModel.FileLocation.Replace(@"\", @"/"))" title="@Html.Raw(iQAgent_BLPMResultsModel.Title)">@pmTitle</a>
+            </div>
+            <div class="subheading float-left margintop1">
+                @Model.timeDifference
+            </div>
+            <div class="clear float-left media-body">
+                @Html.Raw(highlightedPMText)
+            </div>
+        </div>
+        <div class="clear post-divider"></div>
+        <div class="clear margintop2 marginbottom2">
+            <div class="FeedsActionBarLeftDiv">
+                <div class="viewmore"></div>
+                <div id="divLocationTM_@Model.ID" class="viewlocation">
+                    <div class="">
+                        @if (!string.IsNullOrWhiteSpace(iQAgent_BLPMResultsModel.Pub_Name))
+                        {
+                            <div class="location-tag" title="@iQAgent_BLPMResultsModel.Pub_Name">
+                                @{
+                                    if (iQAgent_BLPMResultsModel.Pub_Name.Trim().Length > 23)
+                                    {
+                                        @(iQAgent_BLPMResultsModel.Pub_Name.Trim().Substring(0, 21) + "...")
+                                    }
+                                    else
+                                    {
+                                        @iQAgent_BLPMResultsModel.Pub_Name.Trim()
+                                    }
+                                }
+                            </div>   
+                        }
+                        else
+                        {
+                            <div align="center" class="margintop2"></div>
+                        }
+                    </div>
+                </div>
+                <div id="divSentimentPM_@Model.ID" class="viewsentiment" title="Sentiment">
+                    <div class="sentimentLeftFloat sentiment-tag">
+                        <div class="divSentimentMain sentimentFont">
+                            <div class="divSentimentNeg" style="height:15px;">
+                            </div>
+                            <div class="divSentimentPos">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="viewcontentdetail">
+                    <div class="circulation pull-left" title="Circulation @fCirculation">
+                        <span>@sCirculation</span>
+                    </div>
+                </div>
+            </div>
+            <div class="FeedsActionBarRightDiv minWidth52IE8">
+                <div class="detailIcon">
+                    <!--Padding Save Article-->
+                    <div align="center" class="margintop2">
+                    </div>
+                </div>
+                <div class="detailIcon">
+                    <a class="cursorPointer viewArticle" title="View Article" href="@(PMBasePath + iQAgent_BLPMResultsModel.FileLocation.Replace(@"\", @"/"))" target="_blank"></a>
+                </div>
+                <div class="detailIcon">
+                    <!--Padding on the right-->
+                    <div align="center" class="margintop2">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

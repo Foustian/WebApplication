@@ -1,0 +1,53 @@
+﻿@{
+    ViewBag.Title = "iQ media Support";
+    Layout = "~/Views/Shared/_IQMediaMasterStaticPages.cshtml";
+}
+@section HeaderImage
+{
+    <img src="~/Images/staticBanner/Services.jpg" alt="Support" />
+}
+@section Content
+{
+    <div class="span4">
+        @Html.Partial("~/Views/Services/_Left.cshtml")
+    </div>
+    <div class="span14 span14pad">
+        <p>
+            <span class="staticPageHeader">Your Personal Support Center</span></p>
+        <p>
+            iQ media takes a proactive approach to customer support. We look for usage patterns
+            and strategize the best way for customers to maximize their investment. We offer
+            advice on how to discover new insights, create effective content marketing videos,
+            and engage your audience in new and powerful ways. Support to us is more than just
+            answering questions. We advise you and help to ensure every customer gets the most
+            from our software.</p>
+        <p>
+            <span class="staticPageSubHeader">Here&#8217;s what our support team offers you:
+            </span>
+        </p>
+        <p>
+            <strong><i>Help desk:</i></strong><br />
+            Contact us with any need or question and your iQ media support specialist stays
+            on the case until it is resolved.</p>
+        <p>
+            <strong><i>Account executives:</i></strong><br />
+            From helping you get started to monitoring your daily usage and performance, your
+            account executive will provide tips and tools to make sure you are getting the most
+            out of your iQ media software.</p>
+        <p>
+            <strong><i>Experienced implementation consultants:</i></strong><br />
+            Implementing a new platform can stressful and resource intensive. Beyond that, iQ
+            media’s software delivers many capabilities that simply don’t exist in other systems.
+            How do you take advantage of it all? iQ media delivers a smooth deployment by learning
+            learn your company’s key objectives and bringing our industry best practices to
+            bear. We help you meet your goals by developing a sound long-term strategy that
+            ensures you utilize every feature that can make a positive difference to your business.
+        </p>
+    </div>
+    <script type="text/javascript" language="javascript">
+
+        $(document).ready(function () {
+            SetHighligtedLi('ulServiceNavigation', 'liSupport');
+        });    
+    </script>
+}

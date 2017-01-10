@@ -1,0 +1,97 @@
+﻿@{
+    int? status = null;
+    var msg = "";
+
+    if (Model != null)
+    {
+        status = Convert.ToInt32(Model["Status"]);
+        msg = Convert.ToString(Model["Msg"]);
+    }
+}
+<div style="padding-right: 15px;">
+    <div class="sidebar-nav" style="margin-top: 7px; margin-bottom: 20px;border-bottom:1px solid #dadada;">
+        <h5>
+            Change Password</h5>
+    </div>
+    @if (status == null || (status != -1 && status != 0))
+    {
+        using (Html.BeginForm("ChangePwd", "Account", FormMethod.Post, new { @class = "form-horizontal", @id = "frmPwd" }))
+        {
+        @Html.AntiForgeryToken()
+        <div class="control-group">
+            <span style="color: #919191; margin-top: 10px; padding-left: 20px;">@System.Configuration.ConfigurationManager.AppSettings["PwdCriteriaMsg"]</span>
+        </div>
+        <div class="control-group">
+            <div class="controls">
+                @if (status != null)
+                {                    
+                    <span style="color: #FF0000; vertical-align: top" id="spanPwdError" class="help-inline">@Html.Raw(msg)</span>
+                }
+                else
+                { 
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanPwdError"
+                        class="help-inline"></span>
+                }
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="pwd_Current" class="control-label">
+                Current Password</label>
+            <div class="controls">
+                <input type="password" name="pwd_Current" id="pwd_Current" />
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="pwd_New" class="control-label">
+                New Password</label>
+            <div class="controls">
+                <input type="password" name="pwd_New" id="pwd_New" />
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="pwd_Confirm" class="control-label">
+                Confirm Password</label>
+            <div class="controls">
+                <input type="password" name="pwd_Confirm" id="pwd_Confirm" />
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">
+                &nbsp;</label>
+            <div class="controls">
+                <input onclick="ChangePwd()" id="btnSubmitChangePwd" type="button" name="btnSubmitChangePwd"
+                    class="button" style="margin: 0px;" value="Submit" />
+            </div>
+        </div>
+    
+        }
+    }
+    else
+    { 
+        <div class="control-group">
+            <div class="controls">
+                <span style="color: @(status == 0 ? "#00B700" : "#FF0000"); vertical-align: top" id="spanPwdError" class="help-inline">@Html.Raw(msg)</span>
+            </div>
+        </div>
+    }
+</div>
+<script type="text/javascript">
+
+    $(function () {
+        $("#pwd_Current").focus();
+        $("#frmPwd input").keypress(function (e) {
+            if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
+                $('#btnSubmitChangePwd').click();
+                return true;
+            }
+        });
+    });
+</script>
+@if (status != null && (status == -1 || status == 0))
+{ 
+    <script>
+
+        setTimeout(function () { window.location = "/sign-in" }, 3500);
+
+    </script>
+}

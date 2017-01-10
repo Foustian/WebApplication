@@ -1,0 +1,775 @@
+﻿@using IQMedia.Model;
+@model ClientPostModel
+@{
+    IQMedia.Model.ActiveUser sessionInformation = IQMedia.WebApplication.Utility.ActiveUserMgr.GetActiveUser();
+}
+
+<script src="~/Scripts/enscroll.js?v=1.0" type="text/javascript"></script>
+<script src="~/Scripts/chosen.jquery.js?v=1.1" type="text/javascript"></script>
+<link rel="stylesheet" href="~/Css/Chosen/chosen.css" />
+
+<style>
+    .roleGroup
+    {
+        border-top: 1px solid #e5e5e5;
+        clear: both;
+    }
+</style>
+<script language="javascript" type="text/javascript">
+    $("#divRegistration_ScrollContent").css("height", documentHeight - 250);
+    $("#divRegistration_ScrollContent").mCustomScrollbar({
+        advanced: {
+            updateOnContentResize: true,
+            autoScrollOnFocus: true
+        },
+        scrollInertia: 60
+    });
+
+    $(".chosen-select").chosen({
+        default_item: '0',
+        display_disabled_options: true,
+        width: "30%"
+    });
+
+</script>
+
+
+<div id="divRegistration_ScrollContent">
+    @using (Html.BeginForm("ClientRegistration", "GlobalAdmin", FormMethod.Post, new { @class = "form-horizontal", enctype = "multipart/form-data", @id = "frmClient" }))
+    {
+        string _ImageTypeMessage = "Only " + System.Configuration.ConfigurationManager.AppSettings["ClientImageExtensions"].Replace(",", ", ") + " image is allowed";
+        string _PlayerLogoSizeMessage = "Size of image should be within width=" + System.Configuration.ConfigurationManager.AppSettings["PlayerLogoWidth"] + "px, height=" + System.Configuration.ConfigurationManager.AppSettings["PlayerLogoHeight"] + "px";
+        <div style="padding-right: 15px;">
+            <div class="sidebar-nav" style="margin-top: 7px;">
+                <h5>
+                    Client Setup Page</h5>
+            </div>
+            <br />
+            <div class="control-group">
+                <label for="txtClientName" class="control-label">
+                    Client Name</label>
+                <div class="controls">
+                    <input type="text" name="txtClientName" id="txtClientName" value="@Model.txtClientName" />
+                    @if (Model.hdnClientKey > 0)
+                    {
+                        <input type="button" id="btnClientAddToAnewstip" class="button" style="margin:0px 10px; @(Model.hdnAnewstipClientID == 0 ? "" : "display:none")" value="Create Connect Client Account" onclick="AddClientToAnewstip(@Model.hdnClientKey, '@Model.txtClientName.Replace("'", "\\'")')" />
+                        <input type="button" id="btnClientAddedToAnewstip" class="button" style="margin:0px 10px; cursor:default; @(Model.hdnAnewstipClientID > 0 ? "" : "display:none")" value="Connect Account Created" />
+                    }
+                    <input type="hidden" id="hdnClientKey" name="hdnClientKey" value="@Model.hdnClientKey" />
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanClientName"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="txtMasterClient" class="control-label">
+                    Master Client</label>
+                <div class="controls">
+                    <input type="text" name="txtMasterClient" id="txtMasterClient" value="@Model.txtMasterClient" />
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanMasterClient"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="ddlMCID" class="control-label">
+                    Master
+                </label>
+                <div class="controls">
+                    <select name="ddlMCID" id="ddlMCID">
+                        <option value="0">Select</option>
+                        @foreach (ClientModel client in Model.Client_DropDown.Client_MasterList)
+                        { 
+                            <option value="@client.ClientKey" @(Model.ddlMCID == client.ClientKey ? "selected=\"selected\"" : string.Empty)>@client.ClientName</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="ddlTimeZone" class="control-label">
+                    Time Zone
+                </label>
+                <div class="controls">
+                    <select name="ddlTimeZone" id="ddlTimeZone">
+                        <option value="0">Select</option>
+                        @foreach (string timezone in System.Configuration.ConfigurationManager.AppSettings["TimeZones"].Split('|'))
+                        { 
+                            <option value="@timezone" @(Model.ddlTimeZone == timezone ? "selected=\"selected\"" : string.Empty)>@timezone</option>
+                        }
+                    </select>
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanTimeZone"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="ddlTimeZone" class="control-label">
+                    Is Active
+                </label>
+                <div class="controls">
+                    <input type="checkbox" checked="@(Model.chkIsActive.HasValue ? Model.chkIsActive.Value : true)" id="chkIsActive" name="chkIsActive" value="true" />
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="chkIsFliq" class="control-label">
+                    Is Fliq
+                </label>
+                <div class="controls">
+                    <input type="checkbox" checked="@Model.chkIsFliq" id="chkIsFliq" name="chkIsFliq" value="true" />
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="chkIsCDNUpload" class="control-label">
+                    Is CDN Upload
+                </label>
+                <div class="controls">
+                    <input type="checkbox" checked="@Model.chkIsCDNUpload" id="chkIsCDNUpload" name="chkIsCDNUpload" value="true" />
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="chkHasPremium" class="control-label">
+                    Enable LexisNexis Content
+                </label>
+                <div class="controls">
+                    <input type="checkbox" checked="@Model.chkHasPremium" id="chkHasPremium" name="chkHasPremium" value="true" />
+                </div>
+            </div>
+            <div class="row-fluid row-custom">
+                &nbsp;</div>
+            <br />
+            <div class="control-group">
+                <label for="txtAddress1" class="control-label">
+                    Address 1</label>
+                <div class="controls">
+                    <input type="text" name="txtAddress1" id="txtAddress1" value="@Model.txtAddress1" />
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanAddress1"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="txtAddress2" class="control-label">
+                    Address 2</label>
+                <div class="controls">
+                    <input type="text" name="txtAddress2" id="txtAddress2" value="@Model.txtAddress2" />
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="txtCity" class="control-label">
+                    City</label>
+                <div class="controls">
+                    <input type="text" name="txtCity" id="txtCity" value="@Model.txtCity" />
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanCity" class="help-inline">
+                    </span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="ddlState" class="control-label">
+                    State</label>
+                <div class="controls">
+                    <select name="ddlState" id="ddlState">
+                        <option value="0">Select</option>
+                        @foreach (StateModel state in Model.Client_DropDown.Client_StateList)
+                        { 
+                            <option value="@state.StateKey" @(Model.ddlState == state.StateKey ? "selected=\"selected\"" : string.Empty) >@state.StateName</option>
+                        }
+                    </select>
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanState" class="help-inline">
+                    </span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="txtZip" class="control-label">
+                    Zip</label>
+                <div class="controls">
+                    <input type="text" name="txtZip" id="txtZip" value="@Model.txtZip" />
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanZip" class="help-inline">
+                    </span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="txtAttention" class="control-label">
+                    Attention</label>
+                <div class="controls">
+                    <input type="text" name="txtAttention" id="txtAttention" value="@Model.txtAttention" />
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanAttention"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="txtPhone" class="control-label">
+                    Phone</label>
+                <div class="controls">
+                    <input type="text" name="txtPhone" id="txtPhone" value="@Model.txtPhone" />
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanPhone" class="help-inline">
+                    </span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="ddlIndustry" class="control-label">
+                    Industry</label>
+                <div class="controls">
+                    <select name="ddlIndustry" id="ddlIndustry">
+                        <option value="0">Select</option>
+                        @foreach (IndustryModel i in Model.Client_DropDown.Client_IndustryList)
+                        { 
+                            <option value="@i.IndustryKey" @(Model.ddlIndustry == i.IndustryKey ? "selected=\"selected\"" : string.Empty) >@i.IndustryCode</option>
+                        }
+                    </select>
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanIndustry"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="row-fluid row-custom">
+                &nbsp;</div>
+            <br />
+            <div class="control-group">
+                <label for="ddlBillType" class="control-label">
+                    Bill Type</label>
+                <div class="controls">
+                    <select name="ddlBillType" id="ddlBillType">
+                        <option value="0">Select</option>
+                        @foreach (BillTypeModel b in Model.Client_DropDown.Client_BillTypeList)
+                        { 
+                            <option value="@b.BillTypeKey" @(Model.ddlBillType == b.BillTypeKey ? "selected=\"selected\"" : string.Empty) >@b.Bill_Type</option>
+                        }
+                    </select>
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanBillType"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="ddlBillFrequency" class="control-label">
+                    Bill Frequency</label>
+                <div class="controls">
+                    <select name="ddlBillFrequency" id="ddlBillFrequency">
+                        <option value="0">Select</option>
+                        @foreach (BillFrequencyModel bf in Model.Client_DropDown.Client_BillFrequencyList)
+                        { 
+                            <option value="@bf.BillFrequencyKey" @(Model.ddlBillFrequency == bf.BillFrequencyKey ? "selected=\"selected\"" : string.Empty) >@bf.Bill_Frequency</option>
+                        }
+                    </select>
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanBillFrequency"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="ddlPricingCode" class="control-label">
+                    Pricing Code</label>
+                <div class="controls">
+                    <select name="ddlPricingCode" id="ddlPricingCode">
+                        <option value="0">Select</option>
+                        @foreach (PricingCodeModel p in Model.Client_DropDown.Client_PricingCodeList)
+                        { 
+                            <option value="@p.PricingCodeKey" @(Model.ddlPricingCode == p.PricingCodeKey ? "selected=\"selected\"" : string.Empty) >@p.Pricing_Code</option>
+                        }
+                    </select>
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanPricingCode"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="txtNoOfUsers" class="control-label">
+                    No of Users</label>
+                <div class="controls">
+                    <input type="text" name="txtNoOfUsers" id="txtNoOfUsers" value="@(Model.txtNoOfUsers > 0 ? Model.txtNoOfUsers.ToString() : string.Empty)" />
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanNoOfUsers"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="row-fluid row-custom">
+                <h5 style="margin-bottom: 0px;">
+                    @_ImageTypeMessage</h5>
+            </div>
+            <br />
+            <div class="control-group">
+                <label for="flPlayerLogo" class="control-label">
+                    Player Logo</label>
+                <div class="controls">
+                    <input id="txtPlayerLogoSelectedFileDisplay" name="txtPlayerLogoSelectedFileDisplay"
+                        disabled="disabled" type="text" />
+                    <input id="hfPlayerLogoImage" name="hfPlayerLogoImage" type="hidden" />
+                    <input type="file" name="flPlayerLogo" id="flPlayerLogo" />
+                    <button class="btn marginLeft14" type="button" id="btnPlayerLogoBrowseFile">
+                        Browse</button>
+                    <span>
+                        <input type="checkbox" class="marginLeft14" style="margin-top:3px" checked="@Model.chkIsPlayerLogo" id="chkIsPlayerLogo" name="chkIsPlayerLogo" value="true" />
+                        <span style="position: relative; top: 3px;">&nbsp;Show Logo On Player</span>
+                    </span>
+                    @if (!string.IsNullOrEmpty(Model.hfPlayerLogoImage))
+                    {
+                        <a href="@(System.Configuration.ConfigurationManager.AppSettings["URLWaterMark"])@Model.hfPlayerLogoImage" id="aPlayerLogo" title="Player Logo" >
+                            View Player Logo</a>
+                    }
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanPlayerLogo"
+                        class="help-inline"></span>
+                    <h6>@_PlayerLogoSizeMessage</h6>
+                </div>
+            </div>
+            <div class="row-fluid row-custom">
+                &nbsp;</div>
+            <br />
+            <div class="control-group">
+                <label for="txtNoOfNotification" class="control-label">
+                    Total No Of IQ Notification
+                </label>
+                <div class="controls">
+                    <input type="text" name="txtNoOfNotification" id="txtNoOfNotification" value="@(Model.txtNoOfNotification > 0 ? Model.txtNoOfNotification.ToString() : string.Empty)" />
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanNoOfNotification"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="txtNoOfIQAgent" class="control-label">
+                    Total No. Of IQAgent</label>
+                <div class="controls">
+                    <input type="text" name="txtNoOfIQAgent" id="txtNoOfIQAgent" value="@(Model.txtNoOfIQAgent > 0 ? Model.txtNoOfIQAgent.ToString() : string.Empty)" />
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanNoOfIQAgent"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="row-fluid row-custom">
+                &nbsp;</div>
+            <br />
+            <div class="control-group">
+                <label for="txtMultiplier" class="control-label">
+                    Multiplier
+                </label>
+                <div class="controls">
+                    <input type="text" name="txtMultiplier" id="txtMultiplier" value="@Model.txtMultiplier" />
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanMultiplier"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="txtCompeteMultiplier" class="control-label">
+                    Compete Multiplier
+                </label>
+                <div class="controls">
+                    <input type="text" name="txtCompeteMultiplier" id="txtCompeteMultiplier" value="@(Model.txtCompeteMultiplier > 0 ? Model.txtCompeteMultiplier.ToString() : string.Empty)" />
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanCompeteMultiplier"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="txtOnlineNewsAdRate" class="control-label">
+                    Online News Ad Rate</label>
+                <div class="controls">
+                    <input type="text" name="txtOnlineNewsAdRate" id="txtOnlineNewsAdRate" value="@(Model.txtOnlineNewsAdRate > 0 ? Model.txtOnlineNewsAdRate.ToString() : string.Empty)" />
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanOnlineNewsAdRate"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="txtOtherOnlineAdRate" class="control-label">
+                    Other Online Ad Rate</label>
+                <div class="controls">
+                    <input type="text" name="txtOtherOnlineAdRate"
+                        id="txtOtherOnlineAdRate" value="@(Model.txtOtherOnlineAdRate > 0 ? Model.txtOtherOnlineAdRate.ToString() : string.Empty)" />
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanOtherOnlineAdRate"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="txtURLPercentRead" class="control-label">
+                    URL Percent Read</label>
+                <div class="controls">
+                    <input type="text" name="txtURLPercentRead" id="txtURLPercentRead" value="@(Model.txtURLPercentRead > 0 ? Model.txtURLPercentRead.ToString() : string.Empty)" />
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanURLPercentRead"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="txtCompeteAudienceMultiplier" class="control-label">
+                    Compete Audience Multiplier
+                </label>
+                <div class="controls">
+                    <input type="text" name="txtCompeteAudienceMultiplier" id="txtCompeteAudienceMultiplier" value="@(Model.txtCompeteAudienceMultiplier > 0 ? Model.txtCompeteAudienceMultiplier.ToString() : string.Empty)" />
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanCompeteAudienceMultiplier"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="row-fluid row-custom">
+                v4 Website Settings</div>
+            <br />
+            <div class="control-group">
+                <label class="control-label" for="selectVisibleIndustries">
+                    Visible LR Industries</label>
+                <div class="controls">
+                    <select id="selectedVisibleLRIndustries" name="selectedVisibleLRIndustries" class="chosen-select" multiple="multiple" placeholder="Visible Industries">
+ 
+                     @{List<IQ_Industry> industryList = Model.Client_DropDown.Client_LRIndustryList;
+    }
+                       @if (Model.selectedVisibleLRIndustries != null)
+                       {
+                           foreach (IQ_Industry item in industryList)
+                           {
+                               var isSelected = "";
+                               isSelected = Model.selectedVisibleLRIndustries.Any(industry => industry == item.ID) ? "selected=\"selected\"" : string.Empty;
+                          
+                           <option id="optionsVisibleLRIndustries" value="@item.ID" @isSelected >@item.Name</option>
+                           }
+                       }
+                       else 
+                       {<option id="defaultSelected" selected="selected" value="0">All</option>
+                           foreach (IQ_Industry item in industryList) 
+                           {
+                           <option id="optionsVisibleLRIndustries" value="@item.ID">@item.Name</option>
+                           }
+                       }
+    
+                    </select>
+                                        <span style="color: #FF0000; display: none; vertical-align: top" id="spanvisibleLRIndustries"class="help-inline"></span>
+                    
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="txtv4MaxDiscoveryReportItems" class="control-label">
+                    Max Discovery Report Items
+                </label>
+                <div class="controls">
+                    <input type="text" name="txtv4MaxDiscoveryReportItems" id="txtv4MaxDiscoveryReportItems" value="@(Model.txtv4MaxDiscoveryReportItems > 0 ? Model.txtv4MaxDiscoveryReportItems.ToString() : string.Empty)" />
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanv4MaxDiscoveryReportItems"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="txtv4MaxDiscoveryExportItems" class="control-label">
+                    Max Discovery Export Items
+                </label>
+                <div class="controls">
+                    <input type="text" name="txtv4MaxDiscoveryExportItems" id="txtv4MaxDiscoveryExportItems" value="@(Model.txtv4MaxDiscoveryExportItems > 0 ? Model.txtv4MaxDiscoveryExportItems.ToString() : string.Empty)" />
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanv4MaxDiscoveryExportItems"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="txtv4MaxDiscoveryHistory" class="control-label">
+                    Max Discovery History Months (-1 for unlimited)</label>
+                <div class="controls">
+                    <input type="text" name="txtv4MaxDiscoveryHistory" id="txtv4MaxDiscoveryHistory" value="@(Model.txtv4MaxDiscoveryHistory > 0 || Model.txtv4MaxDiscoveryHistory == -1 ? Model.txtv4MaxDiscoveryHistory.ToString() : string.Empty)"/>
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanv4MaxDiscoveryHistory"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="txtv4MaxFeedsReportItems" class="control-label">
+                    Max Feeds Report Items
+                </label>
+                <div class="controls">
+                    <input type="text" name="txtv4MaxFeedsReportItems" id="txtv4MaxFeedsReportItems" value="@(Model.txtv4MaxFeedsReportItems > 0 ? Model.txtv4MaxFeedsReportItems.ToString() : string.Empty)" />
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanv4MaxFeedsReportItems"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="txtv4MaxFeedsExportItems" class="control-label">
+                    Max Feeds Export Items
+                </label>
+                <div class="controls">
+                    <input type="text" name="txtv4MaxFeedsExportItems" id="txtv4MaxFeedsExportItems" value="@(Model.txtv4MaxFeedsExportItems > 0 ? Model.txtv4MaxFeedsExportItems.ToString() : string.Empty)" />
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanv4MaxFeedsExportItems"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="txtv4MaxLibraryEmailReportItems" class="control-label">
+                    Max Library Email Items
+                </label>
+                <div class="controls">
+                    <input type="text" name="txtv4MaxLibraryEmailReportItems" id="txtv4MaxLibraryEmailReportItems" value="@(Model.txtv4MaxLibraryEmailReportItems > 0 ? Model.txtv4MaxLibraryEmailReportItems.ToString() : string.Empty)" />
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanv4MaxLibraryEmailReportItems"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="txtv4MaxLibraryReportItems" class="control-label">
+                    Max Library Report Items
+                </label>
+                <div class="controls">
+                    <input type="text" name="txtv4MaxLibraryReportItems" id="txtv4MaxLibraryReportItems" value="@(Model.txtv4MaxLibraryReportItems > 0 ? Model.txtv4MaxLibraryReportItems.ToString() : string.Empty)" />
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanv4MaxLibraryReportItems"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="txtIQRawMediaExpiration" class="control-label">
+                    Raw Media Expiration Days
+                </label>
+                <div class="controls">
+                    <input type="text" name="txtIQRawMediaExpiration" id="txtIQRawMediaExpiration" value="@(Model.txtIQRawMediaExpiration > 0 ? Model.txtIQRawMediaExpiration.ToString() : string.Empty)" />
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanIQRawMediaExpiration"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="ddlMCMediaPubTemplate" class="control-label">
+                    Media Room Published Template</label>
+                <div class="controls">
+                    <select name="ddlMCMediaPubTemplate" id="ddlMCMediaPubTemplate">
+                        @foreach (MCMediaTemplateModel mct in Model.Client_DropDown.Client_MCMediaPublishedTemplateList)
+                        { 
+                            <option value="@mct.TemplateKey" @(Model.ddlMCMediaPubTemplate == mct.TemplateKey ? "selected=\"selected\"" : string.Empty) >@mct.TemplateName</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="ddlMCMediaEmailTemplate" class="control-label">
+                    Media Room Default Email Template</label>
+                <div class="controls">
+                    <select name="ddlMCMediaEmailTemplate" id="ddlMCMediaEmailTemplate">
+                        @foreach (MCMediaTemplateModel mct in Model.Client_DropDown.Client_MCMediaEmailTemplateList)
+                        { 
+                            <option value="@mct.TemplateKey" @(Model.ddlMCMediaEmailTemplate == mct.TemplateKey ? "selected=\"selected\"" : string.Empty) >@mct.TemplateName</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="ddlDefaultFeedsPageSize" class="control-label">
+                    Default Feeds Page Size</label>
+                <div class="controls">
+                    <select name="ddlDefaultFeedsPageSize" id="ddlDefaultFeedsPageSize">
+                        @foreach (string pageSize in System.Configuration.ConfigurationManager.AppSettings["FeedPageSizeOptions"].Split(','))
+                        { 
+                            <option value="@pageSize" @(Model.ddlDefaultFeedsPageSize.ToString() == pageSize ? "selected=\"selected\"" : string.Empty) >@pageSize</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="ddlDefaultDiscoveryPageSize" class="control-label">
+                    Default Discovery Page Size</label>
+                <div class="controls">
+                    <select name="ddlDefaultDiscoveryPageSize" id="ddlDefaultDiscoveryPageSize">
+                        @foreach (string pageSize in System.Configuration.ConfigurationManager.AppSettings["DiscoveryPageSizeOptions"].Split(','))
+                        { 
+                            <option value="@pageSize" @(Model.ddlDefaultDiscoveryPageSize.ToString() == pageSize ? "selected=\"selected\"" : string.Empty) >@pageSize</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="ddlDefaultArchivePageSize" class="control-label">
+                    Default Archive Page Size</label>
+                <div class="controls">
+                    <select name="ddlDefaultArchivePageSize" id="ddlDefaultArchivePageSize">
+                        @foreach (string pageSize in System.Configuration.ConfigurationManager.AppSettings["IQArchievePageSizeOptions"].Split(','))
+                        { 
+                            <option value="@pageSize" @(Model.ddlDefaultArchivePageSize.ToString() == pageSize ? "selected=\"selected\"" : string.Empty) >@pageSize</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="ddlLibraryTextType" class="control-label">
+                    Library Text Source
+                </label>
+                <div class="controls">
+                    <select name="ddlLibraryTextType" id="ddlLibraryTextType">
+                        @foreach (IQMedia.Shared.Utility.CommonFunctions.LibraryTextTypes textType in Enum.GetValues(typeof(IQMedia.Shared.Utility.CommonFunctions.LibraryTextTypes)))
+                        {
+                            <option value="@textType.ToString()" @(Model.ddlLibraryTextType == textType ? "selected=\"selected\"" : string.Empty)>@IQMedia.Shared.Utility.CommonFunctions.GetEnumDescription(textType)</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="chkUseProminence" class="control-label">
+                    Use Prominence
+                </label>
+                <div class="controls">
+                    <input type="checkbox" checked="@(Model.chkUseProminence.HasValue ? Model.chkUseProminence.Value : true)" id="chkUseProminence" name="chkUseProminence" value="true" />
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="chkUseProminenceMediaValue" class="control-label">
+                    Use Prominence Media Value
+                </label>
+                <div class="controls">
+                    <input disabled="disabled" type="checkbox" checked="@(Model.chkUseProminenceMediaValue.HasValue ? Model.chkUseProminenceMediaValue.Value : true)" id="chkUseProminenceMediaValue" name="chkUseProminenceMediaValue" value="true" />
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="chkForceCategorySelection" class="control-label">
+                    Force Category Selection
+                </label>
+                <div class="controls">
+                    <input type="checkbox" checked="@Model.chkForceCategorySelection" id="chkForceCategorySelection" name="chkForceCategorySelection" value="true" />
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="chkClipEmbedAutoPlay" class="control-label">
+                    Embedded Clip Auto-Play By Default
+                </label>
+                <div class="controls">
+                    <input type="checkbox" checked="@Model.chkClipEmbedAutoPlay" id="chkClipEmbedAutoPlay" name="chkClipEmbedAutoPlay" value="true" />
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="chkDefaultFeedsShowUnread" class="control-label">
+                    Feeds Show Unread By Default
+                </label>
+                <div class="controls">
+                    <input type="checkbox" checked="@Model.chkDefaultFeedsShowUnread" id="chkDefaultFeedsShowUnread" name="chkDefaultFeedsShowUnread" value="true" />
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="chkUseCustomerEmailDefault" class="control-label">
+                    Use Customer Email As Default Sender
+                </label>
+                <div class="controls">
+                    <input type="checkbox" checked="@Model.chkUseCustomerEmailDefault" id="chkUseCustomerEmailDefault" name="chkUseCustomerEmailDefault" value="true" />
+                </div>
+            </div>
+            <div class="row-fluid row-custom">
+                Sentiment Settings</div>
+            <br />
+            <div class="control-group">
+                <label for="txtTVHighThreshold" class="control-label">
+                    TV High Threshold
+                </label>
+                <div class="controls">
+                    <input type="text" name="txtTVHighThreshold" id="txtTVHighThreshold" value="@Model.txtTVHighThreshold" />
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanTVHighThreshold"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="txtTVLowThreshold" class="control-label">
+                    TV Low Threshold
+                </label>
+                <div class="controls">
+                    <input type="text" name="txtTVLowThreshold" id="txtTVLowThreshold" value="@Model.txtTVLowThreshold" />
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanTVLowThreshold"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="txtNMHighThreshold" class="control-label">
+                    Online News High Threshold
+                </label>
+                <div class="controls">
+                    <input type="text" name="txtNMHighThreshold" id="txtNMHighThreshold" value="@Model.txtNMHighThreshold" />
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanNMHighThreshold"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="txtNMLowThreshold" class="control-label">
+                    Online News Low Threshold
+                </label>
+                <div class="controls">
+                    <input type="text" name="txtNMLowThreshold" id="txtNMLowThreshold" value="@Model.txtNMLowThreshold" />
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanNMLowThreshold"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="txtSMHighThreshold" class="control-label">
+                    Social Media High Threshold
+                </label>
+                <div class="controls">
+                    <input type="text" name="txtSMHighThreshold" id="txtSMHighThreshold" value="@Model.txtSMHighThreshold" />
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanSMHighThreshold"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="txtSMLowThreshold" class="control-label">
+                    Social Media Low Threshold
+                </label>
+                <div class="controls">
+                    <input type="text" name="txtSMLowThreshold" id="txtSMLowThreshold" value="@Model.txtSMLowThreshold" />
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanSMLowThreshold"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="txtTwitterHighThreshold" class="control-label">
+                    Twitter High Threshold
+                </label>
+                <div class="controls">
+                    <input type="text" name="txtTwitterHighThreshold" id="txtTwitterHighThreshold" value="@Model.txtTwitterHighThreshold" />
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanTwitterHighThreshold"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="txtTwitterLowThreshold" class="control-label">
+                    Twitter Low Threshold
+                </label>
+                <div class="controls">
+                    <input type="text" name="txtTwitterLowThreshold" id="txtTwitterLowThreshold" value="@Model.txtTwitterLowThreshold" />
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanTwitterLowThreshold"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="txtPQHighThreshold" class="control-label">
+                    ProQuest High Threshold
+                </label>
+                <div class="controls">
+                    <input type="text" name="txtPQHighThreshold" id="txtPQHighThreshold" value="@Model.txtPQHighThreshold" />
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanPQHighThreshold"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="txtPQLowThreshold" class="control-label">
+                    ProQuest Low Threshold
+                </label>
+                <div class="controls">
+                    <input type="text" name="txtPQLowThreshold" id="txtPQLowThreshold" value="@Model.txtPQLowThreshold" />
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanPQLowThreshold"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="row-fluid row-custom">
+                &nbsp;</div>
+            <br />
+            <div class="control-group">
+                <label for="ddlClientRole" class="control-label">
+                    Client Roles</label>
+                <div class="controls" id="divRoles">
+                    @{
+                        int counter = 0;
+                        foreach (string groupName in Model.Client_DropDown.Client_RoleList.Select(s => s.GroupName).Distinct())
+                        {
+                        <div @(counter > 0 ? "class=roleGroup" : "")>
+                            @foreach (RoleModel item in Model.Client_DropDown.Client_RoleList.Where(w => w.GroupName == groupName).OrderBy(o => o.DisplayName))
+                            {
+                                string IsSelected = "checked=\"IsSelected\"";
+                                string isDisabled = "disabled=\"disabled\"";
+                                if ((Model.hdnClientKey == 0 && !item.HasDefaultAccess) || (Model.chkRoles != null && Model.chkRoles.Count() > 0 && (!Model.chkRoles.Contains(@item.RoleName.ToString()) && !Model.chkRoles.Contains(@item.RoleKey.ToString()))))
+                                {
+                                    IsSelected = "";
+                                }
+                                if (item.IsEnabledInSetup || (item.EnabledCustomerIDs != null && item.EnabledCustomerIDs.Contains(sessionInformation.CustomerKey.ToString()))) 
+                                {
+                                    isDisabled = "";
+                                }
+                                <div class="resWidth3inLine" title="@item.Description">
+                                    <input type="checkbox" style="margin:0px;" @IsSelected @isDisabled name="chkRoles" id="chkrole_@item.RoleName" value="@item.RoleKey" onclick="ShowElevatedSupportMessage(this, '@item.RoleName');" />
+                                    @item.DisplayName
+                                </div>
+                            }
+                        </div>
+                        
+                            counter++;
+                        }
+                    }
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanClientRole"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">
+                    &nbsp;</label>
+                <div class="controls">
+                    <input type="button" id="btnCancelClientRegistration" name="btnCancelClientRegistration"
+                        value="Cancel" onclick="CancelClientRegistration();" class="button" style="margin: 0px;" />
+                    <input type="button" onclick="SaveClient()" id="btnSubmitClientRegistration" name="btnSubmitClientRegistration"
+                        value="Submit" class="button" style="margin: 0px;" />
+                </div>
+            </div>
+        </div>
+    }
+</div>

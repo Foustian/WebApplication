@@ -1,0 +1,129 @@
+﻿@using IQMedia.Model;
+@using IQMedia.WebApplication.Utility;
+@using IQCommon.Model;
+@model Dictionary<long, string>
+
+@if (Model != null)
+{
+    ActiveUser sessionInfo = ActiveUserMgr.GetActiveUser();
+    List<IQ_MediaTypeModel> mediaTypes = sessionInfo.MediaTypes == null ? new List<IQCommon.Model.IQ_MediaTypeModel>() : sessionInfo.MediaTypes.Where(w => w.TypeLevel == 2 && w.IsArchiveOnly == false).OrderBy(o => o.DisplayName).ToList();
+        
+    <div>
+        <span id="ampFilterText" class="font14Pt" style="float:left;">How many occurrences are there across all mediums and engagement types?</span>
+        <a id="sendEmailLink" class="cursorPointer" title="Email" onclick="ShowEmailPopup()" style="float:right; margin-left:5px;">
+            <img src="../../Images/email_new.png" alt="Email" />
+        </a>
+        <a id="saveAsPDF" class="cursorPointer" title="Save as PDF" onclick="GeneratePDF();" style="float:right;">
+            <img src="../../Images/pdf_new.png" alt="Save as PDF" />
+        </a>
+    </div>
+    <br />
+    <div>
+        <span class="font13Pt">Results in the </span>
+        <div class="dropdown" style="display:inline">
+            <a id="linkOpenDateRange" class="dropdown-toggle font13Pt underlined cursorPointer" data-toggle="dropdown">
+                trailing 30 days
+            </a>
+            <div id="dateRangeDD" class="dropdown-menu" style="padding:0px">
+                <div class="bg-blue font13Pt" style="color:White;padding:5px;overflow:auto;">
+                    <span style="float:left;">Date Range</span>
+                </div>
+                <div>
+                    <span style="margin-left:25px;">Trailing</span>
+                    <ul id="dateRangeList" class="dateFiltering cursorPointer" style="list-style-type:none">
+                        <li><a id="dateRange1days">day</a></li>
+                        <li><a id="dateRange7days">7 days</a></li>
+                        <li><a id="dateRange30days">30 days</a></li>
+                        <li><a id="dateRange90days">90 days</a></li>
+                        <li><a id="dateRange12months">365 days</a></li>
+                    </ul>
+                </div>
+                <div style="width:225px;text-align:center">
+                    <input id="dpDateFrom" type="text" style="width:75px;margin-bottom:0px" />
+                    TO 
+                    <input id="dpDateTo" type="text" style="width:75px;margin-bottom:0px" />
+                </div>
+                <div style="padding:2px 5px 2px 5px;overflow:auto;float:right;">
+                    <a id="linkApplyDateRange" class="cursorPointer" style="padding-right:5px;">apply</a>
+                    <a id ="linkCloseDateRange" class="cursorPointer" style="padding-right:5px;">cancel</a>
+                </div>
+            </div>
+        </div>
+        <span class="font13Pt"> by </span>
+        <div class="dropdown" style="display:inline">
+            <a id="dateIntervalLink" class="dropdown-toggle font13Pt underlined cursorPointer" data-toggle="dropdown">
+                day
+            </a>
+            <div id="dateIntervalDrop" class="dropdown-menu" style="padding:0px">
+                <div class="bg-blue font13Pt" style="color:White;padding:5px">
+                    Interval
+                </div>
+                <ul id="dateIntervalList" class="dateFiltering cursorPointer" style="list-style-type:none">
+                    <li>
+                        <a id="dateIntervalMonth">month</a>
+                    </li>
+                    <li>
+                        <a id="dateIntervalDay">day</a>
+                    </li>
+                    <li>
+                        <a id="dateIntervalHour">hour</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <span class="font13Pt"> with </span>
+        <a id="filterLink" class="font13Pt underlined cursorPointer">no filters applied</a>
+    </div>
+    <div id="divFilters" class="hidden font13Pt">
+        <br />
+        <div id="divAgentFilter0">
+            <select id="ddAgentFilter0" onchange="ChangeAgent(this, 'ddAgentFilter1');">
+                @{
+                    <option id="filterAgent0_Narrow" value="null">Narrow to agent</option>
+    foreach (KeyValuePair<long, string> agent in Model)
+                    {
+                        <option id="filterAgent0_@agent.Key" value="@agent.Key">@agent.Value</option>
+                    }
+                }
+            </select>
+            <select id="ddSourceFilter0">
+                <option value="null">Narrow to Source</option>
+                @foreach (IQ_MediaTypeModel mt in mediaTypes)
+                {
+                    <option value="@mt.SubMediaType">@mt.DisplayName</option>
+                }
+            </select>
+            @*<input id="dpDateFromFilter0" type="text" style="width:75px" disabled="disabled" />
+            <span> to </span>
+            <input id="dpDateToFilter0" type="text" style="width:75px" disabled="disabled" />*@
+        </div>
+        <div id="divAddAgentFilter0" style="margin-bottom:10px;">
+            <a id="linkAddAgentFilter0" class="underlined cursorPointer">+ compare</a>
+        </div>
+        <div id="divAgentFilter1" class="hidden">
+            <select id="ddAgentFilter1" onchange="ChangeAgent(this, 'ddAgentFilter0');">
+                @{
+                    <option id="filterAgent1_Narrow" value="null">Narrow to agent</option>
+                    foreach (KeyValuePair<long, string> agent in Model)
+                    {
+                        <option id="filterAgent1_@agent.Key" value="@agent.Key">@agent.Value</option>
+                    }
+                }
+            </select>
+            <select id="ddSourceFilter1">
+                <option value="null">Narrow to Source</option>
+                @foreach (IQ_MediaTypeModel mt in mediaTypes)
+                {
+                    <option value="@mt.SubMediaType">@mt.DisplayName</option>
+                }
+            </select>
+            @*<input id="dpDateFromFilter1" type="text" style="width:75px" disabled="disabled" />
+            <span> to </span>
+            <input id="dpDateToFilter1" type="text" style="width:75px" disabled="disabled" />*@
+        </div>
+        <div style="overflow:auto;width:100%">
+            <a id="linkApplyFilters" class="underlined cursorPointer">apply filters</a>
+            <a id="linkRemoveFilters" class="underlined marginLeft15 cursorPointer">remove filters</a>
+        </div>
+    </div>
+}

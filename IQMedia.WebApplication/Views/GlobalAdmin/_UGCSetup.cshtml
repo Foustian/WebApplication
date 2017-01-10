@@ -1,0 +1,152 @@
+﻿@model IQMedia.Model.IQClient_UGCMapPostModel
+<div style="clear: both;">
+</div>
+@using (Html.BeginForm("SubmitUGCSettings", "GlobalAdmin", FormMethod.Post, new { @class = "form-horizontal", @id = "frmUGCSettings" }))
+{
+    <div style="padding-right: 15px;">
+        <div class="sidebar-nav" style="margin-top: 7px;">
+            <h5>
+                UGC Setup</h5>
+        </div>
+        <div class="control-group">
+            <label for="IQClient_UGCMapModel_ClientGuid" class="control-label">
+                Client</label>
+            <div class="controls">
+                @if (Model.IQClient_UGCMapModel.IQClient_UGCMapKey > 0)
+                {
+                    <input type="hidden" id="IQClient_UGCMapModel_ClientGuid" name="IQClient_UGCMapModel.ClientGuid" value="@Model.IQClient_UGCMapModel.ClientGuid" />
+                }
+                <select name="IQClient_UGCMapModel.ClientGuid" id="IQClient_UGCMapModel_ClientGuid" @(Model.IQClient_UGCMapModel.IQClient_UGCMapKey == 0 ? string.Empty : "disabled=disabled")>
+                    <option value="0">Select</option>
+                    @foreach (IQMedia.Model.ClientModel client in Model.IQClient_UGCMapDropDowns.Client_DropDown)
+                    {
+                        <option value="@client.ClientGuid" @(Model.IQClient_UGCMapModel.ClientGuid == client.ClientGuid && Model.IQClient_UGCMapModel.IQClient_UGCMapKey > 0 ? "selected=\"selected\"" : string.Empty)>@client.ClientName</option>
+                    }
+                </select>
+                <span style="color: #FF0000; display: none; vertical-align: top" id="spanIQClient_UGCMapModel_ClientGuid"
+                    class="help-inline"></span>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label for="" class="control-label">
+                 TimeZone</label>
+               <div class="controls">
+                @if (Model.IQClient_UGCMapModel.IQClient_UGCMapKey > 0)
+                {
+                    <input type="hidden" id="IQClient_UGCMapModel_TimeZone" name="IQClient_UGCMapModel.TimeZoneID" value="@Model.IQClient_UGCMapModel.TimeZoneID" />
+                }
+                <select name="IQClient_UGCMapModel.TimeZoneID" id="IQClient_UGCMapModel_TimeZone">
+                    <option value="0">Select</option>
+                    @foreach (IQMedia.Model.IQTimeZone timezone in Model.IQClient_UGCMapDropDowns.TimeZone_DropDown)
+                    {
+                        <option value="@timezone.ID" @(Model.IQClient_UGCMapModel.TimeZoneID == timezone.ID && Model.IQClient_UGCMapModel.IQClient_UGCMapKey > 0 ? "selected=\"selected\"" : string.Empty)>(@timezone.Code) @timezone.Name</option>
+                    }
+                </select>
+                <span style="color: #FF0000; display: none; vertical-align: top" id="spanIQClient_UGCMapModel_TimeZone"
+                    class="help-inline"></span>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label for="IQClient_UGCMapModel_SourceID" class="control-label">
+                Source ID</label>
+            <div class="controls" >
+                <input type ="hidden" id="IQClient_UGCMapModel_IQClient_UGCMapKey" name="IQClient_UGCMapModel.IQClient_UGCMapKey" value="@Model.IQClient_UGCMapModel.IQClient_UGCMapKey" />
+                <input type ="hidden" id="IQClient_UGCMapModel_SourceGUID" name="IQClient_UGCMapModel.SourceGUID" value="@(Model.IQClient_UGCMapModel.SourceGUID.HasValue ? Model.IQClient_UGCMapModel.SourceGUID.Value.ToString() : string.Empty)" />
+                <input type="text" class="txtwidth90per" id="IQClient_UGCMapModel_SourceID" name="IQClient_UGCMapModel.SourceID" placeholder="Source ID" value="@Model.IQClient_UGCMapModel.SourceID" @(Model.IQClient_UGCMapModel.IQClient_UGCMapKey == 0 ? string.Empty : "readonly=readonly") />
+                <span style="color: #FF0000; display: none; vertical-align: top" id="spanIQClient_UGCMapModel_SourceID"
+                    class="help-inline"></span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="IQClient_UGCMapModel_BroadcastType" class="control-label">
+                Broadcast Type</label>
+            <div class="controls">
+                <select name="IQClient_UGCMapModel.BroadcastType" id="IQClient_UGCMapModel_BroadcastType">
+                    <option value="0">Select</option>
+                    @if (Model != null && Model.IQClient_UGCMapModel != null && !string.IsNullOrEmpty(Model.IQClient_UGCMapModel.BroadcastType))
+                    {
+                        if (Model.IQClient_UGCMapModel.BroadcastType == "AUDIO")
+                        {
+                            <option value="AUDIO" @("selected=\"selected\"")>AUDIO</option>
+                            <option value="VIDEO">VIDEO</option>
+                        }
+                        else
+                        { 
+                            <option value="AUDIO">AUDIO</option>
+                            <option value="VIDEO" @("selected=\"selected\"")>VIDEO</option>
+                        }
+
+                    }
+                    else
+                    { 
+                        <option value="AUDIO">AUDIO</option>
+                        <option value="VIDEO">VIDEO</option>
+                    }
+                </select>
+                <span style="color: #FF0000; display: none; vertical-align: top" id="spanIQClient_UGCMapModel_BroadcastType"
+                    class="help-inline"></span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="IQClient_UGCMapModel_Title" class="control-label">
+                Title</label>
+            <div class="controls">
+                <input type="text" class="txtwidth90per" id="IQClient_UGCMapModel_Title" name="IQClient_UGCMapModel.Title" placeholder="Title" value="@Model.IQClient_UGCMapModel.Title" />
+                <span style="color: #FF0000; display: none; vertical-align: top" id="spanIQClient_UGCMapModel_Title"
+                    class="help-inline"></span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label for="IQClient_UGCMapModel_URL" class="control-label">
+                URL</label>
+            <div class="controls">
+                <input type="text" class="txtwidth90per" id="IQClient_UGCMapModel_URL" name="IQClient_UGCMapModel.URL" placeholder="URL" value="@Model.IQClient_UGCMapModel.URL" />
+                <span style="color: #FF0000; display: none; vertical-align: top" id="spanIQClient_UGCMapModel_URL"
+                    class="help-inline"></span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">
+                Logo</label>
+            <div class="controls">
+                <input id="txtUGCMapLogoSelectedFileDisplay" name="txtUGCMapLogoSelectedFileDisplay"
+                    disabled="disabled" type="text" />
+                <input id="hfUGCMapLogoImage" name="hfUGCMapLogoImage" type="hidden" />
+                <input type="file" name="flUGCMapLogo" id="flUGCMapLogo" onchange="readURL(this)" />
+                <button class="btn marginLeft14" type="button" id="btnUGCMapLogoBrowseFile" >
+                    Browse</button>
+                @if (!string.IsNullOrEmpty(Model.IQClient_UGCMapModel.Logo))
+                {
+                    <a href="@(System.Configuration.ConfigurationManager.AppSettings["UrlUGCMapLogo"])@Model.IQClient_UGCMapModel.Logo" id="aUGCLogo" title="UGC Logo" >
+                        View Logo</a>
+                }
+                <span style="color: #FF0000; display: none; vertical-align: top" id="spanIQClient_UGCMapModel_Logo" class="help-inline">
+                </span>
+            </div>
+        </div>
+        <div id="logoPreviewDiv" class="control-group" style="text-align: center; display:none;">
+            <img id="uploadedLogoPreview" src="#" alt="logoPreview"/>
+        </div>
+        <div class="control-group">
+            <label for="IQClient_UGCMapModel_AutoClip_Status" class="control-label">
+                Auto Clip Status</label>
+            <div class="controls">
+                <input type="checkbox" id="IQClient_UGCMapModel_AutoClip_Status" name="IQClient_UGCMapModel.AutoClip_Status" checked="@(Model.IQClient_UGCMapModel.IQClient_UGCMapKey == 0 ? true : Model.IQClient_UGCMapModel.AutoClip_Status)" value="true"  />
+                <span style="color: #FF0000; display: none; vertical-align: top" id="spanIQClient_UGCMapModel_AutoClip Status"
+                    class="help-inline"></span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">
+                &nbsp;</label>
+            <div class="controls">
+                <input type="button" id="btnCancelUGCSettings" name="btnCancelUGCSettings" value="Cancel"
+                    onclick="CancelUGCSettings();" class="button" style="margin: 0px;" />
+                <input type="button" onclick="SaveUGCSettings()" id="btnSubmitUGCSettings" name="btnSubmitUGCSettings"
+                    value="Submit" class="button" style="margin: 0px;" />
+            </div>
+        </div>
+    </div>
+}

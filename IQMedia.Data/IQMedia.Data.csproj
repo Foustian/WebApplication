@@ -1,0 +1,159 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{C9AE798E-9EAE-4539-95E5-35D124BEB028}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>IQMedia.Data</RootNamespace>
+    <AssemblyName>IQMedia.Data</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.Common, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\IQMedia.Ref\Microsoft.Practices.EnterpriseLibrary.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.Data, Version=4.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\IQMedia.Ref\Microsoft.Practices.EnterpriseLibrary.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.ObjectBuilder2">
+      <HintPath>..\IQMedia.Ref\Microsoft.Practices.ObjectBuilder2.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\IQMedia.WebApplication\packages\Newtonsoft.Json.8.0.3\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AnalyticsDA.cs" />
+    <Compile Include="Base\DataAccess.cs" />
+    <Compile Include="Base\DataAccessFactory.cs" />
+    <Compile Include="Base\DataType.cs" />
+    <Compile Include="Base\IDataAccess.cs" />
+    <Compile Include="ClientDA.cs" />
+    <Compile Include="ClipDA.cs" />
+    <Compile Include="CohortDA.cs" />
+    <Compile Include="CustomCategoryDA.cs" />
+    <Compile Include="CustomerDA.cs" />
+    <Compile Include="DashboardDA.cs" />
+    <Compile Include="DataImportDA.cs" />
+    <Compile Include="EmailTemplate\EmailTemplate1DA.cs" />
+    <Compile Include="EmailTemplate\EmailTemplate2DA.cs" />
+    <Compile Include="EmailTemplate\EmailTemplateBaseDA.cs" />
+    <Compile Include="EmailTemplate\EmailTemplateDevryDA.cs" />
+    <Compile Include="EmailTemplate\EmailTemplateFactory.cs" />
+    <Compile Include="FacebookDA.cs" />
+    <Compile Include="fliq_ApplicationDA.cs" />
+    <Compile Include="fliq_ApplicationModel.cs" />
+    <Compile Include="fliq_ClientApplicationDA.cs" />
+    <Compile Include="fliq_CustomerApplicationDA.cs" />
+    <Compile Include="fliq_CustomerDA.cs" />
+    <Compile Include="GalleryDA.cs" />
+    <Compile Include="GoogleDA.cs" />
+    <Compile Include="InstagramDA.cs" />
+    <Compile Include="IQAgentDA.cs" />
+    <Compile Include="IQNotificationSettingsDA.cs" />
+    <Compile Include="IQArchieveDA.cs" />
+    <Compile Include="IQDiscovery_SavedSearchDA.cs" />
+    <Compile Include="IQDiscovery_ToFeedsDA.cs" />
+    <Compile Include="IQNewsDA.cs" />
+    <Compile Include="IQNielsenDA.cs" />
+    <Compile Include="IQClient_CustomImageDA.cs" />
+    <Compile Include="IQReport_FolderDA.cs" />
+    <Compile Include="IQService_DiscoveryDA.cs" />
+    <Compile Include="IQService_FeedsDA.cs" />
+    <Compile Include="IQSolrEngineDA.cs" />
+    <Compile Include="IQTads_SavedSearchDA.cs" />
+    <Compile Include="IQTimeSync_DataDA.cs" />
+    <Compile Include="IQTrack_LicenseClickDA.cs" />
+    <Compile Include="IQUGCArchiveDA.cs" />
+    <Compile Include="IQ_CompeteAllDA.cs" />
+    <Compile Include="IQ_QVCDataDA.cs" />
+    <Compile Include="IQ_SMSCampaignDA.cs" />
+    <Compile Include="JobStatusDA.cs" />
+    <Compile Include="MCMediaTemplate\MCMediaTemplate1DA.cs" />
+    <Compile Include="MCMediaTemplate\MCMediaTemplate2DA.cs" />
+    <Compile Include="MCMediaTemplate\MCMediaTemplateBaseDA.cs" />
+    <Compile Include="MCMediaTemplate\MCMediaTemplateDemoDA.cs" />
+    <Compile Include="MCMediaTemplate\MCMediaTemplateFactory.cs" />
+    <Compile Include="MCMediaTemplate\MCMediaTemplate3DA.cs" />
+    <Compile Include="MCMediaTemplate\MCMediaTemplateTrivagoDA.cs" />
+    <Compile Include="NMDA.cs" />
+    <Compile Include="ImagiQDA.cs" />
+    <Compile Include="PQDA.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RadioDA.cs" />
+    <Compile Include="ReportDA.cs" />
+    <Compile Include="SessionDA.cs" />
+    <Compile Include="SMDA.cs" />
+    <Compile Include="SSPDA.cs" />
+    <Compile Include="IQTimeshift_SavedSearchDA.cs" />
+    <Compile Include="ThirdPartyDA.cs" />
+    <Compile Include="TVDA.cs" />
+    <Compile Include="TVEyesDA.cs" />
+    <Compile Include="TWDA.cs" />
+    <Compile Include="UGCDA.cs" />
+    <Compile Include="UtilityDA.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\IQCommon\IQCommon\IQCommon.csproj">
+      <Project>{6C491916-50C9-4E52-A355-596FDE89816B}</Project>
+      <Name>IQCommon</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Common\IQMedia.Shared\IQMedia.Shared.csproj">
+      <Project>{0B641996-1E4E-41D7-AB14-36295FAA3F4E}</Project>
+      <Name>IQMedia.Shared</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\IQMedia.Model\IQMedia.Model.csproj">
+      <Project>{27287047-85ED-43FF-9A0E-E61C7B5C6887}</Project>
+      <Name>IQMedia.Model</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

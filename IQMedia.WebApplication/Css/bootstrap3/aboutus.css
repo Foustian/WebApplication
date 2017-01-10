@@ -1,0 +1,121 @@
+@charset "utf-8";
+
+/*====== About us page css =======*/
+.img-center img {
+    margin:0 auto;
+}
+.image-shadow {
+	/*border: #666 solid 1px;
+	
+	-webkit-box-shadow: 0 5px 10px 3px #888888;
+	box-shadow: 0 5px 10px 3px #888888;*/
+	
+	outline: 5px solid #FFF;
+	outline-offset: 0px;
+}
+.display-inline-block{
+	display:inline-block;
+	text-align:center;
+}
+.display-inline-block .img-responsive {
+	display:inline-block;
+}
+.ld-name {
+	color: #555555;
+    font: 20px/26px 'open_sanssemibold';
+	display:block;
+	margin: 6px 3px 8px;
+	text-align:center;
+}
+.ld-name span{
+	display:block;
+    font: 18px/20px 'open_sanslight';
+}
+@media (min-width: 200px) and (max-width: 470px) {
+
+}
+@media (min-width: 320px) and (max-width: 480px) {	
+
+}
+@media (min-width: 768px) {
+
+}
+
+.leadership-banner {
+    background: url(../../Images/home_new/Leadership/leadership-had-bg.png) repeat-x center top rgba(0, 0, 0, 0);
+	
+}
+.leadership-iq {
+    background: url(../../Images/home_new/Careers/career-iq.png) no-repeat right top 47px rgba(0, 0, 0, 0);
+	min-height:166px;
+	vertical-align:middle
+}
+
+@media (min-width: 200px) and (max-width: 640px) {
+	.leadership-iq {min-height:136px; background: url(../../Images/home_new/Careers/career-iq.png) no-repeat right top 10px rgba(0, 0, 0, 0);}
+	.leadership-in-width{ padding-left:0px; padding-right:0px;}
+	.hd-right-text{ font:25px/30px 'open_sansregular';  text-align:center; margin-top:10px;}
+	.leadership-lr0 { padding-left: 0px; padding-right: 0px;}
+	.Leadership-round-link {text-align: center; margin-top: 10px;}
+}
+
+@media (min-width: 768px) {
+	.hd-right-text{ font:30px/34px 'open_sansregular';}
+	.leadership-iq {background: url(../../Images/home_new/Careers/career-iq.png) no-repeat right top 31px rgba(0, 0, 0, 0);}
+	.leadership-round-link {margin-top: 70px;}
+	.leadership-lr0 { padding-left: 0px; padding-right: 0px;}
+	.leadership-in-width{ padding-left:0px; padding-right:0px;}
+}
+
+@media (min-width: 992px) {
+	.hd-right-text{ color:#C1D72E; font:37px/44px 'open_sansregular';}
+	.leadership-iq { background: url(../../Images/home_new/Careers/career-iq.png) no-repeat right top 47px rgba(0, 0, 0, 0);}
+	.Leadership-round-link {margin-top: 80px;}
+	.leadership-in-width{ padding-left:0px; padding-right:0px;}
+	
+	/*.leadership-in-width{padding-left:18px\0; padding-right:18px\0; }
+. ie10 .leadership-in-width{padding-left:18px; padding-right:18px; }
+*/
+}
+
+.hd-right-text{ color:#000A35; font:38px/44px 'open_sansregular'; letter-spacing:1px; display:block; text-align:right; margin-top:62px; margin-bottom:40px;}
+
+.Green-box {
+    background: none repeat scroll 0 0 #c1d72e;
+    padding: 3px;
+    text-align: center;
+}
+
+.WhiteTitle{ font:22px/28px 'open_sansregular'; color: #fff; padding-top:3px;  padding-bottom: 3px; }
+
+.text-left {
+    text-align: left;
+    padding-left:35px;
+}
+
+.col-sm-7 {
+    width: 70.333%;
+}
+
+.col-sm-5 {
+    width: 29.667%;
+}
+
+.Blue { color:#53BDEC; }
+.Pink {color:#EE2375;}
+.Green {color:#C1D72E;}
+
+.AboutBox {
+	background:#fff;
+	padding:20px 0px;
+	border-bottom:solid 0px #cee2e9;
+	
+}
+
+@media (min-width: 992px) {
+.AboutBox {
+	background:#fff;
+	padding:50px 0px;
+	border-bottom:solid 0px #cee2e9;
+	
+}

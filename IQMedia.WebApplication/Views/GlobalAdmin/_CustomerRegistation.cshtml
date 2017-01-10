@@ -1,0 +1,237 @@
+﻿@using IQMedia.Model;
+@model CustomerPostModel
+@{
+    
+    IQMedia.Model.ActiveUser sessionInformation = IQMedia.WebApplication.Utility.ActiveUserMgr.GetActiveUser();
+}
+
+    <style>
+        /* to hide the space occupied by password help popover title */
+        .popover-title{ border:0;padding:0;}       
+        
+        .roleGroup
+        {
+            border-top:1px solid #e5e5e5;
+            clear:both;
+        } 
+    </style>
+
+<script src="~/Scripts/jquery.form.js?v=1.0" type="text/javascript"></script>
+<script language="javascript" type="text/javascript">
+    $("#divCustomerRegistration_ScrollContent").css("height", documentHeight - 250);
+    $("#divCustomerRegistration_ScrollContent").mCustomScrollbar({
+        advanced: {
+            updateOnContentResize: true,
+            autoScrollOnFocus: true
+        }
+    });
+</script>
+<div style="clear: both;">
+</div>
+<div id="divCustomerRegistration_ScrollContent">
+    @using (Html.BeginForm("CustomerRegistration", "GlobalAdmin", FormMethod.Post, new { @class = "form-horizontal", @id = "frmCustomer" }))
+    {
+        bool IsClientFliq = true;
+        <div style="padding-right: 15px;">
+            <div class="sidebar-nav" style="margin-top: 7px;">
+                <h5>
+                    Customer Setup Page</h5>
+            </div>
+            <br />
+            <div class="control-group">
+                <label for="customer_ClientID" class="control-label">
+                    Client</label>
+                <div class="controls">
+                    <input type="hidden" id="customer_CustomerKey" name="customer.CustomerKey" value="@Model.customer.CustomerKey" />
+                    <select name="customer.ClientID" id="customer_ClientID" @(Model.customer.CustomerKey == 0 ? string.Empty : "readonly=readonly")>
+                        <option value="0">Select</option>
+                        @foreach (ClientModel client in Model.Customer_DropDown.ClientList)
+                        {
+                            if (Model.customer.ClientID == client.ClientKey)
+                            {
+                                IsClientFliq = client.IsFliq;
+                            }
+                            <option value="@client.ClientKey" onclick="CheckIsFliq(@(client.IsFliq == true ? '1' : '0'))" @(Model.customer.ClientID == client.ClientKey ? "selected=\"selected\"" : string.Empty)>@client.ClientName</option>
+                        }
+                    </select>
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanClientID"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="row-fluid row-custom">
+                &nbsp;</div>
+            <br />
+            <div class="control-group">
+                <label for="customer_FirstName" class="control-label">
+                    Customer First Name</label>
+                <div class="controls">
+                    <input type="text" name="customer.FirstName" id="customer_FirstName" value="@Model.customer.FirstName" />
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanFirstName"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="customer_LastName" class="control-label">
+                    Customer Last Name</label>
+                <div class="controls">
+                    <input type="text" name="customer.LastName" id="customer_LastName" value="@Model.customer.LastName" />
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanLastName"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="customer_Email" class="control-label">
+                    Customer Email</label>
+                <div class="controls">
+                    <input type="text" name="customer.Email" id="customer_Email" value="@Model.customer.Email" />
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanEmail" class="help-inline">
+                    </span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="customer_LoginID" class="control-label">
+                    Customer LogIn</label>
+                <div class="controls">
+                    <input type="text" name="customer.LoginID" id="customer_LoginID" value="@Model.customer.LoginID" />
+                    @if (Model.customer.CustomerKey > 0)
+                    {
+                        <input type="button" id="btnCustomerAddToAnewstip" class="button" style="margin:0px 10px; @(String.IsNullOrEmpty(Model.customer.AnewstipUserID) ? "" : "display:none")" value="Create Connect User Account" onclick="AddCustomerToAnewstip(@Model.customer.CustomerKey)" />
+                        <input type="button" id="btnCustomerAddedToAnewstip" class="button" style="margin:0px 10px; cursor:default; @(!String.IsNullOrEmpty(Model.customer.AnewstipUserID) ? "" : "display:none")" value="Connect Account Created" />
+                    }
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanLoginID"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="customer_Password" class="control-label">
+                    Password</label>
+                <div class="controls">
+                    <input type="password" name="customer.Password" id="customer_Password" value="@Model.customer.Password" />
+                    <img id="imgPassHelp" alt="?" src="~/images/help.png" style="cursor:pointer;" data-content="Password must contain one uppercase, one lowercase and a number; and length must be between 6 and 30." data-placement="top" data-toggle="popover" data-title="" />
+                    <input type="button" class="button" style="margin-top:-3px; margin-left:5px;" onclick="ResetPasswordAttempts('@Model.customer.CustomerKey')" value="Reset Login" />
+                    <span style="color: #FF0000; display: none;" id="spanPassword" class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="customer_ConfirmPassword" class="control-label">
+                    Confirm Password</label>
+                <div class="controls">
+                    <input type="password" name="customer.ConfirmPassword" id="customer_ConfirmPassword" value="@Model.customer.Password" />
+                    <span style="color: #FF0000; display: none;" id="spanConfirmPassword" class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="customer_ContactNo" class="control-label">
+                    Phone</label>
+                <div class="controls">
+                    <input type="text" name="customer.ContactNo" id="customer_ContactNo" value="@Model.customer.ContactNo" />
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanContactNo"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="customer_ContactNo" class="control-label">
+                    Comments</label>
+                <div class="controls">
+                    <input type="text" name="customer.Comment" id="customer_Comment" value="@Model.customer.Comment" />
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanComment"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="customer_IsActive" class="control-label">
+                    Is Active</label>
+                <div class="controls">
+                    <input type="checkbox" name="customer.IsActive" id="customer_IsActive" checked="@(Model.customer.IsActive.HasValue ? Model.customer.IsActive.Value : true)" value="true" />
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="customer_IsFliqCustomer" class="control-label">
+                    Is Fliq Customer</label>
+                <div class="controls">
+                    <input type="checkbox" name="customer.IsFliqCustomer" id="customer_IsFliqCustomer" checked="@(IsClientFliq && Model.customer.IsFliqCustomer.HasValue && Model.customer.IsFliqCustomer.Value)" @(IsClientFliq == false ? "disabled=\"disabled\"" : string.Empty) value="true" />
+                </div>
+            </div>
+            <div class="row-fluid row-custom">
+                &nbsp;</div>
+            <br />
+            <div class="control-group">
+                <label for="customer_MultiLogin" class="control-label">
+                    Is Multi Login</label>
+                <div class="controls">
+                    <input type="checkbox" name="customer.MultiLogin" id="customer_MultiLogin" checked="@Model.customer.MultiLogin" value="true" />
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="customer_DefaultPage" class="control-label">
+                    Default Page
+                </label>
+                <div class="controls">
+                    <select name="customer.DefaultPage" id="customer_DefaultPage">
+                        @{
+                    string _Pages = System.Configuration.ConfigurationManager.AppSettings["Pages"];
+                    List<string> _ListOfPages = _Pages.Split(',').ToList();
+                    foreach (string page in _ListOfPages)
+                    {
+                        string[] _PageTextValue = page.Split('|');
+                            <option value="@_PageTextValue[0]" @(Model.customer.DefaultPage == _PageTextValue[0] ? "selected=\"selected\"" : string.Empty)>@_PageTextValue[1]</option>
+                    }
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="row-fluid row-custom">
+                &nbsp;</div>
+            <br />
+            <div class="control-group">
+                <label for="chkRoles" class="control-label">
+                    Customer Roles
+                    <div style="margin-top:30px;">
+                        <input type="button" class="button" value="Select Client Roles" onclick="SetRolesFromClient();" />
+                    </div>   
+                </label>                
+                <div class="controls" id="divCustomerRoles">
+                    @{
+                    int counter = 0;
+                    foreach (string groupName in Model.Customer_DropDown.Customer_RoleList.Select(s => s.GroupName).Distinct())
+                    {        
+                            <div @(counter > 0 ? "class=roleGroup" : "")>
+                            @foreach (RoleModel item in Model.Customer_DropDown.Customer_RoleList.Where(w => w.GroupName == groupName).OrderBy(o => o.DisplayName))
+                            {
+                                string IsSelected = "checked=\"IsSelected\"";
+                                string isDisabled = "disabled=\"disabled\"";
+                                if ((Model.customer.CustomerKey == 0 && !item.HasDefaultAccess) || (Model.chkRoles != null && Model.chkRoles.Count() > 0 && (!Model.chkRoles.Contains(@item.RoleName.ToString()) && !Model.chkRoles.Contains(@item.RoleKey.ToString()))))
+                                {
+                                    IsSelected = "";
+                                }
+                                if (item.IsEnabledInSetup || (item.EnabledCustomerIDs != null && item.EnabledCustomerIDs.Contains(sessionInformation.CustomerKey.ToString())))
+                                {
+                                    isDisabled = "";
+                                }
+                                <div class="resWidth3inLine" title="@item.Description">
+                                    <input type="checkbox" style="margin:0px;" @IsSelected @isDisabled name="chkRoles" id="chkrole_@item.RoleName" value="@item.RoleKey" onclick="ShowElevatedSupportMessage(this, '@item.RoleName');" />
+                                    @item.DisplayName
+                                </div>
+                            }
+                            </div>
+                        
+                            counter++;
+                    }
+                    }
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanCustomerRoles"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">
+                    &nbsp;</label>
+                <div class="controls">
+                    <input type="button" id="btnCancelCustomerRegistration" name="btnCancelCustomerRegistration"
+                        value="Cancel" onclick="CancelCustomerRegistration();" class="button" style="margin: 0px;" />
+                    <input type="button" onclick="SaveCustomer()" id="btnSubmitCustomerRegistration"
+                        name="btnSubmitCustomerRegistration" value="Submit" class="button" style="margin: 0px;" />
+                </div>
+            </div>
+        </div>
+    }
+</div>

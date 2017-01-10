@@ -1,0 +1,379 @@
+﻿<script type="text/javascript">
+    var _SelectedArtists = [];
+    var _SelectedAlbums = [];
+    var _SelectedTracks = [];
+    var _SelectedRows = [];
+    var _CurrentChartTab = 2;
+    var _CurrentTableType = "Artist";
+    var _CurrentPageNum = 0;
+
+    function LoadClientSpecificView(result) {
+        $("#totalNumOfHits").html(result.totalHits + ' Total Hits');
+
+        RenderLineChart_Sony(result.jsonMediaRecord, 'divLineChartMedia');
+        RenderLineChart_Sony(result.jsonSubMediaRecord, 'divLineChartSubMedia');
+        
+        GetTable("Artist");
+    }
+
+    function SwitchTable(tableType) {
+        _CurrentTableType = tableType;
+        _CurrentPageNum = 0;
+
+        $("#ulTableTabs li").removeClass("active");
+        $("#li" + tableType).addClass("active");
+
+        // Clear out any selected items
+        _SelectedArtists = [];
+        _SelectedAlbums = [];
+        _SelectedTracks = [];
+        _SelectedRows = [];
+
+        RefreshLineChart();
+        GetTable();
+    }
+
+    function ToggleArtist(chk) {
+        var rowID = $(chk).attr("rowid");
+        var artist = $("#tdArtist" + rowID).html();
+        var index = _SelectedArtists.indexOf(artist);
+
+        if ($(chk).is(":checked")) {
+            if (index == -1) {
+                _SelectedArtists.push(artist);
+                _SelectedRows.push(rowID);
+            }
+        }
+        else {
+            var index = _SelectedArtists.indexOf(artist);
+            if (index > -1) {
+                _SelectedArtists.splice(index, 1);
+                _SelectedRows.splice(_SelectedRows.indexOf(rowID), 1);
+            }
+        }
+
+        RefreshLineChart();
+    }
+
+    function ToggleAlbum(chk) {
+        var rowID = $(chk).attr("rowID");
+        var album = $("#tdAlbum" + rowID).html();
+        var index = _SelectedAlbums.indexOf(album);
+
+        if ($(chk).is(":checked")) {
+            if (index == -1) {
+                _SelectedAlbums.push(album);
+                _SelectedRows.push(rowID);
+            }
+        }
+        else {
+            var index = _SelectedAlbums.indexOf(album);
+            if (index > -1) {
+                _SelectedAlbums.splice(index, 1);
+                _SelectedRows.splice(_SelectedRows.indexOf(rowID), 1);
+            }
+        }
+
+        RefreshLineChart();
+    }
+
+    function ToggleTrack(chk) {
+        var rowID = $(chk).attr("rowID");
+        var track = $("#tdTrack" + rowID).html();
+        var index = _SelectedTracks.indexOf(track);
+
+        if ($(chk).is(":checked")) {
+            if (index == -1) {
+                _SelectedTracks.push(track);
+                _SelectedRows.push(rowID);
+            }
+        }
+        else {
+            var index = _SelectedTracks.indexOf(track);
+            if (index > -1) {
+                _SelectedTracks.splice(index, 1);
+                _SelectedRows.splice(_SelectedRows.indexOf(rowID), 1);
+            }
+        }
+
+        RefreshLineChart();
+    }
+
+    function RefreshLineChart() {
+        var jsonPostData = {
+            p_FromDate: _FromDate,
+            p_ToDate: _ToDate,
+            p_SearchRequestIDs: _SearchRequests,
+            p_SearchType: _SearchType,
+            p_Artists: _SelectedArtists,
+            p_Albums: _SelectedAlbums,
+            p_Tracks: _SelectedTracks,
+            p_TableType: _CurrentTableType
+        };
+
+        $.ajax({
+            type: 'POST',
+            dataType: 'json',
+            url: _urlDashboardGetSonyChart,
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify(jsonPostData),
+            success: function (result) {
+                if (result.isSuccess) {
+                    // The chart won't render properly if the div is hidden
+                    changeTab('1');
+                    $("#divLineChartMedia").html('');
+                    RenderLineChart_Sony(result.jsonMediaRecord, 'divLineChartMedia');
+
+                    changeTab('2');
+                    $("#divLineChartSubMedia").html('');
+                    RenderLineChart_Sony(result.jsonSubMediaRecord, 'divLineChartSubMedia');
+
+                    changeTab(_CurrentChartTab);
+                }
+                else {
+                    ShowNotification(_msgErrorOccured);
+                }
+            },
+            error: function (data, errorType, error) {
+                ShowNotification(_msgErrorOccured);
+                console.error(error);
+            }
+        });
+    }
+
+    function GetTable() {
+        var jsonPostData = {
+            p_FromDate: _FromDate,
+            p_ToDate: _ToDate,
+            p_SearchRequestIDs: _SearchRequests,
+            p_SearchType: _SearchType,
+            p_TableType: _CurrentTableType,
+            p_PageNumber: _CurrentPageNum
+        };
+
+        $.ajax({
+            type: 'POST',
+            dataType: 'json',
+            url: _urlDashboardGetSonyTable,
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify(jsonPostData),
+            success: function (result) {
+                if (result.isSuccess) {
+                    $("#divDataTable").html('');
+                    $("#divDataTable").html(result.HTML);
+
+                    if (_CurrentTableType == "Artist") {
+                        $('#divDataTable input[type="checkbox"]').on('click', function () {
+                            ToggleArtist(this);
+                        });
+                    }
+                    else if (_CurrentTableType == "Album") {
+                        $('#divDataTable input[type="checkbox"]').on('click', function () {
+                            ToggleAlbum(this);
+                        });
+                    }
+                    else if (_CurrentTableType == "Track") {
+                        $('#divDataTable input[type="checkbox"]').on('click', function () {
+                            ToggleTrack(this);
+                        });
+                    }
+
+                    $("#btnPreviousPage").show();
+                    $("#btnNextPage").show();
+                    if (_CurrentPageNum == 0) {
+                        $("#btnPreviousPage").hide();
+                    }
+                    if (!result.hasMoreRecords) {
+                        $("#btnNextPage").hide();
+                    }
+
+                    $("#spanPageSize").html(result.startIndex + " - " + result.endIndex + " of " + result.numTotalRecords);
+
+                    // Select any previously selected rows
+                    if (_SelectedRows.length > 0) {
+                        $('#divDataTable input[type="checkbox"]').each(function (index, obj) {
+                            var index = _SelectedRows.indexOf($(obj).attr("rowid"));
+                            if (index > -1) {
+                                $(obj).prop("checked", true);
+                            }
+                        });
+                    }
+                }
+                else {
+                    ShowNotification(_msgErrorOccured);
+                }
+            },
+            error: function (data, errorType, error) {
+                ShowNotification(_msgErrorOccured);
+                console.error(error);
+            }
+        });
+    }
+
+    function ChangePage_Sony(isNextPage) {
+        if (isNextPage) {
+            _CurrentPageNum++;
+        }
+        else {
+            _CurrentPageNum--;
+        }
+
+        GetTable();
+    }
+
+    function ChangeTab_Sony(tabType) {
+        _CurrentChartTab = tabType;
+        changeTab(tabType);
+    }
+
+    function RenderLineChart_Sony(jsonLineChartData, divLineChartID) {
+        var JsonLineChart = JSON.parse(jsonLineChartData);
+        JsonLineChart.plotOptions.series.point.events.click = LineChartClick;
+        if (JsonLineChart.xAxis.labels.formatter != null) {
+            JsonLineChart.xAxis.labels.formatter = GetMonth;
+        }
+        $('#' + divLineChartID).highcharts(JsonLineChart);
+    }
+
+    function GetSonyExportData() {
+        var jsonPostData = {
+            p_FromDate: _FromDate,
+            p_ToDate: _ToDate,
+            p_SearchType: _SearchType,
+            p_SearchRequestIDs: _SearchRequests,
+            p_TableType: _CurrentTableType
+        };
+
+        $.ajax({
+            type: 'POST',
+            dataType: 'json',
+            url: _urlDashboardGetSonyExportData,
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify(jsonPostData),
+            global: false,
+            success: function (result) {
+                if (result.isSuccess) {
+                    window.location = "/Dashboard/DownloadCSVFile/";
+                }
+                else {
+                    ShowNotification(result.errorMessage);
+                }
+            },
+            error: function (a, b, c) {
+                ShowErrorMessage();
+                console.error("Error during Sony CSV Export - " + c);
+            }
+        });  
+    }
+</script>
+
+<style type="text/css">
+    #ulTableTabs li a
+    {
+        padding: 3px 10px;
+    }
+    
+    .dataTable
+    {
+        clear:both;
+    }
+    
+    .dataTable .headerRow td
+    {
+        background-color: #E6E7E8;
+        border: 2px solid #CCCCCC;
+        padding: 2px 5px;
+    }
+    
+    .numericCol
+    {
+        text-align: right !important;
+    }
+    
+    .artistRow .artist
+    {
+        max-width: 453px;
+        width: 453px;
+    }
+    
+    .albumRow .artist
+    {
+        max-width: 179px;
+        width: 179px;
+    }
+    
+    .albumRow .album
+    {
+        max-width: 358px;
+        width: 358px;
+    }
+    
+    .trackRow .artist
+    {
+        max-width: 134px;
+        width: 134px;
+    }
+    
+    .trackRow .album
+    {
+        max-width: 190px;
+        width: 190px;
+    }
+    
+    .trackRow .track
+    {
+        max-width: 200px;
+        width: 200px;
+    }
+    
+    .dataRow td
+    {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+</style>
+
+<div class="clear">
+    <div id="divLineChartOptions" class="clear">
+        <div class="pull-left">
+            <a href="#" onclick="ChangeTab_Sony('2');" class="marginRight-4">
+                <img id="imgMultipleLine" src="../../Images/Dashboard/multiple-line-normal.png" alt="" /></a>
+            <a href="#" onclick="ChangeTab_Sony('1');">
+                <img id="imgSingleLine" src="../../Images/Dashboard/single-line-active.png" alt="" /></a>
+        </div>
+        <div class="pull-right" id="divDuration">
+            <div id="divDayDuration" class="floatLeft SearchType leftSideBorderRadius" onclick="ChangeSearchType(1);">
+                Day</div>
+            <div id="divMonthDuration" class="pull-right SearchType rightSideBorderRadius" onclick="ChangeSearchType(3);">
+                Month</div>
+        </div>
+    </div>
+    <div class="clear">
+        <div style="width: auto; height: 0; overflow: hidden;" id="divLineChartMedia">
+        </div>
+    </div>
+    <div class="clear">
+        <div id="divLineChartSubMedia">
+        </div>
+    </div>
+</div>
+<h5 class="clearDiv">
+</h5>
+<div id="divTables" style="width: 98%;" class="pull-left navbar">    
+    <ul id="ulTableTabs" class="nav navbar-nav cursorPointer">
+        <li id="liArtist" class="active"><a onclick="SwitchTable('Artist');">By Artist</a></li>
+        <li id="liAlbum"><a onclick="SwitchTable('Album');">Album</a></li>
+        <li id="liTrack"><a onclick="SwitchTable('Track');">Track</a></li>
+    </ul>
+    <div class="pull-right">
+        <span id="spanPageSize" style="float:left; padding:3px 10px 0px 0px;"></span>
+        <a href="#" onclick="ChangePage_Sony(false);" id="btnPreviousPage" class="nextprevbtn" style="display: inline">
+            <img src="/Images/prev.png" />
+        </a>
+        <a href="#" onclick="ChangePage_Sony(true);" id="btnNextPage" class="nextprevbtn" style="display: inline">
+            <img src="/Images/next.png" />
+        </a>
+    </div>
+    <div id="divDataTable" class="dataTable"></div>
+</div>

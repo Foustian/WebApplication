@@ -1,0 +1,547 @@
+﻿@using IQMedia.WebApplication.Models.TempData;
+@{
+    ViewBag.Title = "iQ media OptiQ";
+    Layout = "~/Views/Shared/_IQMediaMasterInner.cshtml";
+}
+<script type="text/javascript" src="~/Scripts/ImagiQ.js?v=1.3"></script>
+<script type="text/javascript" src="~/Scripts/PlayerScript.js?v=1.2"></script>
+@{ 
+    IQMedia.Model.ActiveUser sessionInformation = IQMedia.WebApplication.Utility.ActiveUserMgr.GetActiveUser();
+    ImagiQTempData imagiQTempData = ((IQMedia.WebApplication.Controllers.ImagiQController)this.ViewContext.Controller).GetTempData();
+}
+@{
+    <script type="text/javascript">
+        var _clipLimit = @ViewBag.ManualClipDuration
+        
+        var _PlaySecondsSetting = @ViewBag.RawMediaPauseSecs
+
+        // commented for now, uncomment below if need to pause by absolute time
+        //var _RawPlaySeconds = @ViewBag.RawMediaPauseSecs;
+        //var _PlaySecondsSetting =0;
+    </script>
+}
+<link href="~/Css/Timeshift.css" type="text/css" rel="Stylesheet" />
+<link href="~/Css/Player/PlayerIfrmSvc.css?v=1.1" type="text/css" rel="Stylesheet" />
+<script type="text/javascript" src="~/Scripts/ImagiQPlayer.js?v=1.4"></script>
+<script src="~/Scripts/highcharts.js?v=1.1" type="text/javascript"></script>
+<script type="text/javascript" src="~/Scripts/enscroll.js?v=1.0"></script>
+<div class="container container_custom">
+    <div class="row-fluid" id="divRowFluid">
+        @if (ViewBag.IsSuccess)
+        {
+            <div class="span3 minheight500" id="divQuickFeedFinder">
+                <div class="well sidebar-nav">
+                    <h5 id="h5TV" class="tvheader-active">
+                        TV</h5>
+                    <div id="divTVSection" style="padding-left: 10px;">
+                        <input type="text" id="dpFrom" readonly="readonly" class="date" />
+                        <input type="text" id="dpTo" readonly="readonly" class="date" />
+                        <div class="navbar">
+                            <ul role="navigation" class="nav floatNone sideMenuUl width100p">
+                                <li class="dropdown logo"><a id="liLogoFilter" data-toggle="dropdown" class="dropdown-toggle"
+                                    role="button" id="drop2" href="#">Search Images<span class="spnArrow">&nbsp;</span></a>
+                                    <ul aria-labelledby="drop2" role="menu" class="nav nav-stacked nav-dropdpwn top0"
+                                        style="display: none;" id="ulLogo">
+                                        @{
+                    List<IQMedia.Model.ImagiQLogoModel> listLogo = new List<IQMedia.Model.ImagiQLogoModel>();
+
+                    if (Model != null && Model["Logo"] != null)
+                    {
+                        listLogo = (List<IQMedia.Model.ImagiQLogoModel>)(Model["Logo"]);
+                    }
+                                            <li role="presentation" id="liLogoSearch" style="padding: 0px;@(listLogo.Count > 0 ? string.Empty : "display:none;")">
+                                                <ul class="sideMenu sub-submenu" aria-labelledby="drop2" role="menu">
+                                                    <li role="presentation" style="text-align: right">
+                                                        <div>
+                                                            <input type="button" value="Done" id="btnSearchLogo" class="button" style="margin: 0px;
+                                                                padding: 2px; min-width: 40px;" onclick="SearchLogo();">
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                    if (listLogo.Count > 0)
+                    {
+                                            <li role="presentation" style="padding: 0px;">
+                                                <ul class="sideMenu sub-submenu" aria-labelledby="drop2" role="menu" id="ulLogoList" style="text-align:center;">
+                                                    @foreach (IQMedia.Model.ImagiQLogoModel item in listLogo.Where(x => x.ThumbnailPath != null).ToList())
+                                                    {
+                            
+                                                        <li role="presentation" onclick="SetLogo(this,@item.ID,'@item.ThumbnailPath.Replace("\\", "/")');" class="cursorPointer">
+                                                            <img src="@item.ThumbnailPath" title="@item.CompanyName" /></li>
+                                                    }
+                                                </ul>
+                                            </li>
+                        var json = Newtonsoft.Json.JsonConvert.SerializeObject(listLogo);
+                                            <script type="text/javascript"> _CurrentLogoFilter = @Html.Raw(json); </script>
+                       
+                    }
+                    else
+                    {
+                                        
+                                            <li role="presentation" style="padding: 0px;">
+                                                <ul class="sideMenu sub-submenu" aria-labelledby="drop2" role="menu" id="ulLogoListEmpty">
+                                                    <li role="presentation" class="cursorPointer"><a tabindex="-1" role="menuitem">No Filter
+                                                        Available</a></li>
+                                                </ul>
+                                            </li>
+                    }
+
+                                        }
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                        <br />
+                        <br />
+                        <h5>
+                            Narrow Results</h5>
+                        <div class="navbar">
+                            <ul role="navigation" class="nav floatNone sideMenuUl width100p">
+                                <li class="dropdown ndate"><a data-toggle="dropdown" class="dropdown-toggle" role="button"
+                                    href="#" id="drop1">Date<span class="spnArrow">&nbsp;</span></a>
+                                    <ul id="ulCalender" aria-labelledby="drop1" role="menu" class="dropdown-menu sideMenu ulCalenderFilter">
+                                        <li role="presentation">
+                                            <div id="divCalender">
+                                            </div>
+                                    </ul>
+                                </li>
+                                <li class="dropdown region"><a data-toggle="dropdown" class="dropdown-toggle" role="button"
+                                    id="drop2" href="#">Region<span class="spnArrow">&nbsp;</span></a>
+                                    <ul aria-labelledby="drop2" role="menu" class="dropdown-menu sideMenu" id="ulRegion">
+                                        @{
+                    List<IQMedia.Model.IQ_Region> listIQRegion = new List<IQMedia.Model.IQ_Region>();
+
+                    if (Model != null && Model["IQ_Region"] != null)
+                    {
+                        listIQRegion = (List<IQMedia.Model.IQ_Region>)(Model["IQ_Region"]);
+                    }
+
+                    if (listIQRegion.Count > 0)
+                    {
+
+                        foreach (IQMedia.Model.IQ_Region item in listIQRegion)
+                        {
+                                            <li role="presentation" onclick="SetRegion('@item.Num','@item.Name.Replace("\'", "\\\'")');" class="cursorPointer">
+                                                <a tabindex="-1" role="menuitem">@item.Name</a></li>
+                        }
+                    }
+                    else
+                    {
+                                        
+                                            <li role="presentation" class="cursorPointer"><a tabindex="-1" role="menuitem">No Filter
+                                                Available</a></li>
+                    }
+
+                                        }
+                                    </ul>
+                                </li>
+                                <li class="dropdown country"><a data-toggle="dropdown" class="dropdown-toggle" role="button"
+                                    id="drop2" href="#">Country<span class="spnArrow">&nbsp;</span></a>
+                                    <ul aria-labelledby="drop2" role="menu" class="dropdown-menu sideMenu" id="ulCountry">
+                                        @{
+                    List<IQMedia.Model.IQ_Country> listIQCountry = new List<IQMedia.Model.IQ_Country>();
+
+                    if (Model != null && Model["IQ_Country"] != null)
+                    {
+                        listIQCountry = (List<IQMedia.Model.IQ_Country>)(Model["IQ_Country"]);
+                    }
+
+                    if (listIQCountry.Count > 0)
+                    {
+
+                        foreach (IQMedia.Model.IQ_Country item in listIQCountry)
+                        {
+                                            <li role="presentation" onclick="SetCountry('@item.Num','@item.Name.Replace("\'", "\\\'")');" class="cursorPointer">
+                                                <a tabindex="-1" role="menuitem">@item.Name</a></li>
+                        }
+                    }
+                    else
+                    {
+                                        
+                                            <li role="presentation" class="cursorPointer"><a tabindex="-1" role="menuitem">No Filter
+                                                Available</a></li>
+                    }
+
+                                        }
+                                    </ul>
+                                </li>
+                                <li class="dropdown market"><a id="liDmaFilter" data-toggle="dropdown" class="dropdown-toggle"
+                                    role="button" id="drop2" href="#">Market<span class="spnArrow">&nbsp;</span></a>
+                                    <ul aria-labelledby="drop2" role="menu" class="nav nav-stacked nav-dropdpwn top0"
+                                        style="display: none;" id="ulMarket">
+                                        @{
+                    List<IQMedia.Model.IQ_Dma> listIQDma = new List<IQMedia.Model.IQ_Dma>();
+
+                    if (Model != null && Model["IQ_Dma"] != null)
+                    {
+                        listIQDma = (List<IQMedia.Model.IQ_Dma>)(Model["IQ_Dma"]);
+                    }
+                                            <li role="presentation" id="liDMASearch" style="padding: 0px;@(listIQDma.Count > 0 ? string.Empty : "display:none;")">
+                                                <ul class="sideMenu sub-submenu" aria-labelledby="drop2" role="menu">
+                                                    <li role="presentation" style="text-align: right">
+                                                        <div>
+                                                            <input type="button" value="Done" id="btnSearchDma" class="button" style="margin: 0px;
+                                                                padding: 2px; min-width: 40px;" onclick="SearchDma();">
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                    if (listIQDma.Count > 0)
+                    {
+                                            <li role="presentation" style="padding: 0px;">
+                                                <ul class="sideMenu sub-submenu" aria-labelledby="drop2" role="menu" id="ulMarketList">
+                                                    @foreach (IQMedia.Model.IQ_Dma item in listIQDma)
+                                                    {
+                            
+                                                        <li role="presentation" onclick="SetDma(this,'@item.Name.Replace("\'", "\\\'")');" class="cursorPointer">
+                                                            <a tabindex="-1" role="menuitem">@item.Name</a></li>
+                                                    }
+                                                </ul>
+                                            </li>
+                                                    var json = Newtonsoft.Json.JsonConvert.SerializeObject(listIQDma);
+                                            <script type="text/javascript"> _CurrentDmaFilter = @Html.Raw(json); </script>
+                       
+                    }
+                    else
+                    {
+                                        
+                                            <li role="presentation" style="padding: 0px;">
+                                                <ul class="sideMenu sub-submenu" aria-labelledby="drop2" role="menu" id="ulMarketList">
+                                                    <li role="presentation" class="cursorPointer"><a tabindex="-1" role="menuitem">No Filter
+                                                        Available</a></li>
+                                                </ul>
+                                            </li>
+                    }
+
+                                        }
+                                    </ul>
+                                </li>
+                                <li class="dropdown nnetwork"><a id="liStationFilter" data-toggle="dropdown" class="dropdown-toggle"
+                                    role="button" id="drop2" href="#">Affiliate Network<span class="spnArrow">&nbsp;</span></a>
+                                    <ul aria-labelledby="drop2" role="menu" class="nav nav-stacked nav-dropdpwn top0"
+                                        style="display: none;" id="ulNetwork">
+                                        @{
+                    List<IQMedia.Model.Station_Affil> listIQStation = new List<IQMedia.Model.Station_Affil>();
+
+                    if (Model != null && Model["Station_Affil"] != null)
+                    {
+                        listIQStation = (List<IQMedia.Model.Station_Affil>)(Model["Station_Affil"]);
+                    }
+                                            <li role="presentation" id="liStationSearch" style="padding: 0px;@(listIQStation.Count > 0 ? string.Empty : "display:none;")">
+                                                <ul class="sideMenu sub-submenu" aria-labelledby="drop2" role="menu">
+                                                    <li role="presentation" style="text-align: right">
+                                                        <div>
+                                                            <input type="button" value="Done" id="btnSearchStation" class="button" style="margin: 0px;
+                                                                padding: 2px; min-width: 40px;" onclick="SearchStation();">
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                    if (listIQStation.Count > 0)
+                    {
+                                            <li role="presentation" style="padding: 0px;">
+                                                <ul class="sideMenu sub-submenu" aria-labelledby="drop2" role="menu" id="ulNetworkList">
+                                                    @foreach (IQMedia.Model.Station_Affil item in listIQStation)
+                                                    {
+                                                        <li role="presentation" onclick="SetStation(this,'@item.Name.Replace("\'", "\\\'")');" class="cursorPointer">
+                                                            <a tabindex="-1" role="menuitem">@item.Name</a></li>
+                                                    }
+                                                </ul>
+                                            </li>
+                                                    var jsonStation = Newtonsoft.Json.JsonConvert.SerializeObject(listIQStation);
+                                            <script type="text/javascript"> _CurrentStationFilter = @Html.Raw(jsonStation); </script>
+                    }
+                    else
+                    {
+                                        
+                                            <li role="presentation" style="padding: 0px;">
+                                                <ul class="sideMenu sub-submenu" aria-labelledby="drop2" role="menu" id="ulNetworkList">
+                                                    <li role="presentation" class="cursorPointer"><a tabindex="-1" role="menuitem">No Filter
+                                                        Available</a></li>
+                                                </ul>
+                                            </li>
+                    }
+
+                                        }
+                                    </ul>
+                                </li>
+                                <li class="dropdown station"><a id="liStationIDFilter" data-toggle="dropdown" class="dropdown-toggle"
+                                    role="button" id="drop2" href="#">Station<span class="spnArrow">&nbsp;</span></a>
+                                    <ul aria-labelledby="drop2" role="menu" class="nav nav-stacked nav-dropdpwn top0"
+                                        style="display: none;" id="ulStation">
+                                        @{
+                    List<IQMedia.Model.IQ_Station> listIQStationID = new List<IQMedia.Model.IQ_Station>();
+
+                    if (Model != null && Model["IQ_Station"] != null)
+                    {
+                        listIQStationID = (List<IQMedia.Model.IQ_Station>)(Model["IQ_Station"]);
+                    }
+                                            <li role="presentation" id="liStationIDSearch" style="padding: 0px;@(listIQStationID.Count > 0 ? string.Empty : "display:none;")">
+                                                <ul class="sideMenu sub-submenu" aria-labelledby="drop2" role="menu">
+                                                    <li role="presentation" style="text-align: right">
+                                                        <div>
+                                                            <input type="button" value="Done" id="btnSearchStationID" class="button" style="margin: 0px;
+                                                                padding: 2px; min-width: 40px;" onclick="SearchStationID();">
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                    if (listIQStationID.Count > 0)
+                    {
+                                            <li role="presentation" style="padding: 0px;">
+                                                <ul class="sideMenu sub-submenu" aria-labelledby="drop2" role="menu" id="ulStationList">
+                                                    @foreach (IQMedia.Model.IQ_Station item in listIQStationID)
+                                                    {
+                                                        <li role="presentation" onclick="SetStationID(this,'@item.IQ_Station_ID.Replace("\'", "\\\'")','@item.Station_Call_Sign.Replace("\'", "\\\'")');" class="cursorPointer">
+                                                            <a tabindex="-1" role="menuitem">@item.Station_Call_Sign</a></li>
+                                                    }
+                                                </ul>
+                                            </li>
+                                                    var jsonStationID = Newtonsoft.Json.JsonConvert.SerializeObject(listIQStationID);
+                                            <script type="text/javascript"> _CurrentStationIDFilter = @Html.Raw(jsonStationID); </script>
+                    }
+                    else
+                    {
+                                        
+                                            <li role="presentation" style="padding: 0px;">
+                                                <ul class="sideMenu sub-submenu" aria-labelledby="drop2" role="menu" id="ulStationList">
+                                                    <li role="presentation" class="cursorPointer"><a tabindex="-1" role="menuitem">No Filter
+                                                        Available</a></li>
+                                                </ul>
+                                            </li>
+                    }
+                                        }
+                                    </ul>
+                                </li>
+                                <li class="dropdown category"><a data-toggle="dropdown" class="dropdown-toggle" role="button"
+                                    id="drop2" href="#">Program Category<span class="spnArrow">&nbsp;</span></a>
+                                    <ul aria-labelledby="drop2" role="menu" class="dropdown-menu sideMenu" id="ulCategory">
+                                        @{
+                    List<IQMedia.Model.IQ_Class> listIQClass = new List<IQMedia.Model.IQ_Class>();
+
+                    if (Model != null && Model["IQ_Class"] != null)
+                    {
+                        listIQClass = (List<IQMedia.Model.IQ_Class>)(Model["IQ_Class"]);
+                    }
+
+                    if (listIQClass.Count > 0)
+                    {
+
+                        foreach (IQMedia.Model.IQ_Class item in listIQClass)
+                        {
+                                            <li role="presentation" onclick="SetClass('@item.Name.Replace("\'", "\\\'")');" class="cursorPointer">
+                                                <a tabindex="-1" role="menuitem">@item.Name</a></li>
+                        }
+                    }
+                    else
+                    {
+                                        
+                                            <li role="presentation" class="cursorPointer"><a tabindex="-1" role="menuitem">No Filter
+                                                Available</a></li>
+                    }
+
+                                        }
+                                    </ul>
+                                </li>
+                                <li class="dropdown industry"><a id="liIndustryFilter" data-toggle="dropdown" class="dropdown-toggle"
+                                    role="button" id="drop2" href="#">Industry<span class="spnArrow">&nbsp;</span></a>
+                                    <ul aria-labelledby="drop2" role="menu" class="nav nav-stacked nav-dropdpwn top0"
+                                        style="display: none;" id="ulIndustry">
+                                        @{
+                    List<string> listIndustry = new List<string>();
+
+                    if (Model != null && Model["Industry"] != null)
+                    {
+                        listIndustry = (List<string>)(Model["Industry"]);
+                    }
+                                            <li role="presentation" id="liIndustrySearch" style="padding: 0px;@(listIndustry.Count > 0 ? string.Empty : "display:none;")">
+                                                <ul class="sideMenu sub-submenu" aria-labelledby="drop2" role="menu">
+                                                    <li role="presentation" style="text-align: right">
+                                                        <div>
+                                                            <input type="button" value="Done" id="btnSearchIndustry" class="button" style="margin: 0px;
+                                                                padding: 2px; min-width: 40px;" onclick="SearchIndustry();">
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                    if (listIndustry.Count > 0)
+                    {
+                                            <li role="presentation" style="padding: 0px;">
+                                                <ul class="sideMenu sub-submenu" aria-labelledby="drop2" role="menu" id="ulIndustryList">
+                                                    @foreach (string item in listIndustry)
+                                                    {
+                                                        <li role="presentation" onclick="SetIndustry(this,'@item.Replace("\'", "\\\'")');" class="cursorPointer">
+                                                            <a tabindex="-1" role="menuitem">@item</a></li>
+                                                    }
+                                                </ul>
+                                            </li>
+                                                    var jsonIndustry = Newtonsoft.Json.JsonConvert.SerializeObject(listIndustry);
+                                            <script type="text/javascript"> _CurrentIndustryFilter = @Html.Raw(jsonIndustry); </script>
+                    }
+                    else
+                    {                                        
+                                            <li role="presentation" style="padding: 0px;">
+                                                <ul class="sideMenu sub-submenu" aria-labelledby="drop2" role="menu" id="ulIndustryList">
+                                                    <li role="presentation" class="cursorPointer"><a tabindex="-1" role="menuitem">No Filter
+                                                        Available</a></li>
+                                                </ul>
+                                            </li>
+                    }
+                                        }
+                                    </ul>
+                                </li>
+                                <li class="dropdown nbrand"><a id="liBrandFilter" data-toggle="dropdown" class="dropdown-toggle"
+                                    role="button" id="drop2" href="#">Brand<span class="spnArrow">&nbsp;</span></a>
+                                    <ul aria-labelledby="drop2" role="menu" class="nav nav-stacked nav-dropdpwn top0"
+                                        style="display: none;" id="ulBrand">
+                                        @{
+                    List<string> listBrand = new List<string>();
+
+                    if (Model != null && Model["Brand"] != null)
+                    {
+                        listBrand = (List<string>)(Model["Brand"]);
+                    }
+                                            <li role="presentation" id="liBrandSearch" style="padding: 0px;@(listBrand.Count > 0 ? string.Empty : "display:none;")">
+                                                <ul class="sideMenu sub-submenu" aria-labelledby="drop2" role="menu">
+                                                    <li role="presentation" style="text-align: right">
+                                                        <div>
+                                                            <input type="button" value="Done" id="btnSearchBrand" class="button" style="margin: 0px;
+                                                                padding: 2px; min-width: 40px;" onclick="SearchBrand();">
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                    if (listBrand.Count > 0)
+                    {
+                                            <li role="presentation" style="padding: 0px;">
+                                                <ul class="sideMenu sub-submenu" aria-labelledby="drop2" role="menu" id="ulBrandList">
+                                                    @foreach (string item in listBrand)
+                                                    {
+                                                        <li role="presentation" onclick="SetBrand(this,'@item.Replace("\'", "\\\'")');" class="cursorPointer">
+                                                            <a tabindex="-1" role="menuitem">@item</a></li>
+                                                    }
+                                                </ul>
+                                            </li>
+                                                    var jsonBrand = Newtonsoft.Json.JsonConvert.SerializeObject(listBrand);
+                                            <script type="text/javascript"> _CurrentBrandFilter = @Html.Raw(jsonBrand); </script>
+                    }
+                    else
+                    {                                        
+                                            <li role="presentation" style="padding: 0px;">
+                                                <ul class="sideMenu sub-submenu" aria-labelledby="drop2" role="menu" id="ulBrandList">
+                                                    <li role="presentation" class="cursorPointer"><a tabindex="-1" role="menuitem">No Filter
+                                                        Available</a></li>
+                                                </ul>
+                                            </li>
+                    }
+                                        }
+                                    </ul>
+                                </li>
+                            </ul>
+                            <div style="clear: both;">
+                            </div>
+                            <br />
+                            <div class="float-right displayNone" id="divImagiQClearAll">
+                                <a data-original-title="" onclick="ClearSearch();" id="aClearSearch" class="cursorPointer">
+                                    <img src="../../Images/clear.png" alt="Clear" id="imgClearSearch" class="float-left marginRight9"><span>Clear
+                                        All</span></a></div>
+                        </div>
+                    </div>
+                    <!--/.well -->
+                </div>
+            </div>
+            <!--/span-->
+            <div class="span9 span9-custom">
+                <div id="divContent" class="clear">
+                    <div id="divTVContent">
+                        @if (Model != null && Model["DefaultHTML"] != null)
+                        {
+                            var html = Model["DefaultHTML"];
+                            if (html != IQMedia.WebApplication.Config.ConfigSettings.Settings.ErrorOccurred)
+                            {
+                        <div class="row-fluid row-custom">
+                            <!--/span-->
+                            <div class="btn-group">
+                                <a class="btn dropdown-toggle no-background" data-toggle="dropdown" href="#" id="aSortDirection">
+                                    Most Recent&nbsp;&nbsp;<span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li class="cursorPointer"><a onclick="SortDirection(false,false);">Most Recent</a></li>
+                                    <li class="cursorPointer"><a onclick="SortDirection(false,true);">Oldest First</a></li>
+                                    <li class="cursorPointer"><a onclick="SortDirection(true,true);">Market Ascending</a></li>
+                                    <li class="cursorPointer"><a onclick="SortDirection(true,false);">Market Descending</a></li>
+                                </ul>
+                            </div>
+                            <div class="btn-group">
+                                <a class="btn dropdown-toggle no-background" data-toggle="dropdown" href="#" id="aDuration">
+                                    All&nbsp;&nbsp;<span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li class="cursorPointer"><a onclick="GetResultOnDuration(0);">All</a></li>
+                                    <li class="cursorPointer"><a onclick="GetResultOnDuration(1);">Last 24 Hours</a></li>
+                                    <li class="cursorPointer"><a onclick="GetResultOnDuration(2);">Last Week</a></li>
+                                    <li class="cursorPointer"><a onclick="GetResultOnDuration(3);">Last Month</a></li>
+                                    <li class="cursorPointer"><a onclick="GetResultOnDuration(4);">Last 3 Months</a></li>
+                                    <li disabled><a>Custom</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                            }
+                        }
+                        <!--/row-->
+                        <div id="divMessage" class="notificationdiv">
+                            <span id="spnNotification"></span>
+                        </div>
+                        <div id="divActiveFilter" class="row-fluid filter">
+                        </div>
+                        <div id="divPreviousNext" class="nextprevdiv">
+                            <span id="lblRecords" style="float: left; padding: 5px 10px 0 0;"></span><a href="javascript:;"
+                                onclick="SearchResultPaging(false);" id="btnPreviousPage" class="nextprevbtn">
+                                <img src="~/Images/prev.png" /></a> <a href="javascript:;" onclick="SearchResultPaging(true);"
+                                    id="btnNextPage" class="nextprevbtn">
+                                    <img src="../../Images/next.png" /></a>
+                        </div>
+                        <div style="clear: both;">
+                        </div>
+                        <div id="divTVScrollContent" class="mainContent">
+                            <div class="row-fluid posts" id="ulImagiQResults">
+                                @{
+                    
+                    if (Model != null && Model["DefaultHTML"] != null)
+                    {
+                        var html = Model["DefaultHTML"];
+                                    @Html.Raw(@html)
+                        if (imagiQTempData != null && imagiQTempData.HasMoreResultPage)
+                        {
+                                    <script type="text/javascript">
+                                        $("#btnNextPage").show();
+                                    </script>
+                        }
+                        if (imagiQTempData != null && imagiQTempData.RecordNumber != null)
+                        {
+                            var recnum = imagiQTempData.RecordNumber;
+                                    <script type="text/javascript">
+                                        $("#lblRecords").html('@recnum');
+                                    </script>
+                        }
+
+                    }
+                                }
+                            </div>
+                            <div align="center" id="divShowResult">
+                            </div>
+                            <div id="divResultMain" class="heightWidth0">
+                                <div id="divResultHeader">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--/span-->
+        }
+        else
+        {
+            <div class="mainerrorDiv">@IQMedia.WebApplication.Config.ConfigSettings.Settings.PageLoadErrorMessage</div>
+        }
+    </div>
+    <!--/row-->
+</div>

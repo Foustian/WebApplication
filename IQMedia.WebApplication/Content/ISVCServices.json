@@ -1,0 +1,378 @@
+﻿{
+	ISVCServices:[{
+		Name:"GetTVMetaData",
+		Url:"http://qaservices.iqmediacorp.com/isvc/GetTVMetaData",
+		JsonRequest:"{
+		\"SessionID\":\"D9E87C2E85CCC97E22A39A3B0EB262F9DD015345F0117C8783A2BF98300FFAC0DFF76C5ADD0EEE26B39A992E27A05C6361C4D98EE2F1AB7A8BCD38092F2847705ABC6A96DB42C92BBC04E712F4F4416C977CE428B850DBFA3349F0050430E7A081F1AC06B2D5D3314E685AA48B7EFC28F04D0A58AC696ECACF5D8D23E2D3E20CB47ED693\"
+		}",
+		XmlRequest:"<TVMetaDataInput>
+		<SessionID>D9E87C2E85CCC97E22A39A3B0EB262F9DD015345F0117C8783A2BF98300FFAC0DFF76C5ADD0EEE26B39A992E27A05C6361C4D98EE2F1AB7A8BCD38092F2847705ABC6A96DB42C92BBC04E712F4F4416C977CE428B850DBFA3349F0050430E7A081F1AC06B2D5D3314E685AA48B7EFC28F04D0A58AC696ECACF5D8D23E2D3E20CB47ED693</SessionID>
+		</TVMetaDataInput>",
+		Note:"<b>Request Parameters</b><br/>
+		<ul><li><b>SessionID</b>: Required. A unique session id returned during successful login call.</li></ul>"
+	},
+	{
+		Name:"GetRawMedia",
+		Url:"http://qaservices.iqmediacorp.com/isvc/GetRawMedia",
+		JsonRequest:"{
+		\"SearchTerm\":\"sports\",
+		\"ProgramTitle\":\"Sports\",
+		\"FromDateTime\":\"2010-11-01T00:00:00\",
+		\"ToDateTime\":\"2010-11-02T00:00:00\",
+		\"DmaList\": [{
+		\"Name\": \"National\",
+		\"Num\": \"000\"
+		},
+		{
+		\"Name\": \"New York\",
+		\"Num\": \"001\"
+		}],
+		\"AffiliateList\": [{
+		\"Name\": \"SNY\"
+		},
+		{
+		\"Name\": \"VH1\"
+		}],
+		\"TimeZone\":\"ALL\",
+		\"PageSize\":\"10\",
+		\"PageNumber\":\"1\",
+		\"SortField\":\"datetime-\",
+		\"SessionID\":\"D9E87C2E85CCC97E22A39A3B0EB262F9DD015345F0117C8783A2BF98300FFAC0DFF76C5ADD0EEE26B39A992E27A05C6361C4D98EE2F1AB7A8BCD38092F2847705ABC6A96DB42C92BBC04E712F4F4416C977CE428B850DBFA3349F0050430E7A081F1AC06B2D5D3314E685AA48B7EFC28F04D0A58AC696ECACF5D8D23E2D3E20CB47ED693\"
+		}",
+		XmlRequest:"<RawMediaInput>
+		<SearchTerm>sports</SearchTerm>
+		<ProgramTitle>Sports</ProgramTitle>
+		<FromDateTime>2010-11-01T00:00:00</FromDateTime>
+		<ToDateTime>2010-11-02T00:00:00</ToDateTime>
+		<DmaList>
+		<Dma>
+			<Name>National</Name>
+			<Num>000</Num>
+		</Dma>
+		<Dma>
+			<Name>New York</Name>
+			<Num>001</Num>
+		</Dma>
+		</DmaList>
+		<AffiliateList>
+		<Affiliate>
+			<Name>SNY</Name>
+		</Affiliate>
+		<Affiliate>
+			<Name>VH1</Name>
+		</Affiliate>
+	</AffiliateList>
+	<TimeZone>ALL</TimeZone>
+	<PageSize>10</PageSize>
+	<PageNumber>1</PageNumber>
+	<SortField>datetime-</SortField>
+	<SessionID>D9E87C2E85CCC97E22A39A3B0EB262F9DD015345F0117C8783A2BF98300FFAC0DFF76C5ADD0EEE26B39A992E27A05C6361C4D98EE2F1AB7A8BCD38092F2847705ABC6A96DB42C92BBC04E712F4F4416C977CE428B850DBFA3349F0050430E7A081F1AC06B2D5D3314E685AA48B7EFC28F04D0A58AC696ECACF5D8D23E2D3E20CB47ED693</SessionID>
+	</RawMediaInput>",
+	Note:"<b>Request Parameters</b><br/>
+<ul><li><b>SearchTerm</b>:  Optional. Search term to query on closed captions.</li> 
+<li><b>ProgramTitle</b>: Optional. To apply filter on program title.</li> 
+<li><b>FromDateTime</b>: Optional. To apply filter on Date duration. Default is 24 hours minus to current time.</li> 
+<li><b>ToDateTime</b>: Optional. To apply filter on Date duration. Detault is 1 hours minus to current time.</li> 
+<li><b>DmaList</b>: Optional. To apply filter on DMA. Array of DMA with Name parameter. If blank, then results will be returned for all available DMA.</li> 
+<li><b>AffiliateList</b>: Optional. To apply filter on Station Affiliate. Array of Station Affiliates with Name parameter. If blank, then results will be returned for all available Affiliates.</li> 
+<li><b>PageSize</b>: Optional. Number of records in one page. Default is 10. .Maximum is 50</li> 
+<li><b>TimeZone</b>: Required. To apply filter on Timezone. Valid value is any of: ALL, EST, CST, MST, and PST.</li>
+<li><b>PageNumber</b>: Optional. Page number of result set requested. Default value is 1.</li>
+<li><b>SortField</b>: Required. To sort results on specific field(s), it can be blank. Multiple fields can be used for sorting, each comma separated. The following sorting fields can be used - datetime, guid, station, market. To sort in descending order, use \"-\" after the field. For example \"datetime-\" . A maximum of three (3) different fields are allowed for sorting. Additional fields, if provided, will be ignored.</li> 
+<li><b>SessionID</b>: Required. A unique session id returned during successful login call.</li></ul>"
+	},
+	{
+		Name:"GetRadioStation",
+		Url:"http://qaservices.iqmediacorp.com/isvc/GetRadioStation",
+		JsonRequest:"{
+		\"SessionID\":\"D9E87C2E85CCC97E22A39A3B0EB262F9DD015345F0117C8783A2BF98300FFAC0DFF76C5ADD0EEE26B39A992E27A05C6361C4D98EE2F1AB7A8BCD38092F2847705ABC6A96DB42C92BBC04E712F4F4416C977CE428B850DBFA3349F0050430E7A081F1AC06B2D5D3314E685AA48B7EFC28F04D0A58AC696ECACF5D8D23E2D3E20CB47ED693\"
+		}",
+		XmlRequest:"<RadioStationDataInput>
+		<SessionID>D9E87C2E85CCC97E22A39A3B0EB262F9DD015345F0117C8783A2BF98300FFAC0DFF76C5ADD0EEE26B39A992E27A05C6361C4D98EE2F1AB7A8BCD38092F2847705ABC6A96DB42C92BBC04E712F4F4416C977CE428B850DBFA3349F0050430E7A081F1AC06B2D5D3314E685AA48B7EFC28F04D0A58AC696ECACF5D8D23E2D3E20CB47ED693</SessionID>
+		</RadioStationDataInput>",
+		Note:"<b>Request Parameters</b><br/>
+		<ul><li><b>SessionID</b>: Required. A unique session id returned during successful login call.</li></ul>"
+	},
+	{
+		Name:"GetRadioMedia",
+		Url:"http://qaservices.iqmediacorp.com/isvc/GetRadioMedia",
+		JsonRequest:"{
+		\"FromDateTime\":\"2010-11-01T00:00:00\",
+		\"ToDateTime\":\"2010-11-02T00:00:00\",
+		\"RadioStationList\":[
+		{\"StationID\": \"HOWARD\"},
+		{\"StationID\":\"HOWARD101\"},
+		{\"StationID\":\"KMJAM\"},
+		{\"StationID\":\"KMJFM\"},
+		{\"StationID\":\"KSCAFM\"},
+		{\"StationID\":\"KYW\"},
+		{\"StationID\":\"R205\"},
+		{\"StationID\":\"DOBBS\"},
+		{\"StationID\":\"HUCK\"},
+		{\"StationID\":\"SIRIUSP\"}
+		],
+		\"PageSize\":\"10\",
+		\"PageNumber\":\"1\",
+		\"SortField\":\"datetime-\",
+		\"SessionID\":\"D9E87C2E85CCC97E22A39A3B0EB262F9DD015345F0117C8783A2BF98300FFAC0DFF76C5ADD0EEE26B39A992E27A05C6361C4D98EE2F1AB7A8BCD38092F2847705ABC6A96DB42C92BBC04E712F4F4416C977CE428B850DBFA3349F0050430E7A081F1AC06B2D5D3314E685AA48B7EFC28F04D0A58AC696ECACF5D8D23E2D3E20CB47ED693\"
+		}",
+		XmlRequest:"<RadioMediaInput>
+		<SessionID>D9E87C2E85CCC97E22A39A3B0EB262F9DD015345F0117C8783A2BF98300FFAC0DFF76C5ADD0EEE26B39A992E27A05C6361C4D98EE2F1AB7A8BCD38092F2847705ABC6A96DB42C92BBC04E712F4F4416C977CE428B850DBFA3349F0050430E7A081F1AC06B2D5D3314E685AA48B7EFC28F04D0A58AC696ECACF5D8D23E2D3E20CB47ED693</SessionID>
+		<FromDateTime>2010-11-01T00:00:00</FromDateTime>
+		<ToDateTime>2010-11-02T00:00:00</ToDateTime>
+		<SortField>market</SortField>
+		<PageSize>10</PageSize>
+		<PageNumber>1</PageNumber>
+		<RadioStationList>
+		<RadioStation>
+		<StationID>R205</StationID>
+		</RadioStation>
+		<RadioStation>
+		<StationID>DOBBS</StationID>
+		</RadioStation>
+		<RadioStation>
+		<StationID>HOWARD</StationID>
+		</RadioStation>
+		<RadioStation>
+		<StationID>XM171</StationID>
+		</RadioStation>
+		</RadioStationList>
+		</RadioMediaInput>",
+		Note : "<b>Request Parameters</b><br/>
+<ul><li><b>FromDateTime</b>: Optional. To apply filter on Date duration. Default is 24 hours minus to current time.</li>
+<li><b>ToDateTime</b>: Optional. To apply filter on Date duration. Detault is 1 hours minus to current time.</li>
+<li><b>RadioStationList</b>: Optional. Array of Radio Stations. Minimum of one parameter value (StationID) is required. If not passed, then service will return results for all radio station with applying other filter conditions.</li>
+<li><b>PageSize</b>: Optional. Number of records in one page. Default is 10.Maximum is 50</li>
+<li><b>PageNumber</b>: Optional. Page number of result set. Default value is 1.</li>
+<li><b>SortField</b>: Required. To sort results of specific field(s). Multiple fields can be used for sorting, each comma separated. The following sorting fields can be used - datetime, guid, station, market. To sort in descending order, use \"-\" after the field. For example \"datetime-\" . A maximum of three(3) different fields are allowed for sorting. Additional fields, if provided, will be ignored.</li>
+<li><b>SessionID</b>: Required. A unique session id returned during successful login call.</li></ul>"
+	},
+	{
+		Name:"Login",
+		Url:"http://qaservices.iqmediacorp.com/isvc/Login",
+		JsonRequest:"{
+		\"UserID\":\"loginid\",
+		\"Password\":\"password\",
+		\"SessionID\":\"D9E87C2E85CCC97E22A39A3B0EB262F9DD015345F0117C8783A2BF98300FFAC0DFF76C5ADD0EEE26B39A992E27A05C6361C4D98EE2F1AB7A8BCD38092F2847705ABC6A96DB42C92BBC04E712F4F4416C977CE428B850DBFA3349F0050430E7A081F1AC06B2D5D3314E685AA48B7EFC28F04D0A58AC696ECACF5D8D23E2D3E20CB47ED693\"
+		}",
+		XmlRequest:"<LoginInput>
+	<UserID>loginid</UserID> 
+	<Password>password</Password> 
+	<SessionID>D9E87C2E85CCC97E22A39A3B0EB262F9DD015345F0117C8783A2BF98300FFAC0DFF76C5ADD0EEE26B39A992E27A05C6361C4D98EE2F1AB7A8BCD38092F2847705ABC6A96DB42C92BBC04E712F4F4416C977CE428B850DBFA3349F0050430E7A081F1AC06B2D5D3314E685AA48B7EFC28F04D0A58AC696ECACF5D8D23E2D3E20CB47ED693</SessionID>
+</LoginInput>",
+	   Note : "<b>Request Parameters</b><br/>
+	<ul><li><b>UserID</b>: Required. Username for login.</li>
+	<li><b>Password</b>: Required. Password for login.</li>
+	<li><b>SessionID</b>: Optional. A unique Session ID generated for user.
+	<ul>
+	<li>For initial login, there is no need to pass SessionID</li> 
+	<li>Pass the SessionID to check if user is already logged in</li></ul></li></ul>"
+	},
+	{
+		Name:"GetMediaPlayerURL",
+		Url:"http://qaservices.iqmediacorp.com/isvc/GetMediaPlayerURL",
+		JsonRequest:"{
+		\"DateTime\": \"2010-12-31T04:00:00\",
+		\"StationID\": \"KRON\",
+		\"SessionID\": \"D9E87C2E85CCC97E22A39A3B0EB262F9DD015345F0117C8783A2BF98300FFAC0DFF76C5ADD0EEE26B39A992E27A05C6361C4D98EE2F1AB7A8BCD38092F2847705ABC6A96DB42C92BBC04E712F4F4416C977CE428B850DBFA3349F0050430E7A081F1AC06B2D5D3314E685AA48B7EFC28F04D0A58AC696ECACF5D8D23E2D3E20CB47ED693\"
+		}",
+		XmlRequest:"<MediaPlayerURLInput>
+		<SessionID>D9E87C2E85CCC97E22A39A3B0EB262F9DD015345F0117C8783A2BF98300FFAC0DFF76C5ADD0EEE26B39A992E27A05C6361C4D98EE2F1AB7A8BCD38092F2847705ABC6A96DB42C92BBC04E712F4F4416C977CE428B850DBFA3349F0050430E7A081F1AC06B2D5D3314E685AA48B7EFC28F04D0A58AC696ECACF5D8D23E2D3E20CB47ED693</SessionID>
+		<StationID>KRON</StationID>
+		<DateTime>2010-12-31T04:00:00</DateTime>
+		</MediaPlayerURLInput>",
+		Note : "<b>Request Parameters</b><br/>
+<ul><li><b>SeqID</b>: Optional. Media ID of IQ Agent TV Media. Either SeqID or both StationID and DateTime is required.</li>
+<li><b>StationID</b>: Optional. StationID of the station to search. Either SeqID or both StationID and DateTime is required</li>
+<li><b>DateTime</b>: Optional. Date & time of the media to search. if StationID is passed then DateTime is required.</li>
+<li><b>SessionID</b>: Required. A unique session id returned during successful login call.</li></ul><br/>
+<b>other Json Request Format</b><br/>
+			{<br/>
+			&nbsp;&nbsp;&nbsp;\"SeqID\":\"154235\",<br/>
+			&nbsp;&nbsp;&nbsp;\"SessionID\": \"D9E87C2E85CCC97E22A39A3B0EB262F9DD015345F0117C8783A2BF98300FFAC0DFF76C5ADD0EEE26B39A992E27A05C6361C4D98EE2F1AB7A8BCD38092F2847705ABC6A96DB42C92BBC04E712F4F4416C977CE428B850DBFA3349F0050430E7A081F1AC06B2D5D3314E685AA48B7EFC28F04D0A58AC696ECACF5D8D23E2D3E20CB47ED693\"<br/>
+			}<br/><br/>
+			<b>other Xml Request Format</b><br/>
+			&lt;MediaPlayerURLInput&gt;<br/>
+			&nbsp;&nbsp;&nbsp;&lt;SessionID&gt;D9E87C2E85CCC97E22A39A3B0EB262F9DD015345F0117C8783A2BF98300FFAC0DFF76C5ADD0EEE26B39A992E27A05C6361C4D98EE2F1AB7A8BCD38092F2847705ABC6A96DB42C92BBC04E712F4F4416C977CE428B850DBFA3349F0050430E7A081F1AC06B2D5D3314E685AA48B7EFC28F04D0A58AC696ECACF5D8D23E2D3E20CB47ED693&lt;/SessionID&gt; <br/>
+			&nbsp;&nbsp;&nbsp;&lt;SeqID&gt;154235&lt;/SeqID&gt; <br/>
+			&lt;/MediaPlayerURLInput&gt;<br/>"
+	},
+	{
+		Name:"GetArchiveData",
+		Url:"http://qaservices.iqmediacorp.com/isvc/GetArchiveData",
+		JsonRequest:"{
+		\"FromDateTime\":\"2011-04-19T18:00:00\",
+		\"ToDateTime\":\"2011-05-19T18:00:00\",
+		\"Rows\":\"5\",
+		\"SeqID\":\"1380\",
+		\"SessionID\":\"D9E87C2E85CCC97E22A39A3B0EB262F9DD015345F0117C8783A2BF98300FFAC0DFF76C5ADD0EEE26B39A992E27A05C6361C4D98EE2F1AB7A8BCD38092F2847705ABC6A96DB42C92BBC04E712F4F4416C977CE428B850DBFA3349F0050430E7A081F1AC06B2D5D3314E685AA48B7EFC28F04D0A58AC696ECACF5D8D23E2D3E20CB47ED693\",
+		\"Category\":\"605E66D0-829D-4BCA-A6AD-9CABC5079E86\"
+		}",
+		XmlRequest:"<ArchiveInput>
+		<SessionID>D9E87C2E85CCC97E22A39A3B0EB262F9DD015345F0117C8783A2BF98300FFAC0DFF76C5ADD0EEE26B39A992E27A05C6361C4D98EE2F1AB7A8BCD38092F2847705ABC6A96DB42C92BBC04E712F4F4416C977CE428B850DBFA3349F0050430E7A081F1AC06B2D5D3314E685AA48B7EFC28F04D0A58AC696ECACF5D8D23E2D3E20CB47ED693</SessionID>
+		<FromDateTime>2011-04-19T18:00:00</FromDateTime>
+		<ToDateTime>2011-05-19T18:00:00</ToDateTime>
+		<SeqID>1380</SeqID>
+		<Rows>5</Rows>
+		<Category>605E66D0-829D-4BCA-A6AD-9CABC5079E86</Category>
+		</ArchiveInput>",
+		Note : "<b>Request Parameters</b><br/>
+<ul><li><b>FromDateTime</b>: Optional. Start Date parameter.</li>
+<li><b>ToDateTime</b>:Optional. End Date parameter.</li>
+<li><b>Rows</b>: Optional. Number of records in one page. Default is 10. Maximum is 50</li>
+<li><b>SeqID</b>: Optional. A sequence id which will be blank in first request but should pass maximum value of SeqID from current search result in next subsequent request to get next set of results.</li>
+<li><b>Category</b>: Optional. Guid to filter data on specific category.Searchs on Main Category of Archive TV media.</li>
+<li><b>SessionID</b>: Required. A unique session id returned during successful login call.</li></ul>"
+	},
+	{
+		Name:"GetTVAgents",
+		Url:"http://qaservices.iqmediacorp.com/isvc/GetTVAgents",
+		JsonRequest:"{
+		\"SessionID\":\"D9E87C2E85CCC97E22A39A3B0EB262F9DD015345F0117C8783A2BF98300FFAC0DFF76C5ADD0EEE26B39A992E27A05C6361C4D98EE2F1AB7A8BCD38092F2847705ABC6A96DB42C92BBC04E712F4F4416C977CE428B850DBFA3349F0050430E7A081F1AC06B2D5D3314E685AA48B7EFC28F04D0A58AC696ECACF5D8D23E2D3E20CB47ED693\",\"SRIDList\": [{\"ID\": \"282\"}, {\"ID\": \"283\"}]
+		}",
+		XmlRequest:"<TVAgentsInput><SessionID>D9E87C2E85CCC97E22A39A3B0EB262F9DD015345F0117C8783A2BF98300FFAC0DFF76C5ADD0EEE26B39A992E27A05C6361C4D98EE2F1AB7A8BCD38092F2847705ABC6A96DB42C92BBC04E712F4F4416C977CE428B850DBFA3349F0050430E7A081F1AC06B2D5D3314E685AA48B7EFC28F04D0A58AC696ECACF5D8D23E2D3E20CB47ED693</SessionID><SRIDList><SRID><ID>282</ID></SRID><SRID><ID>283</ID></SRID></SRIDList></TVAgentsInput>",
+		Note : "<b>Request Parameters</b><br/>
+		<ul><li><b>SessionID</b>: Required. A unique session id returned during successful login call.</li>
+		<li><b>SRIDList</b>: Optional. Array of SRID with ID parameter.</li></ul>"
+	},
+	{
+		Name:"GetTVAgentResults",
+		Url:"http://qaservices.iqmediacorp.com/isvc/GetTVAgentResults",
+		JsonRequest:"{
+		\"SessionID\":\"D9E87C2E85CCC97E22A39A3B0EB262F9DD015345F0117C8783A2BF98300FFAC0DFF76C5ADD0EEE26B39A992E27A05C6361C4D98EE2F1AB7A8BCD38092F2847705ABC6A96DB42C92BBC04E712F4F4416C977CE428B850DBFA3349F0050430E7A081F1AC06B2D5D3314E685AA48B7EFC28F04D0A58AC696ECACF5D8D23E2D3E20CB47ED693\",
+		\"SRID\":\"137\",
+		\"SeqID\":\"0\",
+		\"Rows\":\"20\",
+		\"IsFetchFullCCData\":\"true\"
+		}",
+		XmlRequest:"<TVAgentResultsInput>
+		<SessionID>D9E87C2E85CCC97E22A39A3B0EB262F9DD015345F0117C8783A2BF98300FFAC0DFF76C5ADD0EEE26B39A992E27A05C6361C4D98EE2F1AB7A8BCD38092F2847705ABC6A96DB42C92BBC04E712F4F4416C977CE428B850DBFA3349F0050430E7A081F1AC06B2D5D3314E685AA48B7EFC28F04D0A58AC696ECACF5D8D23E2D3E20CB47ED693</SessionID>
+		<SRID>137</SRID>
+		<SeqID>0</SeqID>
+		<Rows>20</Rows>
+		<IsFetchFullCCData>true</IsFetchFullCCData>
+		</TVAgentResultsInput>",
+		Note: "<b>Request Parameters</b><br/>
+<ul><li><b>SessionID</b>: Required. A unique session id returned during successful login call.</li>
+<li><b>SRID</b>: Optional. ID of TV agent request. Pass it to get results for a specific TV agent. A value of null will return results for all TV agents.</li>
+<li><b>SeqID</b>: Optional. Result will contain records after the SeqID value passed here. It can be null in first request. In subsequent requests, pass latest SeqID received in last response.</li>
+<li><b>Rows</b>: Optional. Number of records in response. Default value is 10 and cannot be more than 1000.</li>
+<li><b>IsFetchFullCCData</b>: Optional. Boolean flag to return whole CC of TV agent media.</li></ul>"
+	},
+	{
+		Name:"GetTVAgentDaySummary",
+		Url:"http://qaservices.iqmediacorp.com/isvc/GetTVAgentDaySummary",
+		JsonRequest:"{
+		\"SessionID\":\"D9E87C2E85CCC97E22A39A3B0EB262F9DD015345F0117C8783A2BF98300FFAC0DFF76C5ADD0EEE26B39A992E27A05C6361C4D98EE2F1AB7A8BCD38092F2847705ABC6A96DB42C92BBC04E712F4F4416C977CE428B850DBFA3349F0050430E7A081F1AC06B2D5D3314E685AA48B7EFC28F04D0A58AC696ECACF5D8D23E2D3E20CB47ED693\",
+		\"SRID\":\"137\",
+		\"FromDate\":\"2013-02-01\",
+		\"ToDate\":\"2013-02-28\"
+		}",
+		XmlRequest:"<TVAgentDaySummaryInput>
+		<SessionID>D9E87C2E85CCC97E22A39A3B0EB262F9DD015345F0117C8783A2BF98300FFAC0DFF76C5ADD0EEE26B39A992E27A05C6361C4D98EE2F1AB7A8BCD38092F2847705ABC6A96DB42C92BBC04E712F4F4416C977CE428B850DBFA3349F0050430E7A081F1AC06B2D5D3314E685AA48B7EFC28F04D0A58AC696ECACF5D8D23E2D3E20CB47ED693</SessionID>
+		<SRID>137</SRID>
+		<FromDate>2013-02-01</FromDate>
+		<ToDate>2013-02-28</ToDate>
+		</TVAgentDaySummaryInput>",
+		Note : "<b>Request Parameters</b><br/>
+<ul><li><b>SessionID</b>: Required. A unique session id returned during successful login call.</li>
+<li><b>SRID</b>: Optional. ID of TV agent request. Pass it to get results for a specific TV agent. A value of null will return results for all TV agents.</li> 
+<li><b>FromDate</b>: Required. Date parameter for filter on duration (should be GMT Date).</li>
+<li><b>ToDate</b>: Required. Date parameter for filter on duration (should be GMT Date).<ul>
+	<li>Maximum 31 days date range is allowed for FromDate and ToDate</li></ul></li></ul>"
+	},
+	{
+		Name:"GetTVAgentHourSummary",
+		Url:"http://qaservices.iqmediacorp.com/isvc/GetTVAgentHourSummary",
+		JsonRequest:"{
+		\"SessionID\":\"D9E87C2E85CCC97E22A39A3B0EB262F9DD015345F0117C8783A2BF98300FFAC0DFF76C5ADD0EEE26B39A992E27A05C6361C4D98EE2F1AB7A8BCD38092F2847705ABC6A96DB42C92BBC04E712F4F4416C977CE428B850DBFA3349F0050430E7A081F1AC06B2D5D3314E685AA48B7EFC28F04D0A58AC696ECACF5D8D23E2D3E20CB47ED693\",
+		\"SRID\":\"137\",
+		\"FromDateTime\":\"2013-02-01T00:00:00\",
+		\"ToDateTime\":\"2013-02-01T10:00:00\"
+		}",
+		XmlRequest:"<TVAgentHourSummaryInput>
+		<SessionID>D9E87C2E85CCC97E22A39A3B0EB262F9DD015345F0117C8783A2BF98300FFAC0DFF76C5ADD0EEE26B39A992E27A05C6361C4D98EE2F1AB7A8BCD38092F2847705ABC6A96DB42C92BBC04E712F4F4416C977CE428B850DBFA3349F0050430E7A081F1AC06B2D5D3314E685AA48B7EFC28F04D0A58AC696ECACF5D8D23E2D3E20CB47ED693</SessionID>
+		<SRID>137</SRID>
+		<FromDateTime>2013-02-01T00:00:00</FromDateTime>
+		<ToDateTime>2013-02-01T10:00:00</ToDateTime>
+		</TVAgentHourSummaryInput>",
+		Note : "<b>Request Parameters</b><br/>
+<ul><li><b>SessionID</b>: Required. A unique session id returned during successful login call.</li>
+<li><b>SRID</b>: Optional. ID of TV agent request, for which iqagent summary needs to fetch.</li> 
+<li><b>FromDateTime</b>: Required. DateTime parameter (considered as GMT Datetime).</li>
+<li><b>ToDateTime</b>: Required. DateTime parameter (considered as GMT Datetime).
+<ul><li>Maximum 48 hours date range is allowed for FromDateTime and ToDateTime</li></ul></li></ul>"
+	},
+	{
+		Name:"GetCategoryList",
+		Url:"http://qaservices.iqmediacorp.com/isvc/GetCategoryList",
+		JsonRequest:"{
+		\"SessionID\":\"D9E87C2E85CCC97E22A39A3B0EB262F9DD015345F0117C8783A2BF98300FFAC0DFF76C5ADD0EEE26B39A992E27A05C6361C4D98EE2F1AB7A8BCD38092F2847705ABC6A96DB42C92BBC04E712F4F4416C977CE428B850DBFA3349F0050430E7A081F1AC06B2D5D3314E685AA48B7EFC28F04D0A58AC696ECACF5D8D23E2D3E20CB47ED693\"
+		}",
+		XmlRequest:"<CategoryInput>
+		<SessionID>D9E87C2E85CCC97E22A39A3B0EB262F9DD015345F0117C8783A2BF98300FFAC0DFF76C5ADD0EEE26B39A992E27A05C6361C4D98EE2F1AB7A8BCD38092F2847705ABC6A96DB42C92BBC04E712F4F4416C977CE428B850DBFA3349F0050430E7A081F1AC06B2D5D3314E685AA48B7EFC28F04D0A58AC696ECACF5D8D23E2D3E20CB47ED693</SessionID>
+		</CategoryInput>",
+		Note : "<b>Request Parameters</b><br/>
+		<ul><li><b>SessionID</b>: Required. A unique session id returned during successful login call.</li></ul>"
+	},
+	{
+		Name:"CreateTVAgent",
+		Url:"http://qaservices.iqmediacorp.com/isvc/CreateTVAgent",
+		JsonRequest:"{
+		\"SearchRequest\":{\"AgentName\": \"Education\",\"TV\":{\"SearchTerm\": \"Education\",\"ProgramTitle\": \"Title\",\"Appearing\": \"Appear\",\"RegionList\": [{\"name\": \"North America\",\"num\": \"2\"}],\"DmaList\": [{\"name\": \"National\",\"num\": \"000\"}],\"ProgramCategoryList\": [{\"name\": \"News\",\"num\": \"01\"}],\"AffiliateList\": [{\"name\": \"BBC Canada\"}],\"CountryList\": [{\"name\": \"United States\",\"num\": \"1\"}],\"StationList\": [{\"name\": \"ABCF\"}]}},\"SessionID\": \"D9E87C2E85CCC97E22A39A3B0EB262F9DD015345F0117C8783A2BF98300FFAC0DFF76C5ADD0EEE26B39A992E27A05C6361C4D98EE2F1AB7A8BCD38092F2847705ABC6A96DB42C92BBC04E712F4F4416C977CE428B850DBFA3349F0050430E7A081F1AC06B2D5D3314E685AA48B7EFC28F04D0A58AC696ECACF5D8D23E2D3E20CB47ED693\"
+		}",
+		XmlRequest:"<CreateTVAgentInput><SearchRequest><AgentName>Education</AgentName><TV><SearchTerm>Education</SearchTerm><ProgramTitle>Title</ProgramTitle><Appearing>Appear</Appearing><DmaList><Dma><num>165</num><name>Abilene-Sweetwater</name></Dma></DmaList><ProgramCategoryList><ProgramCategory><num>01</num><name>News</name></ProgramCategory></ProgramCategoryList><AffiliateList><Affiliate><name>BBC Canada</name></Affiliate></AffiliateList><RegionList><Region><num>2</num><name>North America</name></Region></RegionList><CountryList><Country><num>1</num><name>United States</name></Country></CountryList><StationList><Station><name>ABCF</name></Station></StationList></TV></SearchRequest><SessionID>D9E87C2E85CCC97E22A39A3B0EB262F9DD015345F0117C8783A2BF98300FFAC0DFF76C5ADD0EEE26B39A992E27A05C6361C4D98EE2F1AB7A8BCD38092F2847705ABC6A96DB42C92BBC04E712F4F4416C977CE428B850DBFA3349F0050430E7A081F1AC06B2D5D3314E685AA48B7EFC28F04D0A58AC696ECACF5D8D23E2D3E20CB47ED693</SessionID></CreateTVAgentInput>",
+		Note : "<b>Request Parameters</b><br/>
+		<ul>
+		<li><b>SearchRequest</b>: Required. SearchRequest element consists of the following attributes.</li>
+		<ul><li><b>AgentName</b>: Required. Agent Name applied on TV agent request</li>
+		<li><b>TV</b>: Required. TV Agent applied on TV agent request TV Agents element consists of the following attributes:</li>
+		<ul><li><b>ProgramTItle</b>: Optional. Program Title applied on TV agent request</li>
+		<li><b>SearchTerm</b>: Required. Search Term applied on TV agent request</li>
+		<li><b>Appearing</b>: Optional. Appearing applied on TV agent request</li>
+		<li><b>RegionList</b>: Optional. To apply filter on Region. Array of Region with Name and Num parameter.</li>
+		<li><b>DmaList</b>: Optional. To apply filter on DMA. Array of DMA with Name and Num parameter.</li>
+		<li><b>ProgramCategoryList</b>: Optional. To apply filter on ProgramCategory. Array of ProgramCategory with Name and Num parameter.</li>
+		<li><b>AffiliateList</b>: Optional. To apply filter on Affiliate. Array of Affiliate with Name parameter.</li>
+		<li><b>CountryList</b>: Optional. To apply filter on Country. Array of Country with Name and Num parameter.</li>
+		<li><b>StationList</b>: Optional. To apply filter on Station. Array of Station with Name parameter.</li></ul></li></ul>
+		<li><b>SessionID</b>: Required. A unique session id returned during successful login call.</li>
+		</ul>"
+	},
+	{
+		Name:"UpdateTVAgent",
+		Url:"http://qaservices.iqmediacorp.com/isvc/UpdateTVAgent",
+		JsonRequest:"{
+		\"SearchRequest\":{\"AgentName\": \"Education\",\"TV\":{\"SearchTerm\": \"Education\",\"ProgramTitle\": \"Title\",\"Appearing\": \"Appear\",\"RegionList\": [{\"name\": \"North America\",\"num\": \"2\"}],\"DmaList\": [{\"name\": \"National\",\"num\": \"000\"}],\"ProgramCategoryList\": [{\"name\": \"News\",\"num\": \"01\"}],\"AffiliateList\": [{\"name\": \"BBC Canada\"}],\"CountryList\": [{\"name\": \"United States\",\"num\": \"1\"}],\"StationList\": [{\"name\": \"ABCF\"}]}},\"SessionID\": \"D9E87C2E85CCC97E22A39A3B0EB262F9DD015345F0117C8783A2BF98300FFAC0DFF76C5ADD0EEE26B39A992E27A05C6361C4D98EE2F1AB7A8BCD38092F2847705ABC6A96DB42C92BBC04E712F4F4416C977CE428B850DBFA3349F0050430E7A081F1AC06B2D5D3314E685AA48B7EFC28F04D0A58AC696ECACF5D8D23E2D3E20CB47ED693\",\"SRID\":\"247\"
+		}",
+		XmlRequest:"<UpdateTVAgentInput><SearchRequest><AgentName>Education</AgentName><TV><SearchTerm>Education</SearchTerm><ProgramTitle>Title</ProgramTitle><Appearing>Appear</Appearing><DmaList><Dma><num>165</num><name>Abilene-Sweetwater</name></Dma></DmaList><ProgramCategoryList><ProgramCategory><num>01</num><name>News</name></ProgramCategory></ProgramCategoryList><AffiliateList><Affiliate><name>BBC Canada</name></Affiliate></AffiliateList><RegionList><Region><num>2</num><name>North America</name></Region></RegionList><CountryList><Country><num>1</num><name>United States</name></Country></CountryList><StationList><Station><name>ABCF</name></Station></StationList></TV></SearchRequest><SessionID>D9E87C2E85CCC97E22A39A3B0EB262F9DD015345F0117C8783A2BF98300FFAC0DFF76C5ADD0EEE26B39A992E27A05C6361C4D98EE2F1AB7A8BCD38092F2847705ABC6A96DB42C92BBC04E712F4F4416C977CE428B850DBFA3349F0050430E7A081F1AC06B2D5D3314E685AA48B7EFC28F04D0A58AC696ECACF5D8D23E2D3E20CB47ED693</SessionID><SRID>247</SRID></UpdateTVAgentInput>",
+		Note : "<b>Request Parameters</b><br/>
+		<ul>
+		<li><b>SearchRequest</b>: Required. SearchRequest element consists of the following attributes.</li>
+		<ul><li><b>Agent Name</b>: Required. Agent Name applied on TV agent request</li>
+		<li><b>TV</b>: Required. TV Agent applied on TV agent request TV Agents element consists of the following attributes:</li>
+		<ul><li><b>ProgramTItle</b>: Optional. Program Title applied on TV agent request</li>
+		<li><b>SearchTerm</b>: Required. Search Term applied on TV agent request</li>
+		<li><b>Appearing</b>: Optional. Appearing applied on TV agent request</li>
+		<li><b>RegionList</b>: Optional. To apply filter on Region. Array of Region with Name and Num parameter.</li>
+		<li><b>DmaList</b>: Optional. To apply filter on DMA. Array of DMA with Name and Num parameter.</li>
+		<li><b>ProgramCategoryList</b>: Optional. To apply filter on ProgramCategory. Array of ProgramCategory with Name and Num parameter.</li>
+		<li><b>AffiliateList</b>: Optional. To apply filter on Affiliate. Array of Affiliate with Name parameter.</li>
+		<li><b>CountryList</b>: Optional. To apply filter on Country. Array of Country with Name and Num parameter.</li>
+		<li><b>StationList</b>: Optional. To apply filter on Station. Array of Station with Name parameter.</li></ul></li></ul>
+		<li><b>SessionID</b>: Required. A unique session id returned during successful login call.</li>
+		<li><b>SRID</b>: Required. Search Request ID to update TV Agent.</li>
+		</ul>"
+	},
+	{
+		Name:"DeleteTVAgent",
+		Url:"http://qaservices.iqmediacorp.com/isvc/DeleteTVAgent",
+		JsonRequest:"{
+		\"SRID\": \"247\",\"SessionID\": \"D9E87C2E85CCC97E22A39A3B0EB262F9DD015345F0117C8783A2BF98300FFAC0DFF76C5ADD0EEE26B39A992E27A05C6361C4D98EE2F1AB7A8BCD38092F2847705ABC6A96DB42C92BBC04E712F4F4416C977CE428B850DBFA3349F0050430E7A081F1AC06B2D5D3314E685AA48B7EFC28F04D0A58AC696ECACF5D8D23E2D3E20CB47ED693\"
+		}",
+		XmlRequest:"<DeleteTVAgentInput> <SRID>243</SRID><SessionID>D9E87C2E85CCC97E22A39A3B0EB262F9DD015345F0117C8783A2BF98300FFAC0DFF76C5ADD0EEE26B39A992E27A05C6361C4D98EE2F1AB7A8BCD38092F2847705ABC6A96DB42C92BBC04E712F4F4416C977CE428B850DBFA3349F0050430E7A081F1AC06B2D5D3314E685AA48B7EFC28F04D0A58AC696ECACF5D8D23E2D3E20CB47ED693</SessionID> </DeleteTVAgentInput>",
+		Note : "<b>Request Parameters</b><br/>
+		<ul><li><b>SRID</b>: Required. Search Request ID to delete TV Agent.</li>
+		<li><b>SessionID</b>: Required. A unique session id returned during successful login call.</li></ul>"
+	}]
+}

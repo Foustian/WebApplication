@@ -1,0 +1,192 @@
+@charset "utf-8";
+/* CSS Document */
+
+a:focus { outline:0px!impotant; outline-offset: 0px;}
+
+a:hover, a:focus{ text-decoration: none;}
+
+.bbt0{ border-bottom:0px;}
+.Api-banner {
+    background: url(../images/pink-had.png) repeat-x center top rgba(0, 0, 0, 0);
+	
+}
+.black-title-box {
+	text-align:center;
+	background:#000A35;
+	padding:3px;
+	
+}
+.Api-small-text{ 
+	color: #444444;
+    font: 17px/26px "open_sansregular" !important;
+	text-align:justify;
+}
+.Api-green-text{ font-family:'open_sansitalic'; color:#C1D72E;}
+.Api-blue-text{ font-family:'open_sansitalic'; color:#53BDEC;}
+.Api-pink-text{ font-family:'open_sansitalic'; color:#EE2375;}
+.Api-iq {
+    background: url(../images/career-iq.png) no-repeat right top 47px rgba(0, 0, 0, 0);
+	min-height:166px;
+	vertical-align:middle
+}
+.Api-hd-right-text{ color:#EE2375; font:38px/44px 'open_sansregular'; letter-spacing:1px; display:block; text-align:right; margin-top:62px; margin-bottom:40px;}
+
+.Api-round-link a {
+	margin:2px 1px;
+	width:55px;
+	height:55px;
+	display:inline-block;
+	background:url(../images/career-icon.png) no-repeat left top;
+	background-size:386px 110px;
+	overflow:hidden;
+}
+
+.WhiteTitle{ font:22px/28px "open_sansregular"; color: #fff; padding-top:3px;  padding-bottom: 3px; }
+ul.Apilist{ display:block; clear:both; text-align:center; overflow:hidden;}
+ul.Apilist{ list-style:none; margin:0px; padding:0px;}
+ul.Apilist li{ width:20%;  display:inline-block; padding:0px 2px; }
+ul.Apilist li img{ width:auto; }
+
+/*---Gray Row----*/
+.Api-gray-row{overflow: hidden; margin-top:173px;background:#fff; padding:0px; margin:0px; min-height:inherit; margin-top: 10px; margin-bottom:10px; padding-top:30px;}
+.Api-gray-row .rightimg{width:100%; float:none; position:relative; text-align:center;}
+.Api-gray-row .rightimg img{ position:relative; margin-top:10px; max-width: 81%; width:367px; width: auto; display:none;}
+.Api-gray-row .lefttext{width:100%; float:none; position:relative;}
+.Api-gray-row .lefttext p{ margin-left: 3%; margin-right:3%; padding-top:10px; text-align:center; padding-bottom:10px; font:17px/25px "open_sanssemibold"; color: #fff; }
+.Api-gray-row .lefttext p span{ font:17px/20px "open_sansregular"; color: #444444; display:block; clear:both; margin-top:6px; }
+.Api-pinkbtnMain { display:block; text-align:center;}
+.Api-pinkbtn{
+	background:#ee2375;
+    border-radius: 8px;
+    color: #ffffff;
+    display: inline-block;
+    padding: 5px 17px;
+    text-align: center;
+	position:relative; margin-top:0px;
+	font: 19px/28px "open_sansregular";
+}
+.Api-pinkbtn:hover{
+	background:#e12c75;
+   color:#fff;
+}
+
+
+
+@media (min-width: 200px) and (max-width: 640px) {
+.Api-iq {min-height:136px; background: url(../images/career-iq.png) no-repeat right top 10px rgba(0, 0, 0, 0);}
+.Api-in-width{ padding-left:0px; padding-right:0px;}
+.Api-hd-right-text{ font:25px/30px 'open_sansregular';  text-align:center; margin-top:10px;}
+.Api-lr0 { padding-left: 0px; padding-right: 0px;}
+.Api-round-link {text-align: center; margin-top: 10px;}
+
+ul.Apilist { text-align:center;}
+ul.Apilist li{ width:49%;}
+ul.Apilist li img{ width:120px; }
+
+
+}
+@media (min-width: 480px) {
+ul.Apilist li {
+    width: 31%;
+}
+}
+@media (min-width: 640px) and (max-width: 767px) {
+ul.Apilist li{ width:32.33%;}
+ul.Apilist li img{ width:auto; }
+
+}
+
+@media (min-width: 768px) {
+.Api-hd-right-text{ font:30px/34px 'open_sansregular';}
+.Api-iq {background: url(../images/career-iq.png) no-repeat right top 31px rgba(0, 0, 0, 0);}
+.Api-round-link {margin-top: 70px;}
+.Api-lr0 { padding-left: 0px; padding-right: 0px;}
+.Api-in-width{ padding-left:0px; padding-right:0px;}
+
+ul.Apilist li{ width:25%;}
+ul.Apilist li img{ width:auto; }
+
+
+/*---Gray Row----*/
+.Api-gray-row{ margin-bottom: 20px; margin-top: 20px; min-height: 255px; height:318px; z-index: 1; clear: both; height: 349px;}
+.Api-gray-row .rightimg{width:50%; float:right;  text-align:right; min-height: 255px;}
+.Api-gray-row .rightimg img{ position:absolute; margin-top:-31px; width:367px; right:0px; max-width: inherit; display:none;}
+.Api-gray-row .lefttext{width:50%; float:left;}
+.Api-gray-row .lefttext p{ margin-right: 0%;  width: 314px; float:right; padding-top:36px; padding-bottom:0px; text-align:left;  font:25px/27px  'open_sanssemibold';}
+.Api-gray-row .lefttext p span{ font:16px/18px 'open_sansregular'; color: #444444; margin-top:6px; }
+.bbt0 {
+    border-bottom: 0 none;
+    padding-bottom: 10px;
+}
+
+.Api-pinkbtn{
+	padding: 5px 17px;
+    text-align: center;
+	position:absolute; margin-top:40px;
+	font: 19px/28px "open_sansregular";
+}
+
+
+	
+}
+@media (width: 800px) {
+.Api-gray-row .lefttext p{ width: 338px; float:right;}
+}
+@media (min-width: 992px) {
+.Api-hd-right-text{ font:37px/44px 'open_sansregular';}
+.Api-iq { background: url(../images/career-iq.png) no-repeat right top 47px rgba(0, 0, 0, 0);}
+.Api-round-link {margin-top: 80px;}
+.Api-in-width{ padding-left:0px; padding-right:0px;}
+/*.Api-in-width{padding-left:18px\0; padding-right:18px\0; }
+.ie10 .Api-in-width{padding-left:18px; padding-right:18px; }
+*/
+/*---Gray Row----*/
+.Api-gray-row{ height:100%; margin-top: 254px; margin-bottom:86px; padding-top:0;}
+.Api-gray-row .rightimg{width:50%; float:right;}
+.Api-gray-row .rightimg img{ position:relative; margin-top:-86px; width:458px; display:none;}
+.Api-gray-row .lefttext{width:50%; float:left;}
+.Api-gray-row .lefttext p{ margin-right: 2%; width:395px; padding-top:44px; padding-bottom:0px; font:25px/27px "open_sanssemibold";}
+.Api-gray-row .lefttext p span{ font:16px/20px "open_sansregular"; color: #444444; margin-top:6px; }	
+
+.Api-pinkbtn{
+	padding: 5px 17px;
+    text-align: center;
+	position:absolute; margin-top:60px;
+	font: 19px/28px "open_sansregular";
+}
+
+}
+@media (min-width: 1100px) {
+.Api-hd-right-text{ font:40px/44px 'open_sansregular';}
+ul.Apilist li{ width:19%;}
+ul.Apilist li img{ width:auto; }
+
+
+/*---Gray Row----*/
+.Api-gray-row{margin-bottom: 30px; overflow: hidden; margin-top:173px; min-height: 245px; height:516px;}
+.Api-gray-row .rightimg{width:50%; float:right;margin-top:141px; min-height:245px;}
+.Api-gray-row .rightimg img{ margin-bottom: -98px; position: absolute; width: auto; display:none; opacity:0; width: 591px; margin-top: -143px;}
+.Api-gray-row .lefttext{width:50%; float:left;}
+.Api-gray-row .lefttext p{ margin-right: 9%; float:right; padding-top:36px; padding-bottom:0px; width:530px; font:28px/33px  'open_sanssemibold';}
+.Api-gray-row .lefttext p span{ font:17px/20px 'open_sansregular'; color: #444444; margin-top:6px; }
+
+.Api-pinkbtn{
+	padding: 5px 17px;
+    text-align: center;
+	position:absolute; margin-top:60px;
+	font: 19px/28px "open_sansregular";
+}
+
+.LeftGrayBox{margin-top: 141px; min-height:245px;}
+.LeftGrayBox div{margin-left:61px;}
+.RightGrayBox{margin-top: 141px;}
+}
+@media (min-width: 1281px) {
+.Api-gray-row{margin-bottom: 30px;
+    margin-top: 314px;
+    min-height: 245px;overflow: hidden; margin-top:173px; height:516px;}
+.LeftGrayBox{margin-top: 141px; min-height:245px;}
+.LeftGrayBox div{margin-left:61px;}
+.RightGrayBox{margin-top: 141px;}
+.Api-gray-row .rightimg img{   margin-bottom: 0px; margin-top: -143px; min-height:245px; right:0px; position: absolute; width: 591px; display:none;}
+}

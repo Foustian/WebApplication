@@ -1,0 +1,146 @@
+﻿@using IQMedia.Model;
+@model fliq_CustomerPostModel
+@{
+    
+    IQMedia.Model.ActiveUser sessionInformation = IQMedia.WebApplication.Utility.ActiveUserMgr.GetActiveUser();
+}
+<style>
+        /* to hide the space occupied by password help popover title */
+        .popover-title{ border:0;padding:0;}        
+    </style>
+<script src="~/Scripts/jquery.form.js?v=1.0" type="text/javascript"></script>
+<script language="javascript" type="text/javascript">
+    $("#divFliq_CustomerRegistration_ScrollContent").css("height", documentHeight - 250);
+    $("#divFliq_CustomerRegistration_ScrollContent").mCustomScrollbar({
+        advanced: {
+            updateOnContentResize: true,
+            autoScrollOnFocus: true
+        }
+    });
+</script>
+<div style="clear: both;">
+</div>
+<div id="divFliq_CustomerRegistration_ScrollContent">
+    @using (Html.BeginForm("Fliq_CustomerRegistration", "FliqCustomer", FormMethod.Post, new { @class = "form-horizontal", @id = "frmFliq_Customer" }))
+    {
+        bool IsClientFliq = true;
+        <div style="padding-right: 15px;">
+            <div class="sidebar-nav" style="margin-top: 7px;">
+                <h5>
+                    Fliq Customer Setup Page</h5>
+            </div>
+            <br />
+            <div class="control-group">
+                <label for="customer_ClientID" class="control-label">
+                    Client</label>
+                <div class="controls">
+                    <input type="hidden" id="customer_CustomerKey" name="customer.CustomerKey" value="@Model.customer.CustomerKey" />
+                    <select name="customer.ClientID" id="customer_ClientID" @(Model.customer.CustomerKey == 0 ? string.Empty : "readonly=readonly")>
+                        <option value="0">Select</option>
+                        @foreach (ClientModel client in Model.Customer_DropDown.ClientList)
+                        {
+                            if (Model.customer.ClientID == client.ClientKey)
+                            {
+                                IsClientFliq = client.IsFliq;
+                            }
+                            <option value="@client.ClientKey" onclick="CheckIsFliq(@(client.IsFliq == true ? '1' : '0'))" @(Model.customer.ClientID == client.ClientKey ? "selected=\"selected\"" : string.Empty)>@client.ClientName</option>
+                        }
+                    </select>
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanClientID"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="row-fluid row-custom">
+                &nbsp;</div>
+            <br />
+            <div class="control-group">
+                <label for="customer_FirstName" class="control-label">
+                    Customer First Name</label>
+                <div class="controls">
+                    <input type="text" name="customer.FirstName" id="customer_FirstName" value="@Model.customer.FirstName" />
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanFirstName"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="customer_LastName" class="control-label">
+                    Customer Last Name</label>
+                <div class="controls">
+                    <input type="text" name="customer.LastName" id="customer_LastName" value="@Model.customer.LastName" />
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanLastName"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="customer_Email" class="control-label">
+                    Customer Email</label>
+                <div class="controls">
+                    <input type="text" name="customer.Email" id="customer_Email" value="@Model.customer.Email" />
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanEmail" class="help-inline">
+                    </span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="customer_LoginID" class="control-label">
+                    Customer LogIn</label>
+                <div class="controls">
+                    <input type="text" name="customer.LoginID" id="customer_LoginID" value="@Model.customer.LoginID" />
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanLoginID"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="customer_Password" class="control-label">
+                    Password</label>
+                <div class="controls">
+                    <input type="password" name="customer.Password" id="customer_Password" value="@Model.customer.Password" />
+                    <img id="imgPassHelp" alt="?" src="~/images/help.png" style="cursor:pointer;" data-content="Password must contain one uppercase, one lowercase and a number; and length must be between 6 and 30." data-placement="top" data-toggle="popover" data-title="" />
+                    <span style="color: #FF0000; display: none;" id="spanPassword" class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="customer_ConfirmPassword" class="control-label">
+                    Confirm Password</label>
+                <div class="controls">
+                    <input type="password" name="customer.ConfirmPassword" id="customer_ConfirmPassword" value="@Model.customer.Password" />
+                    <span style="color: #FF0000; display: none;" id="spanConfirmPassword" class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="customer_ContactNo" class="control-label">
+                    Phone</label>
+                <div class="controls">
+                    <input type="text" name="customer.ContactNo" id="customer_ContactNo" value="@Model.customer.ContactNo" />
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanContactNo"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="customer_ContactNo" class="control-label">
+                    Comments</label>
+                <div class="controls">
+                    <input type="text" name="customer.Comment" id="customer_Comment" value="@Model.customer.Comment" />
+                    <span style="color: #FF0000; display: none; vertical-align: top" id="spanComment"
+                        class="help-inline"></span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label for="customer_IsActive" class="control-label">
+                    Is Active</label>
+                <div class="controls">
+                    <input type="checkbox" name="customer.IsActive" id="customer_IsActive" checked="@(Model.customer.IsActive.HasValue ? Model.customer.IsActive.Value : true)" value="true" />
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">
+                    &nbsp;</label>
+                <div class="controls">
+                    <input type="button" id="btnCancelFliq_CustomerRegistration" name="btnCancelFliq_CustomerRegistration"
+                        value="Cancel" onclick="CancelFliq_CustomerRegistration();" class="button" style="margin: 0px;" />
+                    <input type="button" onclick="SaveFliq_Customer()" id="btnSubmitFliq_CustomerRegistration"
+                        name="btnSubmitFliq_CustomerRegistration" value="Submit" class="button" style="margin: 0px;" />
+                </div>
+            </div>
+        </div>
+    }
+</div>

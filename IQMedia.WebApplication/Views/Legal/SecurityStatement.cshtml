@@ -1,0 +1,130 @@
+﻿@{
+    ViewBag.Title = "iQ media Security Statement";
+    Layout = "~/Views/Shared/_IQMediaMasterStaticPages.cshtml";
+}
+@section HeaderImage
+{
+    <img src="~/Images/StaticBanner/Legal.jpg" alt="Security Statement" />
+}
+@section Content
+{
+    <div class="span4">
+        @Html.Partial("~/Views/Legal/_Left.cshtml")
+    </div>
+    <div class="span14 span14pad">
+        <h3>
+            Security Statement</h3>
+        <p>
+            IQ Media provides state-of-the-art data security and privacy to our clients, ensuring
+            that your data is safe around the clock. IQ Media devotes significant resources
+            to continuously develop our world-class infrastructure. We know that security is
+            paramount to our clients &#8211; and we&#8217;ve made it our highest priority.<br />
+            When you subscribe to IQ Media, you will enjoy unsurpassed protection and peace-of-mind.</p>
+        <p>
+            <strong>Security Measures</strong></p>
+        <p>
+            • Continuous deployment of proven, up-to-date security technologies<br />
+            • Ongoing evaluation of emerging security developments and threats<br />
+            • Complete security redundancy throughout the entire architecture<br />
+            • Full commitment to a secure, scalable, hosted system<br />
+            • Complete third party security audit for all systems</p>
+        <p>
+            <strong>World-Class Security</strong></p>
+        <p>
+            We deliver a security infrastructure comprised of current, proven, cutting-edge
+            technologies. IQ Media delivers the most comprehensive security available &#8211;
+            firewalls and encryption devices sourced from leading Internet security vendors,
+            configured by expert professionals, and rigorously tested before going into production.</p>
+        <p>
+            • <strong>Physical Security</strong><br />
+            Production equipment is located in Newark, DE., at a facility which provides 24-hour
+            physical security, palm print and picture identification, redundant electrical generators,
+            redundant data center air conditioners and other back-up equipment designed to keep
+            servers continually up and running.
+        </p>
+        <p>
+            • <strong>Perimeter Defense</strong><br />
+            Perimeters of production and corporate networks are protected by firewalls developed
+            by leading security vendors.
+        </p>
+        <p>
+            • <strong>Data Encryption (provided upon request)</strong><br />
+            IQ Media offers 128-bit SSL for secure HTTP connections between client computers
+            and our servers.
+        </p>
+        <p>
+            The lock icon in the browser indicates that data is fully shielded from access while
+            in transit.
+        </p>
+        <p>
+            • <strong>User Authentication</strong><br />
+            Users access IQ Media only with a valid username and password combination, which
+            is optionally encrypted via SSL while in transmission.
+        </p>
+        <p>
+            • <strong>Application Security</strong><br />
+            Our robust application security model prevents one IQ Media customer from accessing
+            another&#8217;s data.</p>
+        <p>
+            This security model is reapplied with every request and enforced for the entire
+            duration of a user session.
+        </p>
+        <p>
+            • <strong>Internal Systems Security</strong><br />
+            Inside of the perimeter firewalls, systems are safeguarded by network address translation,
+            port redirection, IP masquerading, non-routable IP addressing schemes, and more.
+            Exact details of these features are proprietary.
+        </p>
+        <p>
+            • <strong>Operating System Security</strong><br />
+            IQ Media enforces tight operating system-level security by using a minimal number
+            of access points to all production servers.
+        </p>
+        <p>
+            We protect all hosts with strong passwords.
+        </p>
+        <p>
+            All hosts are maintained at each vendor&#8217;s recommended patch levels for security.
+        </p>
+        <p>
+            All hosts are hardened by disabling and/or removing any unnecessary users, protocols
+            and processes.
+        </p>
+        <p>
+            • <strong>Database Security</strong><br />
+            Whenever possible, database access is controlled at the operating system and database
+            connection level for additional security.</p>
+        <p>
+            Access to production databases is limited to a number of points.
+        </p>
+        <p>
+            • <strong>Server Management Security</strong><br />
+            All data entered into the IQ Media application by a customer is owned by that customer.</p>
+        <p>
+            IQ Media employees do not have direct access to the IQ Media production equipment,
+            except where necessary for system management, maintenance, monitoring, and back-ups.
+        </p>
+        <p>
+            IQ Media does not utilize any managed service providers. The IQ Media site operations
+            team provides all system management, maintenance, monitoring and back-ups.
+        </p>
+        <p>
+            • <strong>Reliability and Backup</strong></p>
+        <p>
+            All networking components, load balancers, Web servers, and application servers
+            are configured in a redundant configuration.</p>
+        <p>
+            All customer data is automatically backed up to tape on a nightly basis. Back-up
+            tapes are moved to secure, fire-resistant off-site storage on a regular basis. Disaster
+            recovery plans are in place.</p>
+        <p>
+            Note: Use of the IQ Media services are subject to the terms of use in the customer
+            license agreement. IQ Media may change its security infrastructure and/or this security
+            data sheet from time to time.</p>
+    </div>
+    <script type="text/javascript" language="javascript">
+        $(document).ready(function () {
+            SetHighligtedLi('ulResourcesNavigation', 'liSecurityStatement');
+        });    
+    </script>
+}
