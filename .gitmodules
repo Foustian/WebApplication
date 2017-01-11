@@ -16,3 +16,6 @@
 [submodule "Sentiment"]
 	path = Sentiment
 	url = https://github.com/Foustian/Sentiment.git
+[submodule "PMGSearch"]
+	path = PMGSearch
+	url = https://github.com/Foustian/PMGSearch.git
