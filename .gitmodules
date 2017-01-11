@@ -1,0 +1,18 @@
+[submodule "AnalyticsSearch"]
+	path = AnalyticsSearch
+	url = https://github.com/Foustian/AnalyticsSearch
+[submodule "FeedsSearch"]
+	path = FeedsSearch
+	url = https://github.com/Foustian/FeedsSearch.git
+[submodule "IQCommon"]
+	path = IQCommon
+	url = https://github.com/Foustian/IQCommon.git
+[submodule "IQRadioSearch"]
+	path = IQRadioSearch
+	url = https://github.com/Foustian/IQRadioSearch.git
+[submodule "IQProminence"]
+	path = IQProminence
+	url = https://github.com/Foustian/IQProminence.git
+[submodule "Sentiment"]
+	path = Sentiment
+	url = https://github.com/Foustian/Sentiment.git
